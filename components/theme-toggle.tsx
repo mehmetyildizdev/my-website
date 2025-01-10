@@ -13,11 +13,11 @@ export function ModeToggle() {
   };
 
   return (
-    <div className="flex items-center bg-diamond p-2 rounded">
+    <div className="flex items-center p-2 rounded">
       <Switch
         checked={theme === "dark"}
         onCheckedChange={handleToggle}
-        className="mx-2"
+        className="mx-"
       />
       <Sun
         className={`h-[1.2rem] w-[1.2rem] ${theme === "dark" ? "hidden" : "block"}`}

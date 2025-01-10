@@ -3,29 +3,53 @@
 @tailwind utilities;
 
 :root {
-  --color-title: #c49e5b;
-  --color-subtitle: #e2bf36;
-  --color-platinum: #d3d6d8;
-  --color-gold: #c49e5b;
+  --color-accent: #ffc107;
+  --color-accent-hsl: 45, 100%, 51.37%;
+  --color-muted: #c49e5b;
+  --color-muted-hsl: 38.29, 47.09%, 56.27%;
+  --color-titanium: #171616;
+  --color-titanium-hsl: 15, 1.77%, 44.31%;
+  --color-platinum: #878681;
+  --color-platinum-hsl: 12, 2.35%, 58.24%;
+  --color-gold: #dcb118;
+  --color-gold-hsl: 46.84, 80.33%, 47.84%;
   --color-emerald: #4f8129;
+  --color-emerald-hsl: 94.09, 51.76%, 33.33%;
   --color-sapphire: #162c59;
+  --color-sapphire-hsl: 220.3, 60.36%, 21.76%;
   --color-ruby: #ac0911;
+  --color-ruby-hsl: 357.06, 90.06%, 35.49%;
   --color-diamond: #f6f6f2;
+  --color-diamond-hsl: 60, 18.18%, 95.69%;
   --color-amethyst: #bb6fe2;
+  --color-amethyst-hsl: 279.65, 66.47%, 66.08%;
   --color-pearl: #f7efdf;
+  --color-pearl-hsl: 40, 60%, 92.16%;
 }
 
 .dark {
-  --color-title: #e2bf36;
-  --color-subtitle: #d0b17b;
+  --color-accent: #e2bf36;
+  --color-accent-hsl: 47.79, 74.78%, 54.9%;
+  --color-muted: #d0b17b;
+  --color-muted-hsl: 38.12, 47.49%, 64.9%;
+  --color-titanium: #f3f4f7;
+  --color-titanium-hsl: 225, 20%, 96.08%;
   --color-platinum: #f0f3f5;
+  --color-platinum-hsl: 204, 20%, 95.1%;
   --color-gold: #dcb118;
+  --color-gold-hsl: 46.84, 80.33%, 47.84%;
   --color-emerald: #00a267;
+  --color-emerald-hsl: 158.15, 100%, 31.76%;
   --color-sapphire: #0f52ba;
+  --color-sapphire-hsl: 216.49, 85.07%, 39.41%;
   --color-ruby: #e0115f;
+  --color-ruby-hsl: 337.39, 85.89%, 47.25%;
   --color-diamond: #262a2c;
+  --color-diamond-hsl: 200, 7.32%, 16.08%;
   --color-amethyst: #663593;
+  --color-amethyst-hsl: 271.28, 47%, 39.22%;
   --color-pearl: #303030;
+  --color-pearl-hsl: 0, 0%, 18.82%;
 }
 
 body {
@@ -34,25 +58,25 @@ body {
 
 @layer base {
   :root {
-    --background: 0 0% 100%;
-    --foreground: 20 14.3% 4.1%;
-    --card: 0 0% 100%;
-    --card-foreground: 20 14.3% 4.1%;
-    --popover: 0 0% 100%;
-    --popover-foreground: 20 14.3% 4.1%;
-    --primary: 24 9.8% 10%;
-    --primary-foreground: 60 9.1% 97.8%;
-    --secondary: 60 4.8% 95.9%;
-    --secondary-foreground: 24 9.8% 10%;
-    --muted: 60 4.8% 95.9%;
-    --muted-foreground: 25 5.3% 44.7%;
-    --accent: 60 4.8% 95.9%;
-    --accent-foreground: 24 9.8% 10%;
-    --destructive: 0 84.2% 60.2%;
-    --destructive-foreground: 60 9.1% 97.8%;
-    --border: 20 5.9% 90%;
-    --input: 20 5.9% 90%;
-    --ring: 20 14.3% 4.1%;
+    --background: var(--color-diamond-hsl);
+    --foreground: var(--color-titanium-hsl);
+    --card: var(--color-diamond-hsl);
+    --card-foreground: var(--color-titanium-hsl);
+    --popover: var(--color-diamond-hsl);
+    --popover-foreground: var(--color-titanium-hsl);
+    --primary: var(--color-sapphire-hsl);
+    --primary-foreground: var(--color-pearl-hsl);
+    --secondary: var(--color-pearl-hsl);
+    --secondary-foreground: var(--color-sapphire-hsl);
+    --muted: var(--color-muted-hsl);
+    --muted-foreground: var(--color-titanium-hsl);
+    --accent: var(--color-accent-hsl);
+    --accent-foreground: var(--color-titanium-hsl);
+    --destructive: var(--color-ruby-hsl);
+    --destructive-foreground: var(--color-pearl-hsl);
+    --border: var(--color-gold-hsl);
+    --input: var(--color-platinum-hsl);
+    --ring: var(--color-emerald-hsl);
     --chart-1: 12 76% 61%;
     --chart-2: 173 58% 39%;
     --chart-3: 197 37% 24%;
@@ -61,25 +85,25 @@ body {
     --radius: 0.5rem;
   }
   .dark {
-    --background: 20 14.3% 4.1%;
-    --foreground: 60 9.1% 97.8%;
-    --card: 20 14.3% 4.1%;
-    --card-foreground: 60 9.1% 97.8%;
-    --popover: 20 14.3% 4.1%;
-    --popover-foreground: 60 9.1% 97.8%;
-    --primary: 60 9.1% 97.8%;
-    --primary-foreground: 24 9.8% 10%;
-    --secondary: 12 6.5% 15.1%;
-    --secondary-foreground: 60 9.1% 97.8%;
-    --muted: 12 6.5% 15.1%;
-    --muted-foreground: 24 5.4% 63.9%;
-    --accent: 12 6.5% 15.1%;
-    --accent-foreground: 60 9.1% 97.8%;
-    --destructive: 0 62.8% 30.6%;
-    --destructive-foreground: 60 9.1% 97.8%;
-    --border: 12 6.5% 15.1%;
-    --input: 12 6.5% 15.1%;
-    --ring: 24 5.7% 82.9%;
+    --background: var(--color-diamond-hsl);
+    --foreground: var(--color-titanium-hsl);
+    --card: var(--color-diamond-hsl);
+    --card-foreground: var(--color-titanium-hsl);
+    --popover: var(--color-diamond-hsl);
+    --popover-foreground: var(--color-titanium-hsl);
+    --primary: var(--color-sapphire-hsl);
+    --primary-foreground: var(--color-pearl-hsl);
+    --secondary: var(--color-pearl-hsl);
+    --secondary-foreground: var(--color-sapphire-hsl);
+    --muted: var(--color-muted-hsl);
+    --muted-foreground: var(--color-titanium-hsl);
+    --accent: var(--color-accent-hsl);
+    --accent-foreground: var(--color-titanium-hsl);
+    --destructive: var(--color-ruby-hsl);
+    --destructive-foreground: var(--color-pearl-hsl);
+    --border: var(--color-gold-hsl);
+    --input: var(--color-platinum-hsl);
+    --ring: var(--color-emerald-hsl);
     --chart-1: 220 70% 50%;
     --chart-2: 160 60% 45%;
     --chart-3: 30 80% 55%;
