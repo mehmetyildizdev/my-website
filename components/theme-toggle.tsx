@@ -17,7 +17,7 @@ export function ModeToggle() {
       <Switch
         checked={theme === "dark"}
         onCheckedChange={handleToggle}
-        className="mx-"
+        className="mx-2"
       />
       <Sun
         className={`h-[1.2rem] w-[1.2rem] ${theme === "dark" ? "hidden" : "block"}`}
