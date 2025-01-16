@@ -28,11 +28,11 @@ export default function Navbar() {
     <div
       className={
         shadow
-          ? "fixed w-full h-20 shadow-[0_15px_10px_-15px_rgba(255,255,255,0.3)] z-[100]"
+          ? "fixed w-full h-20 shadow-[0_15px_10px_-15px_rgba(255,255,255,0.3)] z-[100] bg-diamond"
           : "fixed w-full h-20 z-[100]"
       }
     >
-      <div className="px-16 flex h-16 items-center justify-between">
+      <div className="lg:px-16 flex h-16 items-center justify-between">
         <div className="flex items-center">
           <Link href="/">
             <Image
