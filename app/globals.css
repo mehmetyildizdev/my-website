@@ -1,55 +1,146 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+@import "tailwindcss";
 
-:root {
-  --color-accent: #ffc107;
-  --color-accent-hsl: 45, 100%, 51.37%;
-  --color-muted: #c49e5b;
-  --color-muted-hsl: 38.29, 47.09%, 56.27%;
-  --color-titanium: #171616;
-  --color-titanium-hsl: 15, 1.77%, 44.31%;
-  --color-platinum: #878681;
-  --color-platinum-hsl: 12, 2.35%, 58.24%;
-  --color-gold: #dcb118;
-  --color-gold-hsl: 46.84, 80.33%, 47.84%;
-  --color-emerald: #4f8129;
-  --color-emerald-hsl: 94.09, 51.76%, 33.33%;
-  --color-sapphire: #162c59;
-  --color-sapphire-hsl: 220.3, 60.36%, 21.76%;
-  --color-ruby: #ac0911;
-  --color-ruby-hsl: 357.06, 90.06%, 35.49%;
-  --color-diamond: #f6f6f2;
-  --color-diamond-hsl: 60, 18.18%, 95.69%;
-  --color-amethyst: #bb6fe2;
-  --color-amethyst-hsl: 279.65, 66.47%, 66.08%;
-  --color-pearl: #f7efdf;
-  --color-pearl-hsl: 40, 60%, 92.16%;
+@plugin 'tailwindcss-animate';
+
+@variant dark (&:is(.dark *));
+
+@property --angle {
+  syntax: "<angle>";
+  initial-value: 0deg;
+  inherits: false;
 }
 
-.dark {
-  --color-accent: #e2bf36;
-  --color-accent-hsl: 47.79, 74.78%, 54.9%;
-  --color-muted: #d0b17b;
-  --color-muted-hsl: 38.12, 47.49%, 64.9%;
-  --color-titanium: #f3f4f7;
-  --color-titanium-hsl: 225, 20%, 96.08%;
-  --color-platinum: #f0f3f5;
-  --color-platinum-hsl: 204, 20%, 95.1%;
-  --color-gold: #dcb118;
-  --color-gold-hsl: 46.84, 80.33%, 47.84%;
-  --color-emerald: #00a267;
-  --color-emerald-hsl: 158.15, 100%, 31.76%;
-  --color-sapphire: #0f52ba;
-  --color-sapphire-hsl: 216.49, 85.07%, 39.41%;
-  --color-ruby: #e0115f;
-  --color-ruby-hsl: 337.39, 85.89%, 47.25%;
-  --color-diamond: #262a2c;
-  --color-diamond-hsl: 200, 7.32%, 16.08%;
-  --color-amethyst: #663593;
-  --color-amethyst-hsl: 271.28, 47%, 39.22%;
-  --color-pearl: #303030;
-  --color-pearl-hsl: 0, 0%, 18.82%;
+@theme {
+  --font-poppins: var(--font-poppins), sans-serif;
+  --font-rubik: var(--font-rubik), sans-serif;
+
+  --color-background: hsl(var(--background));
+  --color-foreground: hsl(var(--foreground));
+
+  --color-primary: hsl(var(--primary));
+  --color-primary-foreground: hsl(var(--primary-foreground));
+
+  --color-secondary: hsl(var(--secondary));
+  --color-secondary-foreground: hsl(var(--secondary-foreground));
+
+  --color-platinum: var(--color-platinum);
+  --color-titanium: var(--color-titanium);
+  --color-gold: var(--color-gold);
+  --color-emerald: var(--color-emerald);
+  --color-sapphire: var(--color-sapphire);
+  --color-ruby: var(--color-ruby);
+  --color-diamond: var(--color-diamond);
+  --color-amethyst: var(--color-amethyst);
+  --color-pearl: var(--color-pearl);
+
+  --color-card: hsl(var(--card));
+  --color-card-foreground: hsl(var(--card-foreground));
+
+  --color-popover: hsl(var(--popover));
+  --color-popover-foreground: hsl(var(--popover-foreground));
+
+  --color-muted: hsl(var(--muted));
+  --color-muted-foreground: hsl(var(--muted-foreground));
+
+  --color-accent: hsl(var(--accent));
+  --color-accent-foreground: hsl(var(--accent-foreground));
+
+  --color-destructive: hsl(var(--destructive));
+  --color-destructive-foreground: hsl(var(--destructive-foreground));
+
+  --color-border: hsl(var(--border));
+  --color-input: hsl(var(--input));
+  --color-ring: hsl(var(--ring));
+
+  --color-chart-1: hsl(var(--chart-1));
+  --color-chart-2: hsl(var(--chart-2));
+  --color-chart-3: hsl(var(--chart-3));
+  --color-chart-4: hsl(var(--chart-4));
+  --color-chart-5: hsl(var(--chart-5));
+
+  --radius-lg: var(--radius);
+  --radius-md: calc(var(--radius) - 2px);
+  --radius-sm: calc(var(--radius) - 4px);
+
+  --animate-bgAnimate: bgAnimate 6s linear infinite;
+  @keyframes bgAnimate {
+    from {
+      --angle: 0deg;
+    }
+    to {
+      --angle: 360deg;
+    }
+  }
+}
+
+/*
+  The default border color has changed to `currentColor` in Tailwind CSS v4,
+  so we've added these compatibility styles to make sure everything still
+  looks the same as it did with Tailwind CSS v3.
+
+  If we ever want to remove these styles, we need to add an explicit border
+  color utility to any element that depends on these defaults.
+*/
+@layer base {
+  *,
+  ::after,
+  ::before,
+  ::backdrop,
+  ::file-selector-button {
+    border-color: var(--color-gray-200, currentColor);
+  }
+}
+
+@layer utilities {
+  :root {
+    --color-accent: #ffc107;
+    --color-accent-hsl: 45, 100%, 51.37%;
+    --color-muted: #c49e5b;
+    --color-muted-hsl: 38.29, 47.09%, 56.27%;
+    --color-titanium: #171616;
+    --color-titanium-hsl: 15, 1.77%, 44.31%;
+    --color-platinum: #878681;
+    --color-platinum-hsl: 12, 2.35%, 58.24%;
+    --color-gold: #dcb118;
+    --color-gold-hsl: 46.84, 80.33%, 47.84%;
+    --color-emerald: #4f8129;
+    --color-emerald-hsl: 94.09, 51.76%, 33.33%;
+    --color-sapphire: #162c59;
+    --color-sapphire-hsl: 220.3, 60.36%, 21.76%;
+    --color-ruby: #ac0911;
+    --color-ruby-hsl: 357.06, 90.06%, 35.49%;
+    --color-diamond: #f6f6f2;
+    --color-diamond-hsl: 60, 18.18%, 95.69%;
+    --color-amethyst: #bb6fe2;
+    --color-amethyst-hsl: 279.65, 66.47%, 66.08%;
+    --color-pearl: #f7efdf;
+    --color-pearl-hsl: 40, 60%, 92.16%;
+  }
+
+  .dark {
+    --color-accent: #e2bf36;
+    --color-accent-hsl: 47.79, 74.78%, 54.9%;
+    --color-muted: #d0b17b;
+    --color-muted-hsl: 38.12, 47.49%, 64.9%;
+    --color-titanium: #f3f4f7;
+    --color-titanium-hsl: 225, 20%, 96.08%;
+    --color-platinum: #f0f3f5;
+    --color-platinum-hsl: 204, 20%, 95.1%;
+    --color-gold: #dcb118;
+    --color-gold-hsl: 46.84, 80.33%, 47.84%;
+    --color-emerald: #00a267;
+    --color-emerald-hsl: 158.15, 100%, 31.76%;
+    --color-sapphire: #0f52ba;
+    --color-sapphire-hsl: 216.49, 85.07%, 39.41%;
+    --color-ruby: #e0115f;
+    --color-ruby-hsl: 337.39, 85.89%, 47.25%;
+    --color-diamond: #262a2c;
+    --color-diamond-hsl: 200, 7.32%, 16.08%;
+    --color-amethyst: #663593;
+    --color-amethyst-hsl: 271.28, 47%, 39.22%;
+    --color-pearl: #303030;
+    --color-pearl-hsl: 0, 0%, 18.82%;
+  }
 }
 
 @layer base {
@@ -106,9 +197,6 @@
     --chart-4: 280 65% 60%;
     --chart-5: 340 75% 55%;
   }
-}
-
-@layer base {
   * {
     @apply border-border;
   }

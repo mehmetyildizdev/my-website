@@ -28,8 +28,8 @@ export default function Navbar() {
     <div
       className={
         shadow
-          ? "fixed w-full h-20 shadow-[0_15px_10px_-15px_rgba(255,255,255,0.3)] z-[100] bg-diamond"
-          : "fixed w-full h-20 z-[100]"
+          ? "fixed w-full h-16 shadow-[0_15px_10px_-15px_rgba(255,255,255,0.3)] z-100 bg-diamond"
+          : "fixed w-full h-16 z-100"
       }
     >
       <div className="lg:px-16 flex h-16 items-center justify-between">
@@ -75,10 +75,7 @@ export default function Navbar() {
                 </Link>
               </div>
             </div>
-            <div
-              className="flex-grow bg-black bg-opacity-50"
-              onClick={onClose}
-            />
+            <div className="grow bg-black bg-opacity-50" onClick={onClose} />
           </div>
         )}
       </div>
