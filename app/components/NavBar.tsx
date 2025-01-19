@@ -36,7 +36,7 @@ export default function Navbar() {
         <div className="flex items-center">
           <Link href="/">
             <Image
-              className="p-2"
+              className="p-4 lg:p-2"
               src={theme === "dark" ? "/logo_l.svg" : "/logo_d.svg"}
               alt="Logo"
               width={200}
@@ -45,7 +45,7 @@ export default function Navbar() {
           </Link>
         </div>
         <div>
-          <div className="hidden md:flex items-center justify-between">
+          <div className="hidden md:flex items-center">
             <Link href="/" className="mr-8">
               Home
             </Link>
@@ -54,7 +54,7 @@ export default function Navbar() {
             </Link>
             <ModeToggle />
           </div>
-          <div className="flex justify-end items-center">
+          <div className="flex items-center">
             <button onClick={() => setIsOpen(true)} className="md:hidden p-2">
               <Menu className="h-5 w-5" />
             </button>
