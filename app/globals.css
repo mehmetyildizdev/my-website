@@ -152,7 +152,7 @@
     --popover: var(--color-diamond-hsl);
     --popover-foreground: var(--color-titanium-hsl);
     --primary: var(--color-sapphire-hsl);
-    --primary-foreground: var(--color-pearl-hsl);
+    --primary-foreground: var(--color-titanium-hsl);
     --secondary: var(--color-pearl-hsl);
     --secondary-foreground: var(--color-sapphire-hsl);
     --muted: var(--color-muted-hsl);
@@ -179,7 +179,7 @@
     --popover: var(--color-diamond-hsl);
     --popover-foreground: var(--color-titanium-hsl);
     --primary: var(--color-sapphire-hsl);
-    --primary-foreground: var(--color-pearl-hsl);
+    --primary-foreground: var(--color-titanium-hsl);
     --secondary: var(--color-pearl-hsl);
     --secondary-foreground: var(--color-sapphire-hsl);
     --muted: var(--color-muted-hsl);
