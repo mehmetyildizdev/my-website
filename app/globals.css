@@ -3,6 +3,7 @@
 @plugin 'tailwindcss-animate';
 
 @variant dark (&:is(.dark *));
+@variant light (&:is(.light *));
 
 @property --angle {
   syntax: "<angle>";
@@ -11,6 +12,9 @@
 }
 
 @theme {
+  --breakpoint-3xl: 120rem;
+  --breakpoint-4xl: 144rem;
+
   --font-poppins: var(--font-poppins), sans-serif;
   --font-rubik: var(--font-rubik), sans-serif;
 
@@ -62,7 +66,7 @@
   --radius-md: calc(var(--radius) - 2px);
   --radius-sm: calc(var(--radius) - 4px);
 
-  --animate-bgAnimate: bgAnimate 6s linear infinite;
+  --animate-bgAnimate: bgAnimate 9s linear infinite;
   @keyframes bgAnimate {
     from {
       --angle: 0deg;
@@ -71,6 +75,45 @@
       --angle: 360deg;
     }
   }
+  --animate-bgAnimate-m: bgAnimate-m 9s linear infinite;
+  @keyframes bgAnimate-m {
+    from {
+      --angle: 15deg;
+    }
+    to {
+      --angle: -345deg;
+    }
+  }
+  --animate-bgAnimate-r: bgAnimate-r 9s linear infinite;
+  @keyframes bgAnimate-r {
+    from {
+      --angle: -45deg;
+    }
+    to {
+      --angle: 315deg;
+    }
+  }
+  --animate-bgAnimate-p: bgAnimate-p 4s linear infinite reverse;
+  @keyframes bgAnimate-p {
+    0% {
+      --angle: 0deg;
+    }
+    25% {
+      --angle: 90deg;
+    }
+    50% {
+      --angle: 180deg;
+    }
+    75% {
+      --angle: 270deg;
+    }
+    100% {
+      --angle: 360deg;
+    }
+  }
+  --shadow-golden: -16px 0 32px rgba(220, 177, 24, 0.33);
+  --inset-shadow-golden: inset 0px 0px 4px rgba(220, 177, 24, 1);
+  --drop-shadow-text: 2px 4px 2px rgba(48, 48, 48, 1);
 }
 
 /*
