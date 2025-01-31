@@ -4,7 +4,7 @@ import React, { useState, useEffect } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { Menu } from "lucide-react";
-import { ModeToggle } from "@/components/theme-toggle";
+import { ThemeToggle } from "./ThemeToggle";
 import { useTheme } from "next-themes";
 
 export default function Navbar() {
@@ -28,7 +28,7 @@ export default function Navbar() {
     <div
       className={
         shadow
-          ? "fixed w-full h-16 shadow-[0_15px_10px_-15px_rgba(255,255,255,0.3)] z-100 bg-diamond"
+          ? "fixed w-full h-16 shadow-[0_15px_10px_-15px_rgba(220,177,24,0.4)] z-100 bg-diamond"
           : "fixed w-full h-16 z-100"
       }
     >
@@ -49,10 +49,10 @@ export default function Navbar() {
             <Link href="/" className="mr-8">
               Home
             </Link>
-            <Link href="/about" className="mr-8">
+            <Link href="#aboutme" className="mr-8">
               About
             </Link>
-            <ModeToggle />
+            <ThemeToggle />
           </div>
           <div className="flex items-center">
             <button onClick={() => setIsOpen(true)} className="md:hidden p-2">
@@ -70,7 +70,7 @@ export default function Navbar() {
                 <Link href="/" className="mb-4" onClick={onClose}>
                   Home
                 </Link>
-                <Link href="/about" className="mb-4" onClick={onClose}>
+                <Link href="#aboutme" className="mb-4" onClick={onClose}>
                   About
                 </Link>
               </div>
