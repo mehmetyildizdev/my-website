@@ -35,7 +35,7 @@ function Summary({ id }: htmlProps) {
           <div className="w-52 h-52 md:w-128 xl:w-96 xl:h-96 2xl:w-108 bg-[conic-gradient(from_var(--angle),var(--color-ruby),var(--color-sapphire),var(--color-emerald),var(--color-amethyst),var(--color-ruby))] after:opacity-25 flex justify-center items-center animate-bgAnimate rounded-tl-xl xl:rounded-3xl shadow-xl drop-shadow-2xl">
             <div className="bg-pearl w-48 h-48 xl:w-84 xl:h-84 rounded-full">
               <Image
-                src="/images/support.png"
+                src="/images/my-pp-t.png"
                 className="rounded-full"
                 alt="me"
                 width={480}
