@@ -18,6 +18,8 @@ export function ThemeToggle() {
         checked={theme === "dark"}
         onCheckedChange={handleToggle}
         className="mx-2"
+        role="switch"
+        aria-checked="mixed"
       />
       <Sun
         className={`h-[1.2rem] w-[1.2rem] ${theme === "dark" ? "hidden" : "block"}`}

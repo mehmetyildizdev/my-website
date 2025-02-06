@@ -56,7 +56,7 @@ const ContactMe = () => {
       const result = await response.json();
       if (response.ok) {
         window.alert(result.message);
-        setFormData({ name: "", check: "mehmet", email: "", message: "" }); // Clear form
+        setFormData({ name: "", check: "", email: "", message: "" }); // Clear form
       } else {
         window.alert(result.error || "Failed to send message.");
       }
@@ -68,7 +68,7 @@ const ContactMe = () => {
 
   return (
     <section className="h-full flex flex-col md:flex-row mx-auto p-2 rounded-xl shadow-md">
-      <div className="flex flex-col w-full md:w-1/2 bg-diamond p-4 rounded-l-xl">
+      <div className="flex flex-col w-full md:w-1/2 p-4 rounded-l-xl">
         <form onSubmit={handleSubmit} className="space-y-4">
           <div>
             <label htmlFor="name" className="block text-sm font-medium">
@@ -153,7 +153,7 @@ const ContactMe = () => {
         </form>
       </div>
 
-      <div className="w-full md:w-1/2 bg-diamond rounded-r-xl text-center flex flex-col p-4 mt-8 md:mt-0">
+      <div className="w-full md:w-1/2 rounded-r-xl text-center flex flex-col p-4 mt-8 md:mt-0">
         <h2 className="text-2xl font-bold mb-6 text-center">Social Links</h2>
         <div className="flex items-center justify-center space-x-4">
           {socialLinks.map((link, index) => (
@@ -166,7 +166,6 @@ const ContactMe = () => {
               style={{ animationDelay: `${index * 0.1}s` }} // Staggered animation delay
             >
               <div className="rounded-full shadow-md shadow-emerald cursor-pointer p-2 lg:p-3 hover:scale-110 ease-in duration-300">
-                {/* Dynamically render the icon with the common className */}
                 {React.createElement(link.icon, {
                   className: "text-emerald text-xl lg:text-xl",
                 })}

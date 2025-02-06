@@ -16,15 +16,20 @@ function Opening({ id }: htmlProps) {
     { href: "mailto:contact@mehmetyildiz.dev", icon: FaEnvelope },
   ];
   return (
-    <section id={id} className="h-screen pt-24 text-center">
-      <div className="xl:max-w-[1280px] h-[90%] mx-auto p-2 flex justify-center items-center">
+    <section id={id} className="h-screen text-center">
+      <div className="max-w-2xl xl:max-w-[1280px] h-[90%] mx-auto p-2 flex justify-center items-center">
         <div>
           <div className="capitalize">
-            <h1 className="py-4 text-6xl">
+            <h1 className="py-4 text-4xl xl:text-6xl leading-4 xl:leading-12 drop-shadow-text-theme-lg">
               Hello, I&apos;m
-              <span className="text-gold hover:animate-pulse"> Mehmet</span>
+              <span className="text-gold drop-shadow-text-theme-lg-accent hover:animate-pulse">
+                {" "}
+                Mehmet
+              </span>
             </h1>
-            <h3 className="text-4xl">front-end web developer</h3>
+            <h2 className="text-2xl xl:text-4xl drop-shadow-text-theme-lg">
+              front-end web developer
+            </h2>
           </div>
           <div className="m-auto py-4 max-w-3xl text-lg">
             <p className="px-4 pt-2">
@@ -49,7 +54,8 @@ function Opening({ id }: htmlProps) {
               >
                 <div className="rounded-full shadow-md shadow-gold cursor-pointer p-4 lg:p-5 hover:scale-105 ease-in duration-300">
                   {React.createElement(link.icon, {
-                    className: "text-gold text-xl lg:text-3xl",
+                    className:
+                      "text-gold text-xl lg:text-3xl drop-shadow-text-theme-lg",
                   })}
                 </div>
               </a>

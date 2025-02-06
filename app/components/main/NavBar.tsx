@@ -58,8 +58,8 @@ export default function Navbar() {
     <div
       className={
         shadow
-          ? "fixed w-full h-16 shadow-[0_15px_10px_-15px_rgba(220,177,24,0.7)] z-100 bg-diamond"
-          : "fixed w-full h-16 z-100"
+          ? "fixed w-full h-16 z-999 bg-diamond shadow-[0_15px_10px_-15px_rgba(220,177,24,0.7)] transition-shadow duration-500"
+          : "fixed w-full h-16 z-999 bg-diamond"
       }
     >
       <div className="lg:px-16 flex h-16 items-center justify-between">
@@ -87,7 +87,7 @@ export default function Navbar() {
           <div className="md:hidden mr-4 flex items-center">
             <ThemeToggle />
             <button onClick={() => setIsOpen(true)} className="p-2">
-              <Menu className="ml-2 h-5 w-5" />
+              <Menu role="button" className="ml-2 h-5 w-5" />
             </button>
           </div>
         </div>

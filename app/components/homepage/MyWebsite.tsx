@@ -72,9 +72,9 @@ function MyWebsite() {
           ratings.
         </p>
       </div>
-      <div className="xl:w-3/8 3xl:w-1/4 flex flex-col justify-center p-4 xl:pr-6 pt-4 xl:text-sm 2xl:text-base">
+      <div className="xl:w-3/8 3xl:w-1/4 xl:bg-diamond flex flex-col justify-center p-4 xl:pr-4 pt-4 xl:text-sm 2xl:text-base">
         <h5 className="pb-2 text-center">Theme Palette</h5>
-        <div className="flex flex-wrap justify-center bg-diamond p-2 rounded-2xl">
+        <div className="flex flex-wrap justify-center p-2 rounded-2xl">
           {colors.map((color, index) => (
             <div
               key={index}
