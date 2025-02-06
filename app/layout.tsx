@@ -31,7 +31,7 @@ export default function RootLayout({
       <body className={` ${rubik.variable} ${poppins.variable} antialiased`}>
         <ThemeProvider>
           <Navbar />
-          {children}
+          <main className="pt-16">{children}</main>
         </ThemeProvider>
       </body>
     </html>
