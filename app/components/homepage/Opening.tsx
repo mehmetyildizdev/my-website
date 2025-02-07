@@ -19,7 +19,7 @@ function Opening({ id }: htmlProps) {
     <section id={id} className="h-screen text-center">
       <div className="max-w-2xl xl:max-w-[1280px] h-[90%] mx-auto p-2 flex justify-center items-center">
         <div>
-          <div className="capitalize">
+          <header className="capitalize">
             <h1 className="py-4 text-4xl xl:text-6xl leading-4 xl:leading-12 drop-shadow-text-theme-lg">
               Hello, I&apos;m
               <span className="text-gold drop-shadow-text-theme-lg-accent hover:animate-pulse">
@@ -30,7 +30,7 @@ function Opening({ id }: htmlProps) {
             <h2 className="text-2xl xl:text-4xl drop-shadow-text-theme-lg">
               front-end web developer
             </h2>
-          </div>
+          </header>
           <div className="m-auto py-4 max-w-3xl text-lg">
             <p className="px-4 pt-2">
               Welcome to my corner of the web! I am an IT Support Specialist
