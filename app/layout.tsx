@@ -3,6 +3,7 @@ import { Rubik, Poppins } from "next/font/google";
 import "./globals.css";
 import { ThemeProvider } from "./components/main/ThemeProvider";
 import Navbar from "./components/main/NavBar";
+import GoogleAnalytics from "./components/main/GoogleAnalytics";
 
 const rubik = Rubik({
   variable: "--font-rubik",
@@ -18,7 +19,7 @@ const poppins = Poppins({
 
 export const metadata: Metadata = {
   title: "Mehmet Yildiz Website",
-  description: "...being developed",
+  description: "Front-end Web Developer",
 };
 
 export default function RootLayout({
@@ -28,12 +29,17 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className={` ${rubik.variable} ${poppins.variable} antialiased`}>
+      <head>
+        <GoogleAnalytics />
         <ThemeProvider>
-          <Navbar />
-          <main className="pt-16">{children}</main>
+          <body
+            className={` ${rubik.variable} ${poppins.variable} antialiased`}
+          >
+            <Navbar />
+            <main className="pt-16">{children}</main>
+          </body>
         </ThemeProvider>
-      </body>
+      </head>
     </html>
   );
 }
