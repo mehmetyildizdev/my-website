@@ -1,9 +1,9 @@
 import type { Metadata } from "next";
 import { Rubik, Poppins } from "next/font/google";
 import "./globals.css";
-import { ThemeProvider } from "./components/main/ThemeProvider";
-import Navbar from "./components/main/NavBar";
-import GoogleAnalytics from "./components/main/GoogleAnalytics";
+import { ThemeProvider } from "tools/ThemeProvider";
+import Navbar from "tools/NavBar";
+import GoogleAnalytics from "tools/GoogleAnalytics";
 
 const rubik = Rubik({
   variable: "--font-rubik",
@@ -16,6 +16,7 @@ const poppins = Poppins({
   subsets: ["latin"],
   weight: ["200", "300", "400", "500", "600", "700"],
 });
+const trackingID = process.env.GOOGLE_TRACKING_ID;
 
 export const metadata: Metadata = {
   title: "Mehmet Yildiz Website",
@@ -29,17 +30,13 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <head>
-        <GoogleAnalytics />
+      <GoogleAnalytics trackingID={trackingID || ""} />
+      <body className={` ${rubik.variable} ${poppins.variable} antialiased`}>
         <ThemeProvider>
-          <body
-            className={` ${rubik.variable} ${poppins.variable} antialiased`}
-          >
-            <Navbar />
-            <main className="pt-16">{children}</main>
-          </body>
+          <Navbar />
+          <main className="pt-16">{children}</main>
         </ThemeProvider>
-      </head>
+      </body>
     </html>
   );
 }

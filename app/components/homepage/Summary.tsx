@@ -6,6 +6,7 @@ import AboutMe from "./AboutMe";
 import WhatIDo from "./WhatIDo";
 import MyWebsite from "./MyWebsite";
 import ContactMe from "./ContactMe";
+import { trackClick } from "tools/TrackClicks";
 
 function Summary({ id }: htmlProps) {
   const [activeContent, setActiveContent] = useState(2);
@@ -52,7 +53,13 @@ function Summary({ id }: htmlProps) {
             {[0, 1, 2, 3].map((index) => (
               <button
                 key={index}
-                onClick={() => setActiveContent(index)}
+                onClick={() => {
+                  setActiveContent(index);
+                  trackClick(
+                    "Button",
+                    ["About Me", "What I Do", "My Website", "Contact Me"][index]
+                  );
+                }}
                 style={
                   {
                     "--color-changing": `var(--color-${["sapphire", "emerald", "amethyst", "ruby"][index]})`,
