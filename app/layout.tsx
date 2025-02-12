@@ -16,12 +16,27 @@ const poppins = Poppins({
   subsets: ["latin"],
   weight: ["200", "300", "400", "500", "600", "700"],
 });
-const trackingID = process.env.GOOGLE_TRACKING_ID;
 
 export const metadata: Metadata = {
-  title: "Mehmet Yildiz Website",
-  description: "Front-end Web Developer",
+  title: "Mehmet Yildiz | Front-End Web Developer",
+  description:
+    "This is a personal website and blog for Mehmet Yildiz, a front-end web developer.",
+  keywords: [
+    "web development",
+    "design",
+    "programming",
+    "react",
+    "next.js",
+    "sanity",
+    "tailwindcss",
+  ],
+  applicationName: "My Website",
+  authors: [{ name: "www.mehmetyildiz.dev" }],
+  generator: "Next.js",
+  publisher: "Mehmet Yildiz",
 };
+
+const trackingID = process.env.GOOGLE_TRACKING_ID;
 
 export default function RootLayout({
   children,
