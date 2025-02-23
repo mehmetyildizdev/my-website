@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import { Rubik, Poppins } from "next/font/google";
 import "./globals.css";
 import { ThemeProvider } from "tools/ThemeProvider";
-import Navbar from "tools/NavBar";
+import Navbar from "tools/Navbar";
 import GoogleAnalytics from "tools/GoogleAnalytics";
 
 const rubik = Rubik({
