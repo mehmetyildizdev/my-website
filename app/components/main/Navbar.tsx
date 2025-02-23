@@ -56,10 +56,6 @@ export default function Navbar() {
 
   return (
     <header>
-      <h1 className="hidden">
-        Welcome to website of Mehmet Yildiz, a front-end web developer.
-      </h1>
-
       <nav
         className={
           shadow
