@@ -1,71 +1,250 @@
 @import "tailwindcss";
-
 @plugin 'tailwindcss-animate';
 
 @variant dark (&:is(.dark *));
 @variant light (&:is(.light *));
-
 @property --angle {
   syntax: "<angle>";
   initial-value: 0deg;
   inherits: false;
 }
 
+@layer base {
+  .light {
+    /* metals for foreground */
+    --color-titanium: #171616;
+    --color-titanium-hsl: 0, 2.22%, 8.82%;
+    --color-platinum: #3e3c38;
+    --color-platinum-hsl: 40, 5.08%, 23.14%;
+    --color-gold: #916a08;
+    --color-gold-hsl: 43, 90%, 30%;
+    --color-silver: #94a3b8;
+    --color-silver-hsl: 215, 25%, 62%;
+    --color-iridium: #545b6a;
+    --color-iridium-hsl: 221, 12%, 37%;
+
+    /* backgrounds */
+    --color-diamond: #f6f6f2;
+    --color-diamond-hsl: 60, 18.18%, 95.69%;
+    --color-pearl: #f7efdf;
+    --color-pearl-hsl: 40, 60%, 92.16%;
+    --color-obsidian: #d9dde4;
+    --color-obsidian-hsl: 218, 15%, 87%;
+
+    /* gemstone colors to use dynamically */
+    --color-sapphire: #24478f;
+    --color-sapphire-hsl: 220.37, 59.78%, 35.1%;
+    --color-ruby: #c61725;
+    --color-ruby-hsl: 355.2, 79.19%, 43.33%;
+    --color-amethyst: #7a3eab;
+    --color-amethyst-hsl: 273, 47%, 46%;
+    --color-emerald: #058c5a;
+    --color-emerald-hsl: 158, 93%, 28%;
+    --color-topaz: #b85c00;
+    --color-topaz-hsl: 30, 100%, 36%;
+
+    /* additional colors */
+    --color-accent: var(--color-gold);
+    --color-accent-hsl: var(--color-gold-hsl);
+    --color-muted: var(--color-obsidian);
+    --color-muted-foreground: var(--color-iridium);
+  }
+
+  .dark {
+    /* metals for foreground */
+    --color-titanium: #f3f4f7;
+    --color-titanium-hsl: 225, 20%, 96.08%;
+    --color-platinum: #c7c5c1;
+    --color-platinum-hsl: 40, 5.08%, 76.86%;
+    --color-gold: #ffd700;
+    --color-gold-hsl: 51, 100%, 50%;
+    --color-silver: #cbd5e1;
+    --color-silver-hsl: 214, 32%, 91%;
+    --color-iridium: #64748b;
+    --color-iridium-hsl: 215, 16%, 47%;
+
+    /* backgrounds */
+    --color-diamond: #262a2c;
+    --color-diamond-hsl: 200, 7.32%, 16.08%;
+    --color-pearl: #303030;
+    --color-pearl-hsl: 0, 0%, 18.82%;
+    --color-obsidian: #0f1113;
+    --color-obsidian-hsl: 210, 10%, 6%;
+
+    /* gemstone colors to use dynamically */
+    --color-sapphire: #72a1ed;
+    --color-sapphire-hsl: 217.07, 77.36%, 68.82%;
+    --color-ruby: #f0717b;
+    --color-ruby-hsl: 355, 81%, 69%;
+    --color-amethyst: #c48ee8;
+    --color-amethyst-hsl: 276, 70%, 73%;
+    --color-emerald: #52d19b;
+    --color-emerald-hsl: 155, 58%, 57%;
+    --color-topaz: #f09e51;
+    --color-topaz-hsl: 29, 85%, 63%;
+
+    /* additional colors */
+    --color-accent: var(--color-gold);
+    --color-accent-hsl: var(--color-gold-hsl);
+    --color-muted: var(--color-obsidian);
+    --color-muted-foreground: var(--color-iridium);
+  }
+  :root {
+    --radius: 0.5rem;
+  }
+  * {
+    @apply border-border;
+  }
+  body {
+    @apply bg-background text-foreground font-rubik;
+  }
+  strong {
+    @apply text-[color-mix(in_srgb,var(--color-highlight),transparent_15%)];
+  }
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
+    @apply font-poppins text-gold;
+  }
+  h1 {
+    @apply text-4xl font-bold;
+  }
+
+  h2 {
+    @apply text-3xl font-semibold;
+  }
+
+  h3 {
+    @apply text-2xl font-medium;
+  }
+
+  h4 {
+    @apply text-xl font-medium;
+  }
+
+  h5 {
+    @apply text-lg font-medium;
+  }
+
+  h6 {
+    @apply text-base font-medium;
+  }
+}
+
+@layer components {
+  :root {
+    --wobble-1: -4px;
+    --wobble-2: 2px;
+  }
+  @media (max-width: 768px) {
+    :root {
+      --wobble-1: -2px;
+      --wobble-2: 3px;
+    }
+  }
+  @keyframes wobble {
+    0%,
+    100% {
+      transform: translateX(0);
+    }
+    25% {
+      transform: translateX(var(--wobble-1));
+    }
+    50% {
+      transform: translateX(0);
+    }
+    75% {
+      transform: translateX(var(--wobble-2));
+    }
+  }
+  .wobble-animation {
+    @apply block;
+    animation: wobble 8s infinite;
+  }
+  /* respect reduced motion preference */
+  @media (prefers-reduced-motion: reduce) {
+    .wobble-animation {
+      animation: none;
+    }
+  }
+  /* disable wobble in Firefox (Gecko) due to animation/transform issues */
+  @-moz-document url-prefix() {
+    .wobble-animation {
+      animation: none !important;
+    }
+  }
+}
+
 @theme {
   --breakpoint-3xl: 120rem;
-  --breakpoint-4xl: 144rem;
-
+  --breakpoint-4xl: 160rem;
   --font-poppins: var(--font-poppins), sans-serif;
   --font-rubik: var(--font-rubik), sans-serif;
+  --font-mono: var(--font-mono), monospace;
 
-  --color-background: hsl(var(--background));
-  --color-foreground: hsl(var(--foreground));
+  /* structural UI */
+  --color-background: hsl(var(--color-diamond-hsl));
+  --color-foreground: hsl(var(--color-titanium-hsl));
+  --color-metadata: hsl(var(--color-platinum-hsl));
+  --color-border: hsl(var(--color-silver-hsl));
+  --color-border-glint: var(--color-gold);
+  --color-input: hsl(var(--color-obsidian-hsl));
+  --color-highlight: var(--color-gold);
+  --color-highlight-foreground: var(--color-titanium);
+  --color-surface: var(--color-diamond);
+  --color-surface-muted: var(--color-obsidian);
 
-  --color-primary: hsl(var(--primary));
-  --color-primary-foreground: hsl(var(--primary-foreground));
+  /* feedback & interaction */
+  --color-primary: hsl(var(--color-sapphire-hsl));
+  --color-primary-foreground: hsl(var(--color-silver-hsl));
+  --color-secondary: hsl(var(--color-ruby-hsl));
+  --color-secondary-foreground: hsl(var(--color-gold-hsl));
+  --color-ring: hsl(var(--color-gold-hsl));
+  --color-accent: hsl(var(--color-accent-hsl));
+  --color-accent-foreground: hsl(var(--color-titanium-hsl));
+  --color-destructive: hsl(var(--color-ruby-hsl));
+  --color-destructive-foreground: hsl(var(--color-gold-hsl));
+  --color-link: var(--color-sapphire);
+  --color-link-hover: var(--color-gold);
+  --color-selection: color-mix(in srgb, var(--color-sapphire), transparent 80%);
 
-  --color-secondary: hsl(var(--secondary));
-  --color-secondary-foreground: hsl(var(--secondary-foreground));
-
+  /* metals */
   --color-platinum: var(--color-platinum);
   --color-titanium: var(--color-titanium);
   --color-gold: var(--color-gold);
   --color-silver: var(--color-silver);
+  --color-iridium: var(--color-iridium);
+
+  /* gemstones */
+  --color-diamond: var(--color-diamond);
+  --color-pearl: var(--color-pearl);
+  --color-obsidian: var(--color-obsidian);
   --color-emerald: var(--color-emerald);
   --color-sapphire: var(--color-sapphire);
   --color-ruby: var(--color-ruby);
-  --color-diamond: var(--color-diamond);
   --color-amethyst: var(--color-amethyst);
-  --color-pearl: var(--color-pearl);
+  --color-topaz: var(--color-topaz);
 
-  --color-card: hsl(var(--card));
-  --color-card-foreground: hsl(var(--card-foreground));
-
-  --color-popover: hsl(var(--popover));
-  --color-popover-foreground: hsl(var(--popover-foreground));
-
-  --color-muted: hsl(var(--muted));
-  --color-muted-foreground: hsl(var(--muted-foreground));
-
-  --color-accent: hsl(var(--accent));
-  --color-accent-foreground: hsl(var(--accent-foreground));
-
-  --color-destructive: hsl(var(--destructive));
-  --color-destructive-foreground: hsl(var(--destructive-foreground));
-
-  --color-border: hsl(var(--border));
-  --color-input: hsl(var(--input));
-  --color-ring: hsl(var(--ring));
-
-  --color-chart-1: hsl(var(--chart-1));
-  --color-chart-2: hsl(var(--chart-2));
-  --color-chart-3: hsl(var(--chart-3));
-  --color-chart-4: hsl(var(--chart-4));
-  --color-chart-5: hsl(var(--chart-5));
+  /* containers */
+  --color-card: hsl(var(--color-obsidian));
+  --color-card-foreground: hsl(var(--color-iridium));
+  --color-popover: hsl(var(--color-obsidian-hsl));
+  --color-popover-foreground: hsl(var(--color-titanium-hsl));
+  --color-muted: hsl(var(--color-obsidian-hsl));
+  --color-muted-foreground: hsl(var(--color-iridium-hsl));
 
   --radius-lg: var(--radius);
   --radius-md: calc(var(--radius) - 2px);
   --radius-sm: calc(var(--radius) - 4px);
+
+  --shadow-golden: -16px 0 32px rgba(220, 177, 24, 0.33);
+  --inset-shadow-golden: inset 0px 0px 4px rgba(220, 177, 24, 1);
+  --drop-shadow-text: 2px 4px 2px rgba(48, 48, 48, 1);
+  --drop-shadow-text-theme-lg: 1px 1px 0px var(--color-sapphire);
+  --drop-shadow-text-theme-lg-accent: 1px 1px 1px var(--color-ruby);
 
   --animate-bgAnimate: bgAnimate 9s linear infinite;
   @keyframes bgAnimate {
@@ -111,214 +290,5 @@
     100% {
       --angle: 360deg;
     }
-  }
-
-  --shadow-golden: -16px 0 32px rgba(220, 177, 24, 0.33);
-  --inset-shadow-golden: inset 0px 0px 4px rgba(220, 177, 24, 1);
-  --drop-shadow-text: 2px 4px 2px rgba(48, 48, 48, 1);
-  --drop-shadow-text-theme-lg: 1px 1px 0px var(--color-sapphire);
-  --drop-shadow-text-theme-lg-accent: 1px 1px 1px var(--color-ruby);
-}
-
-/*
-  The default border color has changed to `currentColor` in Tailwind CSS v4,
-  so we've added these compatibility styles to make sure everything still
-  looks the same as it did with Tailwind CSS v3.
-
-  If we ever want to remove these styles, we need to add an explicit border
-  color utility to any element that depends on these defaults.
-*/
-@layer base {
-  *,
-  ::after,
-  ::before,
-  ::backdrop,
-  ::file-selector-button {
-    border-color: var(--color-gray-200, currentColor);
-  }
-}
-
-@layer utilities {
-  :root {
-    --color-accent: #ffc107;
-    --color-accent-hsl: 45, 100%, 51.37%;
-    --color-muted: #c49e5b;
-    --color-muted-hsl: 38.29, 47.09%, 56.27%;
-    --color-titanium: #171616;
-    --color-titanium-hsl: 15, 1.77%, 44.31%;
-    --color-platinum: #878681;
-    --color-platinum-hsl: 12, 2.35%, 58.24%;
-    --color-gold: #dcb118;
-    --color-gold-hsl: 46.84, 80.33%, 47.84%;
-    --color-silver: #c0c0c0;
-    --color-silver-hsl: 0, 0%, 75.29%;
-    --color-emerald: #4f8129;
-    --color-emerald-hsl: 94.09, 51.76%, 33.33%;
-    --color-sapphire: #162c59;
-    --color-sapphire-hsl: 220.3, 60.36%, 21.76%;
-    --color-ruby: #ac0911;
-    --color-ruby-hsl: 357.06, 90.06%, 35.49%;
-    --color-diamond: #f6f6f2;
-    --color-diamond-hsl: 60, 18.18%, 95.69%;
-    --color-amethyst: #bb6fe2;
-    --color-amethyst-hsl: 279.65, 66.47%, 66.08%;
-    --color-pearl: #f7efdf;
-    --color-pearl-hsl: 40, 60%, 92.16%;
-  }
-
-  .dark {
-    --color-accent: #e2bf36;
-    --color-accent-hsl: 47.79, 74.78%, 54.9%;
-    --color-muted: #d0b17b;
-    --color-muted-hsl: 38.12, 47.49%, 64.9%;
-    --color-titanium: #f3f4f7;
-    --color-titanium-hsl: 225, 20%, 96.08%;
-    --color-platinum: #f0f3f5;
-    --color-platinum-hsl: 204, 20%, 95.1%;
-    --color-gold: #dcb118;
-    --color-gold-hsl: 46.84, 80.33%, 47.84%;
-    --color-silver: #c0c0c0;
-    --color-silver-hsl: 0, 0%, 75.29%;
-    --color-emerald: #00a267;
-    --color-emerald-hsl: 158.15, 100%, 31.76%;
-    --color-sapphire: #0f52ba;
-    --color-sapphire-hsl: 216.49, 85.07%, 39.41%;
-    --color-ruby: #e0115f;
-    --color-ruby-hsl: 337.39, 85.89%, 47.25%;
-    --color-diamond: #262a2c;
-    --color-diamond-hsl: 200, 7.32%, 16.08%;
-    --color-amethyst: #663593;
-    --color-amethyst-hsl: 271.28, 47%, 39.22%;
-    --color-pearl: #303030;
-    --color-pearl-hsl: 0, 0%, 18.82%;
-  }
-}
-
-@layer base {
-  :root {
-    --background: var(--color-diamond-hsl);
-    --foreground: var(--color-titanium-hsl);
-    --card: var(--color-diamond-hsl);
-    --card-foreground: var(--color-titanium-hsl);
-    --popover: var(--color-diamond-hsl);
-    --popover-foreground: var(--color-titanium-hsl);
-    --primary: var(--color-sapphire-hsl);
-    --primary-foreground: var(--color-titanium-hsl);
-    --secondary: var(--color-pearl-hsl);
-    --secondary-foreground: var(--color-sapphire-hsl);
-    --muted: var(--color-muted-hsl);
-    --muted-foreground: var(--color-titanium-hsl);
-    --accent: var(--color-accent-hsl);
-    --accent-foreground: var(--color-titanium-hsl);
-    --destructive: var(--color-ruby-hsl);
-    --destructive-foreground: var(--color-pearl-hsl);
-    --border: var(--color-gold-hsl);
-    --input: var(--color-platinum-hsl);
-    --ring: var(--color-emerald-hsl);
-    --chart-1: 12 76% 61%;
-    --chart-2: 173 58% 39%;
-    --chart-3: 197 37% 24%;
-    --chart-4: 43 74% 66%;
-    --chart-5: 27 87% 67%;
-    --radius: 0.5rem;
-  }
-  .dark {
-    --background: var(--color-diamond-hsl);
-    --foreground: var(--color-titanium-hsl);
-    --card: var(--color-diamond-hsl);
-    --card-foreground: var(--color-titanium-hsl);
-    --popover: var(--color-diamond-hsl);
-    --popover-foreground: var(--color-titanium-hsl);
-    --primary: var(--color-sapphire-hsl);
-    --primary-foreground: var(--color-titanium-hsl);
-    --secondary: var(--color-pearl-hsl);
-    --secondary-foreground: var(--color-sapphire-hsl);
-    --muted: var(--color-muted-hsl);
-    --muted-foreground: var(--color-titanium-hsl);
-    --accent: var(--color-accent-hsl);
-    --accent-foreground: var(--color-titanium-hsl);
-    --destructive: var(--color-ruby-hsl);
-    --destructive-foreground: var(--color-pearl-hsl);
-    --border: var(--color-gold-hsl);
-    --input: var(--color-platinum-hsl);
-    --ring: var(--color-emerald-hsl);
-    --chart-1: 220 70% 50%;
-    --chart-2: 160 60% 45%;
-    --chart-3: 30 80% 55%;
-    --chart-4: 280 65% 60%;
-    --chart-5: 340 75% 55%;
-  }
-  * {
-    @apply border-border;
-  }
-  body {
-    @apply bg-background text-foreground font-poppins;
-  }
-  h1,
-  h2,
-  h3,
-  h4,
-  h5,
-  h6 {
-    @apply font-rubik;
-  }
-  h1 {
-    @apply text-4xl font-bold;
-  }
-
-  h2 {
-    @apply text-3xl font-semibold;
-  }
-
-  h3 {
-    @apply text-2xl font-medium;
-  }
-
-  h4 {
-    @apply text-xl font-medium;
-  }
-
-  h5 {
-    @apply text-lg font-medium;
-  }
-
-  h6 {
-    @apply text-base font-medium;
-  }
-  @keyframes wobble {
-    0%,
-    100% {
-      transform: translateX(0);
-    }
-    25% {
-      transform: translateX(-4px);
-    }
-    50% {
-      transform: translateX(0px);
-    }
-    75% {
-      transform: translateX(2px);
-    }
-  }
-  @media (max-width: 768px) {
-    @keyframes wobble {
-      0%,
-      100% {
-        transform: translateX(0);
-      }
-      25% {
-        transform: translateX(-2px);
-      }
-      50% {
-        transform: translateX(0px);
-      }
-      75% {
-        transform: translateX(3px);
-      }
-    }
-  }
-  .wobble-animation {
-    @apply block;
-    animation: wobble 8s infinite;
   }
 }
