@@ -1,8 +1,8 @@
 import type { Metadata } from "next";
 import { Rubik, Poppins } from "next/font/google";
 import "./globals.css";
+import NavBar from "tools/NavBar";
 import { ThemeProvider } from "tools/ThemeProvider";
-import Navbar from "tools/Navbar";
 import GoogleAnalytics from "tools/GoogleAnalytics";
 
 const rubik = Rubik({
@@ -44,12 +44,12 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
+    <html lang="en" suppressHydrationWarning>
       <GoogleAnalytics trackingID={trackingID || ""} />
       <body className={` ${rubik.variable} ${poppins.variable} antialiased`}>
         <ThemeProvider>
-          <Navbar />
-          <main className="pt-16">{children}</main>
+          <NavBar />
+          <main>{children}</main>
         </ThemeProvider>
       </body>
     </html>
