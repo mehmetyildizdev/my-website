@@ -21,7 +21,7 @@ export function getCategoryTheme(category?: string | null): CategoryTheme {
         border: "border-amethyst",
         text: "text-amethyst",
         bg: "bg-amethyst",
-        backgroundImage: "bg-[url(/blog/circuit_earth2.svg)]",
+        backgroundImage: "bg-[url(/blog/circuit_earth.svg)]",
         groupHoverText: "group-hover:text-amethyst",
       };
     case "entertainment":
