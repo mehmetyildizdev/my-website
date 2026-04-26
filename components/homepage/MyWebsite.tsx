@@ -38,7 +38,7 @@ function MyWebsite() {
 
   return (
     <section className="xl:h-full flex flex-col xl:flex-row justify-center relative">
-      <div className="xl:w-5/8 3xl:w-3/4 flex flex-col justify-center p-4 xl:px-6 pt-4 text-md sm:text-xl xl:text-sm 2xl:text-base">
+      <div className="xl:w-5/8 3xl:w-2/3 flex flex-col justify-center p-4 xl:px-6 pt-4 text-md sm:text-xl xl:text-sm 2xl:text-base">
         <h4 className="hidden pb-2">About mehmetyildiz.dev</h4>
         <span className="flex justify-left items-center pb-2">
           <SiVercel className="text-4xl text-black hover:scale-105" />
@@ -72,7 +72,7 @@ function MyWebsite() {
           ratings.
         </p>
       </div>
-      <div className="xl:w-3/8 3xl:w-1/4 xl:bg-diamond flex flex-col justify-center p-4 xl:pr-4 pt-4 xl:text-sm 2xl:text-base">
+      <div className="xl:w-3/8 3xl:w-1/3 xl:bg-diamond flex flex-col justify-center p-4 xl:pr-4 pt-4 xl:text-sm 2xl:text-base">
         <h5 className="pb-2 text-center">Theme Palette</h5>
         <div className="flex flex-wrap justify-center p-2 rounded-2xl">
           {colors.map((color, index) => (
@@ -83,7 +83,7 @@ function MyWebsite() {
               onMouseLeave={handleMouseLeave}
             >
               {tooltip.visible && tooltip.text === color.name && (
-                <div className="absolute w-full top-0 left-1/2 transform -translate-y-0 -translate-x-1/2 py-1 text-center text-xs bg-pearl rounded-t-2xl transition-opacity duration-300">
+                <div className="absolute w-full top-0 left-1/2 transform translate-y-0 -translate-x-1/2 py-1 text-center text-xs bg-pearl rounded-t-2xl transition-opacity duration-300">
                   {tooltip.text}
                 </div>
               )}

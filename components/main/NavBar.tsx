@@ -15,10 +15,18 @@ import {
   FaWindowClose,
 } from "react-icons/fa";
 
-export default function Navbar() {
+export default function NavBar() {
   const [isOpen, setIsOpen] = useState(false);
-  const { theme } = useTheme();
+  const { resolvedTheme } = useTheme();
+  const [mounted, setMounted] = useState(false);
   const onClose = () => setIsOpen(false);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
+  // Use resolvedTheme (handles "system") and fall back to a neutral src until mounted
+  const logoSrc = mounted && resolvedTheme === "dark" ? "/logo_l.svg" : "/logo_d.svg";
 
   const [shadow, setShadow] = useState(false);
   useEffect(() => {
@@ -68,10 +76,12 @@ export default function Navbar() {
             <Link href="/">
               <Image
                 className="p-4 lg:p-2"
-                src={theme === "dark" ? "/logo_l.svg" : "/logo_d.svg"}
+                src={logoSrc}
                 alt="Logo"
                 width={200}
                 height={60}
+                loading="eager"
+                suppressHydrationWarning
               />
             </Link>
           </div>
@@ -82,6 +92,12 @@ export default function Navbar() {
               </Link>
               <Link href="#aboutme" className="mr-8">
                 About
+              </Link>
+              <Link href="/blog" className="mr-8">
+                Blog
+              </Link>
+              <Link href="/studio" className="mr-8">
+                Studio
               </Link>
               <ThemeToggle />
             </div>
@@ -99,10 +115,11 @@ export default function Navbar() {
                   <Link href="/">
                     <Image
                       className="pr-8"
-                      src={theme === "dark" ? "/logo_l.svg" : "/logo_d.svg"}
+                      src={logoSrc}
                       alt="Logo"
                       width={160}
                       height={48}
+                      suppressHydrationWarning
                     />
                   </Link>
                   <button className="absolute top-4 right-4" onClick={onClose}>

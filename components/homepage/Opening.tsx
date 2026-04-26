@@ -17,7 +17,7 @@ function Opening({ id }: htmlProps) {
   ];
   return (
     <section id={id} className="h-screen text-center">
-      <div className="max-w-2xl xl:max-w-[1280px] h-[90%] mx-auto p-2 flex justify-center items-center">
+      <div className="max-w-2xl xl:max-w-7xl h-[90%] mx-auto p-2 flex justify-center items-center">
         <div>
           <header className="capitalize">
             <h1 className="py-4 text-4xl xl:text-6xl leading-4 xl:leading-12 drop-shadow-text-theme-lg">

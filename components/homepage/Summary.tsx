@@ -33,7 +33,7 @@ function Summary({ id }: htmlProps) {
     >
       <div className="h-64 xl:w-2/5 xl:h-108 relative flex items-end xl:items-center">
         <div id="photo" className="z-30 flex justify-end">
-          <div className="w-52 h-52 md:w-128 xl:w-96 xl:h-96 2xl:w-108 bg-[conic-gradient(from_var(--angle),var(--color-ruby),var(--color-sapphire),var(--color-emerald),var(--color-amethyst),var(--color-ruby))] after:opacity-25 flex justify-center items-center animate-bgAnimate rounded-tl-xl xl:rounded-3xl shadow-xl drop-shadow-2xl">
+          <div className="w-52 h-52 md:w-lg xl:w-96 xl:h-96 2xl:w-108 bg-[conic-gradient(from_var(--angle),var(--color-ruby),var(--color-sapphire),var(--color-emerald),var(--color-amethyst),var(--color-ruby))] after:opacity-25 flex justify-center items-center animate-bgAnimate rounded-tl-xl xl:rounded-3xl shadow-xl drop-shadow-2xl">
             <div className="bg-pearl w-48 h-48 xl:w-84 xl:h-84 rounded-full">
               <Image
                 src="/images/my-pp-t.png"
@@ -62,7 +62,9 @@ function Summary({ id }: htmlProps) {
                 }}
                 style={
                   {
-                    "--color-changing": `var(--color-${["sapphire", "emerald", "amethyst", "ruby"][index]})`,
+                    "--color-changing": `var(--color-${
+                      ["sapphire", "emerald", "amethyst", "ruby"][index]
+                    })`,
                   } as React.CSSProperties
                 }
                 className="group flex-1 relative flex justify-center items-center cursor-pointer bg-[conic-gradient(from_var(--angle),var(--color-pearl),var(--color-pearl),var(--color-pearl),var(--color-changing),var(--color-pearl),var(--color-pearl),var(--color-pearl))] animate-bgAnimate-rev rounded-l-2xl"
@@ -70,7 +72,9 @@ function Summary({ id }: htmlProps) {
                 <div
                   style={{
                     backgroundImage: "url(/images/dots-piston.svg)",
-                    backgroundColor: `var(--color-${["sapphire", "emerald", "amethyst", "ruby"][index]})`,
+                    backgroundColor: `var(--color-${
+                      ["sapphire", "emerald", "amethyst", "ruby"][index]
+                    })`,
                     animationDelay: `${index * 1}s`,
                   }}
                   className="w-[95%] h-[85%] xl:ml-2 absolute flex justify-center items-center bg-no-repeat bg-cover rounded-l-2xl bg-blend-darken drop-shadow-lg wobble-animation"
@@ -109,7 +113,7 @@ function Summary({ id }: htmlProps) {
 
       <div
         id="content"
-        className="z-55 border-t-2 xl:border-l-1 border-gold h-144 md:h-192 xl:h-128 w-full xl:w-3/5 justify-center items-center xl:rounded-e-2xl shadow-md shadow-pearl bg-[conic-gradient(from_var(--angle),var(--color-ruby),var(--color-amethyst),var(--color-emerald),var(--color-sapphire),var(--color-ruby))] animate-bgAnimate-r"
+        className="z-55 border-t-2 xl:border-l border-gold h-144 md:h-192 xl:h-128 w-full xl:w-3/5 justify-center items-center xl:rounded-e-2xl shadow-md shadow-pearl bg-[conic-gradient(from_var(--angle),var(--color-ruby),var(--color-amethyst),var(--color-emerald),var(--color-sapphire),var(--color-ruby))] animate-bgAnimate-r"
       >
         <div className="w-full h-full flex justify-center items-center drop-shadow-2xl">
           <div className="bg-pearl w-[92%] h-[96%] xl:w-[95%] xl:h-[94%] xl:rounded-2xl overflow-auto">
