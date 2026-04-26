@@ -1,11 +1,11 @@
-import { OlistIcon } from "@sanity/icons";
+import { TagIcon } from "@sanity/icons";
 import { defineField, defineType } from "sanity";
 
-export const categoryType = defineType({
-  name: "category",
-  title: "Category",
+export const tagType = defineType({
+  name: "tag",
+  title: "Tag",
   type: "document",
-  icon: OlistIcon,
+  icon: TagIcon,
   fields: [
     defineField({
       name: "title",
@@ -17,10 +17,6 @@ export const categoryType = defineType({
       options: {
         source: "title",
       },
-    }),
-    defineField({
-      name: "description",
-      type: "text",
     }),
   ],
 });
