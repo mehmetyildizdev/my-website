@@ -64,7 +64,7 @@ export default async function BlogPostPageVariant({
 
             <div
               id="post-meta-bar"
-              className="mt-2 md:mt-10 lg:mt-4 px-6 lg:px-12 flex h-10 items-center justify-between bg-card/70 text-sm text-metadata"
+              className="mt-2 md:mt-10 lg:mt-4 px-6 lg:px-12 flex h-10 items-center justify-between text-sm text-metadata"
             >
               <div className="flex items-center gap-2">
                 {categories.map((category) => (
@@ -91,7 +91,7 @@ export default async function BlogPostPageVariant({
           id="post-excerpt"
           className={`flex justify-end mx-auto w-full max-w-3x border-t-2 ${theme.border}`}
         >
-          <div className="flex rounded-bl-lg bg-card/70 py-4 pr-6 lg:pr-12 lg:w-[75%]">
+          <div className="flex rounded-bl-lg py-4 pr-6 lg:pr-12 lg:w-[75%]">
             <p className="text-base text-metadata text-shadow-md pl-4 md:pb-6 lg:pb-2">
               {post.metaDescription}
             </p>
@@ -133,8 +133,8 @@ export default async function BlogPostPageVariant({
 
             {/* keep share + tags below content on smaller viewports */}
             <div className="flex flex-col gap-8 text-md text-muted-foreground">
-              <div className="flex flex-wrap items-center gap-x-4 gap-y-3 border-t border-border/40 mt-4 py-8">
-                <span className="text-lg text-shadow-md font-bold uppercase tracking-[0.25em] text-foreground/60">
+              <div className="flex flex-wrap items-center gap-x-4 gap-y-3 border-t border-border/20 mt-4 py-8">
+                <span className="text-lg text-shadow-md font-bold uppercase tracking-[0.15em] text-foreground/60">
                   Tags:
                 </span>
                 {tags.length > 0 ? (
@@ -142,7 +142,7 @@ export default async function BlogPostPageVariant({
                     {tags.map((tag) => (
                       <span
                         key={tag}
-                        className={`rounded-full border border-foreground/10 px-4 py-1 text-sm text-shadow-md font-bold uppercase tracking-[0.2em] ${theme.bg} text-background shadow-sm transition-transform hover:scale-105`}
+                        className={`rounded-full border border-border/20 px-4 py-1 text-xs text-shadow-md font-bold uppercase tracking-[0.15em] ${theme.bg} text-background shadow-sm transition-transform hover:scale-105`}
                       >
                         {tag}
                       </span>

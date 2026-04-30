@@ -14,9 +14,10 @@ function formatSeoTitle(postTitle: string): string {
   }
 
   // If too long, truncate the post title to fit the brand name and ellipsis
-  const availableLength = MAX_TITLE_LENGTH - separator.length - BRAND_NAME.length - 3;
+  const availableLength =
+    MAX_TITLE_LENGTH - separator.length - BRAND_NAME.length - 3;
   const truncatedPostTitle = postTitle.substring(0, availableLength).trim();
-  
+
   return `${truncatedPostTitle}...${separator}${BRAND_NAME}`;
 }
 
@@ -35,7 +36,7 @@ export async function getBlogPostMetadata({
     title: seoTitle,
     description: post.metaDescription,
     alternates: {
-      canonical: `/blog/${post.slug.current}`,
+      canonical: `/blog/post/${post.slug.current}`,
     },
     openGraph: {
       title: seoTitle,
