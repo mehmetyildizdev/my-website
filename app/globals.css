@@ -229,8 +229,8 @@
   --color-topaz: var(--color-topaz);
 
   /* containers */
-  --color-card: hsl(var(--color-obsidian));
-  --color-card-foreground: hsl(var(--color-iridium));
+  --color-card: hsl(var(--color-obsidian-hsl));
+  --color-card-foreground: hsl(var(--color-iridium-hsl));
   --color-popover: hsl(var(--color-obsidian-hsl));
   --color-popover-foreground: hsl(var(--color-titanium-hsl));
   --color-muted: hsl(var(--color-obsidian-hsl));
