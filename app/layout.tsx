@@ -30,10 +30,14 @@ export const metadata: Metadata = {
     "sanity",
     "tailwindcss",
   ],
+  icons: {
+    icon: "/favicon.png",
+  },
   applicationName: "My Website",
   authors: [{ name: "www.mehmetyildiz.dev" }],
   generator: "Next.js",
   publisher: "Mehmet Yildiz",
+  metadataBase: new URL("https://www.mehmetyildiz.dev"),
 };
 
 const trackingID = process.env.GOOGLE_TRACKING_ID;

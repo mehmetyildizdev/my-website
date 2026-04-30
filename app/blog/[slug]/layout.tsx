@@ -10,6 +10,16 @@ import { getPostPageData } from "@/lib/post/utils/postData";
 import { client } from "@/sanity/lib/client";
 import { fetchCategoriesWithCount } from "@/sanity/lib/structureUtils";
 import { getCategoryTheme } from "@/lib/post/categoryBasedSelector";
+import { Metadata } from "next";
+import { getBlogPostMetadata } from "./metadata";
+
+export async function generateMetadata({
+  params,
+}: {
+  params: BlogPostPageParams;
+}): Promise<Metadata> {
+  return getBlogPostMetadata({ params });
+}
 
 export default async function PostLayout({
   children,

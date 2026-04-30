@@ -2,7 +2,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { PostRenderer } from "@/components/blog/PostRenderer";
-import { MoveLeft } from 'lucide-react';
+import { MoveLeft } from "lucide-react";
 import { getCategoryTheme } from "@/lib/post/categoryBasedSelector";
 import { getPostPageData } from "@/lib/post/utils/postData";
 import {
@@ -16,7 +16,6 @@ import {
   resolveHeroImage,
   formatPublishedDate,
 } from "@/lib/post";
-
 
 export default async function BlogPostPageVariant({
   params,
@@ -39,7 +38,6 @@ export default async function BlogPostPageVariant({
   const share = shareLinks ?? [];
   const theme = getCategoryTheme(categories[0]);
 
-
   return (
     <article className="relative isolate">
       <div
@@ -59,7 +57,6 @@ export default async function BlogPostPageVariant({
           Back
         </Link>
         <header className="flex flex-col gap-4">
-
           <div className="flex flex-col gap-2">
             <h1 className="font-bold tracking-tight text-foreground text-pretty text-shadow-lg px-6 py-6 lg:px-12">
               {post.title}
@@ -131,10 +128,7 @@ export default async function BlogPostPageVariant({
         )}
 
         <div className="mt-12 grid grid-cols-1 px-6 lg:px-12">
-          <section
-            id="article"
-            className="flex flex-col"
-          >
+          <section id="article" className="flex flex-col">
             <PostRenderer value={post.body} />
 
             {/* keep share + tags below content on smaller viewports */}
@@ -155,10 +149,11 @@ export default async function BlogPostPageVariant({
                     ))}
                   </div>
                 ) : (
-                  <span className="text-xs italic text-muted-foreground">No tags yet</span>
+                  <span className="text-xs italic text-muted-foreground">
+                    No tags yet
+                  </span>
                 )}
               </div>
-
             </div>
           </section>
         </div>

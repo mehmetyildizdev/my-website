@@ -2,6 +2,15 @@ import React from "react";
 import Link from "next/link";
 import ArchiveClient from "../../../components/blog/ArchiveClient";
 import { MoveLeft } from "lucide-react";
+import { Metadata } from "next";
+
+export const metadata: Metadata = {
+  title: "Archive | Mehmet Yildiz Blog",
+  description: "Browse the full collection of articles on development, design, and more.",
+  alternates: {
+    canonical: "/blog/archive",
+  },
+};
 
 async function getPosts(): Promise<Post[]> {
   try {

@@ -2,6 +2,28 @@ import Link from "next/link";
 import Image from "next/image";
 import { getCategoryTheme } from "@/lib/post/categoryBasedSelector";
 import { FilteredPostsClient } from "@/components/blog/FilteredPostsClient";
+import { Metadata } from "next";
+
+export const metadata: Metadata = {
+  title: "Blog | Mehmet Yildiz",
+  description:
+    "Compendium of Insight and Intuition - Thoughts on development, design, and the craft of building for the web.",
+  alternates: {
+    canonical: "/blog",
+  },
+  openGraph: {
+    title: "Blog | Mehmet Yildiz",
+    description:
+    "Compendium of Insight and Intuition - Thoughts on development, design, and the craft of building for the web.",
+    type: "website",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Blog | Mehmet Yildiz",
+    description:
+    "Compendium of Insight and Intuition - Thoughts on development, design, and the craft of building for the web.",
+  },
+};
 
 type PortableTextBlock = {
   _type?: string;
