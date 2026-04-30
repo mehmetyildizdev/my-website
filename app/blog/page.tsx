@@ -14,14 +14,14 @@ export const metadata: Metadata = {
   openGraph: {
     title: "Blog | Mehmet Yildiz",
     description:
-    "Compendium of Insight and Intuition - Thoughts on development, design, and the craft of building for the web.",
+      "Compendium of Insight and Intuition - Thoughts on development, design, and the craft of building for the web.",
     type: "website",
   },
   twitter: {
     card: "summary_large_image",
     title: "Blog | Mehmet Yildiz",
     description:
-    "Compendium of Insight and Intuition - Thoughts on development, design, and the craft of building for the web.",
+      "Compendium of Insight and Intuition - Thoughts on development, design, and the craft of building for the web.",
   },
 };
 
@@ -117,10 +117,11 @@ export default async function Blog() {
 
               {/* Featured Post Area (Left - 8 cols) */}
               <div className="lg:col-span-8 flex flex-col">
-                <article className="group relative flex flex-col gap-2 rounded-4xl bg-card/80 p-6 shadow-2xl backdrop-blur-md border border-border/40 transition-all duration-500 hover:shadow-silver/20 hover:bg-card/90 flex-1">
+                <Link href={`/blog/post/${latestPost.slug.current}`}>
+                  <article className="group relative flex flex-col gap-2 rounded-4xl bg-pearl/80 p-6 shadow-2xl backdrop-blur-md border border-border/20 transition-all duration-500 hover:shadow-silver/20 hover:bg-card/90 flex-1">
 
-                  {/* Featured Image */}
-                  <Link href={`/blog/${latestPost.slug.current}`}>
+                    {/* Featured Image */}
+
                     {latestPost.mainImage?.asset?.url && (
                       <div className="relative w-full h-72 shrink-0 overflow-hidden rounded-3xl bg-muted">
                         <div className="absolute inset-0 bg-sapphire/10 group-hover:bg-transparent transition-colors duration-500 z-10 mix-blend-overlay" />
@@ -133,36 +134,28 @@ export default async function Blog() {
                           priority
                         />
                       </div>
-                    )}</Link>
+                    )}
 
-                  {/* Featured Content */}
-                  <div className="flex flex-col justify-center flex-1 py-2">
-                    <div className="flex items-center gap-3">
-                      <p className={`text-xs font-black uppercase tracking-widest ${featuredTheme.text}`}>
-                        {latestPost.categories?.[0]?.title}
-                      </p>
-                      <div className="h-1 w-1 rounded-full bg-foreground/30" />
-                      <time className="text-xs font-semibold uppercase tracking-widest text-foreground/50">
-                        {formatDate(latestPost.publishedAt)}
-                      </time>
-                    </div>
-
-                    <h2 className={`mt-4 text-2xl md:text-4xl font-extrabold text-foreground leading-tight drop-shadow-md transition-colors ${featuredTheme.groupHoverText}`}>
-                      <Link href={`/blog/${latestPost.slug.current}`} className="before:absolute before:inset-0">
+                    {/* Featured Content */}
+                    <div className="flex flex-col justify-center flex-1 py-2">
+                      <div className="flex items-center gap-3">
+                        <p className={`text-xs font-black uppercase tracking-widest ${featuredTheme.text}`}>
+                          {latestPost.categories?.[0]?.title}
+                        </p>
+                        <div className="h-1 w-1 rounded-full bg-foreground/30" />
+                        <time className="text-xs font-semibold uppercase tracking-widest text-metadata">
+                          {formatDate(latestPost.publishedAt)}
+                        </time>
+                      </div>
+                      <h2 className={`mt-4 text-2xl md:text-4xl font-extrabold text-foreground leading-tight text-shadow-sm transition-colors ${featuredTheme.groupHoverText}`}>
                         {latestPost.title}
-                      </Link>
-                    </h2>
-
-                    <div className="mt-8 flex items-center gap-4">
-                      <Link href={`/blog/${latestPost.slug.current}`}>
-                        <span className={`inline-flex items-center gap-2 rounded-full ${featuredTheme.bg} px-6 py-2.5 text-sm font-bold text-obsidian shadow-lg shadow-sapphire/30 transition-transform group-hover:translate-x-2`}>
-                          Continue Reading
-                          <span aria-hidden="true" className="text-lg leading-none">→</span>
-                        </span>
-                      </Link>
+                      </h2>
+                      <p className="text-meta mt-4 leading-relaxed">
+                        {latestPost.metaDescription}
+                      </p>
                     </div>
-                  </div>
-                </article>
+                  </article>
+                </Link>
               </div>
 
               {/* Next 4 Latest Posts Area (Right - 4 cols) */}
@@ -174,14 +167,12 @@ export default async function Blog() {
                     const theme = getCategoryTheme(catTitle);
 
                     return (
-                      <article
-                        key={post._id}
-                        className="group relative flex items-center gap-4 rounded-3xl border border-white/10 bg-card/60 p-3 shadow-md backdrop-blur-sm transition-all duration-300 hover:-translate-y-1 hover:shadow-xl hover:bg-card/90"
-                      >
-                        {/* Thumbnail */}
-                        {post.mainImage?.asset?.url && (
-                          <Link
-                            href={`/blog/${post.slug.current}`}>
+                      <Link href={`/blog/post/${post.slug.current}`} key={post._id}>
+                        <article
+                          className="group relative flex items-center gap-4 rounded-3xl border border-border/20 bg-pearl/60 p-3 shadow-md backdrop-blur-sm transition-all duration-300 hover:-translate-y-1 hover:shadow-xl hover:bg-card/90"
+                        >
+                          {/* Thumbnail */}
+                          {post.mainImage?.asset?.url && (
                             <div className="relative h-20 w-24 shrink-0 overflow-hidden rounded-2xl bg-muted/20">
                               <Image
                                 src={post.mainImage.asset.url}
@@ -191,31 +182,26 @@ export default async function Blog() {
                                 sizes="96px"
                               />
                             </div>
-                          </Link>
-                        )}
+                          )}
 
-                        {/* Content */}
-                        <div className="flex flex-col justify-center flex-1 pr-2 min-w-0">
-                          <div className="flex items-center gap-2 mb-1">
-                            {catTitle && (
-                              <span className={`text-[9px] font-black uppercase tracking-[0.2em] ${theme.text}`}>
-                                {catTitle}
-                              </span>
-                            )}
-                          </div>
-                          <h4 className={`text-sm md:text-base font-bold text-foreground leading-snug drop-shadow-sm transition-colors ${theme.groupHoverText} line-clamp-2`}>
-                            <Link
-                              href={`/blog/${post.slug.current}`}
-                              className="before:absolute before:inset-0"
-                            >
+                          {/* Content */}
+                          <div className="flex flex-col justify-center flex-1 pr-2 min-w-0">
+                            <div className="flex items-center gap-2 mb-1">
+                              {catTitle && (
+                                <span className={`text-[9px] font-black uppercase tracking-[0.2em] ${theme.text}`}>
+                                  {catTitle}
+                                </span>
+                              )}
+                            </div>
+                            <h4 className={`text-sm md:text-base font-bold text-foreground leading-snug drop-shadow-sm transition-colors ${theme.groupHoverText} line-clamp-2`}>
                               {post.title}
-                            </Link>
-                          </h4>
-                          <time className="mt-1 text-[10px] font-semibold uppercase tracking-widest text-foreground/50 block truncate">
-                            {formatDate(post.publishedAt)}
-                          </time>
-                        </div>
-                      </article>
+                            </h4>
+                            <time className="mt-1 text-[10px] font-semibold uppercase tracking-widest text-metadata block truncate">
+                              {formatDate(post.publishedAt)}
+                            </time>
+                          </div>
+                        </article>
+                      </Link>
                     );
                   })}
                 </div>

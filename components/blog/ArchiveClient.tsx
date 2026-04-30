@@ -77,60 +77,57 @@ export default function ArchiveClient({ allPosts }: { allPosts: Post[] }) {
 
   return (
     <div className="mt-12 flex flex-col gap-8 w-full">
-      <ul className="grid gap-6 md:grid-cols-2">
+      <ul className="grid gap-8 md:grid-cols-2">
         {displayedPosts.map((post) => {
           const catTitle = post.categories?.[0]?.title;
           const { bg: catBg, text: catText } = getCategoryTheme(catTitle);
 
           return (
-            <li
-              key={post._id}
-              className="group relative flex flex-col sm:flex-row gap-5 rounded-3xl border border-white/10 bg-card/60 p-5 shadow-xl backdrop-blur-sm transition-all duration-300 hover:-translate-y-1 hover:shadow-2xl hover:bg-card/90"
-            >
-              {post.mainImage?.asset?.url && (
-                <div className="relative w-full sm:w-1/3 h-48 sm:h-auto shrink-0 overflow-hidden rounded-2xl bg-muted/20">
-                  <Image
-                    src={post.mainImage.asset.url}
-                    alt={post.mainImage.alt ?? post.title}
-                    fill
-                    className="object-cover transition-transform duration-700 group-hover:scale-105"
-                    sizes="(max-width: 768px) 100vw, 33vw"
-                  />
-                </div>
-              )}
+            <li key={post._id} className="h-full">
+              <Link
+                href={`/blog/post/${post.slug.current}`}
+                className="group relative flex h-full flex-col sm:flex-row gap-5 rounded-3xl border border-border/20 bg-pearl p-5 shadow-xl backdrop-blur-sm transition-all duration-300 hover:-translate-y-1 hover:shadow-2xl hover:bg-card/90"
+              >
+                {post.mainImage?.asset?.url && (
+                  <div className="relative w-full sm:w-1/3 h-48 sm:h-auto shrink-0 overflow-hidden rounded-2xl bg-muted/20">
+                    <Image
+                      src={post.mainImage.asset.url}
+                      alt={post.mainImage.alt ?? post.title}
+                      fill
+                      className="object-cover transition-transform duration-700 group-hover:scale-105"
+                      sizes="(max-width: 768px) 100vw, 33vw"
+                    />
+                  </div>
+                )}
 
-              <div className="flex flex-col justify-center flex-1 py-1 min-w-0">
-                <div className="flex items-center justify-between mb-2">
-                  <time className="text-[10px] font-black uppercase tracking-[0.25em] text-foreground/50">
-                    {formatDate(post.publishedAt)}
-                  </time>
+                <div className="flex flex-col justify-center flex-1 py-1 min-w-0">
+                  <div className="flex items-center justify-between mb-2">
+                    <time className="text-[10px] font-bold uppercase tracking-[0.25em] text-metadata">
+                      {formatDate(post.publishedAt)}
+                    </time>
 
-                  {catTitle && (
-                    <span className={`inline-flex rounded-full px-2 py-0.5 text-[9px] font-bold uppercase tracking-[0.2em] ${catBg} text-background shadow-sm`}>
-                      {catTitle}
-                    </span>
-                  )}
-                </div>
+                    {catTitle && (
+                      <span className={`inline-flex rounded-full px-2 py-0.5 text-[9px] font-bold uppercase tracking-[0.15em] ${catBg} text-background shadow-sm`}>
+                        {catTitle}
+                      </span>
+                    )}
+                  </div>
 
-                <h4 className="mt-1 text-lg font-bold text-foreground leading-snug drop-shadow-sm transition-colors group-hover:text-sapphire line-clamp-2">
-                  <Link
-                    href={`/blog/${post.slug.current}`}
-                    className="before:absolute before:inset-0"
-                  >
+                  <h4 className="mt-1 text-lg font-bold text-foreground leading-snug drop-shadow-sm transition-colors group-hover:text-sapphire line-clamp-2">
                     {post.title}
-                  </Link>
-                </h4>
+                  </h4>
 
-                <p className="mt-2 text-sm text-foreground/70 line-clamp-3">
-                  {resolveExcerpt(post)}
-                </p>
+                  <p className="mt-2 text-sm text-metadata line-clamp-3">
+                    {resolveExcerpt(post)}
+                  </p>
 
-                <div className="mt-auto pt-4 flex items-center justify-end">
-                  <span className={`font-bold text-xs ${catText} flex items-center gap-1 group-hover:translate-x-1 transition-transform`}>
-                    Read <span aria-hidden="true" className="text-base leading-none">→</span>
-                  </span>
+                  <div className="mt-auto pt-4 flex items-center justify-end">
+                    <span className={`font-bold text-xs ${catText} flex items-center gap-1 group-hover:translate-x-1 transition-transform`}>
+                      Read <span aria-hidden="true" className="text-base leading-none">→</span>
+                    </span>
+                  </div>
                 </div>
-              </div>
+              </Link>
             </li>
           );
         })}

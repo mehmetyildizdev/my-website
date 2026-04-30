@@ -5,7 +5,7 @@ export default function Footer() {
         © 2023 <a href="https://mehmetyildiz.dev/">Mehmet Yildiz</a>. All rights
         reserved.
       </p>
-      <div className="ml-4 space-x-4">
+      <div className=" hidden ml-4 space-x-4">
         <a href="/privacy" className="text-emerald text-xs">
           Privacy Policy
         </a>

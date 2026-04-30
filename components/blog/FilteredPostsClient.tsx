@@ -66,7 +66,7 @@ export function FilteredPostsClient({ allPosts, defaultCat = "Insight" }: { allP
               <button
                 key={cat}
                 onClick={() => setActiveCategory(cat)}
-                className={`rounded-full px-5 py-2 text-xs font-bold uppercase tracking-widest transition-all duration-300 shadow-sm hover:scale-105 ${isActive
+                className={`rounded-full px-5 py-2 text-xs font-bold uppercase tracking-widest cursor-pointer transition-all duration-300 shadow-sm hover:scale-105 ${isActive
                   ? `${bg} text-background shadow-md`
                   : `bg-card/60 ${text} border border-white/10 hover:bg-card/90`
                   }`}
@@ -85,49 +85,47 @@ export function FilteredPostsClient({ allPosts, defaultCat = "Insight" }: { allP
           const { bg: catBg, text: catText } = getCategoryTheme(catTitle);
 
           return (
-            <article
-              key={post._id}
-              className="group relative flex flex-col rounded-3xl border border-white/10 bg-card/60 p-5 shadow-xl backdrop-blur-sm transition-all duration-300 hover:-translate-y-2 hover:shadow-2xl hover:bg-card/90"
-            >
-              {post.mainImage?.asset?.url && (
-                <div className="relative mb-4 w-full h-32 overflow-hidden rounded-2xl bg-muted/20">
-                  <Image
-                    src={post.mainImage.asset.url}
-                    alt={post.mainImage.alt ?? post.title}
-                    fill
-                    className="object-cover transition-transform duration-700 group-hover:scale-105"
-                    sizes="(max-width: 768px) 100vw, 25vw"
-                  />
-                </div>
-              )}
-
-              <time className="text-[10px] font-black uppercase tracking-[0.25em] text-foreground/50">
-                {formatDate(post.publishedAt)}
-              </time>
-
-              <h4 className="mt-2 text-lg font-bold text-foreground leading-snug drop-shadow-sm transition-colors group-hover:text-sapphire line-clamp-2">
-                <Link
-                  href={`/blog/${post.slug.current}`}
-                  className="before:absolute before:inset-0"
-                >
-                  {post.title}
-                </Link>
-              </h4>
-
-              <div className="mt-auto pt-4 flex items-center justify-between z-10">
-                {catTitle ? (
-                  <span className={`inline-flex rounded-full px-2.5 py-1 text-[9px] font-bold uppercase tracking-[0.2em] ${catBg} text-background shadow-sm`}>
-                    {catTitle}
-                  </span>
-                ) : (
-                  <span />
+            <Link href={`/blog/post/${post.slug.current}`} key={post._id}>
+              <article
+                className="group relative flex flex-col rounded-3xl border border-border/20 bg-pearl/60 p-5 shadow-xl backdrop-blur-sm transition-all duration-300 hover:-translate-y-2 hover:shadow-2xl hover:bg-card/60"
+              >
+                {post.mainImage?.asset?.url && (
+                  <div className="relative mb-4 w-full h-32 overflow-hidden rounded-2xl bg-muted/20">
+                    <Image
+                      src={post.mainImage.asset.url}
+                      alt={post.mainImage.alt ?? post.title}
+                      fill
+                      className="object-cover transition-transform duration-700 group-hover:scale-105"
+                      sizes="(max-width: 768px) 100vw, 25vw"
+                    />
+                  </div>
                 )}
 
-                <span className={`font-bold text-xs ${catText} flex items-center gap-1 group-hover:translate-x-1 transition-transform`}>
-                  Read <span aria-hidden="true" className="text-base leading-none">→</span>
-                </span>
-              </div>
-            </article>
+                <time className="text-[10px] font-black uppercase tracking-[0.25em] text-foreground/50">
+                  {formatDate(post.publishedAt)}
+                </time>
+
+                <h4 className="mt-2 text-lg font-bold text-foreground leading-snug drop-shadow-sm transition-colors group-hover:text-sapphire line-clamp-2">
+
+                  {post.title}
+
+                </h4>
+
+                <div className="mt-auto pt-4 flex items-center justify-between z-10">
+                  {catTitle ? (
+                    <span className={`inline-flex rounded-full px-2.5 py-1 text-[9px] font-bold uppercase tracking-[0.2em] ${catBg} text-background shadow-sm`}>
+                      {catTitle}
+                    </span>
+                  ) : (
+                    <span />
+                  )}
+
+                  <span className={`font-bold text-xs ${catText} flex items-center gap-1 group-hover:translate-x-1 transition-transform`}>
+                    Read <span aria-hidden="true" className="text-base leading-none">→</span>
+                  </span>
+                </div>
+              </article>
+            </Link>
           );
         })}
         {filteredPosts.length === 0 && (

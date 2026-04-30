@@ -38,15 +38,14 @@ export default async function ArchivePage() {
 
   return (
     <section className="bg-diamond relative overflow-hidden min-h-screen">
-      <div className="absolute top-0 left-0 w-full h-96 bg-linear-to-b from-sapphire/20 to-transparent pointer-events-none -z-10" />
 
-      <div className="mx-auto flex max-w-5xl flex-col gap-12 px-6 py-24 sm:px-12 lg:px-16">
+      <div className="mx-auto flex max-w-7xl flex-col gap-12 px-6 py-24 sm:px-12 lg:px-16">
         <Link
           href="/blog"
-          className="group inline-flex w-fit items-center gap-1 px-4 text-sm text-shadow-sm bg-foreground/20 font-medium text-background transition hover:text-foreground rounded-full py-1"
+          className="group inline-flex w-fit items-center gap-1 px-4 text-sm text-shadow-sm bg-foreground/30 font-medium text-background transition hover:text-foreground rounded-full py-1"
         >
           <MoveLeft className="h-4 w-4 group-hover:-translate-x-1 transition-transform duration-300" />
-          Back to Featured
+          Back to Compendium
         </Link>
         <header className="flex flex-col gap-4 text-left">
           <p className="text-sm font-bold uppercase tracking-[0.3em] text-sapphire drop-shadow-sm">

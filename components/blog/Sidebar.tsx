@@ -1,4 +1,5 @@
 import Image from "next/image";
+import Link from "next/link";
 import React from "react";
 import { getCategoryTheme } from "@/lib/post/categoryBasedSelector";
 import {
@@ -73,7 +74,7 @@ export const Sidebar: React.FC<SidebarProps> = ({ author, allCategories = [], ca
     <div className="hidden lg:block h-full">
       <div className="sticky top-36 w-72 space-y-6">
         {/* ── Author card ─────────────────────────────────────────── */}
-        <div className="rounded-2xl bg-card/80 p-4 text-sm space-y-3">
+        <div className="rounded-2xl p-4 text-sm space-y-3">
           <div className="flex items-center gap-3">
             <div className={`relative h-12 w-12 shrink-0 overflow-hidden rounded-full bg-conic ${theme.from} via-transparent ${theme.to}`}>
               {author?.image?.asset?.url ? (
@@ -114,7 +115,7 @@ export const Sidebar: React.FC<SidebarProps> = ({ author, allCategories = [], ca
 
           {/* Bio */}
           {bioText && (
-            <p className="text-xs leading-loose text-metadata text-left border-t border-border/40 pt-3">
+            <p className="text-xs leading-loose text-metadata text-left border-t border-border/20 pt-3">
               {bioText}
             </p>
           )}
@@ -122,18 +123,18 @@ export const Sidebar: React.FC<SidebarProps> = ({ author, allCategories = [], ca
 
         {/* ── Categories ──────────────────────────────────────── */}
         {allCategories.length > 0 && (
-          <div className="rounded-2xl bg-card/80 p-4 text-sm">
-            <div className="mb-3 font-semibold text-metadata border-t border-border/40 pt-3">Category Navigation</div>
+          <div className="rounded-2xl p-4 text-sm">
+            <div className="mb-3 font-semibold text-metadata border-t border-border/20 pt-3">Category Navigation</div>
             <div className="flex flex-col gap-1">
               {allCategories.map((cat) => (
-                <a
+                <Link
                   key={cat._id}
-                  href={`/blog?category=${encodeURIComponent(cat.title)}`}
+                  href={`/blog/category/${encodeURIComponent(cat.title.toLowerCase().replace(/\s+/g, '-'))}`}
                   className="flex items-center justify-between rounded-lg px-2 py-1.5 transition hover:bg-foreground/5"
                 >
                   <span className={`text-xs font-semibold text-metadata`}>{cat.title}</span>
                   <span className="text-xs text-metadata">{cat.count}</span>
-                </a>
+                </Link>
               ))}
             </div>
           </div>
