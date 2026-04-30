@@ -159,9 +159,8 @@ export default async function Blog() {
               </div>
 
               {/* Next 4 Latest Posts Area (Right - 4 cols) */}
-              <div className="lg:col-span-4 flex flex-col gap-4">
-                <h3 className="text-sm font-bold uppercase tracking-widest text-foreground/50 ml-2">Recent Reads</h3>
-                <div className="flex flex-col gap-4 flex-1 mt-4">
+              <div className="lg:col-span-4 flex flex-col">
+                <div className="flex flex-col justify-center gap-4 h-full flex-1">
                   {nextPosts.map((post) => {
                     const catTitle = post.categories?.[0]?.title;
                     const theme = getCategoryTheme(catTitle);

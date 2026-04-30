@@ -58,7 +58,7 @@ export function FilteredPostsClient({ allPosts, defaultCat = "Insight" }: { allP
     <div className="w-full">
       {/* Category Filter Buttons */}
       {allCategories.length > 0 && (
-        <div className="flex flex-wrap gap-3 mb-8">
+        <div className="flex flex-wrap justify-center sm:justify-start gap-3 mb-8">
           {allCategories.map((cat) => {
             const { bg, text } = getCategoryTheme(cat);
             const isActive = activeCategory === cat;
