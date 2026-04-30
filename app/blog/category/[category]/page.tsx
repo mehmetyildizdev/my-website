@@ -1,0 +1,95 @@
+import React from "react";
+import Link from "next/link";
+import ArchiveClient from "@/components/blog/ArchiveClient";
+import { MoveLeft } from "lucide-react";
+import { Metadata } from "next";
+import { notFound } from "next/navigation";
+
+type Props = {
+  params: Promise<{ category: string }>;
+};
+
+export async function generateMetadata({ params }: Props): Promise<Metadata> {
+  const { category } = await params;
+  const decodedCategory = decodeURIComponent(category).replace(/-/g, ' ');
+  // Capitalize first letter of each word for the title
+  const titleCategory = decodedCategory.replace(/\b\w/g, l => l.toUpperCase());
+
+  return {
+    title: `${titleCategory} Posts | Mehmet Yildiz Blog`,
+    description: `Browse all articles filed under the ${titleCategory} category.`,
+    alternates: {
+      canonical: `/blog/category/${category}`,
+    },
+  };
+}
+
+async function getPosts(): Promise<Post[]> {
+  try {
+    const baseUrl = process.env.NEXT_PUBLIC_BASE_URL?.replace(/\/$/, "") ?? "";
+    const response = await fetch(
+      baseUrl ? `${baseUrl}/api/posts` : "/api/posts",
+      {
+        next: { revalidate: 86400 },
+      }
+    );
+
+    if (!response.ok) {
+      throw new Error("Failed to fetch posts");
+    }
+
+    return response.json();
+  } catch (error) {
+    console.error("Error fetching posts", error);
+    return [];
+  }
+}
+
+export default async function CategoryPage({ params }: Props) {
+  const { category } = await params;
+  const decodedCategory = decodeURIComponent(category).replace(/-/g, ' ').toLowerCase();
+
+  const allPosts = await getPosts();
+
+  // Filter posts by the category slug
+  const categoryPosts = allPosts.filter((post) =>
+    post.categories?.some(
+      (cat) => cat.title.toLowerCase() === decodedCategory
+    )
+  );
+
+  if (categoryPosts.length === 0 && allPosts.length > 0) {
+    // If we fetched posts successfully but none match the category, it might be an invalid category
+    notFound();
+  }
+
+  const titleCategory = decodedCategory.replace(/\b\w/g, l => l.toUpperCase());
+
+  return (
+    <section className="bg-diamond relative overflow-hidden min-h-screen">
+
+      <div className="mx-auto flex max-w-7xl flex-col gap-12 px-6 py-24 sm:px-12 lg:px-16">
+        <Link
+          href="/blog"
+          className="group inline-flex w-fit items-center gap-1 px-4 text-sm text-shadow-sm bg-foreground/30 font-medium text-background transition hover:text-foreground rounded-full py-1"
+        >
+          <MoveLeft className="h-4 w-4 group-hover:-translate-x-1 transition-transform duration-300" />
+          Back to Compendium
+        </Link>
+        <header className="flex flex-col gap-4 text-left">
+          <p className="text-sm font-bold uppercase tracking-[0.3em] text-sapphire drop-shadow-sm">
+            Category
+          </p>
+          <h1 className="text-4xl font-black tracking-tight text-foreground md:text-5xl text-shadow-lg">
+            {titleCategory}
+          </h1>
+          <p className="text-lg text-foreground/80 font-medium max-w-2xl text-shadow-sm">
+            Browse through everything published in {titleCategory}. Keep scrolling to discover more content.
+          </p>
+        </header>
+
+        <ArchiveClient allPosts={categoryPosts} />
+      </div>
+    </section>
+  );
+}
