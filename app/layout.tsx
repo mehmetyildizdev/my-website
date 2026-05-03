@@ -37,7 +37,7 @@ export const metadata: Metadata = {
   authors: [{ name: "www.mehmetyildiz.dev" }],
   generator: "Next.js",
   publisher: "Mehmet Yildiz",
-  metadataBase: new URL("https://www.mehmetyildiz.dev"),
+  metadataBase: new URL("https://mehmetyildiz.dev"),
 };
 
 const trackingID = process.env.GOOGLE_TRACKING_ID;
