@@ -24,21 +24,11 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   };
 }
 
+import { getAllPosts } from "@/lib/post";
+
 async function getPosts(): Promise<Post[]> {
   try {
-    const baseUrl = process.env.NEXT_PUBLIC_BASE_URL?.replace(/\/$/, "") ?? "";
-    const response = await fetch(
-      baseUrl ? `${baseUrl}/api/posts` : "/api/posts",
-      {
-        next: { revalidate: 86400 },
-      }
-    );
-
-    if (!response.ok) {
-      throw new Error("Failed to fetch posts");
-    }
-
-    return response.json();
+    return await getAllPosts();
   } catch (error) {
     console.error("Error fetching posts", error);
     return [];

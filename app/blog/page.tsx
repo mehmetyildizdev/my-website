@@ -1,6 +1,7 @@
 import Link from "next/link";
 import Image from "next/image";
 import { getCategoryTheme } from "@/lib/post/categoryBasedSelector";
+import { getAllPosts } from "@/lib/post";
 import { FilteredPostsClient } from "@/components/blog/FilteredPostsClient";
 import { Metadata } from "next";
 
@@ -32,19 +33,7 @@ type PortableTextBlock = {
 
 async function getPosts(): Promise<Post[]> {
   try {
-    const baseUrl = process.env.NEXT_PUBLIC_BASE_URL?.replace(/\/$/, "") ?? "";
-    const response = await fetch(
-      baseUrl ? `${baseUrl}/api/posts` : "/api/posts",
-      {
-        next: { revalidate: 86400 },
-      }
-    );
-
-    if (!response.ok) {
-      throw new Error("Failed to fetch posts");
-    }
-
-    return response.json();
+    return await getAllPosts();
   } catch (error) {
     console.error("Error fetching posts", error);
     return [];
