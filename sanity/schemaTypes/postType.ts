@@ -1,5 +1,6 @@
 import { DocumentTextIcon } from "@sanity/icons";
 import { defineArrayMember, defineField, defineType } from "sanity";
+import { TranslationBodyInput } from "../components/TranslationBodyInput";
 
 const DEFAULT_AUTHOR_ID = "af0d93b3-edbb-4776-8142-fb04bafe0fe3";
 
@@ -36,6 +37,17 @@ export const postType = defineType({
       type: "blockContent",
       group: "content",
     }),
+    defineField({
+      name: "translationBody",
+      title: "Translation Body (EN)",
+      type: "blockContent",
+      group: "content",
+      description:
+        "Auto-translated English version of the Body. Click 'Translate with Gemini' above the editor to generate. Posts tagged 'Turkish' will show a translate button on the frontend.",
+      components: {
+        input: TranslationBodyInput,
+      },
+    }),
 
     // ── Meta ───────────────────────────────────────────────────────────
     defineField({
@@ -54,6 +66,8 @@ export const postType = defineType({
       type: "image",
       group: "meta",
       options: { hotspot: true },
+      description:
+        "Used as the card thumbnail in post lists and for social sharing (OG/Twitter cards).",
       fields: [
         {
           name: "alt",
@@ -66,6 +80,14 @@ export const postType = defineType({
           title: "Caption",
         },
       ],
+    }),
+    defineField({
+      name: "htmlVisual",
+      title: "HTML Visual (Hero Animation)",
+      type: "htmlVisual",
+      group: "meta",
+      description:
+        "Optional animated HTML snippet shown as the hero on the post page. If set, it replaces the Main Image in the hero area (but the Main Image is still used for card thumbnails and social sharing).",
     }),
     defineField({
       name: "categories",
