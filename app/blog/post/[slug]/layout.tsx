@@ -12,6 +12,8 @@ import { fetchCategoriesWithCount } from "@/sanity/lib/structureUtils";
 import { getCategoryTheme } from "@/lib/post/categoryBasedSelector";
 import { Metadata } from "next";
 import { getBlogPostMetadata } from "./metadata";
+import { getAllPosts } from "@/lib/post";
+import { PostCarousel } from "@/components/blog/PostCarousel";
 
 export async function generateMetadata({
   params,
@@ -34,9 +36,10 @@ export default async function PostLayout({
     notFound();
   }
 
-  const [pageData, allCategories] = await Promise.all([
+  const [pageData, allCategories, allPosts] = await Promise.all([
     getPostPageData(slug),
     fetchCategoriesWithCount(client),
+    getAllPosts(),
   ]);
 
   const { post, shareLinks } = pageData;
@@ -45,14 +48,15 @@ export default async function PostLayout({
   return (
     <div id="post" className="py-8 lg:py-16">
       <div className="mx-auto w-full max-w-7xl px-6 sm:px-8 lg:px-0 bg-pearl">
+        {/* ── Content + Sidebar grid ── */}
         <div className="grid grid-cols-1 gap-2 lg:grid-cols-12 mt-12 divide-x divide-border/10 bg-obsidian/20">
           {/* Main Content */}
-          <main className="col-span-1 lg:col-span-9 p-3 bg-pearl/75 ">
+          <main className="col-span-1 lg:col-span-9 p-3 bg-pearl/75">
             {children}
           </main>
 
           {/* Sidebar Container */}
-          <aside className="relative col-span-1 lg:col-span-3 bg-pearl/50 ">
+          <aside className="relative col-span-1 lg:col-span-3 bg-pearl/50">
             <Sidebar
               author={post.author ?? null}
               allCategories={allCategories}
@@ -70,6 +74,9 @@ export default async function PostLayout({
             </div>
           </aside>
         </div>
+
+        {/* ── "More to Read" carousel — spans below BOTH content and sidebar ── */}
+        <PostCarousel posts={allPosts} currentSlug={post.slug.current} />
       </div>
     </div>
   );

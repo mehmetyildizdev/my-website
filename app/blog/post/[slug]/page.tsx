@@ -13,14 +13,18 @@ import {
   getAllPosts,
   extractPlainText,
   calculateReadingTime,
-  resolveHeroImage,
+  resolveHeroMedia,
+  wrapHtmlVisual,
   formatPublishedDate,
 } from "@/lib/post";
+import { TranslateToggleButton } from "@/components/blog/TranslateToggleButton";
 
 export default async function BlogPostPageVariant({
   params,
+  searchParams,
 }: {
   params: BlogPostPageParams;
+  searchParams?: Promise<Record<string, string | string[] | undefined>>;
 }) {
   const { slug } = await resolveParams(params);
 
@@ -34,9 +38,16 @@ export default async function BlogPostPageVariant({
   const publishedDate = formatPublishedDate(post.publishedAt ?? "");
   const categories = post.categories?.map((category) => category.title) ?? [];
   const tags = post.tags?.map((tag) => tag.title) ?? [];
-  const heroImage = resolveHeroImage(post);
+  const heroMedia = resolveHeroMedia(post);
   const share = shareLinks ?? [];
   const theme = getCategoryTheme(categories[0]);
+
+  // Translation toggle — URL param ?translated=1
+  const resolvedParams = searchParams ? await searchParams : {};
+  const isTurkish = tags.some((t) => t.toLowerCase() === "türkçe");
+  const hasTranslation = isTurkish && !!post.translationBody?.length;
+  const showingTranslation = hasTranslation && resolvedParams?.translated === "1";
+  const activeBody = showingTranslation ? post.translationBody! : post.body;
 
   return (
     <article className="relative isolate">
@@ -49,13 +60,20 @@ export default async function BlogPostPageVariant({
 
       <div>
         <div className="mx-auto w-full max-w-7xl px-6 sm:px-8 lg:px-0"></div>
-        <Link
-          href="/blog"
-          className="group inline-flex w-fit items-center gap-1 px-4 text-sm text-shadow-sm bg-foreground/20 font-medium text-background transition hover:text-foreground"
-        >
-          <MoveLeft className="group-hover:-translate-x-1 transition-transform duration-300" />
-          Back
-        </Link>
+        {/* Back link + Translate toggle on the same row */}
+        <div className="flex items-center justify-between">
+          <Link
+            href="/blog"
+            className="group inline-flex w-fit items-center gap-1 px-4 text-sm text-shadow-sm bg-foreground/20 font-medium text-background transition hover:text-foreground"
+          >
+            <MoveLeft className="group-hover:-translate-x-1 transition-transform duration-300" />
+            Back
+          </Link>
+          <TranslateToggleButton
+            isActive={hasTranslation}
+            showingTranslation={showingTranslation}
+          />
+        </div>
         <header className="flex flex-col gap-4">
           <div className="flex flex-col gap-2">
             <h1 className="font-bold tracking-tight text-foreground text-pretty text-shadow-lg px-6 py-6 lg:px-12">
@@ -98,30 +116,45 @@ export default async function BlogPostPageVariant({
           </div>
         </div>
 
-        {/* hero image with colorful border + subtle animation */}
-        {heroImage && (
+        {/* hero image / HTML visual with colorful border — aspect-ratio preserves 16:9 at all widths */}
+        {heroMedia && (
           <figure
             id="hero-image"
             className="group relative mx-auto mt-2 px-2 w-full max-w-4xl"
           >
-            <div className={`rounded-2xl h-64 lg:h-120 p-1 ${theme.bg}`}>
-              <div className="relative overflow-hidden rounded-xl bg-card">
-                <div className="relative h-62 lg:h-118 w-full">
+            {/* aspect-video = 16:9; height is always width × (9/16), p-1 is the colored border */}
+            <div className={`rounded-2xl aspect-video p-1 ${theme.bg}`}>
+              <div className="relative h-full overflow-hidden rounded-xl">
+                {heroMedia.kind === "image" ? (
                   <Image
-                    src={heroImage.url}
-                    alt={heroImage.alt ?? post.title}
+                    src={heroMedia.url}
+                    alt={heroMedia.alt ?? post.title}
                     fill
                     className="object-cover object-center"
                     sizes="(min-width: 1024px) 1440px, 100vw"
                     priority
                   />
+                ) : (
+                  // Sandboxed iframe — transparent bg, no scrollbars, fills parent
+                  <iframe
+                    srcDoc={wrapHtmlVisual(heroMedia.htmlCode)}
+                    title={heroMedia.alt ?? post.title}
+                    sandbox="allow-scripts"
+                    scrolling="no"
+                    style={{
+                      border: "none",
+                      width: "100%",
+                      height: "100%",
+                      display: "block",
+                    }}
+                  />
+                )}
 
-                  {heroImage.caption && (
-                    <figcaption className="absolute left-0 right-0 bottom-0 bg-card text-sm text-muted-foreground px-6 py-3 transition-opacity duration-300 opacity-0 group-hover:opacity-100 pointer-events-none">
-                      {heroImage.caption}
-                    </figcaption>
-                  )}
-                </div>
+                {heroMedia.caption && (
+                  <figcaption className="absolute left-0 right-0 bottom-0 bg-card backdrop-blur-sm text-sm text-card-foreground px-6 py-3 transition-opacity duration-300 opacity-0 group-hover:opacity-100 pointer-events-none">
+                    {heroMedia.caption}
+                  </figcaption>
+                )}
               </div>
             </div>
           </figure>
@@ -129,7 +162,7 @@ export default async function BlogPostPageVariant({
 
         <div className="mt-12 grid grid-cols-1 px-6 lg:px-12">
           <section id="article" className="flex flex-col">
-            <PostRenderer value={post.body} />
+            <PostRenderer value={activeBody} />
 
             {/* keep share + tags below content on smaller viewports */}
             <div className="flex flex-col gap-8 text-md text-muted-foreground">

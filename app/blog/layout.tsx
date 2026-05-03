@@ -1,5 +1,6 @@
 import React from "react";
 import Footer from "@/components/blog/Footer";
+import { ScrollToTop } from "@/components/blog/ScrollToTop";
 
 export default function BlogLayout({
   children,
@@ -11,6 +12,7 @@ export default function BlogLayout({
       {children}
 
       <Footer />
+      <ScrollToTop />
     </div>
   );
 }

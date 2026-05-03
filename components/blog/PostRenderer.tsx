@@ -3,6 +3,7 @@ import Image from "next/image";
 import { slugify } from "@/lib/post/utils/headings";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
+import { wrapHtmlVisual } from "@/lib/post/utils/htmlVisual";
 
 interface PostRendererProps {
   value: BodyBlock[];
@@ -76,6 +77,7 @@ const components: PortableTextComponents = {
             alt={image.alt ?? ""}
             width={width}
             height={height}
+            className="my-8 w-full rounded-xl bg-background"
           />
           {image.caption && <figcaption>{image.caption}</figcaption>}
         </figure>
@@ -156,6 +158,50 @@ const components: PortableTextComponents = {
             </ReactMarkdown>
           </div>
         </div>
+      );
+    },
+    embedBlock: ({ value }) => {
+      const block = value as EmbedBlock;
+      const ratio = block.aspectRatio ?? "16 / 9";
+
+      let iframeEl: React.ReactNode = null;
+
+      if (block.embedType === "url" && block.embedUrl) {
+        iframeEl = (
+          <iframe
+            src={block.embedUrl}
+            title={block.alt ?? "Embedded content"}
+            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+            allowFullScreen
+            style={{ border: "none", width: "100%", height: "100%", display: "block" }}
+          />
+        );
+      } else if (block.embedType === "htmlCode" && block.htmlCode) {
+        iframeEl = (
+          <iframe
+            srcDoc={wrapHtmlVisual(block.htmlCode)}
+            title={block.alt ?? "HTML Visual"}
+            sandbox="allow-scripts"
+            scrolling="no"
+            style={{ border: "none", width: "100%", height: "100%", display: "block" }}
+          />
+        );
+      }
+
+      if (!iframeEl) return null;
+
+      return (
+        <figure
+          className="my-8 w-full overflow-hidden rounded-xl"
+          style={{ aspectRatio: ratio }}
+        >
+          {iframeEl}
+          {block.caption && (
+            <figcaption className="mt-2 text-center text-sm text-muted-foreground">
+              {block.caption}
+            </figcaption>
+          )}
+        </figure>
       );
     },
   },

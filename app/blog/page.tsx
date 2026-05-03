@@ -121,7 +121,6 @@ export default async function Blog() {
                   <article className="group relative flex flex-col gap-2 rounded-4xl bg-pearl/80 p-6 shadow-2xl backdrop-blur-md border border-border/20 transition-all duration-500 hover:shadow-silver/20 hover:bg-card/90 flex-1">
 
                     {/* Featured Image */}
-
                     {latestPost.mainImage?.asset?.url && (
                       <div className="relative w-full h-72 shrink-0 overflow-hidden rounded-3xl bg-muted">
                         <div className="absolute inset-0 bg-sapphire/10 group-hover:bg-transparent transition-colors duration-500 z-10 mix-blend-overlay" />
