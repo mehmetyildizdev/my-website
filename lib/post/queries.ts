@@ -15,11 +15,28 @@ export const POST_PROJECTION = `{
     alt,
     caption
   },
+  htmlVisual {
+    htmlCode,
+    alt,
+    caption,
+    aspectRatio
+  },
+  translationBody[] {
+    ...,
+    _type == "image" => {
+      asset-> {
+        url,
+        metadata { dimensions }
+      },
+      alt,
+      caption
+    }
+  },
   author-> {
     _id,
     name,
     image {
-      asset-> { url },
+      asset->{ url },
       alt
     },
     bio,

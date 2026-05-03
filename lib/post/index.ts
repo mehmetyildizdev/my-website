@@ -1,6 +1,7 @@
 // Centralized exports for post-related helpers, queries and fetchers.
 export * from "./utils/portableText";
 export * from "./utils/heroImage";
+export * from "./utils/htmlVisual";
 export * from "./utils/readingTime";
 export * from "./utils/formatDate";
 export * from "./utils/params";
