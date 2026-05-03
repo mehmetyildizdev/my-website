@@ -4,6 +4,7 @@ declare global {
     | CodeBlock
     | TableBlock
     | ImageBlock
+    | EmbedBlock
     | any;
 
   interface PortableTextSpan {
@@ -55,6 +56,24 @@ declare global {
     alt?: string;
     caption?: string;
   }
+
+  /** Universal body embed — either a URL-based iframe or a raw HTML snippet. */
+  interface EmbedBlock {
+    _type: "embedBlock";
+    _key: string;
+    embedType: "url" | "htmlCode";
+    embedUrl?: string;
+    htmlCode?: string;
+    aspectRatio?: string;
+    caption?: string;
+    alt?: string;
+  }
+
+  /** The resolved hero media for a post — either an image URL or an HTML visual. */
+  type HeroMedia =
+    | { kind: "image"; url: string; alt?: string; caption?: string; width?: number; height?: number }
+    | { kind: "htmlVisual"; htmlCode: string; alt?: string; caption?: string; aspectRatio?: string };
+
   interface HeroImage {
     url: string;
     alt?: string;
@@ -107,7 +126,17 @@ declare global {
     };
     categories?: PostCategory[];
     tags?: PostTag[];
+    /** Static image — used for card thumbnails and social sharing. */
     mainImage?: SanityImage;
+    /** Optional animated HTML hero — only rendered on the post page hero section. */
+    htmlVisual?: {
+      htmlCode: string;
+      alt?: string;
+      caption?: string;
+      aspectRatio?: string;
+    };
+    /** Auto-translated English body — populated via Gemini in Sanity Studio. */
+    translationBody?: BodyBlock[];
     excerpt?: string;
     metaDescription?: string;
   }
