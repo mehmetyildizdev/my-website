@@ -8,7 +8,7 @@ import { defineField, defineType } from "sanity";
  */
 export const markdownBlockType = defineType({
   name: "markdownBlock",
-  title: "Markdown Block",
+  title: "Markdown",
   type: "object",
   fields: [
     defineField({
@@ -26,7 +26,7 @@ export const markdownBlockType = defineType({
         ?.split("\n")
         .find((l: string) => l.trim());
       return {
-        title: "Markdown Block",
+        title: "Markdown",
         subtitle: firstLine ?? "(empty)",
       };
     },
