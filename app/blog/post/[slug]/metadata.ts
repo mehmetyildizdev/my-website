@@ -32,6 +32,10 @@ export async function getBlogPostMetadata({
   const { post } = await getPostPageData(slug);
   const seoTitle = formatSeoTitle(post.title ?? "");
 
+  // mainImage is always the source of truth for OG/Twitter (static URL required)
+  const ogImageUrl = post.mainImage?.asset?.url;
+  const ogImageAlt = post.mainImage?.alt ?? post.title;
+
   return {
     title: seoTitle,
     description: post.metaDescription,
@@ -43,20 +47,13 @@ export async function getBlogPostMetadata({
       description: post.metaDescription,
       type: "article",
       publishedTime: post.publishedAt,
-      images: post.mainImage?.asset?.url
-        ? [
-            {
-              url: post.mainImage.asset.url,
-              alt: post.mainImage.alt ?? post.title,
-            },
-          ]
-        : [],
+      images: ogImageUrl ? [{ url: ogImageUrl, alt: ogImageAlt }] : [],
     },
     twitter: {
       card: "summary_large_image",
       title: seoTitle,
       description: post.metaDescription,
-      images: post.mainImage?.asset?.url ? [post.mainImage.asset.url] : [],
+      images: ogImageUrl ? [ogImageUrl] : [],
     },
   };
 }
