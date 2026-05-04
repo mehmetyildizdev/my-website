@@ -8,19 +8,35 @@ export default function GoogleAnalytics({ trackingID }: GAProps) {
     const trackClicks = (event: MouseEvent) => {
       const target = event.target as HTMLElement;
 
-      // Track button clicks
-      if (target.tagName === "BUTTON") {
-        window.gtag("event", "click", {
-          event_category: "Button",
-          event_label: target.innerText || "Unknown Button",
-        });
-      }
+      // Find the NEAREST ancestor that is either a link OR a button
+      const interactive = target.closest("a, button");
 
-      // Track link clicks
-      if (target.tagName === "A") {
+      if (!interactive) return;
+
+      if (interactive.tagName === "A") {
+        const link = interactive as HTMLAnchorElement;
+        const titleElement = link.querySelector("h1, h2, h3, h4");
+        const customLabel = link.getAttribute("data-gtag-label");
+        
+        const label = customLabel || 
+                      titleElement?.textContent?.trim() || 
+                      link.innerText?.split("\n")[0]?.trim() || 
+                      link.href || 
+                      "Unknown Link";
+
         window.gtag("event", "click", {
           event_category: "Link",
-          event_label: (target as HTMLAnchorElement).href || "Unknown Link",
+          event_label: label.substring(0, 100),
+          link_url: link.href,
+        });
+      } else if (interactive.tagName === "BUTTON") {
+        const btn = interactive as HTMLButtonElement;
+        const customLabel = btn.getAttribute("data-gtag-label");
+        const label = customLabel || btn.innerText?.trim() || "Unknown Button";
+
+        window.gtag("event", "click", {
+          event_category: "Button",
+          event_label: label.substring(0, 100),
         });
       }
     };
