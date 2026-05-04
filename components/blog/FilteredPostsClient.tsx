@@ -66,6 +66,7 @@ export function FilteredPostsClient({ allPosts, defaultCat = "Insight" }: { allP
               <button
                 key={cat}
                 onClick={() => setActiveCategory(cat)}
+                aria-label={`Filter posts by category: ${cat}`}
                 className={`rounded-full px-5 py-2 text-xs font-bold uppercase tracking-widest cursor-pointer transition-all duration-300 shadow-sm hover:scale-105 ${isActive
                   ? `${bg} text-background shadow-md`
                   : `bg-card/60 ${text} border border-white/10 hover:bg-card/90`

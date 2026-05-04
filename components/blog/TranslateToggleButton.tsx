@@ -19,6 +19,7 @@ export function TranslateToggleButton({ isActive, showingTranslation }: Props) {
   return (
     <Link
       href={href}
+      aria-label={showingTranslation ? "Switch back to English original" : "Switch to Turkish translation"}
       className="group inline-flex w-fit items-center gap-1 px-4 text-sm text-shadow-sm bg-foreground/20 font-medium text-background transition hover:text-foreground"
     >
       <Languages className="h-4 w-4 group-hover:rotate-12 transition-transform duration-300" />

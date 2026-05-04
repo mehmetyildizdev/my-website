@@ -61,6 +61,7 @@ export default async function CategoryPage({ params }: Props) {
       <div className="mx-auto flex max-w-7xl flex-col gap-12 px-6 py-24 sm:px-12 lg:px-16">
         <Link
           href="/blog"
+          aria-label="Back to blog"
           className="group inline-flex w-fit items-center gap-1 px-4 text-sm text-shadow-sm bg-foreground/30 font-medium text-background transition hover:text-foreground rounded-full py-1"
         >
           <MoveLeft className="h-4 w-4 group-hover:-translate-x-1 transition-transform duration-300" />

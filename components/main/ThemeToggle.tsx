@@ -27,6 +27,7 @@ export function ThemeToggle() {
         className="mx-2"
         role="switch"
         aria-checked={isDark ? "true" : "false"}
+        aria-label="Toggle dark mode"
         suppressHydrationWarning
       />
       <Sun

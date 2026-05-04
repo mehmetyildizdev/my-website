@@ -134,6 +134,7 @@ const ContactMe = () => {
           <div>
             <button
               type="submit"
+              aria-label="Submit contact form"
               className="w-full bg-emerald text-white py-2 px-4 rounded-md hover:bg-sapphire focus:outline-none focus:ring-2 focus:ring-gold cursor-pointer"
             >
               Submit
@@ -141,11 +142,10 @@ const ContactMe = () => {
           </div>
           {status && (
             <p
-              className={`mt-4 text-center ${
-                status.includes("successfully")
+              className={`mt-4 text-center ${status.includes("successfully")
                   ? "text-ring"
                   : "text-destructive"
-              }`}
+                }`}
             >
               {status}
             </p>

@@ -41,6 +41,7 @@ export const ShareBar: React.FC<Props> = ({ shareLinks, categoryTextColor }) => 
             rel="noopener noreferrer"
             className={`text-xl transition-all ${categoryTextColor} text-shadow-lg text-shadow-foreground duration-300 hover:scale-125 hover:grayscale-0 opacity-50 hover:opacity-100`}
             title={`Share on ${link.label}`}
+            aria-label={`Share on ${link.label}`}
           >
             {getIcon(link.label)}
           </a>

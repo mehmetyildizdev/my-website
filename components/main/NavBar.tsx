@@ -103,7 +103,7 @@ export default function NavBar() {
             </div>
             <div className="md:hidden mr-4 flex items-center">
               <ThemeToggle />
-              <button onClick={() => setIsOpen(true)} className="p-2">
+              <button onClick={() => setIsOpen(true)} className="p-2" aria-label="Open menu">
                 <Menu role="button" className="ml-2 h-5 w-5" />
               </button>
             </div>
@@ -122,7 +122,7 @@ export default function NavBar() {
                       suppressHydrationWarning
                     />
                   </Link>
-                  <button className="absolute top-4 right-4" onClick={onClose}>
+                  <button className="absolute top-4 right-4" onClick={onClose} aria-label="Close menu">
                     <FaWindowClose className="text-3xl text-gold" />
                   </button>
                 </div>

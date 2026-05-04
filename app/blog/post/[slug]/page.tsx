@@ -58,12 +58,11 @@ export default async function BlogPostPageVariant({
         className={`absolute inset-x-0 top-0 -z-11 h-108 md:h-96 lg:h-84 ${theme.backgroundImage} opacity-33 bg-cover md:bg-auto`}
       />
 
-      <div>
-        <div className="mx-auto w-full max-w-7xl px-6 sm:px-8 lg:px-0"></div>
-        {/* Back link + Translate toggle on the same row */}
+      <div className="flex flex-col gap-4">
         <div className="flex items-center justify-between">
           <Link
             href="/blog"
+            aria-label="Back to blog"
             className="group inline-flex w-fit items-center gap-1 px-4 text-sm text-shadow-sm bg-foreground/20 font-medium text-background transition hover:text-foreground"
           >
             <MoveLeft className="group-hover:-translate-x-1 transition-transform duration-300" />
@@ -76,7 +75,7 @@ export default async function BlogPostPageVariant({
         </div>
         <header className="flex flex-col gap-4">
           <div className="flex flex-col gap-2">
-            <h1 className="font-bold tracking-tight text-foreground text-pretty text-shadow-lg px-6 py-6 lg:px-12">
+            <h1 suppressHydrationWarning className="font-bold tracking-tight text-foreground text-pretty text-shadow-lg px-6 py-6 lg:px-12">
               {post.title}
             </h1>
 
@@ -96,8 +95,8 @@ export default async function BlogPostPageVariant({
               </div>
 
               <div className="flex items-center gap-3 text-xs text-shadow-lg font-medium">
-                <time dateTime={post.publishedAt}>{publishedDate}</time>
-                <span aria-hidden>•</span>
+                <time suppressHydrationWarning dateTime={post.publishedAt}>{publishedDate}</time>
+                <span aria-hidden="true">•</span>
                 <span>{readingTime} min read</span>
               </div>
             </div>
@@ -135,7 +134,6 @@ export default async function BlogPostPageVariant({
                     priority
                   />
                 ) : (
-                  // Sandboxed iframe — transparent bg, no scrollbars, fills parent
                   <iframe
                     srcDoc={wrapHtmlVisual(heroMedia.htmlCode)}
                     title={heroMedia.alt ?? post.title}

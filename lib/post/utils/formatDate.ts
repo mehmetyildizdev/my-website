@@ -6,5 +6,6 @@ export function formatPublishedDate(date: string | null | undefined): string {
     day: "numeric",
     month: "long",
     year: "numeric",
+    timeZone: "UTC",
   }).format(parsed);
 }

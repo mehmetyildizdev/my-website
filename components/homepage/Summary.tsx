@@ -62,19 +62,18 @@ function Summary({ id }: htmlProps) {
                 }}
                 style={
                   {
-                    "--color-changing": `var(--color-${
-                      ["sapphire", "emerald", "amethyst", "ruby"][index]
-                    })`,
+                    "--color-changing": `var(--color-${["sapphire", "emerald", "amethyst", "ruby"][index]
+                      })`,
                   } as React.CSSProperties
                 }
+                aria-label={`Switch to ${["About Me", "What I Do", "My Website", "Contact Me"][index]}`}
                 className="group flex-1 relative flex justify-center items-center cursor-pointer bg-[conic-gradient(from_var(--angle),var(--color-pearl),var(--color-pearl),var(--color-pearl),var(--color-changing),var(--color-pearl),var(--color-pearl),var(--color-pearl))] animate-bgAnimate-rev rounded-l-2xl"
               >
                 <div
                   style={{
                     backgroundImage: "url(/images/dots-piston.svg)",
-                    backgroundColor: `var(--color-${
-                      ["sapphire", "emerald", "amethyst", "ruby"][index]
-                    })`,
+                    backgroundColor: `var(--color-${["sapphire", "emerald", "amethyst", "ruby"][index]
+                      })`,
                     animationDelay: `${index * 1}s`,
                   }}
                   className="w-[95%] h-[85%] xl:ml-2 absolute flex justify-center items-center bg-no-repeat bg-cover rounded-l-2xl bg-blend-darken drop-shadow-lg wobble-animation"
@@ -100,7 +99,7 @@ function Summary({ id }: htmlProps) {
                     &nbsp;
                     {
                       ["About Me", "What I Do", "My Website", "Contact Me"][
-                        index
+                      index
                       ]
                     }
                   </p>
