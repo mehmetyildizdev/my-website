@@ -22,7 +22,6 @@ export const htmlVisualType = defineType({
       rows: 12,
       description:
         "Paste the full HTML snippet (including any <script> tags). It will be rendered in a sandboxed iframe.",
-      validation: (Rule) => Rule.required(),
     },
     {
       name: "alt",
