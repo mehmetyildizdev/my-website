@@ -6,6 +6,7 @@ export * from "./utils/readingTime";
 export * from "./utils/formatDate";
 export * from "./utils/params";
 export * from "./utils/share";
+export * from "./utils/excerpt";
 
 export * from "./queries";
 export * from "./fetch";

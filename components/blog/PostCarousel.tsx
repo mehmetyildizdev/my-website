@@ -5,6 +5,7 @@ import Link from "next/link";
 import Image from "next/image";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import { getCategoryTheme } from "@/lib/post/categoryBasedSelector";
+import { formatDate } from "@/lib/post";
 
 // ── Config ─────────────────────────────────────────────────────────────────
 /** Maximum number of posts shown in the carousel. Change this freely. */
@@ -34,13 +35,7 @@ const CARD_WIDTH_CLASSES: Record<1 | 2 | 3 | 4, string> = {
 };
 const cardWidthClass = CARD_WIDTH_CLASSES[CARDS_PER_VIEW];
 
-function formatDate(dateString: string) {
-  return new Intl.DateTimeFormat("en-US", {
-    month: "short",
-    day: "numeric",
-    year: "numeric",
-  }).format(new Date(dateString));
-}
+
 
 interface PostCarouselProps {
   posts: Post[];

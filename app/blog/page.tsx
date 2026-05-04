@@ -1,7 +1,7 @@
 import Link from "next/link";
 import Image from "next/image";
 import { getCategoryTheme } from "@/lib/post/categoryBasedSelector";
-import { getAllPosts } from "@/lib/post";
+import { getAllPosts, formatDate, resolveExcerpt } from "@/lib/post";
 import { FilteredPostsClient } from "@/components/blog/FilteredPostsClient";
 import { Metadata } from "next";
 
@@ -40,32 +40,7 @@ async function getPosts(): Promise<Post[]> {
   }
 }
 
-function resolveExcerpt(post: Post): string {
-  if (post.excerpt) return post.excerpt;
-  if (post.metaDescription) return post.metaDescription;
 
-  const blocks = post.body as PortableTextBlock[] | undefined;
-  const firstBlock = blocks?.find((block) => block?._type === "block");
-
-  if (!firstBlock) {
-    return "Dive into the full story.";
-  }
-
-  const text = firstBlock.children
-    ?.map((child) => child?.text ?? "")
-    .join(" ")
-    .trim();
-
-  return text || "Dive into the full story.";
-}
-
-function formatDate(dateString: string) {
-  return new Intl.DateTimeFormat("en-US", {
-    month: "short",
-    day: "numeric",
-    year: "numeric",
-  }).format(new Date(dateString));
-}
 
 export default async function Blog() {
   const posts = await getPosts();
