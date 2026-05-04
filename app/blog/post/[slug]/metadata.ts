@@ -29,13 +29,17 @@ export async function getBlogPostMetadata({
   const { slug } = await resolveParams(params);
   if (!slug) return {};
 
-  const { post } = await getPostPageData(slug);
+  const { post, postUrl } = await getPostPageData(slug);
   const seoTitle = formatSeoTitle(post.title ?? "");
 
   // mainImage is always the source of truth for OG/Twitter (static URL required)
-  const ogImageUrl = post.mainImage?.asset?.url;
+  let ogImageUrl = post.mainImage?.asset?.url;
+  if (ogImageUrl?.includes("cdn.sanity.io")) {
+    // Social platforms (LinkedIn/Twitter) often don't support SVGs for OG images.
+    // Use Sanity Image API to convert to PNG and set standard OG dimensions.
+    ogImageUrl = `${ogImageUrl}?fm=png&w=1200&h=630&fit=max`;
+  }
   const ogImageAlt = post.mainImage?.alt ?? post.title;
-
   return {
     title: seoTitle,
     description: post.metaDescription,
@@ -45,6 +49,7 @@ export async function getBlogPostMetadata({
     openGraph: {
       title: seoTitle,
       description: post.metaDescription,
+      url: postUrl,
       type: "article",
       publishedTime: post.publishedAt,
       images: ogImageUrl ? [{ url: ogImageUrl, alt: ogImageAlt }] : [],

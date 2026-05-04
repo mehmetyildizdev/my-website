@@ -20,8 +20,8 @@ export async function getPostPageData(slug: string): Promise<PostPageData> {
   const headings = extractHeadings(post.body);
   const origin = (await resolveOrigin()) || null;
   const postUrl = origin
-    ? `${origin}/blog/${post.slug.current}`
-    : `/blog/${post.slug.current}`;
+    ? `${origin}/blog/post/${post.slug.current}`
+    : `/blog/post/${post.slug.current}`;
 
   return {
     post,
