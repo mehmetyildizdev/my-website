@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { Turnstile } from "nextjs-turnstile";
 import {
   FaLinkedinIn,
   FaTwitter,
@@ -17,11 +18,11 @@ const ContactMe = () => {
   ];
   const [formData, setFormData] = useState({
     name: "",
-    check: "",
     email: "",
     message: "",
   });
-  const [status, setStatus] = useState("");
+  const [token, setToken] = useState("");
+  const [status, setStatus] = useState({ type: "idle", message: "" });
 
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
@@ -35,34 +36,35 @@ const ContactMe = () => {
 
     // Basic validation
     if (!formData.name || !formData.email || !formData.message) {
-      setStatus("Please fill out all fields.");
+      setStatus({ type: "error", message: "Please fill out all fields." });
       return;
     }
-    if (formData.check !== "mehmet") {
-      setStatus("The check field must contain the text 'mehmet'.");
+    if (!token) {
+      setStatus({ type: "error", message: "Please complete the captcha." });
       return;
     }
 
     // Simulate form submission
-    setStatus("Request sent");
+    setStatus({ type: "loading", message: "Sending your message..." });
     try {
       const response = await fetch("/api/contact", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify(formData),
+        body: JSON.stringify({ ...formData, token }),
       });
       const result = await response.json();
       if (response.ok) {
-        window.alert(result.message);
-        setFormData({ name: "", check: "", email: "", message: "" }); // Clear form
+        setStatus({ type: "success", message: result.message || "Message sent successfully!" });
+        setFormData({ name: "", email: "", message: "" }); // Clear form
+        setToken("");
       } else {
-        window.alert(result.error || "Failed to send message.");
+        setStatus({ type: "error", message: result.message || result.error || "Failed to send message." });
       }
       // eslint-disable-next-line @typescript-eslint/no-unused-vars
     } catch (error) {
-      window.alert("An error occurred. Please try again.");
+      setStatus({ type: "error", message: "An error occurred. Please try again." });
     }
   };
 
@@ -101,22 +103,6 @@ const ContactMe = () => {
             />
           </div>
           <div>
-            <label htmlFor="check" className="block text-sm font-medium">
-              Bot Check
-            </label>
-            <input
-              type="text"
-              id="check"
-              name="check"
-              value={formData.check}
-              onChange={handleChange}
-              placeholder="Enter 'mehmet'"
-              autoComplete="off"
-              className="mt-1 block w-full px-3 py-2 border border-emerald rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-gold"
-              required
-            />
-          </div>
-          <div>
             <label htmlFor="message" className="block text-sm font-medium">
               Message
             </label>
@@ -132,23 +118,33 @@ const ContactMe = () => {
             />
           </div>
           <div>
+            <Turnstile
+              siteKey={process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY!}
+              onSuccess={(t: string) => setToken(t)}
+            />
+          </div>
+          <div>
             <button
               type="submit"
+              disabled={status.type === "loading"}
               aria-label="Submit contact form"
-              className="w-full bg-emerald text-white py-2 px-4 rounded-md hover:bg-sapphire focus:outline-none focus:ring-2 focus:ring-gold cursor-pointer"
+              className="w-full bg-emerald text-white py-2 px-4 rounded-md hover:bg-sapphire focus:outline-none focus:ring-2 focus:ring-gold cursor-pointer disabled:opacity-70 disabled:cursor-not-allowed transition-colors"
             >
-              Submit
+              {status.type === "loading" ? "Sending..." : "Submit"}
             </button>
           </div>
-          {status && (
-            <p
-              className={`mt-4 text-center ${status.includes("successfully")
-                  ? "text-ring"
-                  : "text-destructive"
-                }`}
+          {status.message && (
+            <div
+              className={`mt-4 p-3 rounded-md text-sm font-medium text-center border transition-all ${
+                status.type === "success"
+                  ? "bg-emerald/10 text-emerald border-emerald/50"
+                  : status.type === "error"
+                  ? "bg-destructive/10 text-destructive border-destructive/50"
+                  : "bg-sapphire/10 text-sapphire border-sapphire/50"
+              }`}
             >
-              {status}
-            </p>
+              {status.message}
+            </div>
           )}
         </form>
       </div>
