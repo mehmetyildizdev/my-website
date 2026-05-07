@@ -18,26 +18,39 @@ const poppins = Poppins({
 });
 
 export const metadata: Metadata = {
-  title: "Mehmet Yildiz | Front-End Web Developer",
+  title: "Mehmet Yildiz | Developer & IT Support",
   description:
-    "This is a personal website and blog for Mehmet Yildiz, a front-end web developer.",
-  keywords: [
-    "web development",
-    "design",
-    "programming",
-    "react",
-    "next.js",
-    "sanity",
-    "tailwindcss",
-  ],
+    "Welcome to the personal website and blog of Mehmet Yildiz, a passionate Front-End Web Developer and IT Support Specialist based in Turkey. Explore my portfolio, read my latest tech articles, and connect with me for innovative solutions.",
   icons: {
-    icon: "/favicon.png",
+    icon: [
+      { url: "/icon.png" },
+      { url: "/favicon.ico" }
+    ],
+    apple: "/apple-icon.png"
   },
-  applicationName: "My Website",
-  authors: [{ name: "www.mehmetyildiz.dev" }],
+  applicationName: "Mehmet Yildiz Portfolio",
+  authors: [{ name: "Mehmet Yildiz" }],
   generator: "Next.js",
   publisher: "Mehmet Yildiz",
   metadataBase: new URL("https://mehmetyildiz.dev"),
+  alternates: {
+    canonical: "/",
+  },
+  openGraph: {
+    title: "Mehmet Yildiz | Developer & IT Support",
+    description: "Full-stack development and systemic critiques of issues in the world.",
+    url: "https://mehmetyildiz.dev",
+    siteName: "Mehmet Yildiz",
+    locale: "en_US",
+    type: "website",
+    images: ["/og-image.webp"],
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Mehmet Yildiz | Developer & IT Support",
+    description: "Full-stack development and systemic critiques of issues in the world.",
+    images: ["/og-image.webp"],
+  },
 };
 
 const trackingID = process.env.GOOGLE_TRACKING_ID;
