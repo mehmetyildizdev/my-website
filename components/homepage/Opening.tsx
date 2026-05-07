@@ -1,19 +1,17 @@
 import React from "react";
 import {
   FaLinkedinIn,
-  FaTwitter,
-  FaFacebookSquare,
   FaTelegram,
-  FaEnvelope,
 } from "react-icons/fa";
+import { FaXTwitter, FaInstagram, FaGithub } from "react-icons/fa6";
 
 function Opening({ id }: htmlProps) {
   const socialLinks = [
     { href: "https://www.linkedin.com/in/yildizmehmet/", icon: FaLinkedinIn },
-    { href: "https://twitter.com/albursavi", icon: FaTwitter },
-    { href: "https://www.facebook.com/mehmetydev/", icon: FaFacebookSquare },
+    { href: "https://x.com/albursavi", icon: FaXTwitter },
+    { href: "https://www.instagram.com/mehmetyildizdev/", icon: FaInstagram },
+    { href: "https://github.com/mehmetyildizdev", icon: FaGithub },
     { href: "https://t.me/memostar91", icon: FaTelegram },
-    { href: "mailto:contact@mehmetyildiz.dev", icon: FaEnvelope },
   ];
   return (
     <section id={id} className="h-screen text-center">

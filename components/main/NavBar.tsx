@@ -8,12 +8,10 @@ import { ThemeToggle } from "./ThemeToggle";
 import { useTheme } from "next-themes";
 import {
   FaLinkedinIn,
-  FaTwitter,
-  FaFacebookSquare,
   FaTelegram,
-  FaEnvelope,
   FaWindowClose,
 } from "react-icons/fa";
+import { FaXTwitter, FaInstagram, FaGithub } from "react-icons/fa6";
 
 export default function NavBar() {
   const [isOpen, setIsOpen] = useState(false);
@@ -45,20 +43,20 @@ export default function NavBar() {
       icon: <FaLinkedinIn className="text-gold text-lg" />,
     },
     {
-      href: "https://twitter.com/albursavi",
-      icon: <FaTwitter className="text-gold text-lg" />,
+      href: "https://x.com/albursavi",
+      icon: <FaXTwitter className="text-gold text-lg" />,
     },
     {
-      href: "https://www.facebook.com/mehmetydev/",
-      icon: <FaFacebookSquare className="text-gold text-lg" />,
+      href: "https://www.instagram.com/mehmetyildizdev/",
+      icon: <FaInstagram className="text-gold text-lg" />,
+    },
+    {
+      href: "https://github.com/mehmetyildizdev",
+      icon: <FaGithub className="text-gold text-lg" />,
     },
     {
       href: "https://t.me/memostar91",
       icon: <FaTelegram className="text-gold text-lg" />,
-    },
-    {
-      href: "mailto:contact@mehmetyildiz.dev",
-      icon: <FaEnvelope className="text-gold text-lg" />,
     },
   ];
 
