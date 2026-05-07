@@ -96,6 +96,9 @@ export default function NavBar() {
               <Link href="/blog" className="mr-8">
                 Blog
               </Link>
+              <Link href="/collection" className="mr-8">
+                Collection
+              </Link>
               <Link href="/studio" className="mr-8">
                 Studio
               </Link>
@@ -132,6 +135,12 @@ export default function NavBar() {
                   </Link>
                   <Link href="#aboutme" className="mb-4" onClick={onClose}>
                     About
+                  </Link>
+                  <Link href="/blog" className="mb-4" onClick={onClose}>
+                    Blog
+                  </Link>
+                  <Link href="/collection" className="mb-4" onClick={onClose}>
+                    Collection
                   </Link>
                 </div>
                 <div className="pt-64 text-gold">
