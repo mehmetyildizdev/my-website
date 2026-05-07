@@ -94,6 +94,7 @@ export default async function Blog() {
                           fill
                           className="object-cover transition-transform duration-700 group-hover:scale-105"
                           sizes="(max-width: 1024px) 100vw, 66vw"
+                          loading="eager"
                           priority
                         />
                       </div>
@@ -142,6 +143,7 @@ export default async function Blog() {
                                 fill
                                 className="object-cover transition-transform duration-500 group-hover:scale-110"
                                 sizes="96px"
+                                loading="lazy"
                               />
                             </div>
                           )}
