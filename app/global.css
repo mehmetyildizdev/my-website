@@ -1,0 +1,277 @@
+@import "tailwindcss";
+@plugin 'tailwindcss-animate';
+
+@variant dark (&:is(.dark *));
+@variant light (&:is(.light *));
+@property --angle {
+  syntax: "<angle>";
+  initial-value: 0deg;
+  inherits: false;
+}
+
+@keyframes bgAnimate {
+  from {
+    --angle: 0deg;
+  }
+  to {
+    --angle: 360deg;
+  }
+}
+@keyframes bgAnimate-m {
+  from {
+    --angle: 15deg;
+  }
+  to {
+    --angle: -345deg;
+  }
+}
+@keyframes bgAnimate-r {
+  from {
+    --angle: -45deg;
+  }
+  to {
+    --angle: 315deg;
+  }
+}
+@keyframes bgAnimate-rev {
+  0% {
+    --angle: 0deg;
+  }
+  25% {
+    --angle: 90deg;
+  }
+  50% {
+    --angle: 180deg;
+  }
+  75% {
+    --angle: 270deg;
+  }
+  100% {
+    --angle: 360deg;
+  }
+}
+
+@theme {
+  --animate-bgAnimate: bgAnimate 9s linear infinite;
+  --animate-bgAnimate-rev: bgAnimate-rev 4s linear infinite reverse;
+  --animate-bgAnimate-m: bgAnimate-m 9s linear infinite;
+  --animate-bgAnimate-r: bgAnimate-r 9s linear infinite;
+
+  /* structural ui */
+  --font-poppins: var(--font-poppins), sans-serif;
+  --font-rubik: var(--font-rubik), sans-serif;
+  --font-mono: var(--font-mono), monospace;
+  --breakpoint-3xl: 120rem;
+  --breakpoint-4xl: 160rem;
+  --radius-md: calc(var(--radius) - 2px);
+  --radius-sm: calc(var(--radius) - 4px);
+  --radius-lg: var(--radius);
+  --color-background: var(--diamond);
+  --color-foreground: var(--titanium);
+
+  /* container ui */
+  --color-card: var(--pearl);
+  --color-card-foreground: var(--silver);
+  --color-popover: var(--pearl);
+  --color-popover-foreground: var(--quicksilver);
+
+  /* interactive ui */
+  --color-primary: var(--emerald);
+  --color-primary-foreground: var(--diamond);
+  --color-secondary: var(--amethyst);
+  --color-secondary-foreground: var(--diamond);
+  --color-destructive: var(--ruby);
+  --color-destructive-foreground: var(--titanium);
+  --color-link: var(--sapphire);
+  --color-link-hover: var(--gold);
+  --color-selection: color-mix(in srgb, var(--silver), transparent 80%);
+  --color-gold-faded: color-mix(in srgb, var(--gold), transparent 15%);
+
+  /* semantic ui */
+  --color-muted: var(--obsidian);
+  --color-muted-foreground: var(--quicksilver);
+  --color-accent: var(--gold);
+  --color-accent-foreground: var(--pearl);
+
+  /* architectural ui */
+  --color-border: var(--silver);
+  --color-border-glint: var(--gold);
+  --color-input: var(--quicksilver);
+  --color-ring: var(--topaz);
+
+  /* data ui */
+  --color-metadata: var(--quicksilver);
+  --color-highlight: var(--gold);
+  --color-highlight-foreground: var(--titanium);
+  --color-surface: var(--diamond);
+  --color-surface-muted: var(--obsidian);
+  --chart-1: var(--sapphire);
+  --chart-2: var(--ruby);
+  --chart-3: var(--emerald);
+  --chart-4: var(--amethyst);
+  --chart-5: var(--topaz);
+
+  /* sidebar ui */
+  --sidebar: var(--pearl);
+  --sidebar-foreground: var(--quicksilver);
+  --sidebar-primary: var(--emerald);
+  --sidebar-primary-foreground: var(--diamond);
+  --sidebar-accent: var(--amethyst);
+  --sidebar-accent-foreground: var(--diamond);
+  --sidebar-border: var(--gold);
+  --sidebar-ring: var(--topaz);
+
+  /* metals */
+  --color-platinum: var(--platinum);
+  --color-titanium: var(--titanium);
+  --color-gold: var(--gold);
+  --color-silver: var(--silver);
+  --color-quicksilver: var(--quicksilver);
+
+  /* gemstones */
+  --color-diamond: var(--diamond);
+  --color-pearl: var(--pearl);
+  --color-obsidian: var(--obsidian);
+  --color-emerald: var(--emerald);
+  --color-sapphire: var(--sapphire);
+  --color-ruby: var(--ruby);
+  --color-amethyst: var(--amethyst);
+  --color-topaz: var(--topaz);
+
+  --shadow-golden: -16px 0 32px rgba(220, 177, 24, 0.33);
+  --inset-shadow-golden: inset 0px 0px 4px rgba(220, 177, 24, 1);
+  --drop-shadow-text: 2px 4px 2px rgba(48, 48, 48, 1);
+  --drop-shadow-text-theme-lg: 1px 1px 0px var(--sapphire);
+  --drop-shadow-text-theme-lg-accent: 1px 1px 1px var(--ruby);
+}
+
+@layer base {
+  .light {
+    /* metals for foreground */
+    --titanium: oklch(0.2 0.001 256);
+    --platinum: oklch(0.31 0.0013 169);
+    --gold: oklch(0.81 0.121 100);
+    --silver: oklch(0.81 0.0121 225);
+    --quicksilver: oklch(0.49 0.0256 225);
+
+    /* backgrounds */
+    --diamond: oklch(0.96 0.0016 196);
+    --pearl: oklch(0.96 0.0256 81);
+    --obsidian: oklch(0.81 0.016 289);
+
+    /* gemstone colors to use dynamically */
+    --sapphire: oklch(0.6 0.16 256);
+    --ruby: oklch(0.6 0.24 24);
+    --amethyst: oklch(0.6 0.18 324);
+    --emerald: oklch(0.6 0.14 144);
+    --topaz: oklch(0.6 0.121 96);
+  }
+
+  .dark {
+    /* metals for foreground */
+    --titanium: oklch(0.96 0.0016 256);
+    --platinum: oklch(0.96 0.049 169);
+    --gold: oklch(0.81 0.121 100);
+    --silver: oklch(0.81 0.0121 225);
+    --quicksilver: oklch(0.88 0.0256 225);
+
+    /* backgrounds */
+    --diamond: oklch(0.24 0.0016 196);
+    --pearl: oklch(0.25 0.0256 81);
+    --obsidian: oklch(0.16 0.016 289);
+
+    /* gemstone colors to use dynamically */
+    --sapphire: oklch(0.64 0.16 256);
+    --ruby: oklch(0.64 0.18 25);
+    --amethyst: oklch(0.64 0.18 324);
+    --emerald: oklch(0.64 0.14 144);
+    --topaz: oklch(0.64 0.121 96);
+  }
+  :root {
+    --radius: 0.5rem;
+  }
+  * {
+    @apply border-border;
+  }
+  body {
+    @apply bg-background text-foreground font-rubik;
+  }
+  strong {
+    @apply text-foreground/95;
+  }
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
+    @apply font-poppins text-gold;
+  }
+  h1 {
+    @apply text-4xl font-bold;
+  }
+
+  h2 {
+    @apply text-3xl font-semibold;
+  }
+
+  h3 {
+    @apply text-2xl font-medium;
+  }
+
+  h4 {
+    @apply text-xl font-medium;
+  }
+
+  h5 {
+    @apply text-lg font-medium;
+  }
+
+  h6 {
+    @apply text-base font-medium;
+  }
+}
+
+@layer components {
+  :root {
+    --wobble-1: -4px;
+    --wobble-2: 2px;
+  }
+  @media (max-width: 768px) {
+    :root {
+      --wobble-1: -2px;
+      --wobble-2: 3px;
+    }
+  }
+  @keyframes wobble {
+    0%,
+    100% {
+      transform: translateX(0);
+    }
+    25% {
+      transform: translateX(var(--wobble-1));
+    }
+    50% {
+      transform: translateX(0);
+    }
+    75% {
+      transform: translateX(var(--wobble-2));
+    }
+  }
+  .wobble-animation {
+    @apply block;
+    animation: wobble 8s infinite;
+  }
+  /* respect reduced motion preference */
+  @media (prefers-reduced-motion: reduce) {
+    .wobble-animation {
+      animation: none;
+    }
+  }
+  /* disable wobble in Firefox (Gecko) due to animation/transform issues */
+  @-moz-document url-prefix() {
+    .wobble-animation {
+      animation: none !important;
+    }
+  }
+}
