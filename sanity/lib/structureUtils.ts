@@ -72,7 +72,7 @@ export async function fetchPostMonthGroups(
     const year = parseInt(yearStr);
     const monthNum = parseInt(mmStr);
     const monthName = new Date(Date.UTC(year, monthNum - 1, 1)).toLocaleString(
-      "en-US",
+      "en-GB",
       { month: "long", timeZone: "UTC" }
     );
 

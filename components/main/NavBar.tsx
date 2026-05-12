@@ -4,6 +4,7 @@ import React, { useState, useEffect } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { Menu } from "lucide-react";
+import { cn } from "@/lib/shadcn/utils";
 import { ThemeToggle } from "./ThemeToggle";
 import { useTheme } from "next-themes";
 import {
@@ -35,8 +36,10 @@ export default function NavBar() {
         setShadow(false);
       }
     };
+    handleShadow(); // Check initial position
     window.addEventListener("scroll", handleShadow);
-  });
+    return () => window.removeEventListener("scroll", handleShadow);
+  }, []);
   const socialLinks = [
     {
       href: "https://www.linkedin.com/in/yildizmehmet/",
@@ -63,11 +66,12 @@ export default function NavBar() {
   return (
     <header>
       <nav
-        className={
+        className={cn(
+          "fixed top-0 w-full h-16 z-999 transition-all duration-500 border-b border-transparent",
           shadow
-            ? "fixed w-full h-16 z-999 bg-diamond shadow-[0_15px_10px_-15px_rgba(220,177,24,0.7)] transition-shadow duration-500"
-            : "fixed w-full h-16 z-999 bg-diamond"
-        }
+            ? "bg-background/80 backdrop-blur-md border-border/33 shadow-[0_5px_5px_-5px_rgba(220,177,24,0.3)]"
+            : "bg-transparent"
+        )}
       >
         <div className="lg:px-16 flex h-16 items-center justify-between">
           <div className="flex items-center">
@@ -88,7 +92,7 @@ export default function NavBar() {
               <Link href="/" className="mr-8">
                 Home
               </Link>
-              <Link href="#aboutme" className="mr-8">
+              <Link href="/#aboutme" className="mr-8">
                 About
               </Link>
               <Link href="/blog" className="mr-8">

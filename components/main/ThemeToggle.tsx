@@ -3,7 +3,7 @@
 import * as React from "react";
 import { useTheme } from "next-themes";
 import { Sun, Moon } from "lucide-react";
-import { Switch } from "@/components/ui/Switch";
+import { Switch } from "@/components/main/Switch";
 
 export function ThemeToggle() {
   const { resolvedTheme, setTheme } = useTheme();
