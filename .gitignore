@@ -3,6 +3,7 @@
 .gemini
 AGENTS.md
 SECURITY-REVIEW-REPORT.md
+/app/backup.css
 # dependencies
 /node_modules
 /.pnp
