@@ -71,9 +71,9 @@
 
   /* container ui */
   --color-card: var(--pearl);
-  --color-card-foreground: var(--silver);
+  --color-card-foreground: var(--platinum);
   --color-popover: var(--pearl);
-  --color-popover-foreground: var(--quicksilver);
+  --color-popover-foreground: var(--platinum);
 
   /* interactive ui */
   --color-primary: var(--emerald);
@@ -81,7 +81,7 @@
   --color-secondary: var(--amethyst);
   --color-secondary-foreground: var(--diamond);
   --color-destructive: var(--ruby);
-  --color-destructive-foreground: var(--titanium);
+  --color-destructive-foreground: var(--platinum);
   --color-link: var(--sapphire);
   --color-link-hover: var(--gold);
   --color-selection: color-mix(in srgb, var(--silver), transparent 80%);
@@ -96,13 +96,13 @@
   /* architectural ui */
   --color-border: var(--silver);
   --color-border-glint: var(--gold);
-  --color-input: var(--quicksilver);
-  --color-ring: var(--topaz);
+  --color-input: var(--topaz);
+  --color-ring: var(--platinum);
 
   /* data ui */
   --color-metadata: var(--quicksilver);
   --color-highlight: var(--gold);
-  --color-highlight-foreground: var(--titanium);
+  --color-highlight-foreground: var(--platinum);
   --color-surface: var(--diamond);
   --color-surface-muted: var(--obsidian);
   --chart-1: var(--sapphire);
@@ -112,14 +112,14 @@
   --chart-5: var(--topaz);
 
   /* sidebar ui */
-  --sidebar: var(--pearl);
-  --sidebar-foreground: var(--quicksilver);
-  --sidebar-primary: var(--emerald);
-  --sidebar-primary-foreground: var(--diamond);
-  --sidebar-accent: var(--amethyst);
-  --sidebar-accent-foreground: var(--diamond);
-  --sidebar-border: var(--gold);
-  --sidebar-ring: var(--topaz);
+  --color-sidebar: var(--muted);
+  --color-sidebar-foreground: var(--quicksilver);
+  --color-sidebar-primary: var(--emerald);
+  --color-sidebar-primary-foreground: var(--platinum);
+  --color-sidebar-accent: var(--amethyst);
+  --color-sidebar-accent-foreground: var(--primary);
+  --color-sidebar-border: var(--silver);
+  --color-sidebar-ring: var(--platinum);
 
   /* metals */
   --color-platinum: var(--platinum);
@@ -138,11 +138,18 @@
   --color-amethyst: var(--amethyst);
   --color-topaz: var(--topaz);
 
-  --shadow-golden: -16px 0 32px rgba(220, 177, 24, 0.33);
-  --inset-shadow-golden: inset 0px 0px 4px rgba(220, 177, 24, 1);
-  --drop-shadow-text: 2px 4px 2px rgba(48, 48, 48, 1);
-  --drop-shadow-text-theme-lg: 1px 1px 0px var(--sapphire);
-  --drop-shadow-text-theme-lg-accent: 1px 1px 1px var(--ruby);
+  /* shadows */
+  --text-shadow-golden: 1px 1px 0px var(--gold);
+  --text-shadow-primary: 1px 1px 0px var(--color-primary);
+  --text-shadow-secondary: 1px 1px 0px var(--color-secondary);
+  --text-shadow-foreground: 1px 1px 0px var(--color-foreground);
+  --text-shadow-background: 1px 1px 0px var(--color-background);
+  --inset-shadow-golden: inset 0px 0px 8px var(--gold);
+  --inset-shadow-silver: inset 0px 0px 8px var(--silver);
+  --drop-shadow-text: 1px 1px 0px var(--pearl);
+  --drop-shadow-text-theme: 2px 2px 0px var(--platinum);
+  --drop-shadow-text-theme-1: 1px 1px 1px var(--emerald);
+  --drop-shadow-text-theme-2: 1px 1px 1px var(--amethyst);
 }
 
 @layer base {
