@@ -5,6 +5,7 @@ export interface CategoryTheme {
   border: string;
   text: string;
   bg: string;
+  hoverBg: string;
   backgroundImage: string;
   groupHoverText: string;
 }
@@ -21,6 +22,7 @@ export function getCategoryTheme(category?: string | null): CategoryTheme {
         border: "border-amethyst",
         text: "text-amethyst",
         bg: "bg-amethyst",
+        hoverBg: "hover:bg-amethyst",
         backgroundImage: "bg-[url(/blog/circuit_earth.svg)]",
         groupHoverText: "group-hover:text-amethyst",
       };
@@ -32,6 +34,7 @@ export function getCategoryTheme(category?: string | null): CategoryTheme {
         border: "border-ruby",
         text: "text-ruby",
         bg: "bg-ruby",
+        hoverBg: "hover:bg-ruby",
         backgroundImage: "bg-[url(/blog/entertainment_room.svg)]",
         groupHoverText: "group-hover:text-ruby",
       };
@@ -43,6 +46,7 @@ export function getCategoryTheme(category?: string | null): CategoryTheme {
         border: "border-sapphire",
         text: "text-sapphire",
         bg: "bg-sapphire",
+        hoverBg: "hover:bg-sapphire",
         backgroundImage: "bg-[url(/blog/tech_circuit.svg)]",
         groupHoverText: "group-hover:text-sapphire",
       };
@@ -54,6 +58,7 @@ export function getCategoryTheme(category?: string | null): CategoryTheme {
         border: "border-emerald",
         text: "text-emerald",
         bg: "bg-emerald",
+        hoverBg: "hover:bg-emerald",
         backgroundImage: "bg-[url(/blog/science_trace.svg)]",
         groupHoverText: "group-hover:text-emerald",
       };
@@ -65,6 +70,7 @@ export function getCategoryTheme(category?: string | null): CategoryTheme {
         border: "border-topaz",
         text: "text-topaz",
         bg: "bg-topaz",
+        hoverBg: "hover:bg-topaz",
         backgroundImage: "bg-[url(/blog/pattern_dev.svg)]",
         groupHoverText: "group-hover:text-topaz",
       };
@@ -76,6 +82,7 @@ export function getCategoryTheme(category?: string | null): CategoryTheme {
         border: "border-white",
         text: "text-muted-foreground",
         bg: "bg-muted",
+        hoverBg: "hover:bg-muted",
         backgroundImage: "bg-black",
         groupHoverText: "group-hover:text-muted-foreground",
       };

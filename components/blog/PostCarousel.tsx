@@ -6,6 +6,10 @@ import Image from "next/image";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import { getCategoryTheme } from "@/lib/post/categoryBasedSelector";
 import { formatDate } from "@/lib/post";
+import { Badge } from "@/components/shadcn/ui/badge";
+import { Button } from "@/components/shadcn/ui/button";
+import { Separator } from "@/components/shadcn/ui/separator";
+import { cn } from "@/lib/shadcn/utils";
 
 // ── Config ─────────────────────────────────────────────────────────────────
 /** Maximum number of posts shown in the carousel. Change this freely. */
@@ -62,13 +66,14 @@ export function PostCarousel({ posts, currentSlug }: PostCarouselProps) {
   const checkScroll = useCallback(() => {
     const el = trackRef.current;
     if (!el) return;
-    setCanScrollLeft(el.scrollLeft > 4);
-    setCanScrollRight(el.scrollLeft < el.scrollWidth - el.clientWidth - 4);
+    setCanScrollLeft(el.scrollLeft > 1);
+    setCanScrollRight(el.scrollLeft < el.scrollWidth - el.clientWidth - 1);
   }, []);
 
   useEffect(() => {
     const el = trackRef.current;
     if (!el) return;
+
     checkScroll();
     el.addEventListener("scroll", checkScroll, { passive: true });
     const ro = new ResizeObserver(checkScroll);
@@ -126,30 +131,36 @@ export function PostCarousel({ posts, currentSlug }: PostCarouselProps) {
   return (
     <section
       aria-label="More articles"
-      className="relative w-full border-t border-border/20 pt-10 pb-8 bg-background"
+      className="relative w-full pt-16 pb-8 bg-background"
     >
+      <Separator />
+
       {/* Header row */}
-      <div className="flex items-center justify-between mt-10 px-6 lg:px-8 mb-8">
+      <div className="flex items-center justify-between mt-16 px-6 lg:px-8 mb-8">
         <h2 className="text-2xl font-black tracking-tight text-foreground">
           More to Read
         </h2>
         <div className="flex items-center gap-2">
-          <button
+          <Button
             onClick={() => scroll("left")}
             disabled={!canScrollLeft}
             aria-label="Scroll left"
-            className="flex h-9 w-9 items-center justify-center rounded-full border border-border/30 bg-card/60 backdrop-blur-sm text-foreground/60 transition-all duration-200 hover:bg-card hover:text-foreground hover:scale-110 disabled:opacity-25 disabled:cursor-not-allowed disabled:hover:scale-100"
+            variant="glass"
+            size="icon"
+            className="rounded-full cursor-pointer"
           >
             <ChevronLeft className="h-4 w-4" />
-          </button>
-          <button
+          </Button>
+          <Button
             onClick={() => scroll("right")}
             disabled={!canScrollRight}
             aria-label="Scroll right"
-            className="flex h-9 w-9 items-center justify-center rounded-full border border-border/30 bg-card/60 backdrop-blur-sm text-foreground/60 transition-all duration-200 hover:bg-card hover:text-foreground hover:scale-110 disabled:opacity-25 disabled:cursor-not-allowed disabled:hover:scale-100"
+            variant="glass"
+            size="icon"
+            className="rounded-full cursor-pointer"
           >
             <ChevronRight className="h-4 w-4" />
-          </button>
+          </Button>
         </div>
       </div>
 
@@ -160,13 +171,24 @@ export function PostCarousel({ posts, currentSlug }: PostCarouselProps) {
         onMouseMove={onMouseMove}
         onMouseUp={onDragEnd}
         onMouseLeave={onDragEnd}
-        className="flex gap-6 overflow-x-auto px-6 lg:px-8 pb-4 snap-x snap-mandatory
-                   [scrollbar-width:none] [&::-webkit-scrollbar]:hidden
-                   cursor-grab active:cursor-grabbing select-none"
+        className={cn(
+          "flex gap-6 overflow-x-auto px-6 lg:px-8 pb-8 snap-x snap-mandatory",
+          "[scrollbar-width:none] [&::-webkit-scrollbar]:hidden",
+          "cursor-grab active:cursor-grabbing select-none",
+          "scroll-pl-6 lg:scroll-pl-8",
+          // Dynamic mask to fade edges when scrollable
+          canScrollLeft && canScrollRight 
+            ? "mask-[linear-gradient(to_right,transparent,black_10%,black_90%,transparent)]"
+            : canScrollLeft 
+              ? "mask-[linear-gradient(to_right,transparent,black_10%)]"
+              : canScrollRight
+                ? "mask-[linear-gradient(to_left,transparent,black_10%)]"
+                : "mask-none"
+        )}
       >
         {carouselPosts.map((post) => {
           const catTitle = post.categories?.[0]?.title;
-          const { bg: catBg, text: catText } = getCategoryTheme(catTitle);
+          const { bg: catBg, text: catText, groupHoverText: catGroupHoverText } = getCategoryTheme(catTitle);
 
           return (
             <Link
@@ -176,10 +198,10 @@ export function PostCarousel({ posts, currentSlug }: PostCarouselProps) {
               draggable={false}
               className={`group snap-start shrink-0 ${cardWidthClass}`}
             >
-              <article className="relative flex flex-col h-full rounded-3xl border border-border/20 bg-pearl/60 p-5 shadow-xl backdrop-blur-sm transition-all duration-300 hover:-translate-y-2 hover:shadow-2xl hover:bg-card/60">
+              <article className="relative flex flex-col h-full rounded-3xl border border-border/20 bg-card/66 p-5 shadow-xl backdrop-blur-sm transition-all duration-300 hover:-translate-y-1 hover:shadow-2xl hover:bg-muted/33">
                 {/* Thumbnail */}
                 {post.mainImage?.asset?.url && (
-                  <div className="relative mb-4 w-full aspect-video overflow-hidden rounded-2xl bg-muted/20">
+                  <div className="relative mb-4 w-full aspect-video overflow-hidden rounded-2xl bg-muted/33">
                     <Image
                       src={post.mainImage.asset.url}
                       alt={post.mainImage.alt ?? post.title}
@@ -195,17 +217,15 @@ export function PostCarousel({ posts, currentSlug }: PostCarouselProps) {
                   {formatDate(post.publishedAt)}
                 </time>
 
-                <h3 className="mt-2 text-base font-bold text-foreground leading-snug drop-shadow-sm transition-colors group-hover:text-sapphire line-clamp-2 flex-1">
+                <h3 className={`mt-2 text-base font-bold text-foreground leading-snug drop-shadow-sm transition-colors ${catGroupHoverText} line-clamp-2 flex-1`}>
                   {post.title}
                 </h3>
 
                 <div className="mt-auto pt-4 flex items-center justify-between">
                   {catTitle ? (
-                    <span
-                      className={`inline-flex rounded-full px-2.5 py-1 text-[9px] font-bold uppercase tracking-[0.2em] ${catBg} text-background shadow-sm`}
-                    >
+                    <Badge className={`text-[9px] font-bold uppercase tracking-[0.2em] ${catBg} text-background shadow-sm`}>
                       {catTitle}
-                    </span>
+                    </Badge>
                   ) : (
                     <span />
                   )}

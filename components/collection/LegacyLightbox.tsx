@@ -3,6 +3,7 @@
 import { useState, useEffect, useCallback } from "react";
 import Image from "next/image";
 import { X, ChevronLeft, ChevronRight } from "lucide-react";
+import { Button } from "@/components/shadcn/ui/button";
 
 export interface LegacyDesign {
   id: string;
@@ -60,7 +61,7 @@ export function LegacyLightbox({ designs }: LegacyLightboxProps) {
             key={d.id}
             onClick={() => open(i)}
             aria-label={`View full design for ${d.name}`}
-            className="group relative overflow-hidden rounded-2xl border border-border/20 bg-card/40 backdrop-blur-sm aspect-video cursor-pointer transition-all duration-300 hover:-translate-y-1 hover:shadow-xl hover:border-gold/30 focus:outline-none focus-visible:ring-2 focus-visible:ring-gold/60"
+            className="group relative overflow-hidden rounded-2xl border border-border/20 bg-card/66 backdrop-blur-sm aspect-video cursor-pointer transition-all duration-300 hover:-translate-y-1 hover:shadow-xl hover:border-gold/33 focus:outline-none focus-visible:ring-2 focus-visible:ring-gold/60"
           >
             <Image
               src={d.thumbnail}
@@ -113,13 +114,15 @@ export function LegacyLightbox({ designs }: LegacyLightboxProps) {
                 <span className="text-xs text-iridium font-semibold">
                   {(activeIndex ?? 0) + 1} / {designs.length}
                 </span>
-                <button
+                <Button
                   onClick={close}
                   aria-label="Close lightbox"
-                  className="flex items-center justify-center h-9 w-9 rounded-full border border-border/30 bg-card/60 text-foreground/70 hover:text-gold hover:border-gold/40 transition-all duration-200"
+                  variant="glass"
+                  size="icon"
+                  className="rounded-full hover:text-gold hover:border-gold/33"
                 >
                   <X className="h-4 w-4" />
-                </button>
+                </Button>
               </div>
             </div>
 
@@ -162,20 +165,24 @@ export function LegacyLightbox({ designs }: LegacyLightboxProps) {
             </div>
 
             {/* Prev / Next nav */}
-            <button
+            <Button
               onClick={prev}
               aria-label="Previous design"
-              className="absolute left-2 top-1/2 -translate-y-1/2 flex items-center justify-center h-10 w-10 rounded-full border border-border/30 bg-card/70 backdrop-blur-sm text-foreground/70 hover:text-gold hover:border-gold/40 transition-all duration-200 hover:scale-110"
+              variant="glass"
+              size="icon-lg"
+              className="absolute left-2 top-1/2 -translate-y-1/2 rounded-full hover:text-gold hover:border-gold/33 hover:scale-110"
             >
               <ChevronLeft className="h-5 w-5" />
-            </button>
-            <button
+            </Button>
+            <Button
               onClick={next}
               aria-label="Next design"
-              className="absolute right-2 top-1/2 -translate-y-1/2 flex items-center justify-center h-10 w-10 rounded-full border border-border/30 bg-card/70 backdrop-blur-sm text-foreground/70 hover:text-gold hover:border-gold/40 transition-all duration-200 hover:scale-110"
+              variant="glass"
+              size="icon-lg"
+              className="absolute right-2 top-1/2 -translate-y-1/2 rounded-full hover:text-gold hover:border-gold/33 hover:scale-110"
             >
               <ChevronRight className="h-5 w-5" />
-            </button>
+            </Button>
           </div>
         </div>
       )}

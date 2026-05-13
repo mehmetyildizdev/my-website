@@ -4,6 +4,7 @@ import ArchiveClient from "@/components/blog/ArchiveClient";
 import { MoveLeft } from "lucide-react";
 import { Metadata } from "next";
 import { notFound } from "next/navigation";
+import { Button } from "@/components/shadcn/ui/button";
 
 type Props = {
   params: Promise<{ category: string }>;
@@ -59,14 +60,16 @@ export default async function CategoryPage({ params }: Props) {
     <section className="bg-diamond relative overflow-hidden min-h-screen">
 
       <div className="mx-auto flex max-w-7xl flex-col gap-12 px-6 py-24 sm:px-12 lg:px-16">
-        <Link
-          href="/blog"
-          aria-label="Back to blog"
-          className="group inline-flex w-fit items-center gap-1 px-4 text-sm text-shadow-sm bg-foreground/30 font-medium text-background transition hover:text-foreground rounded-full py-1"
-        >
-          <MoveLeft className="h-4 w-4 group-hover:-translate-x-1 transition-transform duration-300" />
-          Back to Compendium
-        </Link>
+        <Button variant="glass" size="sm" asChild className="w-fit rounded-full bg-foreground/30 text-background hover:text-foreground text-shadow-sm">
+          <Link
+            href="/blog"
+            aria-label="Back to blog"
+            className="group inline-flex items-center gap-1"
+          >
+            <MoveLeft className="h-4 w-4 group-hover:-translate-x-1 transition-transform duration-300" />
+            Back to Compendium
+          </Link>
+        </Button>
         <header className="flex flex-col gap-4 text-left">
           <p className="text-sm font-bold uppercase tracking-[0.3em] text-sapphire drop-shadow-sm">
             Category

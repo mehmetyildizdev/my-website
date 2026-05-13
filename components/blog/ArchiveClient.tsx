@@ -5,6 +5,8 @@ import Link from "next/link";
 import { getCategoryTheme } from "@/lib/post/categoryBasedSelector";
 import Image from "next/image";
 import { formatDate, resolveExcerpt } from "@/lib/post";
+import { Badge } from "@/components/shadcn/ui/badge";
+import { Separator } from "@/components/shadcn/ui/separator";
 
 
 
@@ -44,7 +46,7 @@ export default function ArchiveClient({ allPosts }: { allPosts: Post[] }) {
 
   if (allPosts.length === 0) {
     return (
-      <div className="mt-12 rounded-4xl border border-dashed border-border/40 bg-card/40 p-16 text-center backdrop-blur-sm">
+      <div className="mt-12 rounded-3xl border border-dashed border-border/20 bg-card/66 p-16 text-center backdrop-blur-sm">
         <h2 className="text-3xl font-black text-foreground drop-shadow-md">No posts found</h2>
         <p className="mt-4 text-lg font-medium text-foreground/60">
           This archive is currently empty.
@@ -64,10 +66,10 @@ export default function ArchiveClient({ allPosts }: { allPosts: Post[] }) {
             <li key={post._id} className="h-full">
               <Link
                 href={`/blog/post/${post.slug.current}`}
-                className="group relative flex h-full flex-col sm:flex-row gap-5 rounded-3xl border border-border/20 bg-pearl p-5 shadow-xl backdrop-blur-sm transition-all duration-300 hover:-translate-y-1 hover:shadow-2xl hover:bg-card/90"
+                className="group relative flex h-full flex-col sm:flex-row gap-5 rounded-3xl border border-border/20 bg-card/66 p-5 shadow-xl backdrop-blur-sm transition-all duration-300 hover:-translate-y-1 hover:shadow-2xl hover:bg-card"
               >
                 {post.mainImage?.asset?.url && (
-                  <div className="relative w-full sm:w-1/3 h-48 sm:h-auto shrink-0 overflow-hidden rounded-2xl bg-muted/20">
+                  <div className="relative w-full sm:w-1/3 h-48 sm:h-auto shrink-0 overflow-hidden rounded-2xl bg-muted/33">
                     <Image
                       src={post.mainImage.asset.url}
                       alt={post.mainImage.alt ?? post.title}
@@ -85,9 +87,9 @@ export default function ArchiveClient({ allPosts }: { allPosts: Post[] }) {
                     </time>
 
                     {catTitle && (
-                      <span className={`inline-flex rounded-full px-2 py-0.5 text-[9px] font-bold uppercase tracking-[0.15em] ${catBg} text-background shadow-sm`}>
+                      <Badge className={`text-[9px] font-bold uppercase tracking-[0.15em] ${catBg} text-background shadow-sm`}>
                         {catTitle}
-                      </span>
+                      </Badge>
                     )}
                   </div>
 
@@ -124,7 +126,8 @@ export default function ArchiveClient({ allPosts }: { allPosts: Post[] }) {
       )}
 
       {!hasMore && displayedPosts.length > 0 && (
-        <div className="py-12 mt-6 text-center text-foreground/40 font-bold text-sm tracking-widest uppercase border-t border-border/30">
+        <div className="py-12 mt-6 text-center text-foreground/40 font-bold text-sm tracking-widest uppercase">
+          <Separator className="mb-6" />
           You&apos;ve reached the end
         </div>
       )}

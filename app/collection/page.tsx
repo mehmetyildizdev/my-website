@@ -18,6 +18,9 @@ import {
 import { ExternalLink, Sparkles } from "lucide-react";
 import { LegacyLightbox } from "@/components/collection/LegacyLightbox";
 import { legacyDesigns } from "@/lib/collection/data";
+import { Separator } from "@/components/shadcn/ui/separator";
+import { Badge } from "@/components/shadcn/ui/badge";
+import { Button } from "@/components/shadcn/ui/button";
 
 export const metadata: Metadata = {
   title: "Collection | Mehmet Yildiz",
@@ -65,15 +68,14 @@ function SectionDivider({
   hrefLabel?: string;
 }) {
   return (
-    <div className="flex items-center justify-between border-b border-border/40 pb-4 mb-8">
+    <div className="flex items-center justify-between pb-4 mb-8">
       <h2 className="text-3xl font-black text-foreground">{label}</h2>
       {href && hrefLabel && (
-        <Link
-          href={href}
-          className="text-sm font-bold uppercase tracking-widest text-link hover:text-link-hover transition-colors duration-200 z-10 relative"
-        >
-          {hrefLabel} →
-        </Link>
+        <Button variant="link" asChild className="text-sm font-bold uppercase tracking-widest text-link hover:text-link-hover z-10 relative no-underline hover:no-underline">
+          <Link href={href}>
+            {hrefLabel} →
+          </Link>
+        </Button>
       )}
     </div>
   );
@@ -92,7 +94,7 @@ export default function CollectionPage() {
 
         {/* ── Page header ───────────────────────────────────────────── */}
         <header className="flex flex-col gap-4 text-left">
-          <h1 className="text-5xl font-black tracking-tight md:text-6xl text-shadow-lg">
+          <h1 className="text-5xl font-black tracking-tight md:text-6xl text-shadow-primary">
             Collection
           </h1>
           <p className="text-lg font-medium text-shadow-sm">
@@ -105,9 +107,10 @@ export default function CollectionPage() {
         ════════════════════════════════════════════════════════════ */}
         <div id="memovolume">
           <SectionDivider label="Featured Project" />
+          <Separator className="mb-8" />
 
           {/* Hero card */}
-          <article className="relative overflow-hidden rounded-4xl border border-border/20 bg-pearl/80 shadow-2xl backdrop-blur-md transition-all duration-500 hover:bg-card/90 hover:shadow-gold/10 hover:border-gold/20">
+          <article className="relative overflow-hidden rounded-3xl border border-border/20 bg-card/66 shadow-2xl backdrop-blur-md transition-all duration-500 hover:bg-card hover:shadow-gold/10 hover:border-gold/33">
 
             {/* Accent gradient strip behind content */}
             <div className="absolute inset-0 bg-linear-to-tl from-silver/25 via-transparent to-pearl pointer-events-none" />
@@ -117,9 +120,9 @@ export default function CollectionPage() {
               {/* Left Column (Image & Main Description) - Spans 8 cols */}
               <div className="lg:col-span-8 flex flex-col border-b lg:border-b-0 lg:border-r border-border/20">
                 {/* 16:9 Image */}
-                <div className="relative w-full aspect-video bg-obsidian/10 border-b border-border/20 overflow-hidden lg:rounded-tl-4xl">
+                <div className="relative w-full aspect-video bg-muted/33 border-b border-border/20 overflow-hidden lg:rounded-tl-3xl">
                   {/* Corner Wrap Badge */}
-                  <div className="absolute top-6 -right-16 z-20 w-56 rotate-45 bg-sapphire/50 backdrop-blur-md border-y border-sapphire/40 text-foreground text-[10px] font-black tracking-widest uppercase py-2 shadow-xl flex items-center justify-center gap-2 pointer-events-auto">
+                  <div className="absolute top-6 -right-16 z-20 w-56 rotate-45 bg-sapphire/50 backdrop-blur-md border-y border-sapphire/33 text-foreground text-[10px] font-black tracking-widest uppercase py-2 shadow-xl flex items-center justify-center gap-2 pointer-events-auto">
                     <FaMicrosoft className="text-xs" />
                     Windows 11
                   </div>
@@ -149,9 +152,9 @@ export default function CollectionPage() {
                 {/* Description Text */}
                 <div className="p-8 lg:p-10 flex flex-col gap-5">
                   <div>
-                    <p className="text-xs font-black uppercase tracking-widest text-gold mb-2">
+                    <Badge variant="subtle" className="text-[9px] font-black uppercase tracking-widest text-gold bg-transparent border-0 px-0 mb-2">
                       WPF · .NET 10 · Desktop
-                    </p>
+                    </Badge>
                     <h2 className="text-4xl md:text-5xl font-extrabold text-foreground leading-tight text-shadow-sm">
                       MemoVolume
                     </h2>
@@ -168,7 +171,7 @@ export default function CollectionPage() {
               </div>
 
               {/* Right Column (Meta & Actions) - Spans 4 cols */}
-              <div className="lg:col-span-4 flex flex-col justify-center gap-10 p-8 lg:p-10 bg-sapphire/5 lg:rounded-tr-4xl lg:rounded-br-4xl">
+              <div className="lg:col-span-4 flex flex-col justify-center gap-10 p-8 lg:p-10 bg-sapphire/5 lg:rounded-tr-3xl lg:rounded-br-3xl">
 
                 {/* Tech Stack List */}
                 <div className="flex flex-col gap-4">
@@ -179,8 +182,8 @@ export default function CollectionPage() {
                       { label: "WPF", icon: <FaMicrosoft className="text-sapphire" />, desc: "UI Library" },
                       { label: "C#", icon: <SiSharp className="text-amethyst" />, desc: "Language" },
                     ].map((t) => (
-                      <div key={t.label} className="flex items-center gap-4 p-3 rounded-xl bg-card/60 border border-border/30 shadow-sm transition-colors hover:border-sapphire/30">
-                        <div className="w-10 h-10 rounded-lg bg-background flex items-center justify-center border border-border/50 shadow-inner">
+                      <div key={t.label} className="flex items-center gap-4 p-3 rounded-xl bg-card/66 border border-border/20 shadow-sm transition-colors hover:border-sapphire/33">
+                        <div className="w-10 h-10 rounded-lg bg-background flex items-center justify-center border border-border/20 shadow-inner">
                           {t.icon}
                         </div>
                         <div className="flex flex-col">
@@ -194,27 +197,31 @@ export default function CollectionPage() {
 
                 {/* CTAs */}
                 <div className="flex flex-col gap-3 mt-2">
-                  <a
-                    href="https://apps.microsoft.com/detail/9nwqjj04fgsq"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    aria-label="Get MemoVolume on Microsoft Store"
-                    className="inline-flex items-center justify-center gap-2 px-5 py-3.5 rounded-xl bg-linear-to-tl from-sapphire/80 to-sapphire/40 text-foreground text-sm font-bold shadow-md transition-all duration-200 hover:-translate-y-0.5 hover:shadow-sapphire/30 hover:shadow-lg w-full group"
-                  >
-                    <FaMicrosoft className="text-base" />
-                    Microsoft Store
-                    <ExternalLink className="h-4 w-4 opacity-70 ml-auto group-hover:opacity-100 transition-opacity" />
-                  </a>
-                  <a
-                    href="https://github.com/mehmetyildizdev/MemoVolume"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    aria-label="View MemoVolume source code on GitHub"
-                    className="inline-flex items-center justify-center gap-2 px-5 py-3.5 rounded-xl border border-border/40 bg-card/60 text-foreground text-sm font-bold backdrop-blur-sm transition-all duration-200 hover:-translate-y-0.5 hover:border-gold/40 hover:text-gold w-full group"
-                  >
-                    <FaGithub className="text-base group-hover:text-gold transition-colors" />
-                    View Source
-                  </a>
+                  <Button asChild className="w-full rounded-xl bg-linear-to-tl from-sapphire/80 to-sapphire/40 text-foreground font-bold shadow-md hover:-translate-y-0.5 hover:shadow-sapphire/30 hover:shadow-lg">
+                    <a
+                      href="https://apps.microsoft.com/detail/9nwqjj04fgsq"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      aria-label="Get MemoVolume on Microsoft Store"
+                      className="group inline-flex items-center justify-center gap-2"
+                    >
+                      <FaMicrosoft className="text-base" />
+                      Microsoft Store
+                      <ExternalLink className="h-4 w-4 opacity-70 ml-auto group-hover:opacity-100 transition-opacity" />
+                    </a>
+                  </Button>
+                  <Button variant="glass" asChild className="w-full rounded-xl font-bold hover:-translate-y-0.5 hover:border-gold/33 hover:text-gold">
+                    <a
+                      href="https://github.com/mehmetyildizdev/MemoVolume"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      aria-label="View MemoVolume source code on GitHub"
+                      className="group inline-flex items-center justify-center gap-2"
+                    >
+                      <FaGithub className="text-base group-hover:text-gold transition-colors" />
+                      View Source
+                    </a>
+                  </Button>
                 </div>
               </div>
 
@@ -227,11 +234,12 @@ export default function CollectionPage() {
         ════════════════════════════════════════════════════════════ */}
         <div id="software">
           <SectionDivider label="Software" />
+          <Separator className="mb-8" />
 
-          <article className="group relative flex flex-col sm:flex-row items-start gap-6 rounded-3xl border border-border/20 bg-pearl/60 p-6 shadow-md backdrop-blur-sm transition-all duration-300 hover:-translate-y-1 hover:shadow-xl hover:bg-card/90 hover:border-gold/20">
+          <article className="group relative flex flex-col sm:flex-row items-start gap-6 rounded-3xl border border-border/20 bg-card/66 p-6 shadow-md backdrop-blur-sm transition-all duration-300 hover:-translate-y-1 hover:shadow-xl hover:bg-card hover:border-gold/33">
 
             {/* Icon block */}
-            <div className="flex h-14 w-14 shrink-0 items-center justify-center rounded-2xl border border-gold/25 bg-gold/10 shadow-inner">
+            <div className="flex h-14 w-14 shrink-0 items-center justify-center rounded-2xl border border-gold/33 bg-gold/10 shadow-inner">
               <FaMicrophoneAlt className="text-2xl text-gold" />
             </div>
 
@@ -239,24 +247,26 @@ export default function CollectionPage() {
               {/* Header row */}
               <div className="flex flex-wrap items-start justify-between gap-3">
                 <div>
-                  <p className="text-xs font-black uppercase tracking-widest text-gold">
+                  <Badge variant="subtle" className="text-[9px] font-black uppercase tracking-widest text-gold bg-transparent border-0 px-0">
                     Audio · TTS · CLI Tool
-                  </p>
+                  </Badge>
                   <h3 className="text-2xl font-bold text-foreground leading-snug mt-1 group-hover:text-gold transition-colors duration-200">
                     VoiceSync
                   </h3>
                 </div>
-                <a
-                  href="https://github.com/mehmetyildizdev/voicesync"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  aria-label="View VoiceSync on GitHub"
-                  className="inline-flex items-center gap-2 px-4 py-2 rounded-xl border border-border/40 bg-card/60 text-foreground text-sm font-bold backdrop-blur-sm transition-all duration-200 hover:border-gold/40 hover:text-gold"
-                >
-                  <FaGithub className="text-base" />
-                  GitHub
-                  <ExternalLink className="h-3 w-3 opacity-60" />
-                </a>
+                <Button variant="glass" asChild className="rounded-xl font-bold hover:border-gold/33 hover:text-gold">
+                  <a
+                    href="https://github.com/mehmetyildizdev/voicesync"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    aria-label="View VoiceSync on GitHub"
+                    className="inline-flex items-center gap-2"
+                  >
+                    <FaGithub className="text-base" />
+                    GitHub
+                    <ExternalLink className="h-3 w-3 opacity-60" />
+                  </a>
+                </Button>
               </div>
 
               {/* Description */}
@@ -270,13 +280,10 @@ export default function CollectionPage() {
               {/* Tech badges */}
               <div className="flex flex-wrap gap-2 mt-1">
                 {voiceSyncTags.map((t) => (
-                  <span
-                    key={t.label}
-                    className="inline-flex items-center gap-1.5 px-3 py-1 rounded-lg border border-border/30 bg-card/60 text-xs font-semibold text-foreground/80"
-                  >
+                  <Badge key={t.label} variant="subtle">
                     {t.icon}
                     {t.label}
-                  </span>
+                  </Badge>
                 ))}
               </div>
             </div>
@@ -288,12 +295,13 @@ export default function CollectionPage() {
         ════════════════════════════════════════════════════════════ */}
         <div id="legacy">
           <SectionDivider label="Legacy WordPress Designs" />
+          <Separator className="mb-8" />
 
           <div className="mb-6 flex items-center gap-3">
-            <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-lg border border-border/30 bg-card/40 text-xs font-semibold text-iridium">
+            <Badge variant="subtle">
               <SiWordpress className="text-[#21759b]" />
               WordPress
-            </span>
+            </Badge>
             <p className="text-sm text-metadata">
               Click any card to view the full-height page design in a scrollable
               lightbox.
@@ -308,9 +316,10 @@ export default function CollectionPage() {
         ════════════════════════════════════════════════════════════ */}
         <div id="roadmap">
           <SectionDivider label="On the Horizon" />
+          <Separator className="mb-8" />
 
           {/* Glassmorphism teaser card */}
-          <div className="relative overflow-hidden rounded-4xl border border-border/20 bg-pearl/60 shadow-2xl backdrop-blur-md">
+          <div className="relative overflow-hidden rounded-3xl border border-border/20 bg-card/66 shadow-2xl backdrop-blur-md">
 
             {/* Background blurred dashboard hint */}
             <div className="absolute inset-0 pointer-events-none select-none" aria-hidden>
@@ -357,13 +366,13 @@ export default function CollectionPage() {
               </div>
 
               {/* COMING SOON badge */}
-              <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full border border-gold/30 bg-gold/10 text-gold text-xs font-black uppercase tracking-[0.25em]">
+              <Badge variant="subtle" className="border-gold/33 bg-gold/10 text-gold text-xs font-black uppercase tracking-[0.25em]">
                 <span className="relative flex h-2 w-2">
                   <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-gold opacity-60" />
                   <span className="relative inline-flex rounded-full h-2 w-2 bg-gold" />
                 </span>
                 Coming Soon
-              </div>
+              </Badge>
 
               <h2 className="text-4xl md:text-5xl font-black text-foreground leading-tight text-shadow-sm">
                 Screen
@@ -375,14 +384,16 @@ export default function CollectionPage() {
                 and decade analytics — all synced via Trakt.
               </p>
 
-              <Link
-                href="/collection/screen"
-                className="inline-flex items-center gap-2 px-6 py-3 rounded-xl bg-sapphire/10 border border-sapphire/30 text-sapphire text-sm font-bold transition-all duration-200 hover:-translate-y-0.5 hover:bg-sapphire/20 hover:shadow-lg hover:shadow-sapphire/10"
-                aria-label="Preview the Screen dashboard"
-              >
-                Preview Dashboard
-                <ExternalLink className="h-3.5 w-3.5 opacity-70" />
-              </Link>
+              <Button variant="glass" asChild className="rounded-xl font-bold border-sapphire/33 text-sapphire hover:bg-sapphire/20 hover:shadow-lg hover:shadow-sapphire/10">
+                <Link
+                  href="/collection/screen"
+                  aria-label="Preview the Screen dashboard"
+                  className="inline-flex items-center gap-2"
+                >
+                  Preview Dashboard
+                  <ExternalLink className="h-3.5 w-3.5 opacity-70" />
+                </Link>
+              </Button>
             </div>
           </div>
         </div>

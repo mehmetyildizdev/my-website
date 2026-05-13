@@ -69,7 +69,7 @@ export default function NavBar() {
         className={cn(
           "fixed top-0 w-full h-16 z-999 transition-all duration-500 border-b border-transparent",
           shadow
-            ? "bg-background/80 backdrop-blur-md border-border/33 shadow-[0_5px_5px_-5px_rgba(220,177,24,0.3)]"
+            ? "bg-background/80 backdrop-blur-md border-border/20 shadow-[0_5px_5px_-5px_rgba(220,177,24,0.3)]"
             : "bg-transparent"
         )}
       >
