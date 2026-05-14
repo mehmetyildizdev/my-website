@@ -1,7 +1,8 @@
+import { cache } from "react";
 import { client } from "@/sanity/lib/client";
 import { ALL_POSTS_QUERY, POST_BY_SLUG_QUERY } from "./queries";
 
-export async function fetchAllPosts(): Promise<Post[]> {
+export const fetchAllPosts = cache(async (): Promise<Post[]> => {
   return client.fetch<Post[]>(
     ALL_POSTS_QUERY,
     {},
@@ -9,9 +10,9 @@ export async function fetchAllPosts(): Promise<Post[]> {
       next: { revalidate: 604800 }, // Cache for 7 days
     }
   );
-}
+});
 
-export async function fetchPostBySlug(slug: string): Promise<Post | null> {
+export const fetchPostBySlug = cache(async (slug: string): Promise<Post | null> => {
   return client.fetch<Post | null>(
     POST_BY_SLUG_QUERY,
     { slug },
@@ -19,4 +20,4 @@ export async function fetchPostBySlug(slug: string): Promise<Post | null> {
       next: { revalidate: 604800 }, // Cache for 7 days
     }
   );
-}
+});

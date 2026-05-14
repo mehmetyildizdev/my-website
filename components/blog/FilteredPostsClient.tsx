@@ -8,10 +8,11 @@ import { formatDate } from "@/lib/post";
 import { Badge } from "@/components/shadcn/ui/badge";
 import { Button } from "@/components/shadcn/ui/button";
 import { cn } from "@/lib/shadcn/utils";
-
-
+import { Skeleton } from "@/components/shadcn/ui/skeleton";
+import React from "react";
 
 export function FilteredPostsClient({ allPosts, defaultCat = "Insight" }: { allPosts: Post[], defaultCat?: string }) {
+  const [loadedImages, setLoadedImages] = useState<Record<string, boolean>>({});
   // Extract unique categories from posts, default to ["Insight"] if none exist
   const categoriesSet = new Set<string>();
   allPosts.forEach(post => {
@@ -74,6 +75,7 @@ export function FilteredPostsClient({ allPosts, defaultCat = "Insight" }: { allP
         {filteredPosts.map((post) => {
           const catTitle = post.categories?.[0]?.title;
           const { bg: catBg, text: catText, groupHoverText: catGroupHoverText } = getCategoryTheme(catTitle);
+          const isLoaded = loadedImages[post._id];
 
           return (
             <Link href={`/blog/post/${post.slug.current}`} key={post._id}>
@@ -82,11 +84,13 @@ export function FilteredPostsClient({ allPosts, defaultCat = "Insight" }: { allP
               >
                 {post.mainImage?.asset?.url && (
                   <div className="relative mb-4 w-full h-32 overflow-hidden rounded-2xl bg-muted/33">
+                    {!isLoaded && <Skeleton className="absolute inset-0 z-10 h-full w-full bg-foreground/5" />}
                     <Image
                       src={post.mainImage.asset.url}
                       alt={post.mainImage.alt ?? post.title}
                       fill
-                      className="object-cover transition-transform duration-700 group-hover:scale-105"
+                      onLoad={() => setLoadedImages(prev => ({ ...prev, [post._id]: true }))}
+                      className={`object-cover transition-all duration-700 group-hover:scale-105 ${isLoaded ? "opacity-100 blur-0" : "opacity-0 blur-xl"}`}
                       sizes="(max-width: 768px) 100vw, 25vw"
                     />
                   </div>

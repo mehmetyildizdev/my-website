@@ -10,22 +10,31 @@ import { Separator } from "@/components/shadcn/ui/separator";
 
 
 
-const POSTS_PER_PAGE = 8;
+import { Skeleton } from "@/components/shadcn/ui/skeleton";
 
-export default function ArchiveClient({ allPosts }: { allPosts: Post[] }) {
+export default function ArchiveClient({ 
+  allPosts, 
+  layout = "grid" 
+}: { 
+  allPosts: Post[];
+  layout?: "grid" | "list";
+}) {
+  const postsPerPage = layout === "list" ? 4 : 8;
+  
   const [displayedPosts, setDisplayedPosts] = useState<Post[]>(
-    allPosts.slice(0, POSTS_PER_PAGE)
+    allPosts.slice(0, postsPerPage)
   );
   const [page, setPage] = useState(1);
+  const [loadedImages, setLoadedImages] = useState<Record<string, boolean>>({});
   const observerTarget = useRef<HTMLDivElement>(null);
 
   const hasMore = displayedPosts.length < allPosts.length;
 
   const loadMore = useCallback(() => {
-    const nextLimit = (page + 1) * POSTS_PER_PAGE;
+    const nextLimit = (page + 1) * postsPerPage;
     setDisplayedPosts(allPosts.slice(0, nextLimit));
     setPage((prev) => prev + 1);
-  }, [allPosts, page]);
+  }, [allPosts, page, postsPerPage]);
 
   useEffect(() => {
     const target = observerTarget.current;
@@ -55,12 +64,15 @@ export default function ArchiveClient({ allPosts }: { allPosts: Post[] }) {
     );
   }
 
+  const gridClass = layout === "list" ? "grid-cols-1" : "grid-cols-1 md:grid-cols-2";
+
   return (
     <div className="mt-12 flex flex-col gap-8 w-full">
-      <ul className="grid gap-8 md:grid-cols-2">
-        {displayedPosts.map((post) => {
+      <ul className={`grid gap-8 ${gridClass}`}>
+        {displayedPosts.map((post, index) => {
           const catTitle = post.categories?.[0]?.title;
           const { bg: catBg, text: catText, groupHoverText: catHoverText } = getCategoryTheme(catTitle);
+          const isLoaded = loadedImages[post._id];
 
           return (
             <li key={post._id} className="h-full">
@@ -70,11 +82,14 @@ export default function ArchiveClient({ allPosts }: { allPosts: Post[] }) {
               >
                 {post.mainImage?.asset?.url && (
                   <div className="relative w-full sm:w-1/3 h-48 sm:h-auto shrink-0 overflow-hidden rounded-2xl bg-muted/33">
+                    {!isLoaded && <Skeleton className="absolute inset-0 z-10 h-full w-full bg-foreground/5" />}
                     <Image
                       src={post.mainImage.asset.url}
                       alt={post.mainImage.alt ?? post.title}
                       fill
-                      className="object-cover transition-transform duration-700 group-hover:scale-105"
+                      priority={index < 2}
+                      onLoad={() => setLoadedImages(prev => ({ ...prev, [post._id]: true }))}
+                      className={`object-cover transition-all duration-700 group-hover:scale-105 ${isLoaded ? "opacity-100 blur-0" : "opacity-0 blur-xl"}`}
                       sizes="(max-width: 768px) 100vw, 33vw"
                     />
                   </div>

@@ -1,14 +1,12 @@
 import Link from "next/link";
-import Image from "next/image";
 import { getCategoryTheme } from "@/lib/post/categoryBasedSelector";
-import { getAllPosts, formatDate, resolveExcerpt } from "@/lib/post";
+import { getAllPosts } from "@/lib/post";
 import { FilteredPostsClient } from "@/components/blog/FilteredPostsClient";
 import { Metadata } from "next";
 import { Separator } from "@/components/shadcn/ui/separator";
-import { Badge } from "@/components/shadcn/ui/badge";
 import { Button } from "@/components/shadcn/ui/button";
-import { Card } from "@/components/shadcn/ui/card";
-import { HeroImageContent } from "@/components/blog/HeroImageContent";
+import { FeaturedPost } from "@/components/blog/FeaturedPost";
+import { LatestPostsList } from "@/components/blog/LatestPostsList";
 
 export const metadata: Metadata = {
   title: "Blog | Mehmet Yildiz",
@@ -83,109 +81,8 @@ export default async function Blog() {
         {latestPost ? (
           <>
             <div className="grid gap-8 lg:grid-cols-12 mt-8">
-
-              {/* Featured Post Area (Left - 8 cols) */}
-              <div className="lg:col-span-8">
-                <Link href={`/blog/post/${latestPost.slug.current}`} className="group block h-full">
-                  <Card className="h-full bg-card/66 backdrop-blur-md border-border/20 transition-all duration-500 hover:shadow-silver/20 hover:bg-muted/33 flex flex-col p-6 rounded-3xl overflow-hidden border-2">
-                    {/* Featured Image */}
-                    {latestPost.mainImage?.asset?.url && (
-                      <div className="relative w-full h-72 shrink-0 mb-2">
-                        <HeroImageContent
-                          kind="image"
-                          url={latestPost.mainImage.asset.url}
-                          alt={latestPost.mainImage.alt ?? latestPost.title}
-                          themeBg="bg-muted/33"
-                          priority
-                        />
-                      </div>
-                    )}
-
-                    {/* Featured Content */}
-                    <div className="flex flex-col justify-center flex-1">
-                      <div className="flex items-center gap-3">
-                        <Badge variant="ghost" className={`text-xs font-black uppercase tracking-widest ${featuredTheme.text} bg-transparent border-0 px-0`}>
-                          {latestPost.categories?.[0]?.title}
-                        </Badge>
-                        <div className="h-1 w-1 rounded-full bg-foreground/30" />
-                        <time className="text-xs font-semibold uppercase tracking-widest text-metadata">
-                          {formatDate(latestPost.publishedAt)}
-                        </time>
-                      </div>
-                      <h2 className={`mt-4 text-2xl md:text-4xl font-extrabold text-foreground leading-tight text-shadow-sm transition-colors ${featuredTheme.groupHoverText}`}>
-                        {latestPost.title}
-                      </h2>
-                      <p className="text-metadata mt-4 leading-relaxed line-clamp-3">
-                        {latestPost.metaDescription}
-                      </p>
-                    </div>
-                  </Card>
-                </Link>
-              </div>
-
-              {/* Next 4 Latest Posts Area (Right - 4 cols) */}
-              <div className="lg:col-span-4 flex flex-col">
-                <div className="flex flex-col justify-center gap-4 h-full flex-1">
-                  {nextPosts.map((post) => {
-                    const catTitle = post.categories?.[0]?.title;
-                    const theme = getCategoryTheme(catTitle);
-
-                    return (
-                      <Link href={`/blog/post/${post.slug.current}`} key={post._id}>
-                        <article
-                          className="group relative flex items-center gap-4 rounded-3xl border border-border/20 bg-card/66 p-3 shadow-md backdrop-blur-sm transition-all duration-300 hover:-translate-y-1 hover:shadow-xl hover:bg-muted/33"
-                        >
-                          {/* Thumbnail */}
-                          {post.mainImage?.asset?.url && (
-                            <div className="relative h-20 w-24 shrink-0 overflow-hidden rounded-2xl bg-muted/33">
-                              <Image
-                                src={post.mainImage.asset.url}
-                                alt={post.mainImage.alt ?? post.title}
-                                fill
-                                className="object-cover transition-transform duration-500 group-hover:scale-110"
-                                sizes="96px"
-                                loading="lazy"
-                              />
-                            </div>
-                          )}
-
-                          {/* Content */}
-                          <div className="flex flex-col justify-center flex-1 pr-2 min-w-0">
-                            <div className="flex items-center gap-2 mb-1">
-                              {catTitle && (
-                                <Badge variant="ghost" className={`text-[9px] font-black uppercase tracking-[0.2em] ${theme.text} bg-transparent border-0 px-0`}>
-                                  {catTitle}
-                                </Badge>
-                              )}
-                            </div>
-                            <h4 className={`text-sm md:text-base font-bold text-foreground leading-snug drop-shadow-sm transition-colors ${theme.groupHoverText} line-clamp-2`}>
-                              {post.title}
-                            </h4>
-                            <time className="mt-1 text-[10px] font-semibold uppercase tracking-widest text-metadata block truncate">
-                              {formatDate(post.publishedAt)}
-                            </time>
-                          </div>
-                        </article>
-                      </Link>
-                    );
-                  })}
-                </div>
-              </div>
-            </div>
-
-            {/* Filtered Category Posts Section */}
-            <div className="mt-24">
-              <div className="flex items-center justify-between pb-4 mb-8">
-                <h3 className="text-3xl font-black text-foreground">Latest Posts</h3>
-                <Button variant="link" asChild className="text-sm font-bold uppercase tracking-widest text-link hover:text-link-hover z-10 relative no-underline hover:no-underline">
-                  <Link href="/blog/archive">
-                    Post Archive →
-                  </Link>
-                </Button>
-              </div>
-              <Separator className="mb-8" />
-
-              <FilteredPostsClient allPosts={posts} defaultCat="Insight" />
+              <FeaturedPost post={latestPost} />
+              <LatestPostsList posts={nextPosts} />
             </div>
           </>
         ) : (
@@ -194,6 +91,23 @@ export default async function Blog() {
             <p className="mt-4 text-lg font-medium text-foreground/60">
               Check back soon—fresh writing is on the way.
             </p>
+          </div>
+        )}
+
+        {/* Filtered Category Posts Section */}
+        {posts.length > 0 && (
+          <div className="mt-24">
+            <div className="flex items-center justify-between pb-4 mb-8">
+              <h3 className="text-3xl font-black text-foreground">Latest Posts</h3>
+              <Button variant="link" asChild className="text-sm font-bold uppercase tracking-widest text-link hover:text-link-hover z-10 relative no-underline hover:no-underline">
+                <Link href="/blog/archive">
+                  Post Archive →
+                </Link>
+              </Button>
+            </div>
+            <Separator className="mb-8" />
+
+            <FilteredPostsClient allPosts={posts} defaultCat="Insight" />
           </div>
         )}
       </div>
