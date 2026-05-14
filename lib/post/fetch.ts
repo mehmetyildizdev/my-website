@@ -6,7 +6,7 @@ export async function fetchAllPosts(): Promise<Post[]> {
     ALL_POSTS_QUERY,
     {},
     {
-      next: { revalidate: 86400 }, // Cache for 24 hours
+      next: { revalidate: 604800 }, // Cache for 7 days
     }
   );
 }
@@ -16,7 +16,7 @@ export async function fetchPostBySlug(slug: string): Promise<Post | null> {
     POST_BY_SLUG_QUERY,
     { slug },
     {
-      next: { revalidate: 3600 }, // Cache for 1 hour
+      next: { revalidate: 604800 }, // Cache for 7 days
     }
   );
 }

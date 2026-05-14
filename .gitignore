@@ -4,6 +4,7 @@
 AGENTS.md
 SECURITY-REVIEW-REPORT.md
 /app/backup.css
+/app/test/
 # dependencies
 /node_modules
 /.pnp
