@@ -63,7 +63,7 @@ export default async function BlogPostPageVariant({
 
       <div className="flex flex-col gap-4">
         <div className="flex items-center justify-between">
-          <Button variant="glass" size="sm" asChild className="rounded-none bg-foreground/10 text-background hover:text-foreground text-shadow-sm">
+          <Button variant="glass" size="sm" asChild className="rounded-none text-platinum text-shadow-sm">
             <Link
               href="/blog"
               aria-label="Back to blog"
@@ -168,7 +168,7 @@ export default async function BlogPostPageVariant({
                     {tags.map((tag) => (
                       <Badge
                         key={tag}
-                        className={`text-xs text-shadow-md font-semibold uppercase tracking-[0.15em] ${theme.bg} text-background shadow-sm transition-transform hover:scale-105`}
+                        className={`text-sm text-shadow-md font-semibold uppercase tracking-[0.15em] ${theme.bg} text-pearl text-shadow-foreground transition-transform hover:scale-105`}
                       >
                         {tag}
                       </Badge>

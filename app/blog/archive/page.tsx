@@ -45,7 +45,7 @@ export default async function ArchivePage() {
           <p className="text-sm font-bold uppercase tracking-[0.3em] text-sapphire drop-shadow-sm">
             Archive
           </p>
-          <h1 className="text-4xl font-black tracking-tight text-foreground md:text-5xl text-shadow-lg">
+          <h1 className="text-4xl font-black tracking-tight text-gold md:text-5xl text-shadow-lg">
             All Posts
           </h1>
           <p className="text-lg text-foreground/80 font-medium max-w-2xl text-shadow-sm">

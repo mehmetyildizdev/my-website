@@ -60,13 +60,13 @@ export default function ArchiveClient({ allPosts }: { allPosts: Post[] }) {
       <ul className="grid gap-8 md:grid-cols-2">
         {displayedPosts.map((post) => {
           const catTitle = post.categories?.[0]?.title;
-          const { bg: catBg, text: catText } = getCategoryTheme(catTitle);
+          const { bg: catBg, text: catText, groupHoverText: catHoverText } = getCategoryTheme(catTitle);
 
           return (
             <li key={post._id} className="h-full">
               <Link
                 href={`/blog/post/${post.slug.current}`}
-                className="group relative flex h-full flex-col sm:flex-row gap-5 rounded-3xl border border-border/20 bg-card/66 p-5 shadow-xl backdrop-blur-sm transition-all duration-300 hover:-translate-y-1 hover:shadow-2xl hover:bg-card"
+                className="group relative flex h-full flex-col sm:flex-row gap-5 rounded-3xl border border-border/20 bg-card/66 p-5 shadow-xl backdrop-blur-sm transition-all duration-300 hover:-translate-y-1 hover:shadow-2xl hover:bg-muted/33"
               >
                 {post.mainImage?.asset?.url && (
                   <div className="relative w-full sm:w-1/3 h-48 sm:h-auto shrink-0 overflow-hidden rounded-2xl bg-muted/33">
@@ -93,7 +93,7 @@ export default function ArchiveClient({ allPosts }: { allPosts: Post[] }) {
                     )}
                   </div>
 
-                  <h4 className="mt-1 text-lg font-bold text-foreground leading-snug drop-shadow-sm transition-colors group-hover:text-sapphire line-clamp-2">
+                  <h4 className={`mt-1 text-lg font-bold text-foreground leading-snug drop-shadow-sm transition-colors ${catHoverText} line-clamp-2`}>
                     {post.title}
                   </h4>
 

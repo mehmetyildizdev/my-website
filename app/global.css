@@ -52,6 +52,13 @@
 }
 
 @theme {
+  /* color reset */
+  --color-*: initial;
+  --color-amber-500: #f59e0b; /* Tauri */
+  --color-orange-500: #f97316; /* Rust */
+  --color-yellow-500: #eab308; /* Star icon */
+  --color-teal-600: #0d9488; /* Tailwind icon */
+
   --animate-bgAnimate: bgAnimate 9s linear infinite;
   --animate-bgAnimate-rev: bgAnimate-rev 4s linear infinite reverse;
   --animate-bgAnimate-m: bgAnimate-m 9s linear infinite;
@@ -72,25 +79,25 @@
   /* container ui */
   --color-card: var(--pearl);
   --color-card-foreground: var(--platinum);
-  --color-popover: var(--pearl);
-  --color-popover-foreground: var(--platinum);
+  --color-popover: var(--diamond);
+  --color-popover-foreground: var(--topaz);
 
   /* interactive ui */
-  --color-primary: var(--emerald);
+  --color-primary: var(--sapphire);
   --color-primary-foreground: var(--diamond);
   --color-secondary: var(--amethyst);
   --color-secondary-foreground: var(--diamond);
   --color-destructive: var(--ruby);
   --color-destructive-foreground: var(--platinum);
-  --color-link: var(--sapphire);
-  --color-link-hover: var(--gold);
+  --color-link: var(--gold);
+  --color-link-hover: var(--sapphire);
   --color-selection: color-mix(in srgb, var(--silver), transparent 80%);
   --color-gold-faded: color-mix(in srgb, var(--gold), transparent 15%);
 
   /* semantic ui */
   --color-muted: var(--obsidian);
   --color-muted-foreground: var(--quicksilver);
-  --color-accent: var(--gold);
+  --color-accent: var(--emerald);
   --color-accent-foreground: var(--pearl);
 
   /* architectural ui */
@@ -144,12 +151,12 @@
   --text-shadow-secondary: 1px 1px 0px var(--color-secondary);
   --text-shadow-foreground: 1px 1px 0px var(--color-foreground);
   --text-shadow-background: 1px 1px 0px var(--color-background);
-  --inset-shadow-golden: inset 0px 0px 8px var(--gold);
-  --inset-shadow-silver: inset 0px 0px 8px var(--silver);
+  --inset-shadow-golden: inset 0px 0px 4px var(--gold);
+  --inset-shadow-silver: inset 0px 0px 4px var(--silver);
   --drop-shadow-text: 1px 1px 0px var(--pearl);
-  --drop-shadow-text-theme: 2px 2px 0px var(--platinum);
-  --drop-shadow-text-theme-1: 1px 1px 1px var(--emerald);
-  --drop-shadow-text-theme-2: 1px 1px 1px var(--amethyst);
+  --drop-shadow-theme: 0px 0px 2px var(--platinum);
+  --drop-shadow-theme-1: 1px 1px 1px var(--emerald);
+  --drop-shadow-theme-2: 1px 1px 1px var(--amethyst);
 }
 
 @layer base {

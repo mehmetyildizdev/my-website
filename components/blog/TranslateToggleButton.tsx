@@ -18,7 +18,7 @@ export function TranslateToggleButton({ isActive, showingTranslation }: Props) {
   const href = showingTranslation ? pathname : `${pathname}?translated=1`;
 
   return (
-    <Button variant="glass" size="sm" asChild className="rounded-none bg-foreground/20 text-background hover:text-foreground text-shadow-sm">
+    <Button variant="glass" size="sm" asChild className="rounded-none text-foreground text-shadow-sm">
       <Link
         href={href}
         aria-label={showingTranslation ? "Switch back to English original" : "Switch to Turkish translation"}
