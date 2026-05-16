@@ -32,11 +32,11 @@ export function HeroImageContent({ kind, url, htmlCode, alt, themeBg, priority =
             "object-cover object-center transition-opacity duration-500",
             themeBg,
             "mix-blend-plus-darker",
-            isLoading ? "opacity-0" : "opacity-100"
+            (isLoading && !priority) ? "opacity-0" : "opacity-100"
           )}
           sizes="(min-width: 1024px) 1440px, 100vw"
           priority={priority}
-          loading={priority ? "eager" : "lazy"}
+          loading={priority ? "eager" : undefined}
           onLoad={() => setIsLoading(false)}
         />
       ) : kind === "htmlVisual" && htmlCode ? (
