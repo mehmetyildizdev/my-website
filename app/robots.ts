@@ -8,5 +8,6 @@ export default function robots(): MetadataRoute.Robots {
       disallow: "/studio/",
     },
     sitemap: "https://mehmetyildiz.dev/sitemap.xml",
+    host: "https://mehmetyildiz.dev",
   };
 }

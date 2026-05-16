@@ -5,7 +5,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const baseUrl = "https://mehmetyildiz.dev";
 
   // 1. Static Routes
-  const routes = ["", "/blog", "/blog/archive", "/collection", "/privacy"];
+  const routes = ["", "/about", "/blog", "/blog/archive", "/collection", "/privacy"];
   const staticRoutes = routes.map(
     (route) => ({
       url: `${baseUrl}${route}`,
