@@ -1,4 +1,4 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import { Rubik, Poppins } from "next/font/google";
 import "./global.css";
 import NavBar from "tools/NavBar";
@@ -17,16 +17,38 @@ const poppins = Poppins({
   weight: ["200", "300", "400", "500", "600", "700"],
 });
 
+export const viewport: Viewport = {
+  width: "device-width",
+  initialScale: 1,
+  viewportFit: "cover",
+};
+
 export const metadata: Metadata = {
   title: "Mehmet Yildiz | Developer & IT Support",
   description:
     "Welcome to the personal website and blog of Mehmet Yildiz, a passionate Front-End Web Developer and IT Support Specialist based in Turkey. Explore my portfolio, read my latest tech articles, and connect with me for innovative solutions.",
   icons: {
     icon: [
-      { url: "/favicon.png" },
-      { url: "/favicon.ico" }
+      { url: "/favicon.png", sizes: '32x32', type: 'image/png' },
+      {
+        url: '/favicon-96x96.png',
+        sizes: '96x96',
+        type: 'image/png',
+      },
+      { url: "/favicon.ico", sizes: 'any', rel: 'shortcut icon' },
     ],
-    apple: "/apple-icon.png"
+    apple: [
+      {
+        url: '/apple-touch-icon.png',
+        sizes: '180x180',
+        type: 'image/png',
+      },
+      {
+        url: '/apple-icon.png',
+        sizes: '144x144',
+        type: 'image/png',
+      },
+    ],
   },
   applicationName: "Mehmet Yildiz Portfolio",
   authors: [{ name: "Mehmet Yildiz" }],
@@ -61,7 +83,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" suppressHydrationWarning>
+    <html lang="en" suppressHydrationWarning className="overflow-y-scroll">
       <body className={` ${rubik.variable} ${poppins.variable} antialiased`}>
         <GoogleAnalytics trackingID={trackingID || ""} />
         <ThemeProvider>
