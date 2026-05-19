@@ -28,7 +28,6 @@ export function ThemeToggle() {
       >
         <Switch checked disabled className="mx-2" />
         <Sun className="h-[1.2rem] w-[1.2rem]" />
-        <Moon className="h-[1.2rem] w-[1.2rem]" />
       </div>
     );
   }
