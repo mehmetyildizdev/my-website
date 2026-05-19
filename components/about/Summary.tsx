@@ -2,7 +2,7 @@
 
 import SummaryDesktop from "./summary/SummaryDesktop";
 import SummaryMobile from "./summary/SummaryMobile";
-import { useIsXlBreakpoint } from "../../lib/about/useIsXlBreakpoint";
+import { useIsXlBreakpoint } from "@/hooks/about/useIsXlBreakpoint";
 import { MotionLazy } from "@/components/main/MotionLazy";
 
 /**

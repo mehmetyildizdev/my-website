@@ -1,6 +1,6 @@
 "use client";
 import { TABS } from "../tabs/Constants";
-import { useSummaryMobileScroll } from "../../../lib/about/useSummaryMobileScroll";
+import { useSummaryMobileScroll } from "@/hooks/about/useSummaryMobileScroll";
 import { SummaryMobileNav } from "./SummaryMobileNav";
 import { SummaryMobilePanels } from "./SummaryMobilePanels";
 

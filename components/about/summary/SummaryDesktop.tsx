@@ -1,6 +1,6 @@
 "use client";
 import { useState, useCallback } from "react";
-import { useSummaryGradients } from "../../../lib/about/useSummaryGradients";
+import { useSummaryGradients } from "@/hooks/about/useSummaryGradients";
 import { SummaryDesktopPhoto } from "./SummaryDesktopPhoto";
 import { SummaryDesktopNav } from "./SummaryDesktopNav";
 import { SummaryDesktopPanels } from "./SummaryDesktopPanels";
