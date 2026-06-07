@@ -4,5 +4,10 @@
     ["variants:\\s*\\{[^}]*?([\"'`][^\"'`]*?[\"'`][^}]*?)\\}", "[\"'`]([^\"'`]*?)[\"'`]"],
     ["cn\\(([^\\)]*)\\)", "[\"'`]([^\"'`]*?)[\"'`]"]
   ],
-  "tailwindCSS.functions": ["cn", "cva", "clsx", "twMerge"]
+  "tailwindCSS.functions": [
+    "cn",
+    "cva",
+    "clsx",
+    "twMerge"
+  ]
 }
