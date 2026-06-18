@@ -3,21 +3,34 @@
 import * as React from "react";
 import { useTheme } from "next-themes";
 import { Sun, Moon } from "lucide-react";
-import { Switch } from "@/components/ui/Switch";
+import { Switch } from "@/components/main/Switch";
 
 export function ThemeToggle() {
   const { resolvedTheme, setTheme } = useTheme();
   const [mounted, setMounted] = React.useState(false);
 
-  React.useEffect(() => {
+  React.useLayoutEffect(() => {
     setMounted(true);
   }, []);
 
-  const isDark = mounted && resolvedTheme === "dark";
+  const ready = mounted && resolvedTheme !== undefined;
+  const isDark = resolvedTheme === "dark";
 
   const handleToggle = () => {
     setTheme(isDark ? "light" : "dark");
   };
+
+  if (!ready) {
+    return (
+      <div
+        className="flex items-center p-2 rounded opacity-0 pointer-events-none"
+        aria-hidden
+      >
+        <Switch checked disabled className="mx-2" />
+        <Sun className="h-[1.2rem] w-[1.2rem]" />
+      </div>
+    );
+  }
 
   return (
     <div className="flex items-center p-2 rounded">
@@ -26,17 +39,16 @@ export function ThemeToggle() {
         onCheckedChange={handleToggle}
         className="mx-2"
         role="switch"
-        aria-checked={isDark ? "true" : "false"}
+        aria-checked={isDark}
         aria-label="Toggle dark mode"
-        suppressHydrationWarning
       />
       <Sun
         className={`h-[1.2rem] w-[1.2rem] ${isDark ? "hidden" : "block"}`}
-        suppressHydrationWarning
+        aria-hidden={isDark}
       />
       <Moon
         className={`h-[1.2rem] w-[1.2rem] ${isDark ? "block" : "hidden"}`}
-        suppressHydrationWarning
+        aria-hidden={!isDark}
       />
     </div>
   );

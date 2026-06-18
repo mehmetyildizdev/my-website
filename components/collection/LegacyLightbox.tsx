@@ -3,6 +3,7 @@
 import { useState, useEffect, useCallback } from "react";
 import Image from "next/image";
 import { X, ChevronLeft, ChevronRight } from "lucide-react";
+import { Button } from "@/components/shadcn/ui/button";
 
 export interface LegacyDesign {
   id: string;
@@ -60,7 +61,7 @@ export function LegacyLightbox({ designs }: LegacyLightboxProps) {
             key={d.id}
             onClick={() => open(i)}
             aria-label={`View full design for ${d.name}`}
-            className="group relative overflow-hidden rounded-2xl border border-border/20 bg-card/40 backdrop-blur-sm aspect-video cursor-pointer transition-all duration-300 hover:-translate-y-1 hover:shadow-xl hover:border-gold/30 focus:outline-none focus-visible:ring-2 focus-visible:ring-gold/60"
+            className="group relative overflow-hidden rounded-2xl border border-border/20 bg-card/66 drop-shadow-theme backdrop-blur-sm aspect-video cursor-pointer transition-all duration-300 hover:-translate-y-1 hover:shadow-xl hover:border-gold/33 focus:outline-none focus-visible:ring-2 focus-visible:ring-gold/60"
           >
             <Image
               src={d.thumbnail}
@@ -70,9 +71,9 @@ export function LegacyLightbox({ designs }: LegacyLightboxProps) {
               sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 20vw"
             />
             {/* Overlay */}
-            <div className="absolute inset-0 bg-obsidian/0 group-hover:bg-obsidian/40 transition-colors duration-300" />
+            <div className="absolute inset-0 bg-muted/0 group-hover:bg-muted/80 transition-colors duration-300" />
             <div className="absolute inset-0 flex flex-col justify-end p-3 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-              <p className="text-[11px] font-black uppercase tracking-widest text-gold">
+              <p className="text-[11px] font-bold uppercase tracking-widest text-foreground">
                 {d.name}
               </p>
               <p className="text-[10px] text-silver mt-0.5">Click to expand</p>
@@ -95,10 +96,31 @@ export function LegacyLightbox({ designs }: LegacyLightboxProps) {
             className="relative flex flex-col w-full h-full max-w-5xl mx-auto px-4 pt-28 pb-16"
             onClick={(e) => e.stopPropagation()}
           >
+            {/* Navigation Buttons - On the edges of the content area */}
+            <div className="absolute inset-x-0 top-1/2 -translate-y-1/2 pointer-events-none flex justify-between z-30 px-2 lg:-mx-10">
+              <Button
+                onClick={prev}
+                aria-label="Previous design"
+                variant="glass"
+                size="icon-lg"
+                className="pointer-events-auto rounded-full hover:text-gold hover:border-gold/33 hover:scale-110 shadow-xl"
+              >
+                <ChevronLeft className="h-5 w-5" />
+              </Button>
+              <Button
+                onClick={next}
+                aria-label="Next design"
+                variant="glass"
+                size="icon-lg"
+                className="pointer-events-auto rounded-full hover:text-gold hover:border-gold/33 hover:scale-110 shadow-xl"
+              >
+                <ChevronRight className="h-5 w-5" />
+              </Button>
+            </div>
             {/* Header bar */}
             <div className="flex items-center justify-between mb-4 shrink-0">
               <div>
-                <p className="text-xs font-black uppercase tracking-widest text-gold">
+                <p className="text-xs font-black uppercase tracking-widest text-secondary">
                   Legacy Design
                 </p>
                 <h3 className="text-xl font-bold text-titanium leading-tight">
@@ -113,19 +135,21 @@ export function LegacyLightbox({ designs }: LegacyLightboxProps) {
                 <span className="text-xs text-iridium font-semibold">
                   {(activeIndex ?? 0) + 1} / {designs.length}
                 </span>
-                <button
+                <Button
                   onClick={close}
                   aria-label="Close lightbox"
-                  className="flex items-center justify-center h-9 w-9 rounded-full border border-border/30 bg-card/60 text-foreground/70 hover:text-gold hover:border-gold/40 transition-all duration-200"
+                  variant="glass"
+                  size="icon"
+                  className="rounded-full hover:text-gold hover:border-gold/33"
                 >
                   <X className="h-4 w-4" />
-                </button>
+                </Button>
               </div>
             </div>
 
             {/* Scrollable image container */}
             <div className="relative flex-1 overflow-y-auto overscroll-contain rounded-2xl border border-border/20 bg-obsidian/60">
-              <div className="relative w-full">
+              <div className="relative w-full ">
                 {activeDesign.fullHeightDark ? (
                   <>
                     <Image
@@ -161,24 +185,10 @@ export function LegacyLightbox({ designs }: LegacyLightboxProps) {
               </div>
             </div>
 
-            {/* Prev / Next nav */}
-            <button
-              onClick={prev}
-              aria-label="Previous design"
-              className="absolute left-2 top-1/2 -translate-y-1/2 flex items-center justify-center h-10 w-10 rounded-full border border-border/30 bg-card/70 backdrop-blur-sm text-foreground/70 hover:text-gold hover:border-gold/40 transition-all duration-200 hover:scale-110"
-            >
-              <ChevronLeft className="h-5 w-5" />
-            </button>
-            <button
-              onClick={next}
-              aria-label="Next design"
-              className="absolute right-2 top-1/2 -translate-y-1/2 flex items-center justify-center h-10 w-10 rounded-full border border-border/30 bg-card/70 backdrop-blur-sm text-foreground/70 hover:text-gold hover:border-gold/40 transition-all duration-200 hover:scale-110"
-            >
-              <ChevronRight className="h-5 w-5" />
-            </button>
           </div>
         </div>
       )}
     </>
   );
 }
+

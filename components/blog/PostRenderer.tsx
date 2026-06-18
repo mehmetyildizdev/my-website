@@ -17,27 +17,27 @@ function getTextFromValue(value: any): string {
 
 const components: PortableTextComponents = {
   block: {
-    normal: ({ children }) => <p className="mb-4 font-rubik leading-relaxed text-foreground/85 text-pretty">{children}</p>,
+    normal: ({ children }) => <p className="mb-4 font-rubik leading-relaxed text-pretty">{children}</p>,
     h1: ({ children, value }) => (
       <h1 id={slugify(getTextFromValue(value))} className="mt-12 mb-6 text-4xl font-extrabold text-foreground tracking-tight text-pretty">{children}</h1>
     ),
     h2: ({ children, value }) => (
-      <h2 id={slugify(getTextFromValue(value))} className="mt-6 mb-6 text-3xl font-bold text-foreground/95 tracking-normal text-pretty">{children}</h2>
+      <h2 id={slugify(getTextFromValue(value))} className="mt-6 mb-6 text-3xl font-bold text-foreground/90 tracking-normal text-pretty">{children}</h2>
     ),
     h3: ({ children, value }) => (
-      <h3 id={slugify(getTextFromValue(value))} className="mt-2 mb-4 text-2xl font-semibold text-foreground/90 tracking-normal text-pretty">{children}</h3>
+      <h3 id={slugify(getTextFromValue(value))} className="mt-2 mb-4 text-2xl font-semibold text-foreground/85 tracking-normal text-pretty">{children}</h3>
     ),
     h4: ({ children, value }) => (
-      <h4 id={slugify(getTextFromValue(value))} className="mt-1 mb-2 text-xl font-medium text-foreground tracking-tight text-pretty">{children}</h4>
+      <h4 id={slugify(getTextFromValue(value))} className="mt-1 mb-2 text-xl font-medium text-foreground/80 tracking-tight text-pretty">{children}</h4>
     ),
     h5: ({ children, value }) => (
-      <h5 id={slugify(getTextFromValue(value))} className="mb-1 text-lg font-medium text-foreground tracking-tight text-pretty">{children}</h5>
+      <h5 id={slugify(getTextFromValue(value))} className="mb-1 text-lg font-medium text-foreground/80 tracking-tight text-pretty">{children}</h5>
     ),
     h6: ({ children, value }) => (
-      <h6 id={slugify(getTextFromValue(value))} className="mb-1 text-base font-medium text-foreground tracking-tight text-pretty">{children}</h6>
+      <h6 id={slugify(getTextFromValue(value))} className="mb-1 text-base font-medium text-foreground/80 tracking-tight text-pretty">{children}</h6>
     ),
     blockquote: ({ children }) => (
-      <blockquote className="mb-6 border-l-4 border-gold bg-card/40 pl-6 py-2 italic text-highlight/85 backdrop-blur-sm rounded-r-lg shadow-sm text-pretty">
+      <blockquote className="mb-6 border-l-4 border-gold bg-card/66 pl-6 py-2 italic text-highlight/85 backdrop-blur-sm rounded-r-lg shadow-sm text-pretty">
         {children}
       </blockquote>
     ),
@@ -51,8 +51,8 @@ const components: PortableTextComponents = {
     number: ({ children }) => <li className="mb-2">{children}</li>,
   },
   marks: {
-    strong: ({ children }) => <strong className="font-semibold text-metadata/85">{children}</strong>,
-    em: ({ children }) => <em className="text-metadata/85">{children}</em>,
+    strong: ({ children }) => <strong className="font-semibold">{children}</strong>,
+    em: ({ children }) => <em className="text-metadata/80">{children}</em>,
     link: ({ value, children }) => (
       <a href={value.href} target="_blank" rel="noopener noreferrer" className="text-link font-semibold underline decoration-link/30 underline-offset-4 transition-colors hover:text-link-hover hover:decoration-link-hover/50">
         {children}
@@ -77,7 +77,8 @@ const components: PortableTextComponents = {
             alt={image.alt ?? ""}
             width={width}
             height={height}
-            className="my-8 w-full rounded-xl bg-background"
+            className="my-8 w-full rounded-xl bg-muted/33"
+            loading="lazy"
           />
           {image.caption && <figcaption>{image.caption}</figcaption>}
         </figure>
@@ -109,7 +110,7 @@ const components: PortableTextComponents = {
       if (!content) return null;
       return (
         <div className="markdown-block my-8 w-full">
-          <div className="w-full overflow-x-auto rounded-lg border border-foreground/15">
+          <div className="w-full overflow-x-auto rounded-lg border border-border/20">
             <ReactMarkdown
               remarkPlugins={[remarkGfm]}
               components={{

@@ -1,28 +1,12 @@
-import React from "react";
 import Link from "next/link";
 import ArchiveClient from "@/components/blog/ArchiveClient";
 import { MoveLeft } from "lucide-react";
-import { Metadata } from "next";
 import { notFound } from "next/navigation";
+import { Button } from "@/components/shadcn/ui/button";
 
 type Props = {
   params: Promise<{ category: string }>;
 };
-
-export async function generateMetadata({ params }: Props): Promise<Metadata> {
-  const { category } = await params;
-  const decodedCategory = decodeURIComponent(category).replace(/-/g, ' ');
-  // Capitalize first letter of each word for the title
-  const titleCategory = decodedCategory.replace(/\b\w/g, l => l.toUpperCase());
-
-  return {
-    title: `${titleCategory} Posts | Mehmet Yildiz Blog`,
-    description: `Browse all articles filed under the ${titleCategory} category.`,
-    alternates: {
-      canonical: `/blog/category/${category}`,
-    },
-  };
-}
 
 import { getAllPosts } from "@/lib/post";
 
@@ -56,31 +40,30 @@ export default async function CategoryPage({ params }: Props) {
   const titleCategory = decodedCategory.replace(/\b\w/g, l => l.toUpperCase());
 
   return (
-    <section className="bg-diamond relative overflow-hidden min-h-screen">
-
-      <div className="mx-auto flex max-w-7xl flex-col gap-12 px-6 py-24 sm:px-12 lg:px-16">
+    <div className="flex flex-col gap-12">
+      <Button variant="link" size="sm" asChild className="w-fit rounded-full text-platinum text-shadow-sm">
         <Link
           href="/blog"
           aria-label="Back to blog"
-          className="group inline-flex w-fit items-center gap-1 px-4 text-sm text-shadow-sm bg-foreground/30 font-medium text-background transition hover:text-foreground rounded-full py-1"
+          className="group inline-flex items-center gap-1"
         >
           <MoveLeft className="h-4 w-4 group-hover:-translate-x-1 transition-transform duration-300" />
           Back to Compendium
         </Link>
-        <header className="flex flex-col gap-4 text-left">
-          <p className="text-sm font-bold uppercase tracking-[0.3em] text-sapphire drop-shadow-sm">
-            Category
-          </p>
-          <h1 className="text-4xl font-black tracking-tight text-foreground md:text-5xl text-shadow-lg">
-            {titleCategory}
-          </h1>
-          <p className="text-lg text-foreground/80 font-medium max-w-2xl text-shadow-sm">
-            Browse through everything published in {titleCategory}. Keep scrolling to discover more content.
-          </p>
-        </header>
+      </Button>
+      <header className="flex flex-col gap-4 text-left">
+        <p className="text-sm font-bold uppercase tracking-[0.3em] text-sapphire drop-shadow-sm">
+          Category
+        </p>
+        <h1 className="text-4xl font-black tracking-tight text-gold md:text-5xl text-shadow-lg">
+          {titleCategory}
+        </h1>
+        <p className="text-lg text-foreground/80 font-medium max-w-2xl text-shadow-sm">
+          Browse through everything published in {titleCategory}. Keep scrolling to discover more content.
+        </p>
+      </header>
 
-        <ArchiveClient allPosts={categoryPosts} />
-      </div>
-    </section>
+      <ArchiveClient allPosts={categoryPosts} layout="list" />
+    </div>
   );
 }

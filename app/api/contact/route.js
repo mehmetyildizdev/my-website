@@ -1,31 +1,32 @@
-import nodemailer from 'nodemailer';
+import { sendEmail } from '@/lib/mailer';
 
 export async function POST(req) {
-    const { name, email, message } = await req.json();
+    const { name, email, message, token } = await req.json();
 
     if (!name || !email || !message) {
         return new Response(JSON.stringify({ message: 'All fields are required' }), { status: 400 });
     }
 
+    if (!token) {
+        return new Response(JSON.stringify({ message: 'Captcha token is missing' }), { status: 400 });
+    }
+
     try {
-        const transporter = nodemailer.createTransport({
-            host: 'smtp.mailgun.org',
-            port: 587, // Use 587 for TLS, 465 for SSL
-            secure: false, // Set to true if using port 465
-            auth: {
-                user: process.env.MAILGUN_SMTP_LOGIN, // Mailgun SMTP login
-                pass: process.env.MAILGUN_SMTP_PASSWORD, // Mailgun SMTP password
+        const verifyRes = await fetch('https://challenges.cloudflare.com/turnstile/v0/siteverify', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded',
             },
+            body: `secret=${process.env.TURNSTILE_SECRET_KEY}&response=${token}`,
         });
 
-        const mailOptions = {
-            from: 'admin@mehmetyildiz.dev',
-            to: 'web@mehmetyildiz.dev',
-            subject: `New message from ${name}`,
-            text: `Name: ${name}\nEmail: ${email}\nMessage: ${message}`,
-        };
+        const verifyData = await verifyRes.json();
 
-        await transporter.sendMail(mailOptions);
+        if (!verifyData.success) {
+            return new Response(JSON.stringify({ message: 'Invalid captcha verification' }), { status: 400 });
+        }
+
+        await sendEmail({ name, email, message });
 
         return new Response(JSON.stringify({ message: 'Email sent successfully' }), { status: 200 });
     } catch (error) {

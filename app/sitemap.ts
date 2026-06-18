@@ -5,12 +5,13 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const baseUrl = "https://mehmetyildiz.dev";
 
   // 1. Static Routes
-  const staticRoutes = ["", "/blog", "/blog/archive", "/collection/screen"].map(
+  const routes = ["", "/about", "/blog", "/blog/archive", "/collection", "/privacy"];
+  const staticRoutes = routes.map(
     (route) => ({
       url: `${baseUrl}${route}`,
       lastModified: new Date(),
       changeFrequency: "daily" as const,
-      priority: route === "" ? 1 : 0.8,
+      priority: route === "" ? 1 : route === "/privacy" ? 0.3 : 0.8,
     }),
   );
 

@@ -5,8 +5,9 @@ export default function robots(): MetadataRoute.Robots {
     rules: {
       userAgent: "*",
       allow: "/",
-      disallow: "/studio/", // Standard practice for Sanity studio or admin areas
+      disallow: "/studio/",
     },
     sitemap: "https://mehmetyildiz.dev/sitemap.xml",
+    host: "https://mehmetyildiz.dev",
   };
 }

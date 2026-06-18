@@ -1,6 +1,6 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import { Rubik, Poppins } from "next/font/google";
-import "./globals.css";
+import "./global.css";
 import NavBar from "tools/NavBar";
 import { ThemeProvider } from "tools/ThemeProvider";
 import GoogleAnalytics from "tools/GoogleAnalytics";
@@ -17,27 +17,62 @@ const poppins = Poppins({
   weight: ["200", "300", "400", "500", "600", "700"],
 });
 
+export const viewport: Viewport = {
+  width: "device-width",
+  initialScale: 1,
+  viewportFit: "cover",
+};
+
 export const metadata: Metadata = {
-  title: "Mehmet Yildiz | Front-End Web Developer",
+  title: "Mehmet Yildiz | Developer & IT Support",
   description:
-    "This is a personal website and blog for Mehmet Yildiz, a front-end web developer.",
-  keywords: [
-    "web development",
-    "design",
-    "programming",
-    "react",
-    "next.js",
-    "sanity",
-    "tailwindcss",
-  ],
+    "Welcome to the personal website and blog of Mehmet Yildiz, a passionate Front-End Web Developer and IT Support Specialist based in Turkey. Explore my portfolio, read my latest tech articles, and connect with me for innovative solutions.",
   icons: {
-    icon: "/favicon.png",
+    icon: [
+      { url: "/favicon.png", sizes: '32x32', type: 'image/png' },
+      {
+        url: '/favicon-96x96.png',
+        sizes: '96x96',
+        type: 'image/png',
+      },
+      { url: "/favicon.ico", sizes: 'any', rel: 'shortcut icon' },
+    ],
+    apple: [
+      {
+        url: '/apple-touch-icon.png',
+        sizes: '180x180',
+        type: 'image/png',
+      },
+      {
+        url: '/apple-icon.png',
+        sizes: '144x144',
+        type: 'image/png',
+      },
+    ],
   },
-  applicationName: "My Website",
-  authors: [{ name: "www.mehmetyildiz.dev" }],
+  applicationName: "Mehmet Yildiz Portfolio",
+  authors: [{ name: "Mehmet Yildiz" }],
   generator: "Next.js",
   publisher: "Mehmet Yildiz",
   metadataBase: new URL("https://mehmetyildiz.dev"),
+  alternates: {
+    canonical: "/",
+  },
+  openGraph: {
+    title: "Mehmet Yildiz | Developer & IT Support",
+    description: "Full-stack development and systemic critiques of issues in the world.",
+    url: "https://mehmetyildiz.dev",
+    siteName: "Mehmet Yildiz",
+    locale: "en_US",
+    type: "website",
+    images: ["/og-image.webp"],
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Mehmet Yildiz | Developer & IT Support",
+    description: "Full-stack development and systemic critiques of issues in the world.",
+    images: ["/og-image.webp"],
+  },
 };
 
 const trackingID = process.env.GOOGLE_TRACKING_ID;
@@ -48,9 +83,9 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" suppressHydrationWarning>
-      <GoogleAnalytics trackingID={trackingID || ""} />
+    <html lang="en" suppressHydrationWarning className="overflow-y-scroll">
       <body className={` ${rubik.variable} ${poppins.variable} antialiased`}>
+        <GoogleAnalytics trackingID={trackingID || ""} />
         <ThemeProvider>
           <NavBar />
           <main>{children}</main>

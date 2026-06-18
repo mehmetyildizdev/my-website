@@ -5,10 +5,14 @@ import Link from "next/link";
 import Image from "next/image";
 import { getCategoryTheme } from "@/lib/post/categoryBasedSelector";
 import { formatDate } from "@/lib/post";
-
-
+import { Badge } from "@/components/shadcn/ui/badge";
+import { Button } from "@/components/shadcn/ui/button";
+import { cn } from "@/lib/shadcn/utils";
+import { Skeleton } from "@/components/shadcn/ui/skeleton";
+import React from "react";
 
 export function FilteredPostsClient({ allPosts, defaultCat = "Insight" }: { allPosts: Post[], defaultCat?: string }) {
+  const [loadedImages, setLoadedImages] = useState<Record<string, boolean>>({});
   // Extract unique categories from posts, default to ["Insight"] if none exist
   const categoriesSet = new Set<string>();
   allPosts.forEach(post => {
@@ -38,20 +42,29 @@ export function FilteredPostsClient({ allPosts, defaultCat = "Insight" }: { allP
       {allCategories.length > 0 && (
         <div className="flex flex-wrap justify-center sm:justify-start gap-3 mb-8">
           {allCategories.map((cat) => {
-            const { bg, text } = getCategoryTheme(cat);
+            const {
+              bg: catBg,
+              text: catText,
+              hoverBg: catHoverBg,
+            } = getCategoryTheme(cat);
             const isActive = activeCategory === cat;
+
             return (
-              <button
+              <Button
                 key={cat}
                 onClick={() => setActiveCategory(cat)}
                 aria-label={`Filter posts by category: ${cat}`}
-                className={`rounded-full px-5 py-2 text-xs font-bold uppercase tracking-widest cursor-pointer transition-all duration-300 shadow-sm hover:scale-105 ${isActive
-                  ? `${bg} text-background shadow-md`
-                  : `bg-card/60 ${text} border border-white/10 hover:bg-card/90`
-                  }`}
+                variant={null as any}
+                size="sm"
+                className={cn(
+                  "rounded-full px-5 py-2 text-xs font-bold uppercase tracking-widest cursor-pointer transition-all duration-300 shadow-sm hover:scale-105 border",
+                  isActive
+                    ? `${catBg} text-background border-transparent shadow-md`
+                    : `bg-card/66 ${catText} border-border/20 ${catHoverBg} hover:text-foreground/80 hover:border-transparent`
+                )}
               >
                 {cat}
-              </button>
+              </Button>
             )
           })}
         </div>
@@ -61,20 +74,23 @@ export function FilteredPostsClient({ allPosts, defaultCat = "Insight" }: { allP
       <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
         {filteredPosts.map((post) => {
           const catTitle = post.categories?.[0]?.title;
-          const { bg: catBg, text: catText } = getCategoryTheme(catTitle);
+          const { bg: catBg, text: catText, groupHoverText: catGroupHoverText } = getCategoryTheme(catTitle);
+          const isLoaded = loadedImages[post._id];
 
           return (
             <Link href={`/blog/post/${post.slug.current}`} key={post._id}>
               <article
-                className="group relative flex flex-col rounded-3xl border border-border/20 bg-pearl/60 p-5 shadow-xl backdrop-blur-sm transition-all duration-300 hover:-translate-y-2 hover:shadow-2xl hover:bg-card/60"
+                className="group relative flex flex-col rounded-3xl border border-border/20 bg-card/66 p-5 shadow-xl backdrop-blur-sm transition-all duration-300 hover:-translate-y-2 hover:shadow-2xl hover:bg-muted/33"
               >
                 {post.mainImage?.asset?.url && (
-                  <div className="relative mb-4 w-full h-32 overflow-hidden rounded-2xl bg-muted/20">
+                  <div className="relative mb-4 w-full h-32 overflow-hidden rounded-2xl bg-muted/33">
+                    {!isLoaded && <Skeleton className="absolute inset-0 z-10 h-full w-full bg-foreground/5" />}
                     <Image
                       src={post.mainImage.asset.url}
                       alt={post.mainImage.alt ?? post.title}
                       fill
-                      className="object-cover transition-transform duration-700 group-hover:scale-105"
+                      onLoad={() => setLoadedImages(prev => ({ ...prev, [post._id]: true }))}
+                      className={`object-cover transition-all duration-700 group-hover:scale-105 ${isLoaded ? "opacity-100 blur-0" : "opacity-0 blur-xl"}`}
                       sizes="(max-width: 768px) 100vw, 25vw"
                     />
                   </div>
@@ -84,17 +100,18 @@ export function FilteredPostsClient({ allPosts, defaultCat = "Insight" }: { allP
                   {formatDate(post.publishedAt)}
                 </time>
 
-                <h4 className="mt-2 text-lg font-bold text-foreground leading-snug drop-shadow-sm transition-colors group-hover:text-sapphire line-clamp-2">
-
+                <h4 className={cn(
+                  "mt-2 text-lg font-bold text-foreground leading-snug drop-shadow-sm transition-colors line-clamp-2",
+                  catGroupHoverText
+                )}>
                   {post.title}
-
                 </h4>
 
                 <div className="mt-auto pt-4 flex items-center justify-between z-10">
                   {catTitle ? (
-                    <span className={`inline-flex rounded-full px-2.5 py-1 text-[9px] font-bold uppercase tracking-[0.2em] ${catBg} text-background shadow-sm`}>
+                    <Badge className={`text-[9px] font-bold uppercase tracking-[0.2em] ${catBg} text-background shadow-sm`}>
                       {catTitle}
-                    </span>
+                    </Badge>
                   ) : (
                     <span />
                   )}

@@ -1,4 +1,3 @@
-import Image from "next/image";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { PostRenderer } from "@/components/blog/PostRenderer";
@@ -18,6 +17,11 @@ import {
   formatPublishedDate,
 } from "@/lib/post";
 import { TranslateToggleButton } from "@/components/blog/TranslateToggleButton";
+import { Badge } from "@/components/shadcn/ui/badge";
+import { Button } from "@/components/shadcn/ui/button";
+import { Separator } from "@/components/shadcn/ui/separator";
+import { HeroImageContent } from "@/components/blog/HeroImageContent";
+import { cn } from "@/lib/shadcn/utils";
 
 export default async function BlogPostPageVariant({
   params,
@@ -32,14 +36,13 @@ export default async function BlogPostPageVariant({
     notFound();
   }
 
-  const { post, shareLinks } = await getPostPageData(slug);
+  const { post } = await getPostPageData(slug);
   const plainText = extractPlainText(post.body ?? []);
   const readingTime = calculateReadingTime(plainText);
   const publishedDate = formatPublishedDate(post.publishedAt ?? "");
   const categories = post.categories?.map((category) => category.title) ?? [];
   const tags = post.tags?.map((tag) => tag.title) ?? [];
   const heroMedia = resolveHeroMedia(post);
-  const share = shareLinks ?? [];
   const theme = getCategoryTheme(categories[0]);
 
   // Translation toggle — URL param ?translated=1
@@ -60,14 +63,16 @@ export default async function BlogPostPageVariant({
 
       <div className="flex flex-col gap-4">
         <div className="flex items-center justify-between">
-          <Link
-            href="/blog"
-            aria-label="Back to blog"
-            className="group inline-flex w-fit items-center gap-1 px-4 text-sm text-shadow-sm bg-foreground/20 font-medium text-background transition hover:text-foreground"
-          >
-            <MoveLeft className="group-hover:-translate-x-1 transition-transform duration-300" />
-            Back
-          </Link>
+          <Button variant="glass" size="sm" asChild className="rounded-none text-platinum text-shadow-sm">
+            <Link
+              href="/blog"
+              aria-label="Back to blog"
+              className="group inline-flex items-center gap-1"
+            >
+              <MoveLeft className="group-hover:-translate-x-1 transition-transform duration-300" />
+              Blog
+            </Link>
+          </Button>
           <TranslateToggleButton
             isActive={hasTranslation}
             showingTranslation={showingTranslation}
@@ -85,12 +90,13 @@ export default async function BlogPostPageVariant({
             >
               <div className="flex items-center gap-2">
                 {categories.map((category) => (
-                  <span
+                  <Badge
                     key={category}
-                    className={`rounded-full border ${theme.border} px-3 py-0.5 text-xs font-semibold uppercase tracking-[0.2em] text-shadow-lg`}
+                    variant="outline"
+                    className={`${theme.border} text-xs font-semibold uppercase tracking-[0.2em] text-shadow-lg`}
                   >
                     {category}
-                  </span>
+                  </Badge>
                 ))}
               </div>
 
@@ -123,37 +129,25 @@ export default async function BlogPostPageVariant({
           >
             {/* aspect-video = 16:9; height is always width × (9/16), p-1 is the colored border */}
             <div className={`rounded-2xl aspect-video p-1 ${theme.bg}`}>
-              <div className="relative h-full overflow-hidden rounded-xl">
-                {heroMedia.kind === "image" ? (
-                  <Image
-                    src={heroMedia.url}
-                    alt={heroMedia.alt ?? post.title}
-                    fill
-                    className="object-cover object-center"
-                    sizes="(min-width: 1024px) 1440px, 100vw"
-                    priority
-                  />
-                ) : (
-                  <iframe
-                    srcDoc={wrapHtmlVisual(heroMedia.htmlCode)}
-                    title={heroMedia.alt ?? post.title}
-                    sandbox="allow-scripts"
-                    scrolling="no"
-                    style={{
-                      border: "none",
-                      width: "100%",
-                      height: "100%",
-                      display: "block",
-                    }}
-                  />
-                )}
+              <HeroImageContent
+                kind={heroMedia.kind}
+                url={heroMedia.kind === "image" ? heroMedia.url : undefined}
+                htmlCode={heroMedia.kind === "htmlVisual" ? wrapHtmlVisual(heroMedia.htmlCode) : undefined}
+                alt={heroMedia.alt ?? post.title}
+                themeBg={theme.bg}
+                priority
+              />
 
-                {heroMedia.caption && (
-                  <figcaption className="absolute left-0 right-0 bottom-0 bg-card backdrop-blur-sm text-sm text-card-foreground px-6 py-3 transition-opacity duration-300 opacity-0 group-hover:opacity-100 pointer-events-none">
-                    {heroMedia.caption}
-                  </figcaption>
-                )}
-              </div>
+              {heroMedia.caption && (
+                <figcaption className={cn(
+                  "absolute left-0 right-0 bottom-0 bg-muted/66 backdrop-blur-md px-6 py-3 text-sm font-medium transition-opacity duration-300 opacity-0 group-hover:opacity-100 pointer-events-none border-t",
+                  theme.border,
+                  theme.text
+                )}>
+                  <span className={cn("mr-4 inline-block h-2 w-2", theme.bg)} />
+                  {heroMedia.caption}
+                </figcaption>
+              )}
             </div>
           </figure>
         )}
@@ -164,19 +158,20 @@ export default async function BlogPostPageVariant({
 
             {/* keep share + tags below content on smaller viewports */}
             <div className="flex flex-col gap-8 text-md text-muted-foreground">
-              <div className="flex flex-wrap items-center gap-x-4 gap-y-3 border-t border-border/20 mt-4 py-8">
-                <span className="text-lg text-shadow-md font-bold uppercase tracking-[0.15em] text-foreground/60">
+              <Separator className="mt-4" />
+              <div className="flex flex-wrap items-center gap-x-4 gap-y-3 py-8">
+                <span className="text-lg text-shadow-md font-bold uppercase tracking-[0.15em] text-foreground/75">
                   Tags:
                 </span>
                 {tags.length > 0 ? (
                   <div className="flex flex-wrap gap-4">
                     {tags.map((tag) => (
-                      <span
+                      <Badge
                         key={tag}
-                        className={`rounded-full border border-border/20 px-4 py-1 text-xs text-shadow-md font-bold uppercase tracking-[0.15em] ${theme.bg} text-background shadow-sm transition-transform hover:scale-105`}
+                        className={`text-sm text-shadow-md font-semibold uppercase tracking-[0.15em] ${theme.bg} text-pearl text-shadow-foreground transition-transform hover:scale-105`}
                       >
                         {tag}
-                      </span>
+                      </Badge>
                     ))}
                   </div>
                 ) : (

@@ -10,6 +10,7 @@ import {
   FaYoutube,
   FaLink,
 } from "react-icons/fa";
+import { Separator } from "@/components/shadcn/ui/separator";
 
 
 function SocialIcon({ name, url, colorClass }: { name?: string; url?: string; colorClass: string }) {
@@ -115,16 +116,20 @@ export const Sidebar: React.FC<SidebarProps> = ({ author, allCategories = [], ca
 
           {/* Bio */}
           {bioText && (
-            <p className="text-xs leading-loose text-metadata text-left border-t border-border/20 pt-3">
-              {bioText}
-            </p>
+            <>
+              <Separator />
+              <p className="text-xs leading-loose text-metadata text-left pt-1">
+                {bioText}
+              </p>
+            </>
           )}
         </div>
 
         {/* ── Categories ──────────────────────────────────────── */}
         {allCategories.length > 0 && (
           <div className="rounded-2xl p-4 text-sm">
-            <div className="mb-3 font-semibold text-metadata border-t border-border/20 pt-3">Category Navigation</div>
+            <Separator className="mb-3" />
+            <div className="mb-3 font-semibold text-metadata pt-1">Categorical Archive</div>
             <div className="flex flex-col gap-1">
               {allCategories.map((cat) => (
                 <Link

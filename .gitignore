@@ -1,8 +1,12 @@
 # See https://help.github.com/articles/ignoring-files/ for more about ignoring files.
 .amazonq
 .gemini
+.kiro
 AGENTS.md
 SECURITY-REVIEW-REPORT.md
+/app/backup.css
+/app/test/
+
 # dependencies
 /node_modules
 /.pnp

@@ -2,9 +2,15 @@
 
 import Script from "next/script";
 import { useEffect } from "react";
+import { usePathname } from "next/navigation";
 
 export default function GoogleAnalytics({ trackingID }: GAProps) {
+  const pathname = usePathname();
+  const isStudio = pathname?.startsWith("/studio");
+
   useEffect(() => {
+    if (isStudio) return;
+
     const trackClicks = (event: MouseEvent) => {
       const target = event.target as HTMLElement;
 
@@ -48,7 +54,11 @@ export default function GoogleAnalytics({ trackingID }: GAProps) {
     return () => {
       document.removeEventListener("click", trackClicks);
     };
-  }, []);
+  }, [isStudio]);
+
+  if (isStudio) {
+    return null;
+  }
 
   return (
     <>

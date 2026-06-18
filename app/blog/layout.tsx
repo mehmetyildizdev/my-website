@@ -1,6 +1,6 @@
 import React from "react";
 import Footer from "@/components/blog/Footer";
-import { ScrollToTop } from "@/components/blog/ScrollToTop";
+import { ScrollToTop } from "@/components/main/ScrollToTop";
 
 export default function BlogLayout({
   children,
