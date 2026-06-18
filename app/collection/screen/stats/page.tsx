@@ -2,9 +2,7 @@ import LogSuppressor from "@/components/LogSuppressor";
 import DbOverview from "@/components/screen/stats/DbOverview";
 import UnratedWatches from "@/components/screen/stats/UnratedWatches";
 import Link from "next/link";
-import { SCREEN_CONFIG } from "@/lib/screen/config";
-
-export const revalidate = SCREEN_CONFIG.cacheDurations.mainPages;
+export const revalidate = 604800;
 
 export const metadata = {
   title: "Screen | DB Stats",

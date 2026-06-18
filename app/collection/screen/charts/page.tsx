@@ -10,9 +10,7 @@ import TopCompaniesNetworks from '@/components/screen/shared/TopCompaniesNetwork
 import WatchHeatmap from '@/components/screen/shared/WatchHeatmap';
 import { query, loadQuery } from '@/lib/screen/db';
 import Link from 'next/link';
-import { SCREEN_CONFIG } from '@/lib/screen/config';
-
-export const revalidate = SCREEN_CONFIG.cacheDurations.mainPages;
+export const revalidate = 604800;
 
 export const metadata = {
   title: 'Screen | Charts',

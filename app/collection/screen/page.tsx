@@ -4,9 +4,7 @@ import ScreenHero from '@/components/screen/dashboard/ScreenHero';
 import GenreRatingsBars from '@/components/screen/shared/GenreRatingsBars';
 import GenreTreemap from '@/components/screen/shared/GenreTreemap';
 import { query, loadQuery } from '@/lib/screen/db';
-import { SCREEN_CONFIG } from '@/lib/screen/config';
-
-export const revalidate = SCREEN_CONFIG.cacheDurations.mainPages;
+export const revalidate = 604800;
 
 export const metadata = {
   title: 'Screen | Watch Statistics',

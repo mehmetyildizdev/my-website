@@ -6,9 +6,7 @@ import DirectorActorCollabs from "@/components/screen/people/DirectorActorCollab
 import CrewCollabs from "@/components/screen/people/CrewCollabs";
 import PeopleGenderDiversity from "@/components/screen/people/PeopleGenderDiversity";
 import { query, loadQuery } from "@/lib/screen/db";
-import { SCREEN_CONFIG } from "@/lib/screen/config";
-
-export const revalidate = SCREEN_CONFIG.cacheDurations.mainPages;
+export const revalidate = 604800;
 
 export const metadata = {
   title: "Screen | People Charts",

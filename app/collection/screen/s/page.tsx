@@ -7,9 +7,7 @@ import BingePatterns from '@/components/screen/shows/BingePatterns';
 import ShowRatingDistribution from '@/components/screen/shows/ShowRatingDistribution';
 import RatingsComparison from '@/components/screen/shared/RatingsComparison';
 import { query, loadQuery } from '@/lib/screen/db';
-import { SCREEN_CONFIG } from '@/lib/screen/config';
-
-export const revalidate = SCREEN_CONFIG.cacheDurations.mainPages;
+export const revalidate = 604800;
 
 export const metadata = {
   title: 'Screen | Show Charts',

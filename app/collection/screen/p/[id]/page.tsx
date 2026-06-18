@@ -1,9 +1,7 @@
 import { query, loadQuery } from '@/lib/screen/db';
 import { notFound } from 'next/navigation';
 import PersonDetail from '@/components/screen/slugs/PersonDetail';
-import { SCREEN_CONFIG } from '@/lib/screen/config';
-
-export const revalidate = SCREEN_CONFIG.cacheDurations.peopleSlugs;
+export const revalidate = 604800;
 
 type Props = { params: Promise<{ id: string }> };
 

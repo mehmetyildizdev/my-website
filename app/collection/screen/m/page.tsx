@@ -9,9 +9,7 @@ import DirectorRankings from '@/components/screen/movies/DirectorRankings';
 import WorldMapChart from '@/components/screen/shared/WorldMapChart';
 import GenreBumpChart from '@/components/screen/shared/GenreBumpChart';
 import { query, loadQuery } from '@/lib/screen/db';
-import { SCREEN_CONFIG } from '@/lib/screen/config';
-
-export const revalidate = SCREEN_CONFIG.cacheDurations.mainPages;
+export const revalidate = 604800;
 
 export const metadata = {
   title: 'Screen | Movie Charts',
