@@ -4,8 +4,10 @@
 .kiro
 AGENTS.md
 SECURITY-REVIEW-REPORT.md
+DESIGN_SYSTEM.md
 /app/backup.css
 /app/test/
+/components/shadcn/unused/
 
 # dependencies
 /node_modules
@@ -46,3 +48,21 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+#db_test
+/scripts/db/test/
+
+#trash
+/trash/
+
+#scratch
+/scratch/
+
+# database backups
+/backups/
+/scripts/bin/
+
+# history fixer outputs
+/scripts/history_fixer/output/
+/scripts/history_fixer/completed/
+

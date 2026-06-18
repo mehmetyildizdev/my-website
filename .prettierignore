@@ -1,3 +1,2 @@
 # Ignore genre files to keep aligned code readable and custom spaced
 components/screen/slugs/genre/
-libs/screen/utils/
