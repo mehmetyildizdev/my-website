@@ -28,7 +28,7 @@ export async function syncTraktRatings() {
 
       await query(
         `UPDATE ${type}
-         SET trakt_rating = update_data.rating
+         SET my_rating = update_data.rating
          FROM (SELECT unnest($1::int[]) as tmdb_id, unnest($2::int[]) as rating) as update_data
          WHERE ${type}.tmdb_id = update_data.tmdb_id`,
         [tmdbIds, ratingVals]
@@ -38,7 +38,7 @@ export async function syncTraktRatings() {
       if (type === "movies") {
         await query(
           `UPDATE watch_history
-           SET rating = update_data.rating
+           SET my_rating = update_data.rating
            FROM (SELECT unnest($1::int[]) as tmdb_id, unnest($2::int[]) as rating) as update_data
            WHERE watch_history.tmdb_id = update_data.tmdb_id AND watch_history.media_type = 'movie'`,
           [tmdbIds, ratingVals]

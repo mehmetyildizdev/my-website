@@ -4,7 +4,7 @@ SELECT
   s.tmdb_id, s.imdb_id, s.name, s.original_name, s.original_language,
   s.first_air_date, s.poster_path, s.backdrop_path, s.overview,
   s.number_of_episodes, s.number_of_seasons,
-  s.tmdb_rating, s.trakt_rating,
+  s.tmdb_rating, s.my_rating,
   (SELECT COUNT(*)::int FROM watch_history wh 
    JOIN episodes e ON e.tmdb_id = wh.tmdb_id AND wh.media_type = 'episode'
    WHERE e.show_tmdb_id = s.tmdb_id) as episodes_watched,

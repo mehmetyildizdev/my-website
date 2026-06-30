@@ -590,7 +590,7 @@ async function main() {
   // Update local DB show's rating
   if (rating !== null) {
     await query(
-      `UPDATE shows SET trakt_rating = $1 WHERE tmdb_id = $2`,
+      `UPDATE shows SET my_rating = $1 WHERE tmdb_id = $2`,
       [rating, tmdbShowId]
     );
     console.log(`   ✓ Local database updated: set "${showData.name}" rating to ${rating}.`);

@@ -7,7 +7,7 @@ SELECT
   s.number_of_episodes AS total_episodes,
   COUNT(*)::int AS watched_episodes,
   ROUND((COUNT(*)::numeric / NULLIF(s.number_of_episodes, 0)) * 100)::int AS completion_pct,
-  ROUND(AVG(wh.rating), 1) AS avg_rating,
+  ROUND(AVG(wh.my_rating), 1) AS avg_rating,
   CASE
     WHEN COUNT(*)::numeric / NULLIF(s.number_of_episodes, 0) >= 0.95 THEN 'complete'
     WHEN MAX(wh.watched_at) > NOW() - INTERVAL '90 days' THEN 'watching'

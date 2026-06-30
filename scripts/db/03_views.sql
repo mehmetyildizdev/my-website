@@ -10,12 +10,12 @@ CREATE SCHEMA IF NOT EXISTS analytics;
 CREATE MATERIALIZED VIEW analytics.top_rated_actors AS
 WITH global_stats AS (
     SELECT 
-        AVG(trakt_rating) as global_avg,
+        AVG(my_rating) as global_avg,
         5.0 as min_project_threshold
     FROM (
-        SELECT trakt_rating FROM movies WHERE trakt_rating IS NOT NULL
+        SELECT my_rating FROM movies WHERE my_rating IS NOT NULL
         UNION ALL
-        SELECT trakt_rating FROM shows WHERE trakt_rating IS NOT NULL
+        SELECT my_rating FROM shows WHERE my_rating IS NOT NULL
     ) all_media
 ),
 max_collection_stats AS (
@@ -30,7 +30,7 @@ max_collection_stats AS (
         FROM movie_cast mc
         JOIN movies m ON m.tmdb_id = mc.movie_tmdb_id
         JOIN watch_history wh ON wh.tmdb_id = m.tmdb_id AND wh.media_type = 'movie'
-        WHERE m.trakt_rating IS NOT NULL AND m.collection_id IS NOT NULL
+        WHERE m.my_rating IS NOT NULL AND m.collection_id IS NOT NULL
         GROUP BY mc.person_tmdb_id, m.collection_id
     ) inner_stats
     GROUP BY inner_stats.person_tmdb_id
@@ -39,8 +39,8 @@ actor_movie_stats AS (
     SELECT 
         mc.person_tmdb_id,
         COUNT(DISTINCT m.tmdb_id)::int as movie_count,
-        SUM(m.trakt_rating) as pure_movie_rating_sum,
-        SUM(m.trakt_rating * CASE 
+        SUM(m.my_rating) as pure_movie_rating_sum,
+        SUM(m.my_rating * CASE 
             WHEN mc.role = 'lead' THEN 1.0 
             WHEN mc.role = 'supporting' THEN 0.69 
             ELSE 0.2
@@ -53,7 +53,7 @@ actor_movie_stats AS (
     FROM movie_cast mc
     JOIN movies m ON m.tmdb_id = mc.movie_tmdb_id
     JOIN watch_history wh ON wh.tmdb_id = m.tmdb_id AND wh.media_type = 'movie'
-    WHERE m.trakt_rating IS NOT NULL
+    WHERE m.my_rating IS NOT NULL
     GROUP BY mc.person_tmdb_id
 ),
 watched_shows AS (
@@ -68,7 +68,7 @@ actor_show_stats AS (
     SELECT 
         sc.person_tmdb_id,
         COUNT(DISTINCT s.tmdb_id)::int as show_count,
-        SUM(s.trakt_rating) as pure_show_rating_sum,
+        SUM(s.my_rating) as pure_show_rating_sum,
         SUM(
             LEAST(
                 (1.0 + SQRT(LEAST(COALESCE(sc.episode_count, 1), ws.watched_eps_count)::float)) * 
@@ -78,7 +78,7 @@ actor_show_stats AS (
         )::float as show_project_weight,
         SUM(LEAST(COALESCE(sc.episode_count, 1), ws.watched_eps_count))::int as total_episodes,
         SUM(
-            s.trakt_rating * 
+            s.my_rating * 
             LEAST(
                 (1.0 + SQRT(LEAST(COALESCE(sc.episode_count, 1), ws.watched_eps_count)::float)) * 
                 LEAST(COALESCE(sc.episode_count, 1)::float / ws.watched_eps_count::float, 1.0),
@@ -88,7 +88,7 @@ actor_show_stats AS (
     FROM show_cast sc
     JOIN shows s ON s.tmdb_id = sc.show_tmdb_id
     JOIN watched_shows ws ON ws.show_tmdb_id = s.tmdb_id
-    WHERE s.trakt_rating IS NOT NULL
+    WHERE s.my_rating IS NOT NULL
     GROUP BY sc.person_tmdb_id
 ),
 combined_metrics AS (
@@ -271,7 +271,7 @@ WITH movie_stats AS (
         COUNT(DISTINCT m.tmdb_id) FILTER (WHERE mc.role = 'supporting')::int as supporting_count,
         -- Average ONLY over lead/supporting roles so a #25 cast member of
         -- an Oscar winner can't inflate their average by accident.
-        AVG(NULLIF(m.trakt_rating, 0)) FILTER (
+        AVG(NULLIF(m.my_rating, 0)) FILTER (
             WHERE mc.role IN ('lead', 'supporting')
         )::numeric(4,2)                            as movie_avg_rating
     FROM movie_cast mc
@@ -299,7 +299,7 @@ show_stats AS (
             COALESCE(wsr.avg_eps_runtime, 0)
             * LEAST(COALESCE(sc.episode_count, 1), wsr.user_watched_eps)
         )::int                                     as show_runtime_min,
-        AVG(NULLIF(s.trakt_rating, 0))::numeric(4,2) as show_avg_rating
+        AVG(NULLIF(s.my_rating, 0))::numeric(4,2) as show_avg_rating
     FROM show_cast sc
     JOIN shows s ON s.tmdb_id = sc.show_tmdb_id
     JOIN watched_show_runtime wsr ON wsr.show_tmdb_id = s.tmdb_id
@@ -429,12 +429,12 @@ show_crew_cat AS (
 --    global rating average + Bayesian prior threshold.
 global_stats AS (
     SELECT
-        AVG(trakt_rating) as global_avg,
+        AVG(my_rating) as global_avg,
         5.0 as min_project_threshold
     FROM (
-        SELECT trakt_rating FROM movies WHERE trakt_rating IS NOT NULL
+        SELECT my_rating FROM movies WHERE my_rating IS NOT NULL
         UNION ALL
-        SELECT trakt_rating FROM shows WHERE trakt_rating IS NOT NULL
+        SELECT my_rating FROM shows WHERE my_rating IS NOT NULL
     ) all_media
 ),
 -- Per (person, category) — biggest collection an actor's category contributed to.
@@ -452,7 +452,7 @@ max_collection_stats AS (
         FROM movie_crew_cat mcc
         JOIN movies m         ON m.tmdb_id  = mcc.movie_tmdb_id
         JOIN watch_history wh ON wh.tmdb_id = m.tmdb_id AND wh.media_type = 'movie'
-        WHERE m.trakt_rating IS NOT NULL
+        WHERE m.my_rating IS NOT NULL
           AND m.collection_id IS NOT NULL
         GROUP BY mcc.person_tmdb_id, mcc.category, m.collection_id
     ) inner_stats
@@ -464,13 +464,13 @@ person_movie_stats AS (
         mcc.person_tmdb_id,
         mcc.category,
         COUNT(DISTINCT m.tmdb_id)::int as movie_count,
-        SUM(m.trakt_rating)            as pure_movie_rating_sum,
-        SUM(m.trakt_rating)            as weighted_movie_rating_sum,
+        SUM(m.my_rating)            as pure_movie_rating_sum,
+        SUM(m.my_rating)            as weighted_movie_rating_sum,
         COUNT(DISTINCT m.tmdb_id)::float as movie_weight_denominator_raw
     FROM movie_crew_cat mcc
     JOIN movies m         ON m.tmdb_id  = mcc.movie_tmdb_id
     JOIN watch_history wh ON wh.tmdb_id = m.tmdb_id AND wh.media_type = 'movie'
-    WHERE m.trakt_rating IS NOT NULL
+    WHERE m.my_rating IS NOT NULL
     GROUP BY mcc.person_tmdb_id, mcc.category
 ),
 watched_shows AS (
@@ -486,7 +486,7 @@ person_show_stats AS (
         scc.person_tmdb_id,
         scc.category,
         COUNT(DISTINCT s.tmdb_id)::int as show_count,
-        SUM(s.trakt_rating)            as pure_show_rating_sum,
+        SUM(s.my_rating)            as pure_show_rating_sum,
         SUM(
             LEAST(
                 (1.0 + SQRT(LEAST(COALESCE(scc.episode_count, 1), ws.watched_eps_count)::float)) *
@@ -496,7 +496,7 @@ person_show_stats AS (
         )::float as show_project_weight,
         SUM(LEAST(COALESCE(scc.episode_count, 1), ws.watched_eps_count))::int as total_episodes,
         SUM(
-            s.trakt_rating *
+            s.my_rating *
             LEAST(
                 (1.0 + SQRT(LEAST(COALESCE(scc.episode_count, 1), ws.watched_eps_count)::float)) *
                 LEAST(COALESCE(scc.episode_count, 1)::float / ws.watched_eps_count::float, 1.0),
@@ -506,7 +506,7 @@ person_show_stats AS (
     FROM show_crew_cat scc
     JOIN shows s ON s.tmdb_id = scc.show_tmdb_id
     JOIN watched_shows ws ON ws.show_tmdb_id = s.tmdb_id
-    WHERE s.trakt_rating IS NOT NULL
+    WHERE s.my_rating IS NOT NULL
     GROUP BY scc.person_tmdb_id, scc.category
 ),
 -- Per (person, category) — biggest single-show contribution for the show
@@ -523,7 +523,7 @@ max_show_stats AS (
         FROM show_crew_cat scc
         JOIN watched_shows ws ON ws.show_tmdb_id = scc.show_tmdb_id
         JOIN shows s          ON s.tmdb_id = scc.show_tmdb_id
-        WHERE s.trakt_rating IS NOT NULL
+        WHERE s.my_rating IS NOT NULL
         GROUP BY scc.person_tmdb_id, scc.category, scc.show_tmdb_id
     ) inner_stats
     GROUP BY person_tmdb_id, category

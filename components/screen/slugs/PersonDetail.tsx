@@ -48,8 +48,8 @@ export default function PersonDetail({ person, movies, shows, age }: PersonDetai
   });
 
   const uniqueShows = groupUniqueShows(shows).sort((a, b) => {
-    const ratingA = a.trakt_rating ?? -1;
-    const ratingB = b.trakt_rating ?? -1;
+    const ratingA = a.my_rating ?? -1;
+    const ratingB = b.my_rating ?? -1;
     if (ratingA !== ratingB) {
       return ratingB - ratingA;
     }
@@ -331,7 +331,7 @@ export default function PersonDetail({ person, movies, shows, age }: PersonDetai
                 title={s.title}
                 subtitle={s.role ?? undefined}
                 poster_path={s.poster_path}
-                rating={s.trakt_rating}
+                rating={s.my_rating}
                 priority={idx < 6}
                 meta={s.watched_eps ? `${s.watched_eps} eps watched` : undefined}
               />

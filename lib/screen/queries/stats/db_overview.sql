@@ -2,7 +2,7 @@
 SELECT 
     'movies' as table_name,
     COUNT(*)::int as total_rows,
-    COUNT(trakt_rating)::int as has_trakt_rating,
+    COUNT(my_rating)::int as has_my_rating,
     COUNT(tmdb_rating)::int as has_tmdb_rating,
     COUNT(poster_path)::int as has_poster,
     COUNT(backdrop_path)::int as has_backdrop,
@@ -21,7 +21,7 @@ UNION ALL
 SELECT 
     'shows',
     COUNT(*),
-    COUNT(trakt_rating),
+    COUNT(my_rating),
     COUNT(tmdb_rating),
     COUNT(poster_path),
     COUNT(backdrop_path),

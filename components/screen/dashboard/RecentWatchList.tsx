@@ -47,7 +47,7 @@ export default async function RecentWatchList() {
                 title={item.title}
                 subtitle={subtitle}
                 poster_path={item.poster_path}
-                rating={item.rating}
+                rating={item.my_rating}
                 meta={`Watched ${new Date(item.watched_at).toLocaleDateString('en-GB')}`}
               />
             );

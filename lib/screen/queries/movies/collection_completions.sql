@@ -19,7 +19,7 @@ WITH collection_stats AS (
             COUNT(DISTINCT CASE WHEN wh.tmdb_id IS NOT NULL THEN cm.movie_tmdb_id END)::numeric /
             NULLIF(COUNT(DISTINCT cm.movie_tmdb_id), 0)::numeric * 100,
         0)::int as completion_pct,
-        ROUND(AVG(CASE WHEN wh.rating IS NOT NULL THEN wh.rating END)::numeric, 1) as avg_rating
+        ROUND(AVG(CASE WHEN wh.my_rating IS NOT NULL THEN wh.my_rating END)::numeric, 1) as avg_rating
     FROM collections c
     JOIN collection_movies cm ON cm.collection_tmdb_id = c.tmdb_id
     LEFT JOIN watch_history wh

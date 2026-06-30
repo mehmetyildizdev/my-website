@@ -79,7 +79,7 @@ export const MOCK_MOVIE = {
   overview:
     "When a deep-space relay station picks up a signal that predates the universe itself, a fractured crew must decide whether to answer it. As paranoia spreads and time begins to fold, the line between memory and machine dissolves into something far stranger.",
   tmdb_rating: 7.8,
-  trakt_rating: 9,
+  my_rating: 9,
   collection_id: 4242,
   collection_name: "The Void Saga",
   watch_count: 3,
@@ -102,7 +102,7 @@ export const MOCK_SHOW = {
   number_of_episodes: 24,
   number_of_seasons: 3,
   tmdb_rating: 8.2,
-  trakt_rating: 8,
+  my_rating: 8,
   episodes_watched: 18,
   last_watched_at: "2026-01-14",
   countries: MOCK_COUNTRIES,

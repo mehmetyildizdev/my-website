@@ -5,10 +5,10 @@ SELECT
   (SELECT COUNT(*)::int FROM movie_cast mc 
    JOIN watch_history wh ON wh.tmdb_id = mc.movie_tmdb_id AND wh.media_type = 'movie'
    WHERE mc.person_tmdb_id = p.tmdb_id) as movies_watched,
-  (SELECT AVG(m2.trakt_rating)::numeric(3,2)
+  (SELECT AVG(m2.my_rating)::numeric(3,2)
    FROM movie_cast mc2
    JOIN movies m2 ON m2.tmdb_id = mc2.movie_tmdb_id
-   WHERE mc2.person_tmdb_id = p.tmdb_id AND m2.trakt_rating IS NOT NULL) as avg_movie_rating,
+   WHERE mc2.person_tmdb_id = p.tmdb_id AND m2.my_rating IS NOT NULL) as avg_movie_rating,
 
   -- Consolidate movies (limiting to 60)
   (SELECT COALESCE(json_agg(json_build_object(
@@ -16,16 +16,16 @@ SELECT
      'title', m_sub.title, 
      'poster_path', m_sub.poster_path, 
      'release_date', m_sub.release_date, 
-     'trakt_rating', m_sub.trakt_rating,
+     'my_rating', m_sub.my_rating,
      'role', m_sub.role,
      'watched_at', m_sub.watched_at, 
      'user_rating', m_sub.user_rating
    )), '[]'::json)
    FROM (
      SELECT 
-       m.tmdb_id, m.title, m.poster_path, m.release_date, m.trakt_rating,
+       m.tmdb_id, m.title, m.poster_path, m.release_date, m.my_rating,
        COALESCE(mc.character, mcr.job) as role,
-       wh.watched_at, wh.rating as user_rating
+       wh.watched_at, wh.my_rating as user_rating
      FROM movies m
      JOIN watch_history wh ON wh.tmdb_id = m.tmdb_id AND wh.media_type = 'movie'
      LEFT JOIN movie_cast mc ON mc.movie_tmdb_id = m.tmdb_id AND mc.person_tmdb_id = p.tmdb_id
@@ -41,7 +41,7 @@ SELECT
      'title', s_sub.title, 
      'poster_path', s_sub.poster_path, 
      'release_date', s_sub.release_date, 
-     'trakt_rating', s_sub.trakt_rating,
+     'my_rating', s_sub.my_rating,
      'role', s_sub.role,
      'watched_eps', s_sub.watched_eps
    )), '[]'::json)
@@ -59,7 +59,7 @@ SELECT
        s.name as title, 
        s.poster_path, 
        s.first_air_date as release_date, 
-       s.trakt_rating,
+       s.my_rating,
        COALESCE(sc.character, scr.job) as role,
        we.watched_eps
      FROM shows s

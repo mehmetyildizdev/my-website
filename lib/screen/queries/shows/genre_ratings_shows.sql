@@ -1,10 +1,10 @@
 -- Average rating per genre (shows only)
 WITH watched_shows AS (
-    SELECT DISTINCT s.tmdb_id, s.trakt_rating as rating
+    SELECT DISTINCT s.tmdb_id, s.my_rating as rating
     FROM shows s
     JOIN episodes e ON e.show_tmdb_id = s.tmdb_id
     JOIN watch_history wh ON wh.tmdb_id = e.tmdb_id AND wh.media_type = 'episode'
-    WHERE s.trakt_rating IS NOT NULL
+    WHERE s.my_rating IS NOT NULL
 )
 SELECT
     g.name as name,

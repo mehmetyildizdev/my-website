@@ -1,15 +1,15 @@
 -- Average rating per genre (movies + shows combined).
 -- Only includes genres with 20+ rated items.
 WITH watched_movies AS (
-    SELECT tmdb_id, rating FROM watch_history WHERE media_type = 'movie' AND rating IS NOT NULL
+    SELECT tmdb_id, my_rating as rating FROM watch_history WHERE media_type = 'movie' AND my_rating IS NOT NULL
 ),
--- For shows, use the per-show trakt_rating (from `shows` table, populated by user's Trakt rating)
+-- For shows, use the per-show my_rating (from `shows` table, populated by user's Trakt rating)
 watched_shows AS (
-    SELECT DISTINCT s.tmdb_id, s.trakt_rating as rating
+    SELECT DISTINCT s.tmdb_id, s.my_rating as rating
     FROM shows s
     JOIN episodes e ON e.show_tmdb_id = s.tmdb_id
     JOIN watch_history wh ON wh.tmdb_id = e.tmdb_id AND wh.media_type = 'episode'
-    WHERE s.trakt_rating IS NOT NULL
+    WHERE s.my_rating IS NOT NULL
 ),
 genre_combined AS (
     -- Movie genres

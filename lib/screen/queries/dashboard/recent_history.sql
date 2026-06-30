@@ -1,7 +1,7 @@
 SELECT 
   wh.id as history_id,
   wh.watched_at, 
-  wh.rating, 
+  wh.my_rating, 
   wh.media_type,
   wh.tmdb_id,
   COALESCE(m.title, s.name) as title,

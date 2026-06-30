@@ -73,7 +73,7 @@ CREATE TABLE IF NOT EXISTS movies (
     backdrop_path TEXT,
     overview TEXT,
     tmdb_rating DECIMAL(3,1),
-    trakt_rating DECIMAL(3,1),
+    my_rating DECIMAL(3,1),
     collection_id INTEGER REFERENCES collections(tmdb_id) ON DELETE SET NULL,
     created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
 );
@@ -93,7 +93,7 @@ CREATE TABLE IF NOT EXISTS shows (
     number_of_episodes INTEGER,
     number_of_seasons INTEGER,
     tmdb_rating DECIMAL(3,1),
-    trakt_rating DECIMAL(3,1),
+    my_rating DECIMAL(3,1),
     created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
 );
 
@@ -132,7 +132,7 @@ CREATE TABLE IF NOT EXISTS watch_history (
     tmdb_id INTEGER NOT NULL,
     media_type VARCHAR(50) NOT NULL CHECK (media_type IN ('movie', 'episode')),
     watched_at TIMESTAMP WITH TIME ZONE NOT NULL,
-    rating INTEGER CHECK (rating >= 1 AND rating <= 10),
+    my_rating INTEGER CHECK (my_rating >= 1 AND my_rating <= 10),
     trakt_id BIGINT UNIQUE, -- To prevent duplicate scrobbles from Trakt
     created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
     UNIQUE(tmdb_id, media_type) -- Ensures only one record per movie or episode as requested

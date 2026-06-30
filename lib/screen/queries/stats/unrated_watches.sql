@@ -8,10 +8,10 @@
 FROM watch_history wh
 JOIN movies m ON m.tmdb_id = wh.tmdb_id
 WHERE wh.media_type = 'movie'
-  AND wh.rating IS NULL
+  AND wh.my_rating IS NULL
 ORDER BY wh.watched_at DESC)
 UNION ALL
--- Shows without a trakt_rating (not yet rated on Trakt)
+-- Shows without a my_rating (not yet rated on Trakt)
 (SELECT 
     'show' as media_type,
     s.name as title,
@@ -22,6 +22,6 @@ FROM watch_history wh
 JOIN episodes e ON e.tmdb_id = wh.tmdb_id
 JOIN shows s ON s.tmdb_id = e.show_tmdb_id
 WHERE wh.media_type = 'episode'
-  AND s.trakt_rating IS NULL
+  AND s.my_rating IS NULL
 GROUP BY s.tmdb_id, s.name, s.first_air_date, s.trakt_id
 ORDER BY MAX(wh.watched_at) DESC);

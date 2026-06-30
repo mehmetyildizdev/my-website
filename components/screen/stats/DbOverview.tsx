@@ -6,7 +6,7 @@ import MaintenanceActions from './MaintenanceActions';
 type CoreTableRow = {
   table_name: string;
   total_rows: number;
-  has_trakt_rating: number;
+  has_my_rating: number;
   has_tmdb_rating: number;
   has_poster: number;
   has_backdrop: number;
@@ -234,9 +234,9 @@ export default async function DbOverview() {
                 <div className="flex items-center gap-2">
                   <h4 className="font-semibold text-base capitalize">{t.table_name}</h4>
                   {(t.table_name === 'movies' || t.table_name === 'shows') &&
-                    (t.total_rows - t.has_trakt_rating > 0 ? (
+                    (t.total_rows - t.has_my_rating > 0 ? (
                       <span className="inline-flex items-center gap-1 rounded bg-gold/10 px-1.5 py-0.5 text-[10px] font-medium text-gold border border-gold/20">
-                        ⚠️ {t.total_rows - t.has_trakt_rating} Unrated
+                        ⚠️ {t.total_rows - t.has_my_rating} Unrated
                       </span>
                     ) : (
                       <span className="inline-flex items-center gap-1 rounded bg-emerald/10 px-1.5 py-0.5 text-[10px] font-medium text-emerald border border-emerald/20">
@@ -251,9 +251,9 @@ export default async function DbOverview() {
               <div className="space-y-1.5">
                 {(t.table_name === 'movies' || t.table_name === 'shows') && (
                   <CoverageBar
-                    filled={t.has_trakt_rating}
+                    filled={t.has_my_rating}
                     total={t.total_rows}
-                    label="Trakt Rating"
+                    label="My Rating"
                   />
                 )}
                 {t.has_tmdb_rating > 0 && (

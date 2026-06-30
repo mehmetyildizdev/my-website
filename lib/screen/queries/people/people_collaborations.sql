@@ -6,7 +6,7 @@ WITH person_titles AS (
     p.name AS person_name,
     m.tmdb_id AS title_id,
     m.title AS title_name,
-    wh.rating,
+    wh.my_rating,
     m.collection_id,
     c.name AS collection_name
   FROM watch_history wh
@@ -15,7 +15,7 @@ WITH person_titles AS (
   JOIN people p ON p.tmdb_id = mc.person_tmdb_id
   LEFT JOIN collections c ON c.tmdb_id = m.collection_id
   WHERE wh.media_type = 'movie'
-    AND wh.rating IS NOT NULL
+    AND wh.my_rating IS NOT NULL
     AND mc.role IN ('lead', 'supporting')
 ),
 pair_movies AS (
@@ -26,7 +26,7 @@ pair_movies AS (
     a.title_name,
     a.collection_id,
     a.collection_name,
-    a.rating
+    a.my_rating
   FROM person_titles a
   JOIN person_titles b ON a.title_id = b.title_id AND a.person_id < b.person_id
 )
@@ -36,7 +36,7 @@ SELECT
   COUNT(DISTINCT title_id)::int AS shared_titles,
   COUNT(DISTINCT title_id) FILTER (WHERE collection_id IS NOT NULL)::int AS collection_movie_count,
   COUNT(DISTINCT title_id) FILTER (WHERE collection_id IS NULL)::int AS standalone_movie_count,
-  ROUND(AVG(rating)::numeric, 2) AS avg_rating,
+  ROUND(AVG(my_rating)::numeric, 2) AS avg_rating,
   -- JSON array of works: collections grouped with their movies, standalones listed individually
   json_agg(DISTINCT jsonb_build_object(
     'title', title_name,

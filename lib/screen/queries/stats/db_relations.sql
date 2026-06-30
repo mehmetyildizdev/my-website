@@ -4,7 +4,7 @@ SELECT
     COUNT(*)::int as total_rows,
     COUNT(CASE WHEN media_type = 'movie' THEN 1 END)::int as movie_entries,
     COUNT(CASE WHEN media_type = 'episode' THEN 1 END)::int as episode_entries,
-    COUNT(rating)::int as has_rating,
+    COUNT(my_rating)::int as has_rating,
     0 as extra_stat_1,
     0 as extra_stat_2
 FROM watch_history

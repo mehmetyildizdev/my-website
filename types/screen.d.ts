@@ -169,7 +169,7 @@ interface TMDBEpisodeDetail {
 interface RecentWatchItem {
   history_id: number;
   watched_at: string;
-  rating: number | null;
+  my_rating: number | null;
   media_type: 'movie' | 'episode';
   title: string;
   episode_title: string | null;
@@ -237,7 +237,7 @@ interface MovieDetail {
   backdrop_path: string | null;
   overview: string | null;
   tmdb_rating: number | null;
-  trakt_rating: number | null;
+  my_rating: number | null;
   collection_id: number | null;
   collection_name: string | null;
   watch_count: number;
@@ -275,7 +275,7 @@ interface ShowDetail {
   number_of_episodes: number | null;
   number_of_seasons: number | null;
   tmdb_rating: number | null;
-  trakt_rating: number | null;
+  my_rating: number | null;
   episodes_watched: number;
   last_watched_at: string | null;
   countries: DetailCountry[];
@@ -319,7 +319,7 @@ interface PersonMovieCredit {
   title: string;
   poster_path: string | null;
   release_date: string | null;
-  trakt_rating: number | null;
+  my_rating: number | null;
   role: string | null;
   watched_at: string | null;
   user_rating: number | null;
@@ -330,7 +330,7 @@ interface PersonShowCredit {
   title: string;
   poster_path: string | null;
   release_date: string | null;
-  trakt_rating: number | null;
+  my_rating: number | null;
   role: string | null;
   watched_eps: number;
 }

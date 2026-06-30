@@ -11,7 +11,7 @@ interface RatingCoinProps {
 }
 
 interface RatingClusterProps {
-  traktRating?: number | null;
+  myRating?: number | null;
   tmdbRating?: number | null;
   tmdbId?: number | null;
   mediaType?: 'movie' | 'tv';
@@ -76,7 +76,7 @@ function RatingCoin({ value, label, colorClass, href }: RatingCoinProps) {
 }
 
 export default function RatingCluster({
-  traktRating,
+  myRating,
   tmdbRating,
   tmdbId,
   mediaType,
@@ -86,11 +86,11 @@ export default function RatingCluster({
 
   return (
     <>
-      {traktRating != null && (
+      {myRating != null && (
         <RatingCoin
-          value={traktRating}
+          value={myRating}
           label="My Rating"
-          colorClass={getRatingTextColorClass(traktRating)}
+          colorClass={getRatingTextColorClass(myRating)}
         />
       )}
       {tmdbRating != null && (

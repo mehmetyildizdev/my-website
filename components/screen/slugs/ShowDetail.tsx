@@ -97,7 +97,7 @@ export default function ShowDetail({ show, cast, crew = [], genres }: ShowDetail
         genres={genres}
         ratings={
           <RatingCluster
-            traktRating={show.trakt_rating}
+            myRating={show.my_rating}
             tmdbRating={show.tmdb_rating}
             tmdbId={show.tmdb_id}
             mediaType="tv"

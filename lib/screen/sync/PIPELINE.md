@@ -143,7 +143,7 @@ No external API call — inserts the `watch_history` row using data already in h
 1. `GET https://api.trakt.tv/users/me/ratings/movies`
 2. `GET https://api.trakt.tv/users/me/ratings/shows`
 
-Bulk-updates `movies.trakt_rating`, `shows.trakt_rating`, and `watch_history.rating` using PostgreSQL `UNNEST`.
+Bulk-updates `movies.my_rating`, `shows.my_rating`, and `watch_history.rating` using PostgreSQL `UNNEST`.
 
 ---
 

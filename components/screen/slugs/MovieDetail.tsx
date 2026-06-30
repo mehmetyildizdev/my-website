@@ -84,7 +84,7 @@ export default function MovieDetail({ movie, cast, crew, genres }: MovieDetailPr
         genres={genres}
         ratings={
           <RatingCluster
-            traktRating={movie.trakt_rating}
+            myRating={movie.my_rating}
             tmdbRating={movie.tmdb_rating}
             tmdbId={movie.tmdb_id}
             mediaType="movie"

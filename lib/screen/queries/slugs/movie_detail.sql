@@ -3,7 +3,7 @@
 SELECT 
   m.tmdb_id, m.imdb_id, m.title, m.original_title, m.original_language,
   m.release_date, m.runtime, m.poster_path, m.backdrop_path, m.overview,
-  m.tmdb_rating, m.trakt_rating, m.collection_id,
+  m.tmdb_rating, m.my_rating, m.collection_id,
   (SELECT COUNT(*)::int FROM watch_history wh WHERE wh.tmdb_id = m.tmdb_id AND wh.media_type = 'movie') as watch_count,
   (SELECT MAX(wh.watched_at) FROM watch_history wh WHERE wh.tmdb_id = m.tmdb_id AND wh.media_type = 'movie') as last_watched_at,
 

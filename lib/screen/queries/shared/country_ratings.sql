@@ -1,18 +1,18 @@
 -- Average rating per production country with movie/show breakdown
 WITH movie_ratings AS (
-    SELECT mc.country_iso, wh.rating::numeric as rating
+    SELECT mc.country_iso, wh.my_rating::numeric as rating
     FROM watch_history wh
     JOIN movies m ON m.tmdb_id = wh.tmdb_id
     JOIN movie_countries mc ON mc.movie_tmdb_id = m.tmdb_id
-    WHERE wh.media_type = 'movie' AND wh.rating IS NOT NULL
+    WHERE wh.media_type = 'movie' AND wh.my_rating IS NOT NULL
 ),
 show_ratings AS (
-    SELECT DISTINCT sc.country_iso, s.tmdb_id as show_tmdb_id, s.trakt_rating::numeric as rating
+    SELECT DISTINCT sc.country_iso, s.tmdb_id as show_tmdb_id, s.my_rating::numeric as rating
     FROM shows s
     JOIN episodes e ON e.show_tmdb_id = s.tmdb_id
     JOIN watch_history wh ON wh.tmdb_id = e.tmdb_id AND wh.media_type = 'episode'
     JOIN show_countries sc ON sc.show_tmdb_id = s.tmdb_id
-    WHERE s.trakt_rating IS NOT NULL
+    WHERE s.my_rating IS NOT NULL
 ),
 all_ratings AS (
     SELECT country_iso, rating FROM movie_ratings
