@@ -1,7 +1,8 @@
 import { query, loadQuery } from '@/lib/screen/db';
 import { notFound } from 'next/navigation';
 import PersonDetail from '@/components/screen/slugs/PersonDetail';
-export const revalidate = 604800;
+export const revalidate = 604800; // 7 days — on-demand only, never pre-built
+export const dynamicParams = true;
 
 type Props = { params: Promise<{ id: string }> };
 

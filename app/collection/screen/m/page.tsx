@@ -6,10 +6,9 @@ import TopCompaniesNetworks from '@/components/screen/shared/TopCompaniesNetwork
 import MovieDecadeChart from '@/components/screen/movies/MovieDecadeChart';
 import MovieLengthVsRating from '@/components/screen/movies/MovieLengthVsRating';
 import DirectorRankings from '@/components/screen/movies/DirectorRankings';
-import WorldMapChart from '@/components/screen/shared/WorldMapChart';
 import GenreBumpChart from '@/components/screen/shared/GenreBumpChart';
 import { query, loadQuery } from '@/lib/screen/db';
-export const revalidate = 604800;
+export const revalidate = 86400; // 24h — refreshed by nightly GitHub Action
 
 export const metadata = {
   title: 'Screen | Movie Charts',
@@ -20,7 +19,6 @@ export default async function MovieChartsPage() {
   const [
     genreRes,
     comparisonRes,
-    countryRes,
     collectionsRes,
     companiesRes,
     decadesRes,
@@ -30,7 +28,6 @@ export default async function MovieChartsPage() {
   ] = await Promise.all([
     query(loadQuery('movies/genre_treemap_movies.sql')),
     query(loadQuery('movies/ratings_comparison_movies.sql')),
-    query(loadQuery('movies/country_ratings_movies.sql')),
     query(loadQuery('movies/collection_completions.sql')),
     query(loadQuery('movies/top_companies.sql')),
     query(loadQuery('movies/movie_decades.sql')),
@@ -46,14 +43,13 @@ export default async function MovieChartsPage() {
         <div>
           <h2 className="text-2xl font-bold tracking-tight text-accent">Movie Analytics</h2>
           <p className="text-sm text-muted-foreground mt-1">
-            Deep dive into your my watching patterns — genres, decades, runtimes, and production
-            companies.
+            Deep dive into my watching patterns, genres, ratings, runtimes, collections, and more on
+            movies.
           </p>
         </div>
-        <GenreTreemap data={genreRes.rows} />
         <GenreBumpChart data={bumpRes.rows} />
+        <GenreTreemap data={genreRes.rows} />
         <RatingsComparison data={comparisonRes.rows} lockedMedia="movie" />
-        <WorldMapChart data={countryRes.rows} />
         <MovieLengthVsRating data={scatterRes.rows} />
         <MovieDecadeChart data={decadesRes.rows} />
         <DirectorRankings data={directorsRes.rows} />

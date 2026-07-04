@@ -7,7 +7,7 @@ import BingePatterns from '@/components/screen/shows/BingePatterns';
 import ShowRatingDistribution from '@/components/screen/shows/ShowRatingDistribution';
 import RatingsComparison from '@/components/screen/shared/RatingsComparison';
 import { query, loadQuery } from '@/lib/screen/db';
-export const revalidate = 604800;
+export const revalidate = 86400; // 24h — refreshed by nightly GitHub Action
 
 export const metadata = {
   title: 'Screen | Show Charts',

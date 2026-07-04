@@ -6,7 +6,7 @@ import DirectorActorCollabs from "@/components/screen/people/DirectorActorCollab
 import CrewCollabs from "@/components/screen/people/CrewCollabs";
 import PeopleGenderDiversity from "@/components/screen/people/PeopleGenderDiversity";
 import { query, loadQuery } from "@/lib/screen/db";
-export const revalidate = 604800;
+export const revalidate = 86400; // 24h — refreshed by nightly GitHub Action
 
 export const metadata = {
   title: "Screen | People Charts",

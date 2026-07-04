@@ -4,7 +4,7 @@ import ScreenHero from '@/components/screen/dashboard/ScreenHero';
 import GenreRatingsBars from '@/components/screen/shared/GenreRatingsBars';
 import GenreTreemap from '@/components/screen/shared/GenreTreemap';
 import { query, loadQuery } from '@/lib/screen/db';
-export const revalidate = 604800;
+export const revalidate = 86400; // 24h — refreshed by nightly GitHub Action
 
 export const metadata = {
   title: 'Screen | Watch Statistics',

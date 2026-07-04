@@ -7,10 +7,9 @@ import GenreBumpChart from '@/components/screen/shared/GenreBumpChart';
 import WorldMapChart from '@/components/screen/shared/WorldMapChart';
 import CollectionCompletions from '@/components/screen/movies/CollectionCompletions';
 import TopCompaniesNetworks from '@/components/screen/shared/TopCompaniesNetworks';
-import WatchHeatmap from '@/components/screen/shared/WatchHeatmap';
 import { query, loadQuery } from '@/lib/screen/db';
 import Link from 'next/link';
-export const revalidate = 604800;
+export const revalidate = 86400; // 24h — refreshed by nightly GitHub Action
 
 export const metadata = {
   title: 'Screen | Charts',
@@ -20,7 +19,6 @@ export const metadata = {
 export default async function ChartsPage() {
   const [
     genreRes,
-    heatmapRes,
     ratingsRes,
     comparisonRes,
     bumpRes,
@@ -31,7 +29,6 @@ export default async function ChartsPage() {
     networksRes,
   ] = await Promise.all([
     query(loadQuery('movies/genre_treemap.sql')),
-    query(loadQuery('dashboard/watch_heatmap.sql')),
     query(loadQuery('shared/genre_ratings.sql')),
     query(loadQuery('shared/ratings_comparison.sql')),
     query(loadQuery('shared/genre_yearly_ratings.sql')),
@@ -46,21 +43,12 @@ export default async function ChartsPage() {
     <>
       <LogSuppressor />
       <div className="space-y-12">
-        <div className="flex items-center gap-4">
-          <Link
-            href="/collection/screen"
-            className="text-sm text-muted-foreground hover:text-accent transition-colors"
-          >
-            ← Back to Screen
-          </Link>
-        </div>
         <h2 className="text-2xl font-bold tracking-tight text-accent">Charts</h2>
         <WorldMapChart data={countryRes.rows} />
-        <WatchHeatmap data={heatmapRes.rows} stats={statsRes.rows} />
+        <GenreRatingsScatter data={ratingsRes.rows} />
+        <GenreBumpChart data={bumpRes.rows} />
         <GenreTreemap data={genreRes.rows} />
         <GenreRatingsBars data={ratingsRes.rows} />
-        <GenreBumpChart data={bumpRes.rows} />
-        <GenreRatingsScatter data={ratingsRes.rows} />
         <RatingsComparison data={comparisonRes.rows} />
         <TopCompaniesNetworks companies={companiesRes.rows} networks={networksRes.rows} />
         <CollectionCompletions data={collectionsRes.rows} />
