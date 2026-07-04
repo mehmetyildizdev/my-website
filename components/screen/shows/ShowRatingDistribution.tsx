@@ -22,7 +22,7 @@ export default function ShowRatingDistribution({ data }: { data: RatingBucket[] 
           Show Rating Distribution
         </CardTitle>
         <p className="text-xs text-muted-foreground mt-1">
-          How you rate TV shows — distribution across the 1–10 scale.
+          How I rate TV shows, distribution across the 1–10 scale.
         </p>
       </CardHeader>
       <CardContent className="pt-4">
@@ -34,7 +34,7 @@ export default function ShowRatingDistribution({ data }: { data: RatingBucket[] 
             return (
               <Tooltip
                 key={bucket.rating}
-                placement="top"
+                placement="mouse"
                 content={
                   <div className="flex flex-col gap-0.5 min-w-[140px]">
                     <span

@@ -1,4 +1,4 @@
-import { query, loadQuery } from '@/lib/screen/db';
+import { pgQuery, loadQuery } from '@/lib/screen/db';
 import { getGenreColor } from '@/components/screen/slugs/genre/genreThemes';
 import { isTraktAuthenticated } from '@/lib/screen/trakt';
 import MaintenanceActions from './MaintenanceActions';
@@ -180,10 +180,10 @@ function SampleTable({ entityType, data }: { entityType: string; data: Record<st
 
 export default async function DbOverview() {
   const [coreRes, relRes, sampleRes, genreCoverageRes, isAuthenticated] = await Promise.all([
-    query(loadQuery('stats/db_overview.sql')),
-    query(loadQuery('stats/db_relations.sql')),
-    query(loadQuery('stats/db_sample_rows.sql')),
-    query(loadQuery('stats/genre_coverage.sql')),
+    pgQuery(loadQuery('stats/db_overview.sql')),
+    pgQuery(loadQuery('stats/db_relations.sql')),
+    pgQuery(loadQuery('stats/db_sample_rows.sql')),
+    pgQuery(loadQuery('stats/genre_coverage.sql')),
     isTraktAuthenticated(),
   ]);
 

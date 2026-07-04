@@ -35,7 +35,17 @@ export default function GenreRatingsBars({
   data: GenreRating[];
   mode?: 'movie' | 'show';
 }) {
-  const ratings = data.map((d) => Number(d.avg_rating));
+  const parsedData = data.map((g) => ({
+    ...g,
+    total_count: Number(g.total_count),
+    avg_rating: Number(g.avg_rating),
+    avg_movie_rating: g.avg_movie_rating != null ? Number(g.avg_movie_rating) : null,
+    avg_show_rating: g.avg_show_rating != null ? Number(g.avg_show_rating) : null,
+    movie_count: Number(g.movie_count),
+    show_count: Number(g.show_count),
+  }));
+
+  const ratings = parsedData.map((d) => d.avg_rating);
   const minR = Math.min(...ratings);
   const maxR = Math.max(...ratings);
   const scaleMin = Math.max(0, Math.floor(minR - 0.5));
@@ -55,9 +65,10 @@ export default function GenreRatingsBars({
       </CardHeader>
       <CardContent className="pt-2">
         <div className="space-y-2">
-          {data.map((g) => {
-            const rating = Number(g.avg_rating);
+          {parsedData.map((g) => {
+            const rating = g.avg_rating;
             const pct = ((rating - scaleMin) / range) * 100;
+
             const movieR = g.avg_movie_rating != null ? Number(g.avg_movie_rating) : null;
             const showR = g.avg_show_rating != null ? Number(g.avg_show_rating) : null;
             const token =

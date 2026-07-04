@@ -232,7 +232,7 @@ export default function WorldMapChart({ data }: { data: CountryData[] }) {
           Production Countries
         </CardTitle>
         <p className="text-xs text-muted-foreground mt-1">
-          World map colored by average rating of watched content from each country.
+          World map colored by average rating of watched titles from each country.
         </p>
       </CardHeader>
       <CardContent className="pt-2">

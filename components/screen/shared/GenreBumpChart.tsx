@@ -20,14 +20,23 @@ const DECADES = [
 export default function GenreBumpChart({ data }: { data: YearlyGenreData[] }) {
   const [decade, setDecade] = useState<string>('2010');
 
+  // Parse string fields from database to numbers
+  const parsedData = useMemo(() => {
+    return data.map((d) => ({
+      ...d,
+      avg_rating: Number(d.avg_rating),
+      count: Number(d.count),
+    }));
+  }, [data]);
+
   // Dynamically filter decades that actually have data
   const availableDecades = useMemo(() => {
     return DECADES.filter((d) => {
       const start = parseInt(d.value);
       const end = start + 9;
-      return data.some((item) => item.year >= start && item.year <= end);
+      return parsedData.some((item) => item.year >= start && item.year <= end);
     });
-  }, [data]);
+  }, [parsedData]);
 
   // Adjust selected decade if current one is not available
   const activeDecade = useMemo(() => {
@@ -40,17 +49,23 @@ export default function GenreBumpChart({ data }: { data: YearlyGenreData[] }) {
   // All genres across all decades (for persistent legend)
   const allGenres = useMemo(() => {
     const set = new Set<string>();
-    data.forEach((d) => set.add(d.name));
+    parsedData.forEach((d) => set.add(d.name));
     return Array.from(set).sort();
-  }, [data]);
+  }, [parsedData]);
 
   const decadeStart = parseInt(activeDecade);
   const decadeEnd = decadeStart + 9;
 
   // Filter data to selected decade
   const filtered = useMemo(() => {
-    return data.filter((d) => d.year >= decadeStart && d.year <= decadeEnd);
-  }, [data, decadeStart, decadeEnd]);
+    return parsedData.filter((d) => d.year >= decadeStart && d.year <= decadeEnd);
+  }, [parsedData, decadeStart, decadeEnd]);
+
+  // Max count of watched items for any genre in a single year within the active decade
+  const maxYearlyCount = useMemo(() => {
+    const counts = filtered.map((d) => d.count || 0);
+    return Math.max(...counts, 1);
+  }, [filtered]);
 
   // Get genres that have data in this decade (at least 3 years of data)
   const genres = useMemo(() => {
@@ -59,7 +74,7 @@ export default function GenreBumpChart({ data }: { data: YearlyGenreData[] }) {
       genreYears.set(d.name, (genreYears.get(d.name) || 0) + 1);
     });
     return Array.from(genreYears.entries())
-      .filter(([, count]) => count >= 3)
+      .filter(([, count]) => count >= 2)
       .map(([name]) => name)
       .sort();
   }, [filtered]);
@@ -89,23 +104,10 @@ export default function GenreBumpChart({ data }: { data: YearlyGenreData[] }) {
   const chartPadding = { top: 20, bottom: 30, left: 10, right: 10 };
   const plotHeight = chartHeight - chartPadding.top - chartPadding.bottom;
 
-  // Rating scale (find min/max across visible data)
-  const { minRating, maxRating } = useMemo(() => {
-    let min = 10,
-      max = 0;
-    genreData.forEach((yearMap) => {
-      yearMap.forEach(({ rating }) => {
-        if (rating < min) min = rating;
-        if (rating > max) max = rating;
-      });
-    });
-    return {
-      minRating: Math.max(0, Math.floor(min - 0.5)),
-      maxRating: Math.min(10, Math.ceil(max + 0.5)),
-    };
-  }, [genreData]);
-
-  const ratingRange = maxRating - minRating || 1;
+  // Fixed rating scale from 1 to 10
+  const minRating = 1;
+  const maxRating = 10;
+  const ratingRange = 9;
 
   // Convert rating to Y position
   const ratingToY = (rating: number) => {
@@ -120,20 +122,33 @@ export default function GenreBumpChart({ data }: { data: YearlyGenreData[] }) {
     return 5 + pct * 90; // 5% to 95% of width
   };
 
-  // Active genre for highlighting — persists across decade changes
-  const [activeGenre, setActiveGenre] = useState<string | null>(null);
-  const [lockedGenre, setLockedGenre] = useState<string | null>(null);
+  // Active genres for highlighting — multi-select, persists across decade changes
+  const [activeGenres, setActiveGenres] = useState<Set<string>>(new Set());
+  const [hoveredGenre, setHoveredGenre] = useState<string | null>(null);
+  const [hoveredYear, setHoveredYear] = useState<number | null>(null);
+  const [hoveredRating, setHoveredRating] = useState<number | null>(null);
 
-  // Toggle genre lock on click
+  // Toggle genre selection on click
   const toggleGenre = (genre: string) => {
-    if (lockedGenre === genre) {
-      setLockedGenre(null);
-      setActiveGenre(null);
-    } else {
-      setLockedGenre(genre);
-      setActiveGenre(genre);
-    }
+    setActiveGenres((prev) => {
+      const next = new Set(prev);
+      if (next.has(genre)) {
+        next.delete(genre);
+      } else {
+        next.add(genre);
+      }
+      return next;
+    });
   };
+
+  // Effective highlighted set: locked selections + current hover
+  const highlightedGenres = useMemo(() => {
+    const set = new Set(activeGenres);
+    if (hoveredGenre) set.add(hoveredGenre);
+    return set;
+  }, [activeGenres, hoveredGenre]);
+
+  const hasHighlight = highlightedGenres.size > 0;
 
   return (
     <Card className="bg-pearl/30 border-border/15 shadow-2xl backdrop-blur-md">
@@ -144,6 +159,10 @@ export default function GenreBumpChart({ data }: { data: YearlyGenreData[] }) {
           </CardTitle>
           <p className="text-xs text-muted-foreground mt-1">
             How my average rating per genre changes across release years. Hover lines to highlight.
+          </p>
+          <p className="text-xs text-muted-foreground mt-1">
+            Line thickness represents volume of watched titles per genre per year leading to next
+            year based on total titles count in the decade.
           </p>
         </div>
         <div className="flex flex-wrap gap-1.5 sm:self-center self-start">
@@ -174,7 +193,47 @@ export default function GenreBumpChart({ data }: { data: YearlyGenreData[] }) {
         ) : (
           <>
             {/* SVG Chart */}
-            <div className="w-full relative" style={{ height: chartHeight }}>
+            <div
+              className="w-full relative select-none"
+              style={{ height: chartHeight }}
+              onMouseMove={(e) => {
+                const rect = e.currentTarget.getBoundingClientRect();
+                const mouseXPercent = ((e.clientX - rect.left) / rect.width) * 100;
+                const mouseY = ((e.clientY - rect.top) / rect.height) * chartHeight;
+
+                // Find the closest year's X percentage
+                let closestYear = years[0];
+                let minDiff = Infinity;
+                years.forEach((year) => {
+                  const xPct = yearToX(year);
+                  const diff = Math.abs(mouseXPercent - xPct);
+                  if (diff < minDiff) {
+                    minDiff = diff;
+                    closestYear = year;
+                  }
+                });
+
+                // Only snap if within a reasonable distance (e.g. 8% of width)
+                if (minDiff < 8) {
+                  setHoveredYear(closestYear);
+                } else {
+                  setHoveredYear(null);
+                }
+
+                // Calculate rating value from Y position
+                const rating =
+                  minRating + ((chartPadding.top + plotHeight - mouseY) / plotHeight) * ratingRange;
+                if (rating >= minRating && rating <= maxRating) {
+                  setHoveredRating(rating);
+                } else {
+                  setHoveredRating(null);
+                }
+              }}
+              onMouseLeave={() => {
+                setHoveredYear(null);
+                setHoveredRating(null);
+              }}
+            >
               {/* Y-axis labels (HTML) */}
               {Array.from({ length: Math.ceil(ratingRange) + 1 }, (_, i) => {
                 const rating = minRating + i;
@@ -196,6 +255,18 @@ export default function GenreBumpChart({ data }: { data: YearlyGenreData[] }) {
                 );
               })}
 
+              {/* Floating Y-axis ruler label */}
+              {hoveredRating !== null && (
+                <span
+                  className="absolute left-0 text-[10px] font-bold text-gold bg-pearl/95 border border-gold/40 px-1 py-0.5 rounded shadow-lg shadow-gold/5 tabular-nums -translate-y-1/2 z-30 pointer-events-none"
+                  style={{
+                    top: `${(ratingToY(hoveredRating) / chartHeight) * 100}%`,
+                  }}
+                >
+                  {hoveredRating.toFixed(1)}
+                </span>
+              )}
+
               {/* X-axis labels (HTML) */}
               {years.map((year) => (
                 <span
@@ -214,6 +285,38 @@ export default function GenreBumpChart({ data }: { data: YearlyGenreData[] }) {
                 preserveAspectRatio="none"
                 className="overflow-visible"
               >
+                {/* Active Year Tracker Line */}
+                {hoveredYear !== null && (
+                  <line
+                    x1={yearToX(hoveredYear)}
+                    y1={chartPadding.top}
+                    x2={yearToX(hoveredYear)}
+                    y2={chartPadding.top + plotHeight}
+                    stroke="var(--gold)"
+                    strokeOpacity={0.45}
+                    strokeWidth={1.5}
+                    vectorEffect="non-scaling-stroke"
+                    strokeDasharray="4 2"
+                    className="pointer-events-none transition-all duration-150"
+                  />
+                )}
+
+                {/* Y-axis Ruler (Horizontal Tracker Line) */}
+                {hoveredRating !== null && (
+                  <line
+                    x1="5"
+                    y1={ratingToY(hoveredRating)}
+                    x2="95"
+                    y2={ratingToY(hoveredRating)}
+                    stroke="var(--gold)"
+                    strokeOpacity={0.35}
+                    strokeWidth={1}
+                    vectorEffect="non-scaling-stroke"
+                    strokeDasharray="4 2"
+                    className="pointer-events-none transition-all duration-75"
+                  />
+                )}
+
                 {/* Y-axis grid lines */}
                 {Array.from({ length: Math.ceil(ratingRange) + 1 }, (_, i) => {
                   const rating = minRating + i;
@@ -226,10 +329,11 @@ export default function GenreBumpChart({ data }: { data: YearlyGenreData[] }) {
                       y1={y}
                       x2="95"
                       y2={y}
-                      stroke="var(--silver)"
-                      strokeOpacity={0.15}
-                      strokeWidth={0.12}
-                      strokeDasharray="0.5 0.5"
+                      stroke="var(--quicksilver)"
+                      strokeOpacity={0.25}
+                      strokeWidth={0.5}
+                      vectorEffect="non-scaling-stroke"
+                      strokeDasharray="2 3"
                     />
                   );
                 })}
@@ -244,10 +348,11 @@ export default function GenreBumpChart({ data }: { data: YearlyGenreData[] }) {
                       y1={chartPadding.top}
                       x2={x}
                       y2={chartPadding.top + plotHeight}
-                      stroke="var(--silver)"
+                      stroke="var(--quicksilver)"
                       strokeOpacity={0.1}
-                      strokeWidth={0.1}
-                      strokeDasharray="0.5 0.5"
+                      strokeWidth={1}
+                      vectorEffect="non-scaling-stroke"
+                      strokeDasharray="2 3"
                     />
                   );
                 })}
@@ -271,93 +376,156 @@ export default function GenreBumpChart({ data }: { data: YearlyGenreData[] }) {
                     .map((p, i) => `${i === 0 ? 'M' : 'L'} ${p.x} ${p.y}`)
                     .join(' ');
 
-                  const isActive = activeGenre === genre;
-                  const isDimmed = activeGenre !== null && !isActive;
+                  const isActive = highlightedGenres.has(genre);
+                  const isDimmed = hasHighlight && !isActive;
 
-                  // Line thickness based on total count for this genre in the decade
-                  const totalCount = points.reduce((sum, p) => sum + p.count, 0);
-                  const maxGenreCount = Math.max(
-                    ...genres.map((g) => {
-                      const ym = genreData.get(g);
-                      if (!ym) return 0;
-                      let s = 0;
+                  // Denominator = total count across ALL genres in the decade.
+                  // This keeps low-volume genres (Documentary) thin even at their peak year,
+                  // while letting high-volume genres (Drama, Action) vary meaningfully.
+                  const allGenresDecadeTotal = Math.max(
+                    Array.from(genreData.values()).reduce((sum, ym) => {
                       ym.forEach((v) => {
-                        s += v.count;
+                        sum += v.count;
                       });
-                      return s;
-                    }),
+                      return sum;
+                    }, 0),
                     1
                   );
-                  const countRatio = totalCount / maxGenreCount;
-                  const baseWidth = 0.2 + countRatio * 0.5; // range: 0.2 to 0.7
-                  const strokeW = isActive ? baseWidth * 1.8 : baseWidth;
 
                   return (
                     <g key={genre}>
-                      {/* Thick transparent path for easier hover/click targeting */}
-                      <path
-                        d={pathD}
-                        fill="none"
-                        stroke="transparent"
-                        strokeWidth={2.5}
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        className="cursor-pointer"
-                        onMouseEnter={() => {
-                          if (!lockedGenre) setActiveGenre(genre);
-                        }}
-                        onMouseLeave={() => {
-                          if (!lockedGenre) setActiveGenre(null);
-                        }}
-                        onClick={() => toggleGenre(genre)}
-                      />
-                      <path
-                        d={pathD}
-                        fill="none"
-                        stroke={getColor(genre)}
-                        strokeWidth={strokeW}
-                        strokeOpacity={isDimmed ? 0.15 : isActive ? 1 : 0.7}
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        className="cursor-pointer transition-all"
-                        onMouseEnter={() => {
-                          if (!lockedGenre) setActiveGenre(genre);
-                        }}
-                        onMouseLeave={() => {
-                          if (!lockedGenre) setActiveGenre(null);
-                        }}
-                        onClick={() => toggleGenre(genre)}
-                      />
-                      {/* Dots at data points */}
-                      {points.map((p) => (
-                        <circle
-                          key={p.year}
-                          cx={p.x}
-                          cy={p.y}
-                          r={isActive ? 0.8 : 0.45 + countRatio * 0.25}
-                          fill={getColor(genre)}
-                          fillOpacity={isDimmed ? 0.15 : isActive ? 1 : 0.7}
-                          className="cursor-pointer"
-                          onMouseEnter={() => {
-                            if (!lockedGenre) setActiveGenre(genre);
-                          }}
-                          onMouseLeave={() => {
-                            if (!lockedGenre) setActiveGenre(null);
-                          }}
-                          onClick={() => toggleGenre(genre)}
-                        />
-                      ))}
+                      {points.slice(0, -1).map((pStart, idx) => {
+                        const pEnd = points[idx + 1];
+
+                        // Each segment's thickness = avg of the two years' counts
+                        // normalized against ALL genres' decade total.
+                        // → rare genres stay thin; popular genres vary year-to-year.
+                        const startRatio = pStart.count / allGenresDecadeTotal;
+                        const endRatio = pEnd.count / allGenresDecadeTotal;
+                        const avgRatio = (startRatio + endRatio) / 2;
+
+                        const baseWidth = 1.2 + avgRatio * 200; // scale so top genres reach ~4–6px
+                        const strokeW = baseWidth; // no extra boost on selection — let ratios speak
+
+                        const segmentD = `M ${pStart.x} ${pStart.y} L ${pEnd.x} ${pEnd.y}`;
+
+                        return (
+                          <g key={`${pStart.year}-${pEnd.year}`}>
+                            {/* Thick transparent path for easier hover/click targeting */}
+                            <path
+                              d={segmentD}
+                              fill="none"
+                              stroke="transparent"
+                              strokeWidth={18}
+                              vectorEffect="non-scaling-stroke"
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                              className="cursor-pointer"
+                              onMouseEnter={() => {
+                                setHoveredGenre(genre);
+                              }}
+                              onMouseLeave={() => {
+                                setHoveredGenre(null);
+                              }}
+                              onClick={() => toggleGenre(genre)}
+                            />
+                            <path
+                              d={segmentD}
+                              fill="none"
+                              stroke={getColor(genre)}
+                              strokeWidth={strokeW}
+                              vectorEffect="non-scaling-stroke"
+                              strokeOpacity={isDimmed ? 0.15 : isActive ? 1 : 0.7}
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                              className="cursor-pointer transition-[stroke-opacity,stroke-width] duration-200"
+                              onMouseEnter={() => {
+                                setHoveredGenre(genre);
+                              }}
+                              onMouseLeave={() => {
+                                setHoveredGenre(null);
+                              }}
+                              onClick={() => toggleGenre(genre)}
+                            />
+                          </g>
+                        );
+                      })}
                     </g>
                   );
                 })}
               </svg>
+
+              {/* HTML absolute dot nodes to prevent non-uniform SVG scaling distortion */}
+              {genres.map((genre) => {
+                const yearMap = genreData.get(genre);
+                if (!yearMap) return null;
+                const points = years
+                  .filter((y) => yearMap.has(y))
+                  .map((y) => ({
+                    x: yearToX(y),
+                    y: ratingToY(yearMap.get(y)!.rating),
+                    year: y,
+                    ...yearMap.get(y)!,
+                  }));
+
+                if (points.length < 2) return null;
+
+                const isActive = highlightedGenres.has(genre);
+                const isDimmed = hasHighlight && !isActive;
+
+                // Same denominator as line segments — all genres' decade total
+                const allGenresDecadeTotal = Math.max(
+                  Array.from(genreData.values()).reduce((sum, ym) => {
+                    ym.forEach((v) => {
+                      sum += v.count;
+                    });
+                    return sum;
+                  }, 0),
+                  1
+                );
+
+                return points.map((p) => {
+                  const ratio = p.count / allGenresDecadeTotal;
+                  // Min 6px so dots always sit visibly on lines. Cap at 18px.
+                  const dotSize = Math.min(Math.max(6 + ratio * 400, 6), 18);
+                  const isYearHovered = hoveredYear === p.year;
+
+                  return (
+                    <div
+                      key={`dot-${genre}-${p.year}`}
+                      className="absolute rounded-full cursor-pointer transition-all duration-200"
+                      style={{
+                        left: `${p.x}%`,
+                        top: `${p.y}px`,
+                        width: `${isYearHovered ? dotSize + 4 : dotSize}px`,
+                        height: `${isYearHovered ? dotSize + 4 : dotSize}px`,
+                        transform: 'translate(-50%, -50%)',
+                        backgroundColor: isYearHovered ? getColor(genre) : '#121214',
+                        border: `${isActive || isYearHovered ? '2.5px' : '1.5px'} solid ${
+                          isYearHovered ? '#121214' : getColor(genre)
+                        }`,
+                        opacity: isDimmed ? 0.15 : 1,
+                        zIndex: isActive || isYearHovered ? 20 : 10,
+                        boxShadow: isYearHovered ? `0 0 8px ${getColor(genre)}` : undefined,
+                      }}
+                      onMouseEnter={() => {
+                        setHoveredGenre(genre);
+                      }}
+                      onMouseLeave={() => {
+                        setHoveredGenre(null);
+                      }}
+                      onClick={() => toggleGenre(genre)}
+                    />
+                  );
+                });
+              })}
             </div>
 
             {/* Genre legend (interactive filter — persists across decades) */}
             <div className="flex flex-wrap justify-center gap-2 mt-4 pt-3 border-t border-border/10 max-w-3xl mx-auto">
               {allGenres.map((genre) => {
-                const isActive = activeGenre === genre;
-                const isDimmed = activeGenre !== null && !isActive;
+                const isActive = highlightedGenres.has(genre);
+                const isDimmed = hasHighlight && !isActive;
                 const isInDecade = genres.includes(genre);
                 const yearMap = genreData.get(genre);
                 const latestYear = years.filter((y) => yearMap?.has(y)).pop();
@@ -383,10 +551,10 @@ export default function GenreBumpChart({ data }: { data: YearlyGenreData[] }) {
                   >
                     <button
                       onMouseEnter={() => {
-                        if (!lockedGenre) setActiveGenre(genre);
+                        setHoveredGenre(genre);
                       }}
                       onMouseLeave={() => {
-                        if (!lockedGenre) setActiveGenre(null);
+                        setHoveredGenre(null);
                       }}
                       onClick={() => toggleGenre(genre)}
                       className={`flex items-center gap-1.5 px-2 py-1 rounded text-[11px] transition-all border border-transparent ${

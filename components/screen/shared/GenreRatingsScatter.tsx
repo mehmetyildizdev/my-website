@@ -59,12 +59,12 @@ export default function GenreRatingsScatter({ data }: { data: GenreRating[] }) {
 
   const points: GenreScatterPoint[] = data.map((d) => ({
     name: d.name,
-    total_count: d.total_count,
+    total_count: Number(d.total_count),
     avg_rating: Number(d.avg_rating),
     avg_movie_rating: d.avg_movie_rating != null ? Number(d.avg_movie_rating) : null,
     avg_show_rating: d.avg_show_rating != null ? Number(d.avg_show_rating) : null,
-    movie_count: d.movie_count,
-    show_count: d.show_count,
+    movie_count: Number(d.movie_count),
+    show_count: Number(d.show_count),
   }));
 
   const ratings = points.map((p) => p.avg_rating);

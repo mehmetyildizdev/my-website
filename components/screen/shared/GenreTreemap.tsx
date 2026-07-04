@@ -17,10 +17,23 @@ type CustomContentProps = {
   movie_count?: number;
   show_count?: number;
   value?: number;
+  depth?: number;
 };
 
 function TreemapCell(props: CustomContentProps & { payload?: any }) {
-  const { x = 0, y = 0, width = 0, height = 0, name, index = 0, total_count, payload } = props;
+  const {
+    x = 0,
+    y = 0,
+    width = 0,
+    height = 0,
+    name,
+    index = 0,
+    total_count,
+    payload,
+    depth,
+  } = props;
+
+  if (depth === 0) return null;
 
   const [hovered, setHovered] = useState(false);
   const [coords, setCoords] = useState({ x: 0, y: 0 });
@@ -155,8 +168,16 @@ function TreemapCell(props: CustomContentProps & { payload?: any }) {
 }
 
 export default function GenreTreemap({ data }: { data: GenreData[] }) {
+  // Parse string fields from PostgreSQL driver into numbers
+  const parsedData = data.map((d) => ({
+    ...d,
+    movie_count: Number(d.movie_count),
+    show_count: Number(d.show_count),
+    total_count: Number(d.total_count),
+  }));
+
   // Filter out zero-count genres to ensure clean rendering and accurate distribution
-  const filteredData = data.filter((d) => d.total_count > 0);
+  const filteredData = parsedData.filter((d) => d.total_count > 0);
 
   return (
     <Card className="bg-pearl/30 border-border/15 shadow-2xl backdrop-blur-md">

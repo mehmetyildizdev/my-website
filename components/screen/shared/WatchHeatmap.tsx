@@ -77,36 +77,65 @@ function formatHours(minutes: number): string {
 export default function WatchHeatmap({ data, stats, embedded = false }: Props) {
   const currentYear = new Date().getFullYear();
 
+  // Parse watch_count from string to number, filtering out dates before 2001
+  const parsedData = useMemo(() => {
+    return data
+      .filter((d) => {
+        if (!d.watch_date) return false;
+        const y = parseInt(d.watch_date.slice(0, 4));
+        return !isNaN(y) && y >= 2001;
+      })
+      .map((d) => ({
+        ...d,
+        watch_count: Number(d.watch_count),
+      }));
+  }, [data]);
+
   // Build lookup map
   const dateMap = useMemo(() => {
     const map = new Map<string, number>();
-    data.forEach((d) => map.set(d.watch_date, d.watch_count));
+    parsedData.forEach((d) => map.set(d.watch_date, d.watch_count));
     return map;
-  }, [data]);
+  }, [parsedData]);
 
   // Build cumulative map for "all" mode
   const cumulativeMap = useMemo(() => {
     const map = new Map<string, number>();
-    data.forEach((d) => {
-      const mmdd = d.watch_date.slice(5);
-      map.set(mmdd, (map.get(mmdd) || 0) + d.watch_count);
+    parsedData.forEach((d) => {
+      if (d.watch_date) {
+        const mmdd = d.watch_date.slice(5);
+        map.set(mmdd, (map.get(mmdd) || 0) + d.watch_count);
+      }
     });
     return map;
-  }, [data]);
+  }, [parsedData]);
 
   const [selectedYear, setSelectedYear] = useState<string>('recent');
 
-  // Generate year options
+  // Generate year options dynamically from actual data
   const yearOptions = useMemo(() => {
+    const years = new Set<number>();
+    parsedData.forEach((d) => {
+      if (d.watch_date) {
+        const y = parseInt(d.watch_date.slice(0, 4));
+        if (!isNaN(y)) years.add(y);
+      }
+    });
+
+    // Ensure current year is an option
+    years.add(currentYear);
+
+    const sortedYears = Array.from(years).sort((a, b) => b - a);
+
     const options: { value: string; label: string }[] = [
       { value: 'all', label: 'All (cumulative)' },
       { value: 'recent', label: 'Last 12 months' },
     ];
-    for (let y = currentYear; y >= 2000; y--) {
+    sortedYears.forEach((y) => {
       options.push({ value: String(y), label: String(y) });
-    }
+    });
     return options;
-  }, [currentYear]);
+  }, [parsedData, currentYear]);
 
   // Build the grid
   const { grid, monthPositions, maxCount, totalWatches } = useMemo(() => {
@@ -305,19 +334,38 @@ export default function WatchHeatmap({ data, stats, embedded = false }: Props) {
     };
   }, [stats, selectedYear]);
 
-  const cellSize = 15;
-  const cellGap = 3;
-  const cellStep = cellSize + cellGap;
-  const gridWidth = grid.length * cellStep;
-
   return (
     <Card
       className={
         embedded
-          ? 'bg-transparent border-none shadow-none backdrop-blur-none p-0 rounded-none lg:px-0'
-          : 'lg:px-6 bg-pearl/60 border-border/15 shadow-2xl backdrop-blur-md'
+          ? 'bg-transparent border-none shadow-none backdrop-blur-none p-0 rounded-none lg:px-0 heatmap-container'
+          : 'lg:px-6 bg-pearl/60 border-border/15 shadow-2xl backdrop-blur-md heatmap-container'
       }
     >
+      <style>{`
+        .heatmap-container {
+          container-type: inline-size;
+        }
+        .heatmap-grid-wrapper {
+          --cell-size: 15px;
+          --cell-gap: 3px;
+        }
+        @container (max-width: 1280px) {
+          .heatmap-grid-wrapper {
+            --cell-size: 11px;
+            --cell-gap: 2.2px;
+          }
+        }
+        @container (max-width: 640px) {
+          .heatmap-grid-wrapper {
+            --cell-size: 8px;
+            --cell-gap: 1.5px;
+          }
+        }
+        .heatmap-grid-wrapper {
+          --cell-step: calc(var(--cell-size) + var(--cell-gap));
+        }
+      `}</style>
       <CardHeader className="pb-2">
         <CardTitle className="text-lg font-bold tracking-tight text-accent">
           Watch History
@@ -348,15 +396,15 @@ export default function WatchHeatmap({ data, stats, embedded = false }: Props) {
               </Select>
             </div>
 
-            <div className="overflow-x-auto">
-              <div style={{ width: `${gridWidth + 40}px`, minWidth: '100%' }}>
+            <div className="overflow-x-auto heatmap-grid-wrapper">
+              <div style={{ width: `calc(${grid.length} * var(--cell-step) + 40px)`, minWidth: '100%' }}>
                 {/* Month labels */}
-                <div className="relative h-5 ml-9">
+                <div className="relative h-5" style={{ marginLeft: 'calc(28px + 0.375rem)' }}>
                   {monthPositions.map((m, i) => (
                     <span
                       key={i}
                       className="absolute text-[10px] text-muted-foreground whitespace-nowrap"
-                      style={{ left: `${m.col * cellStep}px` }}
+                      style={{ left: `calc(${m.col} * var(--cell-step))` }}
                     >
                       {m.label}
                     </span>
@@ -365,9 +413,9 @@ export default function WatchHeatmap({ data, stats, embedded = false }: Props) {
 
                 <div className="flex">
                   {/* Day labels */}
-                  <div className="flex flex-col shrink-0 mr-1.5" style={{ gap: `${cellGap}px` }}>
+                  <div className="flex flex-col shrink-0 mr-1.5" style={{ gap: 'var(--cell-gap)' }}>
                     {['', 'Mon', '', 'Wed', '', 'Fri', ''].map((label, i) => (
-                      <div key={i} style={{ height: cellSize }} className="flex items-center">
+                      <div key={i} style={{ height: 'var(--cell-size)' }} className="flex items-center">
                         <span className="text-[10px] text-muted-foreground w-7 text-right">
                           {selectedYear === 'recent' ? label : ''}
                         </span>
@@ -376,9 +424,9 @@ export default function WatchHeatmap({ data, stats, embedded = false }: Props) {
                   </div>
 
                   {/* Heatmap grid */}
-                  <div className="flex" style={{ gap: `${cellGap}px` }}>
+                  <div className="flex" style={{ gap: 'var(--cell-gap)' }}>
                     {grid.map((week, weekIdx) => (
-                      <div key={weekIdx} className="flex flex-col" style={{ gap: `${cellGap}px` }}>
+                      <div key={weekIdx} className="flex flex-col" style={{ gap: 'var(--cell-gap)' }}>
                         {week.map((cell, dayIdx) => {
                           const intensity = getIntensity(cell.count, maxCount);
                           return (
@@ -396,7 +444,7 @@ export default function WatchHeatmap({ data, stats, embedded = false }: Props) {
                             >
                               <div
                                 className={`rounded-[3px] ${INTENSITY_CLASSES[intensity]}`}
-                                style={{ width: cellSize, height: cellSize }}
+                                style={{ width: 'var(--cell-size)', height: 'var(--cell-size)' }}
                               />
                             </Tooltip>
                           );
@@ -407,13 +455,13 @@ export default function WatchHeatmap({ data, stats, embedded = false }: Props) {
                 </div>
 
                 {/* Legend */}
-                <div className="flex items-center gap-1.5 mt-4 ml-9">
+                <div className="flex items-center gap-1.5 mt-4" style={{ marginLeft: 'calc(28px + 0.375rem)' }}>
                   <span className="text-[10px] text-muted-foreground mr-1">Less</span>
                   {INTENSITY_CLASSES.map((cls, i) => (
                     <div
                       key={i}
                       className={`rounded-[3px] ${cls}`}
-                      style={{ width: cellSize, height: cellSize }}
+                      style={{ width: 'var(--cell-size)', height: 'var(--cell-size)' }}
                     />
                   ))}
                   <span className="text-[10px] text-muted-foreground ml-1">More</span>

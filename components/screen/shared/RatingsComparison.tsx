@@ -4,7 +4,7 @@ import { useState, useMemo } from 'react';
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/shadcn/ui/card';
 import { Select } from '@/components/shadcn/ui/select';
 import { Tooltip } from '@/components/shadcn/ui/tooltip';
-import { getRatingToken, getAvgRatingToken } from '@/lib/screen/utils/format';
+import { getRatingToken, getAvgRatingToken, getShowAvgRatingToken } from '@/lib/screen/utils/format';
 // Split combined genres for filtering
 function expandGenres(genres: string[]): string[] {
   return genres ? genres.filter(Boolean) : [];
@@ -96,6 +96,16 @@ export default function RatingsComparison({
         <p className="text-xs text-muted-foreground mt-1">
           How my personal ratings compare to TMDB community scores.
         </p>
+        <p className="text-xs text-muted-foreground mt-1">
+          My rating colors are thematic as you can see in 1-10 scale. For averages I used scaled
+          coloring in 5.5-7.0 range of same pattern.
+        </p>
+        {(lockedMedia === 'show' || mediaFilter === 'show') && (
+          <p className="text-xs text-muted-foreground mt-1">
+            Shows are generally rated higher in average and breaks the pattern. So, I added separate
+            pattern for shows alone that is 7.4-8.0 range.
+          </p>
+        )}
       </CardHeader>
       <CardContent className="pt-2 space-y-6">
         {/* Filters */}
@@ -131,7 +141,11 @@ export default function RatingsComparison({
             <div className="rounded-lg border border-border/15 bg-pearl/10 p-3 text-center">
               <p className="text-[10px] text-muted-foreground uppercase tracking-wider">My Avg</p>
               <p
-                className={`text-lg font-bold tabular-nums text-${getAvgRatingToken(stats.myAvg)}`}
+                className={`text-lg font-bold tabular-nums text-${
+                  (lockedMedia === 'show' || mediaFilter === 'show')
+                    ? getShowAvgRatingToken(stats.myAvg)
+                    : getAvgRatingToken(stats.myAvg)
+                }`}
               >
                 {stats.myAvg.toFixed(2)}
               </p>

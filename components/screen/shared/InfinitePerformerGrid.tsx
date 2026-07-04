@@ -175,7 +175,7 @@ function primaryBadge(p: TopPerson, mode: RankMode, weighted: boolean): string |
     return count > 0 ? `# ${count}` : null;
   }
   // top_rated
-  const r = weighted ? p.weighted_rating : p.raw_rating;
+  const r = (weighted && p.my_rating != null) ? p.my_rating : (weighted ? p.weighted_rating : p.raw_rating);
   if (r == null) return null;
   return `★ ${r}`;
 }

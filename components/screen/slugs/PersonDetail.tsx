@@ -257,13 +257,13 @@ export default function PersonDetail({ person, movies, shows, age }: PersonDetai
               </p>
             </div>
           )}
-          {person.avg_movie_rating != null && (
+          {person.my_rating != null && (
             <div className="flex-1 md:flex-initial px-0.5 py-1.5 sm:px-3 sm:py-2.5 md:px-4 md:py-2 bg-pearl/30 border border-border/10 rounded-xl sm:rounded-2xl text-center min-w-0 md:min-w-[95px] backdrop-blur-xs transition-all duration-300 hover:bg-pearl/50 flex flex-col justify-center">
               <p className="text-lg sm:text-xl md:text-2xl font-bold text-gold truncate">
-                ★ {Number(person.avg_movie_rating).toFixed(1)}
+                ★ {Number(person.my_rating).toFixed(2)}
               </p>
               <p className="text-[10px] text-quicksilver uppercase tracking-wider font-bold mt-1 leading-tight font-poppins">
-                Avg<span className="block lg:inline lg:ml-1">Rating</span>
+                My<span className="block lg:inline lg:ml-1">Rating</span>
               </p>
             </div>
           )}

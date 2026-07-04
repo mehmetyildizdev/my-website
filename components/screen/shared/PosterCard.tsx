@@ -68,16 +68,30 @@ export function PosterCard({
           )}
 
           {/* Bottom details/watched date metadata */}
-          {meta && (
-            <div className="flex flex-col gap-1.5 animate-in fade-in-0 slide-in-from-bottom-2 duration-300 mt-auto">
-              <span className="text-[9px] text-quicksilver uppercase tracking-wider font-bold">
-                Details
-              </span>
-              <span className="text-[11px] text-titanium font-medium leading-relaxed bg-pearl/10 border border-border/10 px-2 py-1 rounded-md backdrop-blur-xs">
-                {meta}
-              </span>
-            </div>
-          )}
+          {meta &&
+            (() => {
+              const match = meta.match(/^Watched\s+(?:on\s+)?(.+)$/i);
+              if (match) {
+                const dateStr = match[1];
+                return (
+                  <div className="animate-in fade-in-0 slide-in-from-bottom-2 duration-300 mt-auto flex flex-col items-center bg-pearl/80 border border-border/10 py-1 px-2 rounded-md backdrop-blur-xs text-center w-full">
+                    <span className="text-[9px] text-quicksilver uppercase tracking-wider font-bold">
+                      Watched on
+                    </span>
+                    <span className="text-[11px] text-gold font-semibold leading-relaxed mt-0.5">
+                      {dateStr}
+                    </span>
+                  </div>
+                );
+              }
+              return (
+                <div className="animate-in fade-in-0 slide-in-from-bottom-2 duration-300 mt-auto">
+                  <span className="text-[11px] text-titanium font-medium leading-relaxed bg-pearl/10 border border-border/10 px-2 py-1 rounded-md backdrop-blur-xs block text-center">
+                    {meta}
+                  </span>
+                </div>
+              );
+            })()}
         </div>
       </div>
 
