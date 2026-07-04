@@ -1,0 +1,44 @@
+name: Refresh Analytics Views
+
+on:
+  schedule:
+    - cron: "0 23 * * *" # 23:00 UTC = 02:00 Turkey time (UTC+3)
+  workflow_dispatch: # also allows manual trigger from GitHub UI
+
+jobs:
+  refresh:
+    name: Refresh Neon Materialized Views
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: latest
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+          cache: "pnpm"
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Refresh materialized views
+        run: pnpm tsx scripts/screen/utils/update-analytics.ts
+        env:
+          NEON_DATABASE_URL: ${{ secrets.NEON_DATABASE_URL }}
+          VIEWS_CRYPT_KEY: ${{ secrets.VIEWS_CRYPT_KEY }}
+
+      - name: Purge Vercel ISR cache
+        run: |
+          curl -s -o /dev/null -w "%{http_code}" \
+            -X POST \
+            -H "Content-Type: application/json" \
+            -d "{\"secret\":\"${{ secrets.REVALIDATE_SECRET }}\"}" \
+            https://mehmetyildiz.dev/api/screen/revalidate
+        continue-on-error: true # don't fail the workflow if revalidation fails

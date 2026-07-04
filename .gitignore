@@ -50,19 +50,33 @@ yarn-error.log*
 next-env.d.ts
 
 #db_test
-/scripts/db/test/
+/scripts/screen/test/
 
-#trash
-/trash/
-
-#scratch
-/scratch/
+# Database view files (encrypted versions committed as .sql.enc)
+/scripts/screen/db/04_*.sql
+/scripts/screen/db/05_*.sql
+/scripts/screen/db/06_*.sql
+/scripts/screen/db/07_*.sql
+/scripts/screen/db/08_*.sql
+/scripts/screen/db/analytics.sqlite
+/scripts/screen/db/*.txt
 
 # database backups
 /backups/
 /scripts/bin/
+/scripts/screen/utils/sync-neon-to-local.ts
+/scripts/screen/utils/export-to-sqlite.ts
+/scripts/screen/utils/encrypt-views.ts
 
 # history fixer outputs
 /scripts/history_fixer/output/
 /scripts/history_fixer/completed/
+
+#scratch
+/scratch/
+
+#trash
+/trash/
+
+
 
