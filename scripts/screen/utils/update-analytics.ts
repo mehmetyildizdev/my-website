@@ -52,8 +52,10 @@ async function main() {
         throw new Error(`Neither plaintext "${filename}" nor encrypted "${filename}.enc" was found in scripts/screen/db`);
       }
 
+      const startTime = Date.now();
       await pool.query(sql);
-      console.log(`   ✅ ${filename} completed.`);
+      const duration = ((Date.now() - startTime) / 1000).toFixed(2);
+      console.log(`   ✅ ${filename} completed in ${duration}s.`);
     }
     console.log('✅ All analytics materialized views successfully updated!');
   } catch (err: any) {
