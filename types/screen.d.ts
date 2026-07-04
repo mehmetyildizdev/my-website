@@ -202,6 +202,8 @@ interface TopPerson {
   meaningful_movie_count?: number;
   lead_count?: number;
   supporting_count?: number;
+  // From actor__ratings — overall personal rating for the actor
+  my_rating?: number | string | null;
 }
 
 // ============================================================================
@@ -312,6 +314,7 @@ interface PersonDetail {
   deathday: string | null;
   movies_watched: number;
   avg_movie_rating: number | null;
+  my_rating?: number | string | null;
 }
 
 interface PersonMovieCredit {
