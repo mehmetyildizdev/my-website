@@ -6,12 +6,12 @@
 //   4. Enrich new collections (overview IS NULL)
 // All runs in background — browser redirects immediately.
 
-import { syncRecentTraktHistory } from '@/lib/screen/sync';
 import { query, transaction } from '@/lib/screen/db';
 import { fetchTMDB } from '@/lib/screen/tmdb';
 import { log } from '@/lib/screen/logger';
 import { redirectTo } from '@/lib/screen/utils/redirect';
 import { parseBirthplaceToCountry } from '@/lib/screen/utils/birthplace';
+import { writeRecentWatchListCache } from '@/app/api/screen/recent/helper';
 
 export async function GET(request: Request) {
   const { searchParams } = new URL(request.url);
@@ -32,32 +32,17 @@ export async function GET(request: Request) {
 async function runLatestPipeline() {
   log.section('Get Latest Pipeline');
 
-  // ── 1. Quick Sync ─────────────────────────────────────────────────────────
-  const result = await syncRecentTraktHistory(100, false, Infinity);
-  const { stats } = result;
-
-  const hasNew =
-    stats.new_movies_added > 0 ||
-    stats.new_shows_added > 0 ||
-    stats.new_episodes_added > 0 ||
-    stats.new_people_added > 0;
-
-  if (!hasNew) {
-    log.info('Nothing new to enrich. Pipeline complete.');
-    return;
+  // ── 1. Regenerate recent watch list cache ─────────────────────────────────
+  try {
+    await writeRecentWatchListCache();
+    log.info('Regenerated recent watch list JSON cache.');
+  } catch (err: any) {
+    log.error(`Failed to regenerate watch list cache: ${err.message}`);
   }
 
-  log.info(
-    `New: ${stats.new_movies_added} movies · ${stats.new_shows_added} shows · ${stats.new_episodes_added} episodes · ${stats.new_people_added} people`
-  );
-
-  // ── 2. Enrich new people ──────────────────────────────────────────────────
+  // ── 2. Enrich new data in DB ──────────────────────────────────────────────
   await enrichNewPeople();
-
-  // ── 3. Enrich new episodes ────────────────────────────────────────────────
   await enrichNewEpisodes();
-
-  // ── 4. Enrich new collections ─────────────────────────────────────────────
   await enrichNewCollections();
 
   log.section('Get Latest Pipeline — Complete');

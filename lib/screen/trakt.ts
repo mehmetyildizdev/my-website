@@ -1,5 +1,4 @@
-// lib/trakt.ts
-import { query } from './db';
+import { pgQuery } from './db';
 
 const TRAKT_BASE_URL = 'https://api.trakt.tv';
 
@@ -48,7 +47,7 @@ export async function exchangeTraktCode(code: string) {
 
 async function saveTraktToken(data: TraktTokenResponse) {
   const expiresAt = new Date((data.created_at + data.expires_in) * 1000);
-  await query(`
+  await pgQuery(`
     INSERT INTO api_auth (provider, access_token, refresh_token, expires_at)
     VALUES ($1, $2, $3, $4)
     ON CONFLICT (provider) 
@@ -61,7 +60,7 @@ async function saveTraktToken(data: TraktTokenResponse) {
 }
 
 export async function getValidTraktToken() {
-  const res = await query(`SELECT * FROM api_auth WHERE provider = 'trakt'`);
+  const res = await pgQuery(`SELECT * FROM api_auth WHERE provider = 'trakt'`);
   if (res.rows.length === 0) throw new Error('No Trakt token found in DB. Please authenticate.');
 
   const auth = res.rows[0];
@@ -114,7 +113,7 @@ export async function fetchTraktHistory(limit = 100, page = 1): Promise<TraktHis
   return response.json();
 }
 export async function isTraktAuthenticated() {
-  const res = await query(`SELECT 1 FROM api_auth WHERE provider = 'trakt'`);
+  const res = await pgQuery(`SELECT 1 FROM api_auth WHERE provider = 'trakt'`);
   return res.rows.length > 0;
 }
 
