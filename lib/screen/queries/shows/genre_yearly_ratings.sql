@@ -1,17 +1,9 @@
--- Average personal rating per genre per release year (1980+) for shows
+-- Average personal rating per genre per release year (1980+) for shows (D1/SQLite version)
 SELECT
-    g.name as name,
-    EXTRACT(YEAR FROM s.first_air_date)::int as year,
-    ROUND(AVG(s.my_rating)::numeric, 2) as avg_rating,
-    COUNT(*)::int as count
-FROM shows s
-JOIN episodes e ON e.show_tmdb_id = s.tmdb_id
-JOIN watch_history wh ON wh.tmdb_id = e.tmdb_id AND wh.media_type = 'episode'
-JOIN show_genres sg ON sg.show_tmdb_id = s.tmdb_id
-JOIN genres g ON g.id = sg.genre_id
-WHERE s.my_rating IS NOT NULL
-  AND s.first_air_date IS NOT NULL
-  AND EXTRACT(YEAR FROM s.first_air_date) >= 1980
-GROUP BY g.name, EXTRACT(YEAR FROM s.first_air_date)
-HAVING COUNT(*) >= 2
+    name,
+    year,
+    avg_rating,
+    watch_count AS count
+FROM chart_genre_metrics
+WHERE media_type = 'show' AND year >= 1980 AND watch_count >= 1
 ORDER BY name, year;

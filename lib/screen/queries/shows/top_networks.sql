@@ -1,18 +1,12 @@
--- Top TV networks by average show rating (min 3 shows)
+-- Top TV networks by average show rating (min 3 shows) (D1/SQLite version)
 SELECT
-    n.tmdb_id,
-    n.name,
-    n.logo_path,
-    n.country_iso,
-    ROUND(AVG(s.my_rating)::numeric, 2) as avg_rating,
-    COUNT(DISTINCT s.tmdb_id)::int as show_count
-FROM networks n
-JOIN show_networks sn ON sn.network_tmdb_id = n.tmdb_id
-JOIN shows s ON s.tmdb_id = sn.show_tmdb_id
-JOIN episodes e ON e.show_tmdb_id = s.tmdb_id
-JOIN watch_history wh ON wh.tmdb_id = e.tmdb_id AND wh.media_type = 'episode'
-WHERE s.my_rating IS NOT NULL
-GROUP BY n.tmdb_id, n.name, n.logo_path, n.country_iso
-HAVING COUNT(DISTINCT s.tmdb_id) >= 3
+    CAST(id_or_code AS integer) AS tmdb_id,
+    name,
+    logo_path,
+    country_iso,
+    avg_rating,
+    count AS show_count
+FROM chart_production_metrics
+WHERE type = 'network' AND count >= 3
 ORDER BY avg_rating DESC, show_count DESC
 LIMIT 50;

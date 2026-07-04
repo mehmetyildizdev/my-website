@@ -71,18 +71,17 @@ async function main() {
       }
     }
 
-    console.log("\n── Re-applying scripts/db/ SQL files ──\n");
+    console.log("\n── Re-applying scripts/screen/db/ SQL files ──\n");
 
     const sqlFiles = [
       "00_extensions.sql",
       "01_schema.sql",
       "02_indexes.sql",
-      "03_views.sql",
-      "04_data_patches.sql",
+      "03_data_patches.sql",
     ];
 
     for (const file of sqlFiles) {
-      const filePath = path.join(process.cwd(), "scripts/db", file);
+      const filePath = path.join(process.cwd(), "scripts/screen/db", file);
       const sql = fs.readFileSync(filePath, "utf8");
       
       try {

@@ -1,18 +1,12 @@
--- Personal rating vs TMDB rating for rated shows only
+-- Personal rating vs TMDB rating for rated shows only (D1/SQLite version)
 SELECT
-    'show' as media_type,
-    s.name as title,
-    s.tmdb_id,
-    s.my_rating::int as my_rating,
-    s.tmdb_rating,
-    EXTRACT(YEAR FROM s.first_air_date)::int as release_year,
-    ARRAY_AGG(DISTINCT g.name) as genres
-FROM shows s
-JOIN episodes e ON e.show_tmdb_id = s.tmdb_id
-JOIN watch_history wh ON wh.tmdb_id = e.tmdb_id AND wh.media_type = 'episode'
-LEFT JOIN show_genres sg ON sg.show_tmdb_id = s.tmdb_id
-LEFT JOIN genres g ON g.id = sg.genre_id
-WHERE s.my_rating IS NOT NULL
-  AND s.tmdb_rating IS NOT NULL
-GROUP BY s.tmdb_id, s.name, s.my_rating, s.tmdb_rating, s.first_air_date
-ORDER BY s.my_rating DESC;
+    media_type,
+    title,
+    tmdb_id,
+    my_rating,
+    tmdb_rating,
+    release_year,
+    genres
+FROM chart_ratings_comparison
+WHERE media_type = 'show'
+ORDER BY my_rating DESC, ABS(my_rating - tmdb_rating) DESC;

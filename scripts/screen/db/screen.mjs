@@ -12,7 +12,7 @@
 //   - NEON_DATABASE_URL defined in `.env.local` or process environment.
 //
 // Usage:
-//   node scripts/db/screen.mjs
+//   node scripts/screen/db/screen.mjs
 // ==============================================================================
 import { Client } from 'pg';
 import fs from 'fs';
@@ -42,13 +42,12 @@ async function migrate() {
       '00_extensions.sql',
       '01_schema.sql',
       '02_indexes.sql',
-      '03_views.sql',
-      '04_data_patches.sql',
+      '03_data_patches.sql',
     ];
 
     console.log('Executing database setup scripts...');
     for (const file of sqlFiles) {
-      const filePath = path.join(process.cwd(), 'scripts/db', file);
+      const filePath = path.join(process.cwd(), 'scripts/screen/db', file);
       const sql = fs.readFileSync(filePath, 'utf8');
       await client.query(sql);
       console.log(`✓ Applied ${file}`);

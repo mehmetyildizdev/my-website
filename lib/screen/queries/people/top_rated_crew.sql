@@ -12,6 +12,6 @@ SELECT
     raw_project_avg,
     raw_rating,
     weighted_rating
-FROM analytics.top_rated_crew
+FROM top_rated_crew
 ORDER BY category, weighted_rating DESC, movie_count DESC, show_count DESC
 LIMIT 5000;

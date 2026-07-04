@@ -6,7 +6,7 @@ SELECT
     movie_count, episode_count, show_count,
     show_avg_rating as raw_rating,
     movie_runtime_min, show_runtime_min, total_runtime_min
-FROM analytics.actor_stats
+FROM actor_stats
 WHERE show_runtime_min > 0 AND episode_count >= 5
 ORDER BY show_runtime_min DESC, episode_count DESC
 LIMIT 1000;

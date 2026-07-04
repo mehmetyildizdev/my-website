@@ -161,9 +161,9 @@ if [ "$SUCCESS" -eq 0 ]; then
     if [ -z "$SERVER_VER" ]; then
       echo "Querying database for major version..."
       # Use node script to query PG version to avoid version checking issues of psql
-      SERVER_VER=$(node -e "
+      SERVER_VER=$(DB_URL="$DB_URL" node -e "
         const { Pool } = require('pg');
-        const pool = new Pool({ connectionString: '$DB_URL', ssl: { rejectUnauthorized: true } });
+        const pool = new Pool({ connectionString: process.env.DB_URL, ssl: { rejectUnauthorized: true } });
         pool.query('SHOW server_version').then(r => {
           const match = r.rows[0].server_version.match(/^\d+/);
           console.log(match ? match[0] : '18');

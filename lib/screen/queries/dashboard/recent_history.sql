@@ -1,19 +1,38 @@
-SELECT 
-  wh.id as history_id,
-  wh.watched_at, 
-  wh.my_rating, 
+-- Recent watch history — queries live public.watch_history (never cached)
+SELECT
+  wh.id AS history_id,
+  wh.watched_at,
+  CASE
+    WHEN wh.media_type = 'movie' THEN wh.my_rating
+    WHEN wh.media_type = 'episode' THEN s.my_rating
+    ELSE NULL
+  END AS my_rating,
   wh.media_type,
   wh.tmdb_id,
-  COALESCE(m.title, s.name) as title,
-  e.title as episode_title,
-  e.season_number,
-  e.episode_number,
-  COALESCE(m.poster_path, s.poster_path) as poster_path,
-  COALESCE(m.release_date, e.air_date) as release_date,
-  s.tmdb_id as show_tmdb_id
-FROM watch_history wh
-LEFT JOIN movies m ON wh.media_type = 'movie' AND wh.tmdb_id = m.tmdb_id
-LEFT JOIN episodes e ON wh.media_type = 'episode' AND wh.tmdb_id = e.tmdb_id
-LEFT JOIN shows s ON e.show_tmdb_id = s.tmdb_id
+  CASE
+    WHEN wh.media_type = 'movie' THEN m.title
+    WHEN wh.media_type = 'episode' THEN s.name
+    ELSE NULL
+  END AS title,
+  CASE
+    WHEN wh.media_type = 'episode' THEN e.title
+    ELSE NULL
+  END AS episode_title,
+  CASE WHEN wh.media_type = 'episode' THEN e.season_number ELSE NULL END AS season_number,
+  CASE WHEN wh.media_type = 'episode' THEN e.episode_number ELSE NULL END AS episode_number,
+  CASE
+    WHEN wh.media_type = 'movie' THEN m.poster_path
+    WHEN wh.media_type = 'episode' THEN s.poster_path
+    ELSE NULL
+  END AS poster_path,
+  CASE
+    WHEN wh.media_type = 'movie' THEN m.release_date::TEXT
+    ELSE NULL
+  END AS release_date,
+  CASE WHEN wh.media_type = 'episode' THEN e.show_tmdb_id ELSE NULL END AS show_tmdb_id
+FROM public.watch_history wh
+LEFT JOIN public.movies m ON m.tmdb_id = wh.tmdb_id AND wh.media_type = 'movie'
+LEFT JOIN public.episodes e ON e.tmdb_id = wh.tmdb_id AND wh.media_type = 'episode'
+LEFT JOIN public.shows s ON s.tmdb_id = e.show_tmdb_id
 ORDER BY wh.watched_at DESC
 LIMIT 16;

@@ -12,7 +12,7 @@ SELECT
     movie_avg_rating as raw_rating,
     movie_runtime_min, show_runtime_min, total_runtime_min,
     meaningful_movie_count, lead_count, supporting_count
-FROM analytics.actor_stats
+FROM actor_stats
 WHERE meaningful_movie_count >= 3 AND movie_avg_rating IS NOT NULL
 ORDER BY movie_avg_rating DESC, meaningful_movie_count DESC, movie_count DESC
 LIMIT 1000;

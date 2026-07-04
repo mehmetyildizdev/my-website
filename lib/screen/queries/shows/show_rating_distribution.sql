@@ -1,14 +1,9 @@
--- Show rating distribution: count of shows per rating bucket (1-10)
+-- Show rating distribution: count of shows per rating bucket (1-10) (D1/SQLite version)
 SELECT
-  s.my_rating::int AS rating,
-  COUNT(*)::int AS count,
-  ARRAY_AGG(s.name ORDER BY s.name) AS show_names
-FROM (
-  SELECT DISTINCT s.tmdb_id, s.name, s.my_rating
-  FROM shows s
-  JOIN episodes e ON e.show_tmdb_id = s.tmdb_id
-  JOIN watch_history wh ON wh.tmdb_id = e.tmdb_id AND wh.media_type = 'episode'
-  WHERE s.my_rating IS NOT NULL
-) s
-GROUP BY s.my_rating::int
+  CAST(my_rating AS integer) AS rating,
+  COUNT(*) AS count,
+  '[' || string_agg('"' || replace(title, '"', '\"') || '"', ',') || ']' AS show_names
+FROM chart_ratings_comparison
+WHERE media_type = 'show' AND my_rating IS NOT NULL
+GROUP BY CAST(my_rating AS integer)
 ORDER BY rating;

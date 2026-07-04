@@ -1,5 +1,5 @@
 /**
- * Run a SQL script from scripts/db against the Neon database.
+ * Run a SQL script from scripts/screen/db against the Neon database.
  *
  * Usage:
  *   npx tsx scripts/run-migration.ts                            # runs latest
@@ -13,7 +13,7 @@ import dotenv from "dotenv";
 
 dotenv.config({ path: ".env.local" });
 
-const MIGRATIONS_DIR = path.join(process.cwd(), "scripts/db");
+const MIGRATIONS_DIR = path.join(process.cwd(), "scripts/screen/db");
 
 function resolveMigrationFile(arg?: string): string {
   const all = fs
