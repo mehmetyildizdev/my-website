@@ -11,9 +11,6 @@ export const pool =
     ssl: process.env.NEON_DATABASE_URL?.includes('localhost')
       ? false
       : { rejectUnauthorized: true },
-    // Make analytics.* views resolvable without schema prefix,
-    // matching the flat-table behaviour the SQL queries were written for.
-    options: '-c search_path=analytics,public',
   });
 
 if (process.env.NODE_ENV !== 'production') {
