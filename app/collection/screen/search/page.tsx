@@ -1,0 +1,246 @@
+'use client';
+
+import { Suspense, useState, useEffect } from 'react';
+import { useSearchParams } from 'next/navigation';
+import { Skeleton } from '@/components/shadcn/ui/skeleton';
+import { Search } from 'lucide-react';
+
+import PeopleSection, { DBSearchPerson } from '@/components/screen/search/PeopleSection';
+import MoviesSection, { DBSearchMovie } from '@/components/screen/search/MoviesSection';
+import ShowsSection, { DBSearchShow } from '@/components/screen/search/ShowsSection';
+import GlobalSection, { TMDBResult } from '@/components/screen/search/GlobalSection';
+
+interface DBSearchItem {
+  type: 'movie' | 'show' | 'person';
+  tmdb_id: number;
+  name: string;
+  extra_name: string | null;
+  image_path: string | null;
+  rating: number | null;
+  release_date: string | null;
+}
+
+interface DBSearchResults {
+  movies: DBSearchItem[];
+  shows: DBSearchItem[];
+  people: DBSearchItem[];
+}
+
+interface TMDBSearchResults {
+  results?: TMDBResult[];
+}
+
+function SearchSkeleton() {
+  return (
+    <div className="space-y-8 animate-pulse">
+      <div>
+        <Skeleton className="h-8 w-64 rounded-md" />
+        <Skeleton className="h-4 w-96 rounded-md mt-2" />
+      </div>
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+        <div className="lg:col-span-2 space-y-8">
+          <Skeleton className="h-48 rounded-xl" />
+          <Skeleton className="h-48 rounded-xl" />
+        </div>
+        <Skeleton className="h-96 rounded-xl" />
+      </div>
+    </div>
+  );
+}
+
+function SearchPageContent() {
+  const searchParams = useSearchParams();
+  const query = searchParams.get('q') || '';
+
+  const [dbQuery, setDbQuery] = useState('');
+  const [tmdbQuery, setTmdbQuery] = useState('');
+
+  const [dbResults, setDbResults] = useState<DBSearchResults>({
+    movies: [],
+    shows: [],
+    people: [],
+  });
+  const [tmdbResults, setTmdbResults] = useState<TMDBResult[]>([]);
+
+  const [dbLoading, setDbLoading] = useState(false);
+  const [tmdbLoading, setTmdbLoading] = useState(false);
+
+  // Double Debouncing setup
+  useEffect(() => {
+    if (!query.trim()) {
+      setDbQuery('');
+      setDbResults({ movies: [], shows: [], people: [] });
+      return;
+    }
+    setDbLoading(true);
+    const handler = setTimeout(() => {
+      setDbQuery(query);
+    }, 200); // 200ms delay for fast DB search
+    return () => clearTimeout(handler);
+  }, [query]);
+
+  useEffect(() => {
+    if (!query.trim()) {
+      setTmdbQuery('');
+      setTmdbResults([]);
+      return;
+    }
+    setTmdbLoading(true);
+    const handler = setTimeout(() => {
+      setTmdbQuery(query);
+    }, 2000); // 2 seconds delay for global TMDB search
+    return () => clearTimeout(handler);
+  }, [query]);
+
+  // Fetch DB results from D1 Edge Worker
+  useEffect(() => {
+    if (!dbQuery) {
+      setDbLoading(false);
+      return;
+    }
+
+    const workerUrl = process.env.NEXT_PUBLIC_SEARCH_WORKER_URL || 'http://localhost:8787';
+    fetch(`${workerUrl}/db?q=${encodeURIComponent(dbQuery)}`)
+      .then((r) => r.json())
+      .then((data: any) => {
+        if (data && !data.error) {
+          setDbResults(data);
+        }
+      })
+      .catch(console.error)
+      .finally(() => setDbLoading(false));
+  }, [dbQuery]);
+
+  // Fetch TMDB results from Edge Worker
+  useEffect(() => {
+    if (!tmdbQuery) {
+      setTmdbLoading(false);
+      return;
+    }
+
+    const workerUrl = process.env.NEXT_PUBLIC_SEARCH_WORKER_URL || 'http://localhost:8787';
+    fetch(`${workerUrl}/tmdb?q=${encodeURIComponent(tmdbQuery)}`)
+      .then((r) => r.json())
+      .then((data: TMDBSearchResults) => {
+        if (data && data.results) {
+          // Filter out results that are already in DB search list (approximate matching by tmdb_id)
+          const dbIds = new Set([
+            ...dbResults.movies.map((m) => m.tmdb_id),
+            ...dbResults.shows.map((s) => s.tmdb_id),
+            ...dbResults.people.map((p) => p.tmdb_id),
+          ]);
+          const filtered = data.results.filter((item) => !dbIds.has(item.id));
+          setTmdbResults(filtered.slice(0, 15)); // Limit to top 15 results
+        }
+      })
+      .catch(console.error)
+      .finally(() => setTmdbLoading(false));
+  }, [tmdbQuery, dbResults]);
+
+  const hasDbResults =
+    dbResults.movies.length > 0 || dbResults.shows.length > 0 || dbResults.people.length > 0;
+
+  // TMDB is waiting if query exists but tmdbQuery has not caught up yet OR tmdb API is loading
+  const isTmdbWaiting = (query.trim() && query !== tmdbQuery) || tmdbLoading;
+
+  if (!query.trim()) {
+    return (
+      <div className="flex flex-col items-center justify-center py-20 text-center space-y-4">
+        <div className="w-16 h-16 rounded-full bg-pearl/30 border border-border/10 flex items-center justify-center text-quicksilver">
+          <Search className="h-7 w-7" />
+        </div>
+        <div>
+          <h2 className="text-xl font-bold tracking-tight text-accent font-poppins">
+            Search Catalog
+          </h2>
+          <p className="text-sm text-muted-foreground mt-2 max-w-sm">
+            Start typing in the sidebar search bar to explore movies, TV shows, and people in your
+            local watch database and TMDB.
+          </p>
+        </div>
+      </div>
+    );
+  }
+
+  // Map database results to their specific component interfaces
+  const people: DBSearchPerson[] = dbResults.people.map((p) => ({
+    tmdb_id: p.tmdb_id,
+    name: p.name,
+    image_path: p.image_path,
+    release_date: p.release_date, // known_for_department
+  }));
+
+  const movies: DBSearchMovie[] = dbResults.movies.map((m) => ({
+    tmdb_id: m.tmdb_id,
+    name: m.name,
+    image_path: m.image_path,
+    rating: m.rating,
+    release_date: m.release_date,
+  }));
+
+  const shows: DBSearchShow[] = dbResults.shows.map((s) => ({
+    tmdb_id: s.tmdb_id,
+    name: s.name,
+    image_path: s.image_path,
+    rating: s.rating,
+    release_date: s.release_date,
+  }));
+
+  return (
+    <div className="space-y-10">
+      {/* ── Page Header ────────────────────────────────────────── */}
+      <div>
+        <h2 className="text-2xl font-bold tracking-tight text-accent font-poppins flex items-center gap-2">
+          <span>Search Results for</span>
+          <span className="text-gold">"{query}"</span>
+        </h2>
+        <p className="text-sm text-muted-foreground mt-1">
+          Instant edge searching through D1 local index and delayed global TMDB catalog.
+        </p>
+      </div>
+
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 items-start">
+        {/* ── Left Column: Local DB Results ────────────────────────── */}
+        <div className="lg:col-span-2 space-y-8">
+          
+          {/* Section 1: People */}
+          <PeopleSection loading={dbLoading} people={people} />
+
+          {/* Section 2: Movies */}
+          <MoviesSection loading={dbLoading} movies={movies} />
+
+          {/* Section 3: TV Shows */}
+          <ShowsSection loading={dbLoading} shows={shows} />
+
+          {!dbLoading && !hasDbResults && (
+            <div className="flex flex-col items-center justify-center py-16 bg-pearl/10 border border-border/10 rounded-2xl text-center p-4">
+              <span className="text-4xl">🗄️</span>
+              <h3 className="font-semibold text-sm text-foreground mt-2">No Local Matches</h3>
+              <p className="text-xs text-muted-foreground mt-1 max-w-xs">
+                No movies, shows, or people match "{query}" in my local watch database.
+              </p>
+            </div>
+          )}
+        </div>
+
+        {/* ── Right Column: Global TMDB Results ────────────────────────── */}
+        <div className="space-y-8">
+          <GlobalSection
+            loading={tmdbLoading}
+            waiting={isTmdbWaiting}
+            results={tmdbResults}
+            query={query}
+          />
+        </div>
+      </div>
+    </div>
+  );
+}
+
+export default function SearchPage() {
+  return (
+    <Suspense fallback={<SearchSkeleton />}>
+      <SearchPageContent />
+    </Suspense>
+  );
+}
