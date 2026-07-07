@@ -1,6 +1,6 @@
 'use client';
 
-import { Suspense, useState, useEffect } from 'react';
+import { Suspense, useState, useEffect, useMemo } from 'react';
 import { useSearchParams } from 'next/navigation';
 import { Skeleton } from '@/components/shadcn/ui/skeleton';
 import { Search } from 'lucide-react';
@@ -60,7 +60,17 @@ function SearchPageContent() {
     shows: [],
     people: [],
   });
-  const [tmdbResults, setTmdbResults] = useState<TMDBResult[]>([]);
+  const [rawTmdbResults, setRawTmdbResults] = useState<TMDBResult[]>([]);
+
+  // Compute tmdbResults dynamically (excluding items that match local database ids)
+  const tmdbResults = useMemo(() => {
+    const dbIds = new Set([
+      ...dbResults.movies.map((m) => m.tmdb_id),
+      ...dbResults.shows.map((s) => s.tmdb_id),
+      ...dbResults.people.map((p) => p.tmdb_id),
+    ]);
+    return rawTmdbResults.filter((item) => !dbIds.has(item.id));
+  }, [rawTmdbResults, dbResults]);
 
   const [dbLoading, setDbLoading] = useState(false);
   const [tmdbLoading, setTmdbLoading] = useState(false);
@@ -82,7 +92,7 @@ function SearchPageContent() {
   useEffect(() => {
     if (!query.trim()) {
       setTmdbQuery('');
-      setTmdbResults([]);
+      setRawTmdbResults([]);
       return;
     }
     setTmdbLoading(true);
@@ -120,22 +130,25 @@ function SearchPageContent() {
 
     const workerUrl = process.env.NEXT_PUBLIC_SEARCH_WORKER_URL || 'http://localhost:8787';
     fetch(`${workerUrl}/tmdb?q=${encodeURIComponent(tmdbQuery)}`)
-      .then((r) => r.json())
+      .then((r) => {
+        if (!r.ok) {
+          throw new Error(`HTTP error! status: ${r.status}`);
+        }
+        return r.json();
+      })
       .then((data: TMDBSearchResults) => {
         if (data && data.results) {
-          // Filter out results that are already in DB search list (approximate matching by tmdb_id)
-          const dbIds = new Set([
-            ...dbResults.movies.map((m) => m.tmdb_id),
-            ...dbResults.shows.map((s) => s.tmdb_id),
-            ...dbResults.people.map((p) => p.tmdb_id),
-          ]);
-          const filtered = data.results.filter((item) => !dbIds.has(item.id));
-          setTmdbResults(filtered.slice(0, 15)); // Limit to top 15 results
+          setRawTmdbResults(data.results.slice(0, 15)); // Limit to top 15 results
+        } else {
+          setRawTmdbResults([]);
         }
       })
-      .catch(console.error)
+      .catch((err) => {
+        console.error('TMDB fetch error:', err);
+        setRawTmdbResults([]); // Reset results to clear stale data on error/429
+      })
       .finally(() => setTmdbLoading(false));
-  }, [tmdbQuery, dbResults]);
+  }, [tmdbQuery]);
 
   const hasDbResults =
     dbResults.movies.length > 0 || dbResults.shows.length > 0 || dbResults.people.length > 0;
