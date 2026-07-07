@@ -2,12 +2,21 @@
 .amazonq
 .gemini
 .kiro
+.agents
 AGENTS.md
 SECURITY-REVIEW-REPORT.md
 DESIGN_SYSTEM.md
+/reminder.md
 /app/backup.css
 /app/test/
 /components/shadcn/unused/
+/search-worker/.dev.vars
+/search-worker/node_modules/
+/search-worker/.wrangler/
+/search-worker/src/.wrangler/
+/search-worker/.env
+/search-worker/docs.md
+/search-worker/d1/
 
 # dependencies
 /node_modules

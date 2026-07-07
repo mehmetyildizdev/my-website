@@ -1,0 +1,9 @@
+name = "search-worker"
+main = "src/index.ts"
+compatibility_date = "2024-01-01"
+
+[[d1_databases]]
+binding = "DB"
+database_name = "screen"
+database_id = "28cc6c88-7335-4e58-88cc-f7866da405d3"
+
