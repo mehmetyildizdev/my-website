@@ -2,8 +2,8 @@
 
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
-import { usePathname } from 'next/navigation';
-import { LayoutDashboard, Film, Tv, Users, BarChart3, Database, Menu, X } from 'lucide-react';
+import { usePathname, useRouter } from 'next/navigation';
+import { LayoutDashboard, Film, Tv, Users, BarChart3, Database, Menu, X, Search } from 'lucide-react';
 
 const NAV_ITEMS = [
   {
@@ -41,7 +41,35 @@ const NAV_ITEMS = [
 
 export default function ScreenSidebar() {
   const pathname = usePathname();
+  const router = useRouter();
   const [open, setOpen] = useState(false);
+  const [searchVal, setSearchVal] = useState('');
+
+  // Sync search input with URL query param 'q' on navigation / client-side mount
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      const params = new URLSearchParams(window.location.search);
+      setSearchVal(params.get('q') || '');
+    }
+  }, [pathname]);
+
+  const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const val = e.target.value;
+    setSearchVal(val);
+
+    const trimmed = val.trim();
+    if (trimmed) {
+      if (pathname === '/collection/screen/search') {
+        router.replace(`/collection/screen/search?q=${encodeURIComponent(trimmed)}`);
+      } else {
+        router.push(`/collection/screen/search?q=${encodeURIComponent(trimmed)}`);
+      }
+    } else {
+      if (pathname === '/collection/screen/search') {
+        router.replace('/collection/screen/search');
+      }
+    }
+  };
 
   // Close drawer on route change
   useEffect(() => {
@@ -72,27 +100,46 @@ export default function ScreenSidebar() {
   };
 
   const navContent = (
-    <nav className="flex flex-col gap-1">
-      {NAV_ITEMS.map((item) => {
-        const active = isActive(item);
-        const Icon = item.icon;
-        return (
-          <Link
-            key={item.href}
-            href={item.href}
-            onClick={() => setOpen(false)}
-            className={`flex items-center gap-2.5 px-3 py-2 rounded-lg text-sm font-medium transition-all whitespace-nowrap ${
-              active
-                ? 'bg-pearl/40 text-gold border border-gold/20 shadow-sm'
-                : 'text-quicksilver hover:text-foreground hover:bg-pearl/20 border border-transparent'
-            }`}
-          >
-            <Icon className={`h-4 w-4 shrink-0 ${active ? 'text-gold' : ''}`} />
-            <span>{item.label}</span>
-          </Link>
-        );
-      })}
-    </nav>
+    <div className="flex flex-col gap-5">
+      <nav className="flex flex-col gap-1">
+        {NAV_ITEMS.map((item) => {
+          const active = isActive(item);
+          const Icon = item.icon;
+          return (
+            <Link
+              key={item.href}
+              href={item.href}
+              onClick={() => setOpen(false)}
+              className={`flex items-center gap-2.5 px-3 py-2 rounded-lg text-sm font-medium transition-all whitespace-nowrap ${
+                active
+                  ? 'bg-pearl/40 text-gold border border-gold/20 shadow-sm'
+                  : 'text-quicksilver hover:text-foreground hover:bg-pearl/20 border border-transparent'
+              }`}
+            >
+              <Icon className={`h-4 w-4 shrink-0 ${active ? 'text-gold' : ''}`} />
+              <span>{item.label}</span>
+            </Link>
+          );
+        })}
+      </nav>
+
+      {/* Edge Search Input */}
+      <div className="px-3">
+        <label className="text-[10px] text-muted-foreground uppercase tracking-widest font-bold block mb-2 px-0.5">
+          Search
+        </label>
+        <div className="relative">
+          <Search className="absolute left-2.5 top-1/2 -translate-y-1/2 h-3.5 w-3.5 text-quicksilver" />
+          <input
+            type="text"
+            placeholder="Search catalog..."
+            value={searchVal}
+            onChange={handleSearchChange}
+            className="w-full bg-pearl/20 border border-border/10 rounded-lg pl-8 pr-2.5 py-1.5 text-xs text-foreground placeholder:text-quicksilver/50 focus:outline-none focus:border-gold/40 focus:ring-1 focus:ring-gold/30 transition-all font-medium font-rubik"
+          />
+        </div>
+      </div>
+    </div>
   );
 
   return (
