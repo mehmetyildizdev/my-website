@@ -1,5 +1,6 @@
 'use client';
 
+import { useState } from 'react';
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/shadcn/ui/card';
 import { Badge } from '@/components/shadcn/ui/badge';
 import { Skeleton } from '@/components/shadcn/ui/skeleton';
@@ -18,10 +19,16 @@ export interface DBSearchShow {
 interface ShowsSectionProps {
   loading: boolean;
   shows: DBSearchShow[];
+  isFeatured?: boolean;
 }
 
-export default function ShowsSection({ loading, shows }: ShowsSectionProps) {
+export default function ShowsSection({ loading, shows, isFeatured }: ShowsSectionProps) {
+  const [expanded, setExpanded] = useState(false);
   if (!loading && shows.length === 0) return null;
+
+  const ceiling = isFeatured ? 999 : 8;
+  const hasMore = shows.length > ceiling;
+  const visibleShows = expanded ? shows : shows.slice(0, ceiling);
 
   return (
     <Card className="relative overflow-hidden bg-pearl/30 border-border/15 shadow-2xl backdrop-blur-md">
@@ -52,7 +59,7 @@ export default function ShowsSection({ loading, shows }: ShowsSectionProps) {
           </div>
         ) : (
           <div className="flex overflow-x-auto gap-4 pb-2 scrollbar-thin scrollbar-thumb-border/20 scrollbar-track-transparent">
-            {shows.map((item, idx) => (
+            {visibleShows.map((item, idx) => (
               <div key={item.tmdb_id} className="w-32 sm:w-36 shrink-0">
                 <PosterCard
                   tmdb_id={item.tmdb_id}
@@ -69,6 +76,16 @@ export default function ShowsSection({ loading, shows }: ShowsSectionProps) {
                 />
               </div>
             ))}
+            {!expanded && hasMore && (
+              <button
+                onClick={() => setExpanded(true)}
+                className="flex flex-col items-center justify-center bg-pearl/10 border border-dashed border-border/20 rounded-xl p-4 text-center transition-all duration-300 hover:border-gold/40 hover:bg-pearl/20 w-32 sm:w-36 shrink-0 aspect-2/3 group self-stretch h-auto min-h-[180px] sm:min-h-[210px]"
+              >
+                <span className="text-xl group-hover:scale-110 transition-transform">➕</span>
+                <span className="font-semibold text-xs text-foreground mt-2">Load More</span>
+                <span className="text-[10px] text-quicksilver mt-0.5">+{shows.length - ceiling} shows</span>
+              </button>
+            )}
           </div>
         )}
       </CardContent>

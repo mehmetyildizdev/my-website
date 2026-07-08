@@ -1,5 +1,6 @@
 'use client';
 
+import { useState } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/shadcn/ui/card';
@@ -17,10 +18,16 @@ export interface DBSearchPerson {
 interface PeopleSectionProps {
   loading: boolean;
   people: DBSearchPerson[];
+  isFeatured?: boolean;
 }
 
-export default function PeopleSection({ loading, people }: PeopleSectionProps) {
+export default function PeopleSection({ loading, people, isFeatured }: PeopleSectionProps) {
+  const [expanded, setExpanded] = useState(false);
   if (!loading && people.length === 0) return null;
+
+  const ceiling = isFeatured ? 999 : 16;
+  const hasMore = people.length > ceiling;
+  const visiblePeople = expanded ? people : people.slice(0, ceiling);
 
   return (
     <Card className="relative overflow-hidden bg-pearl/30 border-border/15 shadow-2xl backdrop-blur-md">
@@ -50,7 +57,7 @@ export default function PeopleSection({ loading, people }: PeopleSectionProps) {
           </div>
         ) : (
           <div className="grid grid-rows-2 grid-flow-col gap-4 overflow-x-auto pb-2 scrollbar-thin scrollbar-thumb-border/20 scrollbar-track-transparent">
-            {people.map((p) => {
+            {visiblePeople.map((p) => {
               const hasImage = !!p.image_path;
               const CardWrapper = hasImage ? Link : 'div';
               const linkProps = hasImage ? { href: `/collection/screen/p/${p.tmdb_id}` } : {};
@@ -94,6 +101,16 @@ export default function PeopleSection({ loading, people }: PeopleSectionProps) {
                 </CardWrapper>
               );
             })}
+            {!expanded && hasMore && (
+              <button
+                onClick={() => setExpanded(true)}
+                className="flex flex-col items-center justify-center bg-pearl/10 border border-dashed border-border/20 rounded-2xl p-3 text-center transition-all duration-300 hover:border-gold/40 hover:bg-pearl/20 w-36 sm:w-40 shrink-0 group"
+              >
+                <span className="text-xl group-hover:scale-110 transition-transform">➕</span>
+                <span className="font-semibold text-xs text-foreground mt-2">Load More</span>
+                <span className="text-[10px] text-quicksilver mt-0.5">+{people.length - ceiling} people</span>
+              </button>
+            )}
           </div>
         )}
       </CardContent>

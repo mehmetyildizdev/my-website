@@ -39,16 +39,20 @@ export default {
 
     // ── Endpoint: GET /db ──────────────────────────────────────────────────
     if (path === '/db') {
-      if (!query || !query.trim()) {
+      const trimmed = query ? query.trim() : '';
+      const isLocalhost = url.hostname === 'localhost' || url.hostname === '127.0.0.1';
+      const isNumeric = /^\d+$/.test(trimmed);
+
+      if (trimmed.length < 3 && !isNumeric && !isLocalhost) {
         return new Response(JSON.stringify({ movies: [], shows: [], people: [] }), {
           headers: { 'Content-Type': 'application/json', ...corsHeaders },
         });
       }
 
       try {
-        const term = `%${query.trim()}%`;
-        const tmdbId = parseInt(query.trim(), 10);
-        const numericIdStr = isNaN(tmdbId) ? '-1' : query.trim();
+        const term = `%${trimmed}%`;
+        const tmdbId = parseInt(trimmed, 10);
+        const numericIdStr = isNaN(tmdbId) ? '-1' : trimmed;
 
         // Check if table exists (in case sync has never run)
         const tableCheck = await env.DB.prepare(
@@ -76,7 +80,11 @@ export default {
         const people = results.filter((r: SearchRow) => r.type === 'person');
 
         return new Response(JSON.stringify({ movies, shows, people }), {
-          headers: { 'Content-Type': 'application/json', ...corsHeaders },
+          headers: {
+            'Content-Type': 'application/json',
+            'Cache-Control': 'public, max-age=600, s-maxage=86400',
+            ...corsHeaders,
+          },
         });
       } catch (err: any) {
         return new Response(JSON.stringify({ error: err.message }), {
@@ -88,7 +96,11 @@ export default {
 
     // ── Endpoint: GET /tmdb ────────────────────────────────────────────────
     if (path === '/tmdb') {
-      if (!query || !query.trim()) {
+      const trimmed = query ? query.trim() : '';
+      const isLocalhost = url.hostname === 'localhost' || url.hostname === '127.0.0.1';
+      const isNumeric = /^\d+$/.test(trimmed);
+
+      if (trimmed.length < 3 && !isNumeric && !isLocalhost) {
         return new Response(JSON.stringify({ results: [] }), {
           headers: { 'Content-Type': 'application/json', ...corsHeaders },
         });
@@ -107,10 +119,13 @@ export default {
           rateLimitMap.set(clientIp, { count: 1, resetTime: now + windowMs });
         } else {
           if (limit.count >= maxRequests) {
-            return new Response(JSON.stringify({ error: 'Too Many Requests. Rate limit exceeded.' }), {
-              status: 429,
-              headers: { 'Content-Type': 'application/json', ...corsHeaders },
-            });
+            return new Response(
+              JSON.stringify({ error: 'Too Many Requests. Rate limit exceeded.' }),
+              {
+                status: 429,
+                headers: { 'Content-Type': 'application/json', ...corsHeaders },
+              }
+            );
           }
           limit.count += 1;
         }
@@ -120,7 +135,7 @@ export default {
 
       try {
         const tmdbUrl = `https://api.themoviedb.org/3/search/multi?query=${encodeURIComponent(
-          query.trim()
+          trimmed
         )}&page=1`;
         const response = await fetch(tmdbUrl, {
           headers: {
@@ -135,7 +150,11 @@ export default {
 
         const data = await response.json();
         return new Response(JSON.stringify(data), {
-          headers: { 'Content-Type': 'application/json', ...corsHeaders },
+          headers: {
+            'Content-Type': 'application/json',
+            'Cache-Control': 'public, max-age=60, s-maxage=86400',
+            ...corsHeaders,
+          },
         });
       } catch (err: any) {
         return new Response(JSON.stringify({ error: err.message }), {

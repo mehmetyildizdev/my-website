@@ -1,7 +1,7 @@
 import { NextResponse } from 'next/server';
 import { query } from '@/lib/screen/db';
 
-export const revalidate = 0; // Dynamic on every request
+export const revalidate = 86400; // Cache for 24 hours
 
 export async function GET() {
   try {

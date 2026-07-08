@@ -220,13 +220,13 @@ function SearchPageContent() {
 
           <div className="space-y-8">
             {/* Section 1: Featured People (Actors only, heavily female favored) */}
-            <PeopleSection loading={featuredLoading} people={featuredData.people} />
+            <PeopleSection loading={featuredLoading} people={featuredData.people} isFeatured={true} />
 
             {/* Section 2: Featured Movies (RNG favored by rating) */}
-            <MoviesSection loading={featuredLoading} movies={featuredData.movies} />
+            <MoviesSection loading={featuredLoading} movies={featuredData.movies} isFeatured={true} />
 
             {/* Section 3: Featured Shows (RNG favored by rating) */}
-            <ShowsSection loading={featuredLoading} shows={featuredData.shows} />
+            <ShowsSection loading={featuredLoading} shows={featuredData.shows} isFeatured={true} />
           </div>
         </div>
       ) : (
