@@ -1,9 +1,8 @@
 'use client';
 
 import { Suspense, useState, useEffect, useMemo } from 'react';
-import { useSearchParams } from 'next/navigation';
+import { useSearchParams, useRouter } from 'next/navigation';
 import { Skeleton } from '@/components/shadcn/ui/skeleton';
-import { Search } from 'lucide-react';
 
 import PeopleSection, { DBSearchPerson } from '@/components/screen/search/PeopleSection';
 import MoviesSection, { DBSearchMovie } from '@/components/screen/search/MoviesSection';
@@ -50,6 +49,7 @@ function SearchSkeleton() {
 
 function SearchPageContent() {
   const searchParams = useSearchParams();
+  const router = useRouter();
   const query = searchParams.get('q') || '';
 
   const [dbQuery, setDbQuery] = useState('');
@@ -61,6 +61,30 @@ function SearchPageContent() {
     people: [],
   });
   const [rawTmdbResults, setRawTmdbResults] = useState<TMDBResult[]>([]);
+
+  // Featured Recommendations state
+  const [featuredData, setFeaturedData] = useState<{ people: any[]; movies: any[]; shows: any[] }>({
+    people: [],
+    movies: [],
+    shows: [],
+  });
+  const [featuredLoading, setFeaturedLoading] = useState(false);
+
+  // Fetch featured recommendations when query is empty
+  useEffect(() => {
+    if (!query.trim()) {
+      setFeaturedLoading(true);
+      fetch('/api/screen/featured')
+        .then((r) => r.json())
+        .then((data) => {
+          if (data && !data.error) {
+            setFeaturedData(data);
+          }
+        })
+        .catch(console.error)
+        .finally(() => setFeaturedLoading(false));
+    }
+  }, [query]);
 
   // Compute tmdbResults dynamically (excluding items that match local database ids)
   const tmdbResults = useMemo(() => {
@@ -156,25 +180,6 @@ function SearchPageContent() {
   // TMDB is waiting if query exists but tmdbQuery has not caught up yet OR tmdb API is loading
   const isTmdbWaiting = (query.trim() && query !== tmdbQuery) || tmdbLoading;
 
-  if (!query.trim()) {
-    return (
-      <div className="flex flex-col items-center justify-center py-20 text-center space-y-4">
-        <div className="w-16 h-16 rounded-full bg-pearl/30 border border-border/10 flex items-center justify-center text-quicksilver">
-          <Search className="h-7 w-7" />
-        </div>
-        <div>
-          <h2 className="text-xl font-bold tracking-tight text-accent font-poppins">
-            Search Catalog
-          </h2>
-          <p className="text-sm text-muted-foreground mt-2 max-w-sm">
-            Start typing in the sidebar search bar to explore movies, TV shows, and people in your
-            local watch database and TMDB.
-          </p>
-        </div>
-      </div>
-    );
-  }
-
   // Map database results to their specific component interfaces
   const people: DBSearchPerson[] = dbResults.people.map((p) => ({
     tmdb_id: p.tmdb_id,
@@ -201,51 +206,76 @@ function SearchPageContent() {
 
   return (
     <div className="space-y-10">
-      {/* ── Page Header ────────────────────────────────────────── */}
-      <div>
-        <h2 className="text-2xl font-bold tracking-tight text-accent font-poppins flex items-center gap-2">
-          <span>Search Results for</span>
-          <span className="text-gold">"{query}"</span>
-        </h2>
-        <p className="text-sm text-muted-foreground mt-1">
-          Instant edge searching through D1 local index and delayed global TMDB catalog.
-        </p>
-      </div>
+      {!query.trim() ? (
+        /* ── Featured Recommendations (Empty query) ─────────────── */
+        <div className="space-y-10">
+          <div className="space-y-1" style={{ fontFamily: 'var(--font-poppins)' }}>
+            <h2 className="text-2xl font-bold tracking-tight text-accent">
+              Featured Recommendations
+            </h2>
+            <p className="text-xs sm:text-sm text-quicksilver/90 leading-relaxed">
+              Curated selection of random movies, TV shows, and actors from my database.
+            </p>
+          </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 items-start">
-        {/* ── Left Column: Local DB Results ────────────────────────── */}
-        <div className="lg:col-span-2 space-y-8">
-          
-          {/* Section 1: People */}
-          <PeopleSection loading={dbLoading} people={people} />
+          <div className="space-y-8">
+            {/* Section 1: Featured People (Actors only, heavily female favored) */}
+            <PeopleSection loading={featuredLoading} people={featuredData.people} />
 
-          {/* Section 2: Movies */}
-          <MoviesSection loading={dbLoading} movies={movies} />
+            {/* Section 2: Featured Movies (RNG favored by rating) */}
+            <MoviesSection loading={featuredLoading} movies={featuredData.movies} />
 
-          {/* Section 3: TV Shows */}
-          <ShowsSection loading={dbLoading} shows={shows} />
+            {/* Section 3: Featured Shows (RNG favored by rating) */}
+            <ShowsSection loading={featuredLoading} shows={featuredData.shows} />
+          </div>
+        </div>
+      ) : (
+        /* ── Active Search Results ──────────────────────────────── */
+        <>
+          {/* ── Page Header ────────────────────────────────────────── */}
+          <div>
+            <h2 className="text-2xl font-bold tracking-tight text-accent font-poppins flex items-center gap-2">
+              <span>Search Results for</span>
+              <span className="text-gold">"{query}"</span>
+            </h2>
+            <p className="text-sm text-muted-foreground mt-1">
+              Instant edge searching through D1 local index and delayed global TMDB catalog.
+            </p>
+          </div>
 
-          {!dbLoading && !hasDbResults && (
-            <div className="flex flex-col items-center justify-center py-16 bg-pearl/10 border border-border/10 rounded-2xl text-center p-4">
-              <span className="text-4xl">🗄️</span>
-              <h3 className="font-semibold text-sm text-foreground mt-2">No Local Matches</h3>
-              <p className="text-xs text-muted-foreground mt-1 max-w-xs">
-                No movies, shows, or people match "{query}" in my local watch database.
-              </p>
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 items-start">
+            {/* ── Left Column: Local DB Results ────────────────────────── */}
+            <div className="lg:col-span-2 space-y-8">
+              {/* Section 1: People */}
+              <PeopleSection loading={dbLoading} people={people} />
+
+              {/* Section 2: Movies */}
+              <MoviesSection loading={dbLoading} movies={movies} />
+
+              {/* Section 3: Shows */}
+              <ShowsSection loading={dbLoading} shows={shows} />
+
+              {!dbLoading && !hasDbResults && (
+                <div className="flex flex-col items-center justify-center py-16 bg-pearl/10 border border-border/10 rounded-2xl text-center p-4">
+                  <span className="text-4xl">🗄️</span>
+                  <h3 className="font-semibold text-sm text-foreground mt-2">No Local Matches</h3>
+                  <p className="text-xs text-muted-foreground mt-1 max-w-xs mx-auto">
+                    No movies, shows, or people match "{query}" in my local watch database.
+                  </p>
+                </div>
+              )}
             </div>
-          )}
-        </div>
 
-        {/* ── Right Column: Global TMDB Results ────────────────────────── */}
-        <div className="space-y-8">
-          <GlobalSection
-            loading={tmdbLoading}
-            waiting={isTmdbWaiting}
-            results={tmdbResults}
-            query={query}
-          />
-        </div>
-      </div>
+            {/* ── Right Column: Global TMDB Catalog ────────────────────── */}
+            <GlobalSection
+              loading={tmdbLoading}
+              waiting={isTmdbWaiting}
+              results={tmdbResults}
+              query={query}
+            />
+          </div>
+        </>
+      )}
     </div>
   );
 }
