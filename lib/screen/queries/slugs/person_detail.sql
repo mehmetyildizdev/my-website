@@ -10,9 +10,9 @@ SELECT
       'biography', 'Biography not yet ingested. Check back after the next database sync.',
       'movies', COALESCE(
          (SELECT jsonb_agg(jsonb_build_object(
-            'id', mc.movie_tmdb_id,
+            'tmdb_id', mc.movie_tmdb_id,
             'title', m.title,
-            'character', mc.character,
+            'role', mc.character,
             'poster_path', m.poster_path,
             'release_date', m.release_date
           ))
@@ -23,11 +23,11 @@ SELECT
       ),
       'shows', COALESCE(
          (SELECT jsonb_agg(jsonb_build_object(
-            'id', sc.show_tmdb_id,
-            'name', s.name,
-            'character', sc.character,
+            'tmdb_id', sc.show_tmdb_id,
+            'title', s.name,
+            'role', sc.character,
             'poster_path', s.poster_path,
-            'first_air_date', s.first_air_date
+            'release_date', s.first_air_date
           ))
           FROM public.show_cast sc
           JOIN public.shows s ON s.tmdb_id = sc.show_tmdb_id
