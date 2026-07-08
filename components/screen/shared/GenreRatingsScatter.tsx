@@ -36,24 +36,24 @@ export default function GenreRatingsScatter({ data }: { data: GenreRating[] }) {
     return () => window.removeEventListener('resize', checkMobile);
   }, []);
 
-  const getAdjustedCoords = (clientX: number, clientY: number) => {
+  const getAdjustedCoords = (pageX: number, pageY: number, clientX: number, clientY: number) => {
     const tooltipWidth = 180;
     const tooltipHeight = 130;
-    let x = clientX + 12;
-    let y = clientY + 12;
+    let x = pageX + 12;
+    let y = pageY + 12;
 
-    if (x + tooltipWidth > window.innerWidth) {
-      x = Math.max(0, clientX - tooltipWidth - 12);
+    if (clientX + tooltipWidth > window.innerWidth) {
+      x = Math.max(0, pageX - tooltipWidth - 12);
     }
-    if (y + tooltipHeight > window.innerHeight) {
-      y = Math.max(0, clientY - tooltipHeight - 12);
+    if (clientY + tooltipHeight > window.innerHeight) {
+      y = Math.max(0, pageY - tooltipHeight - 12);
     }
     return { x, y };
   };
 
   const handleMouseMove = (e: React.MouseEvent) => {
     if (lockedIdx === null) {
-      setCoords(getAdjustedCoords(e.clientX, e.clientY));
+      setCoords(getAdjustedCoords(e.pageX, e.pageY, e.clientX, e.clientY));
     }
   };
 
@@ -96,7 +96,7 @@ export default function GenreRatingsScatter({ data }: { data: GenreRating[] }) {
         handleDismissLock();
       } else {
         setLockedIdx(index);
-        setLockedCoords(getAdjustedCoords(event.clientX, event.clientY));
+        setLockedCoords(getAdjustedCoords(event.pageX, event.pageY, event.clientX, event.clientY));
         setLockedSvgCoords({ cx, cy });
         setHoveredIdx(index);
       }
@@ -257,7 +257,7 @@ export default function GenreRatingsScatter({ data }: { data: GenreRating[] }) {
         hoveredData &&
         createPortal(
           <div
-            className="fixed z-9999 pointer-events-none"
+            className="absolute z-9999 pointer-events-none"
             style={{
               left: `${tooltipCoords.x}px`,
               top: `${tooltipCoords.y}px`,
