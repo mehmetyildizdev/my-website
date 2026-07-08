@@ -1,12 +1,11 @@
-import LogSuppressor from "@/components/LogSuppressor";
-import DbOverview from "@/components/screen/stats/DbOverview";
-import UnratedWatches from "@/components/screen/stats/UnratedWatches";
-import Link from "next/link";
+import LogSuppressor from '@/components/LogSuppressor';
+import DbOverview from '@/components/screen/stats/DbOverview';
+import UnratedWatches from '@/components/screen/stats/UnratedWatches';
 export const revalidate = 86400; // 24h — refreshed by nightly GitHub Action
 
 export const metadata = {
-  title: "Screen | DB Stats",
-  description: "Database overview, data coverage, and schema relationships.",
+  title: 'Screen | DB Stats',
+  description: 'Database overview, data coverage, and schema relationships.',
 };
 
 export default async function StatsPage() {

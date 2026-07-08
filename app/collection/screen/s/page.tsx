@@ -38,7 +38,7 @@ export default async function ShowChartsPage() {
       <LogSuppressor />
       <div className="space-y-10">
         <div>
-          <h2 className="text-2xl font-bold tracking-tight text-accent">Show Analytics</h2>
+          <h2 className="text-2xl font-bold tracking-tight text-accent font-poppins">Show Analytics</h2>
           <p className="text-sm text-muted-foreground mt-1">
             Track your TV show journey — season progress, network preferences, and genre rating
             trends over time.

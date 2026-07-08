@@ -41,7 +41,7 @@ export default async function MovieChartsPage() {
       <LogSuppressor />
       <div className="space-y-10">
         <div>
-          <h2 className="text-2xl font-bold tracking-tight text-accent">Movie Analytics</h2>
+          <h2 className="text-2xl font-bold tracking-tight text-accent font-poppins">Movie Analytics</h2>
           <p className="text-sm text-muted-foreground mt-1">
             Deep dive into my watching patterns, genres, ratings, runtimes, collections, and more on
             movies.

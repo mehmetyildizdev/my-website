@@ -3,7 +3,17 @@
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
-import { LayoutDashboard, Film, Tv, Users, BarChart3, Database, Menu, X, Search } from 'lucide-react';
+import {
+  LayoutDashboard,
+  Film,
+  Tv,
+  Users,
+  BarChart3,
+  Database,
+  Menu,
+  X,
+  Search,
+} from 'lucide-react';
 
 const NAV_ITEMS = [
   {
@@ -132,7 +142,7 @@ export default function ScreenSidebar() {
           <Search className="absolute left-2.5 top-1/2 -translate-y-1/2 h-3.5 w-3.5 text-quicksilver" />
           <input
             type="text"
-            placeholder="Search catalog..."
+            placeholder="Search in database..."
             value={searchVal}
             onChange={handleSearchChange}
             className="w-full bg-pearl/20 border border-border/10 rounded-lg pl-8 pr-2.5 py-1.5 text-xs text-foreground placeholder:text-quicksilver/50 focus:outline-none focus:border-gold/40 focus:ring-1 focus:ring-gold/30 transition-all font-medium font-rubik"
@@ -150,7 +160,7 @@ export default function ScreenSidebar() {
       {/* Mobile/tablet toggle button — visible below 2xl */}
       <button
         onClick={() => setOpen(true)}
-        className="fixed bottom-6 right-6 z-40 2xl:hidden flex items-center justify-center w-12 h-12 rounded-full bg-pearl/80 border border-gold/20 shadow-lg backdrop-blur-md text-gold hover:bg-pearl hover:border-gold/40 transition-all"
+        className="fixed bottom-6 left-6 z-40 2xl:hidden flex items-center justify-center w-12 h-12 rounded-full bg-pearl/80 border border-gold/20 shadow-lg backdrop-blur-md text-gold hover:bg-pearl hover:border-gold/40 transition-all"
         aria-label="Open screen navigation"
       >
         <Menu className="h-5 w-5" />
@@ -165,7 +175,7 @@ export default function ScreenSidebar() {
             onClick={() => setOpen(false)}
           />
           {/* Drawer panel */}
-          <div className="absolute right-0 top-0 bottom-0 w-64 bg-background border-l border-border/20 shadow-2xl p-6 pt-20 animate-in slide-in-from-right duration-200">
+          <div className="absolute left-0 top-0 bottom-0 w-64 bg-background border-r border-border/20 shadow-2xl p-6 pt-20 animate-in slide-in-from-left duration-200">
             <button
               onClick={() => setOpen(false)}
               className="absolute top-6 right-6 p-1.5 rounded-lg text-quicksilver hover:text-foreground hover:bg-pearl/30 transition-colors"

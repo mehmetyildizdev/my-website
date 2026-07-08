@@ -26,7 +26,7 @@ export default async function PeopleChartsPage() {
       <LogSuppressor />
       <div className="space-y-10">
         <div>
-          <h2 className="text-2xl font-bold tracking-tight text-accent">People Analytics</h2>
+          <h2 className="text-2xl font-bold tracking-tight text-accent font-poppins">People Analytics</h2>
           <p className="text-sm text-muted-foreground mt-1">
             Explore the actors, directors, and crew behind your watched content — top rated, most watched, and collaboration patterns.
           </p>

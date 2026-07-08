@@ -52,12 +52,13 @@ export default function MoviesSection({ loading, movies }: MoviesSectionProps) {
           </div>
         ) : (
           <div className="flex overflow-x-auto gap-4 pb-2 scrollbar-thin scrollbar-thumb-border/20 scrollbar-track-transparent">
-            {movies.map((item) => (
+            {movies.map((item, idx) => (
               <div key={item.tmdb_id} className="w-32 sm:w-36 shrink-0">
                 <PosterCard
                   tmdb_id={item.tmdb_id}
                   href={`/collection/screen/m/${item.tmdb_id}`}
                   title={item.name}
+                  priority={idx < 4}
                   subtitle={
                     item.release_date
                       ? String(new Date(item.release_date).getFullYear())

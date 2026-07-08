@@ -67,7 +67,7 @@ export default function GlobalSection({ loading, waiting, results, query }: Glob
           </div>
         ) : hasResults ? (
           <div className="space-y-3">
-            {results.map((item) => {
+            {results.map((item, idx) => {
               const title = item.title || item.name || '';
               const year = item.release_date
                 ? String(new Date(item.release_date).getFullYear())
@@ -97,6 +97,7 @@ export default function GlobalSection({ loading, waiting, results, query }: Glob
                         alt={title}
                         fill
                         unoptimized
+                        priority={idx < 4}
                         className="object-cover transition-transform duration-500 group-hover:scale-105"
                       />
                     ) : (

@@ -43,7 +43,12 @@ export default async function ChartsPage() {
     <>
       <LogSuppressor />
       <div className="space-y-12">
-        <h2 className="text-2xl font-bold tracking-tight text-accent">Charts</h2>
+        <div>
+          <h2 className="text-2xl font-bold tracking-tight text-accent font-poppins">Charts</h2>
+          <p className="text-sm text-muted-foreground mt-1">
+            Visual analytics of watch history data, ratings, and genre distributions.
+          </p>
+        </div>
         <WorldMapChart data={countryRes.rows} />
         <GenreRatingsScatter data={ratingsRes.rows} />
         <GenreBumpChart data={bumpRes.rows} />

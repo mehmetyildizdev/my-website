@@ -50,37 +50,50 @@ export default function PeopleSection({ loading, people }: PeopleSectionProps) {
           </div>
         ) : (
           <div className="grid grid-rows-2 grid-flow-col gap-4 overflow-x-auto pb-2 scrollbar-thin scrollbar-thumb-border/20 scrollbar-track-transparent">
-            {people.map((p) => (
-              <Link
-                key={p.tmdb_id}
-                href={`/collection/screen/p/${p.tmdb_id}`}
-                className="group flex flex-col items-center bg-obsidian/30 border border-border/10 rounded-2xl p-3 text-center transition-all duration-300 hover:border-accent/40 hover:bg-obsidian/55 shadow-md w-36 sm:w-40 shrink-0"
-              >
-                <div className="relative w-14 h-14 rounded-full overflow-hidden border border-border/30 shrink-0 group-hover:border-accent transition-colors duration-300">
-                  {p.image_path ? (
-                    <Image
-                      src={`https://image.tmdb.org/t/p/w185${p.image_path}`}
-                      alt={p.name}
-                      fill
-                      unoptimized
-                      className="object-cover transition-transform duration-500 group-hover:scale-105"
-                    />
-                  ) : (
-                    <div className="flex h-full items-center justify-center bg-pearl text-quicksilver text-xs">
-                      ?
-                    </div>
-                  )}
-                </div>
-                <div className="flex flex-col items-center mt-2.5 w-full">
-                  <span className="font-semibold text-xs text-foreground group-hover:text-accent transition-colors truncate w-full">
-                    {p.name}
-                  </span>
-                  <span className="text-[10px] text-quicksilver truncate w-full mt-0.5">
-                    {p.release_date || 'Crew'}
-                  </span>
-                </div>
-              </Link>
-            ))}
+            {people.map((p) => {
+              const hasImage = !!p.image_path;
+              const CardWrapper = hasImage ? Link : 'div';
+              const linkProps = hasImage ? { href: `/collection/screen/p/${p.tmdb_id}` } : {};
+
+              return (
+                // @ts-ignore
+                <CardWrapper
+                  key={p.tmdb_id}
+                  {...linkProps}
+                  className={`group flex flex-col items-center bg-obsidian/30 border border-border/10 rounded-2xl p-3 text-center transition-all duration-300 shadow-md w-36 sm:w-40 shrink-0 ${
+                    hasImage
+                      ? 'cursor-pointer hover:border-accent/40 hover:bg-obsidian/55'
+                      : 'opacity-70 border-dashed cursor-not-allowed'
+                  }`}
+                >
+                  <div className="relative w-14 h-14 rounded-full overflow-hidden border border-border/30 shrink-0 group-hover:border-accent transition-colors duration-300">
+                    {p.image_path ? (
+                      <Image
+                        src={`https://image.tmdb.org/t/p/w185${p.image_path}`}
+                        alt={p.name}
+                        fill
+                        unoptimized
+                        className="object-cover transition-transform duration-500 group-hover:scale-105"
+                      />
+                    ) : (
+                      <div className="flex h-full items-center justify-center bg-pearl text-quicksilver text-xs">
+                        ?
+                      </div>
+                    )}
+                  </div>
+                  <div className="flex flex-col items-center mt-2.5 w-full">
+                    <span className={`font-semibold text-xs text-foreground transition-colors truncate w-full ${
+                      hasImage ? 'group-hover:text-gold' : ''
+                    }`}>
+                      {p.name}
+                    </span>
+                    <span className="text-[10px] text-quicksilver truncate w-full mt-0.5">
+                      {p.release_date || 'Crew'}
+                    </span>
+                  </div>
+                </CardWrapper>
+              );
+            })}
           </div>
         )}
       </CardContent>
