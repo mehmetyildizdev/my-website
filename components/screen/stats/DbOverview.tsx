@@ -1,6 +1,6 @@
 import { pgQuery, loadQuery } from '@/lib/screen/db';
 import { getGenreColor } from '@/components/screen/slugs/genre/genreThemes';
-import { isTraktAuthenticated } from '@/lib/screen/trakt';
+import { Database, Search } from 'lucide-react';
 import MaintenanceActions from './MaintenanceActions';
 
 type CoreTableRow = {
@@ -179,12 +179,11 @@ function SampleTable({ entityType, data }: { entityType: string; data: Record<st
 }
 
 export default async function DbOverview() {
-  const [coreRes, relRes, sampleRes, genreCoverageRes, isAuthenticated] = await Promise.all([
+  const [coreRes, relRes, sampleRes, genreCoverageRes] = await Promise.all([
     pgQuery(loadQuery('stats/db_overview.sql')),
     pgQuery(loadQuery('stats/db_relations.sql')),
     pgQuery(loadQuery('stats/db_sample_rows.sql')),
     pgQuery(loadQuery('stats/genre_coverage.sql')),
-    isTraktAuthenticated(),
   ]);
 
   const coreTables = coreRes.rows as CoreTableRow[];
@@ -194,18 +193,82 @@ export default async function DbOverview() {
 
   return (
     <div className="space-y-8">
-      <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4 border-b border-border/10 pb-6">
+      <div className="border-b border-border/10 pb-6 space-y-6">
         <div>
           <h2 className="text-2xl font-bold tracking-tight text-accent">Database Overview</h2>
-          <p className="text-sm text-muted-foreground max-w-2xl mt-1">
+          <p className="text-sm text-muted-foreground mt-1">
             Live snapshot of all tables, data coverage, and relationships. This is made to identify
             gaps and plan charts.
           </p>
         </div>
-        <MaintenanceActions 
-          isAuthenticated={isAuthenticated} 
-          syncSecret={process.env.MY_API_PHRASE || ''} 
-        />
+
+        <div
+          className="grid grid-cols-1 md:grid-cols-2 gap-8 text-quicksilver text-sm sm:text-base leading-relaxed border-l-2 border-gold/30 pl-4 py-1"
+          style={{ fontFamily: 'var(--font-poppins)' }}
+        >
+          <div className="space-y-3">
+            <h4 className="font-semibold text-foreground/90 flex items-center gap-1.5">
+              <Database className="h-4 w-4 text-gold" />
+              <span>Neon PostgreSQL Database</span>
+            </h4>
+            <ul className="text-quicksilver/90 text-[13px] sm:text-[14px] leading-relaxed space-y-2 list-disc pl-4">
+              <li>
+                <strong>Primary Datastore:</strong> Single source of truth for full watch history,
+                rating metrics, and catalog listings.
+              </li>
+              <li>
+                <strong>Serverless PostgreSQL:</strong> High-performance relational backend hosting
+                custom materialized views and stats tables.
+              </li>
+              <li>
+                <strong>Nightly Sync Pipeline:</strong> Aggregated view data and stats tables
+                recompiled automatically via GitHub Actions.
+              </li>
+              <li>
+                <strong>Granular Metrics:</strong> Stores user ratings on a precise 1-10 scale for
+                advanced movie/TV analytics.
+              </li>
+            </ul>
+          </div>
+          <div className="space-y-3">
+            <h4 className="font-semibold text-foreground/90 flex items-center gap-1.5">
+              <Search className="h-4 w-4 text-gold" />
+              <span>Cloudflare D1 & Edge Workers</span>
+            </h4>
+            <ul className="text-quicksilver/90 text-[13px] sm:text-[14px] leading-relaxed space-y-2 list-disc pl-4">
+              <li>
+                <strong>Instant Search Index:</strong> Highly compressed SQLite database
+                pre-compiled offline for edge distribution.
+              </li>
+              <li>
+                <strong>Ultra-Fast Queries:</strong> Database lookups execute in under 1ms,
+                completely bypassing database cold starts.
+              </li>
+              <li>
+                <strong>Secure Edge Proxy:</strong> Serves search endpoints and proxies TMDB
+                requests, protecting private API credentials on the server side.
+              </li>
+              <li>
+                <strong>Abuse Protection:</strong> Built-in edge rate limiting restricts client
+                searches to a maximum of 3 requests per 10 seconds.
+              </li>
+            </ul>
+          </div>
+        </div>
+
+        <div className="pt-6 border-t border-border/5 space-y-4">
+          <div>
+            <h3 className="text-lg font-semibold">Database Maintenance</h3>
+            <p className="text-xs text-muted-foreground mt-1">
+              Control buttons for synchronisation between my streaming application and the database
+              as well as triggering data aggregation.
+            </p>
+          </div>
+          <MaintenanceActions
+            isAuthenticated={true}
+            syncSecret={process.env.MY_API_PHRASE || ''}
+          />
+        </div>
       </div>
 
       {/* ── Sample Rows ────────────────────────────────────────────── */}
@@ -250,11 +313,7 @@ export default async function DbOverview() {
               </div>
               <div className="space-y-1.5">
                 {(t.table_name === 'movies' || t.table_name === 'shows') && (
-                  <CoverageBar
-                    filled={t.has_my_rating}
-                    total={t.total_rows}
-                    label="My Rating"
-                  />
+                  <CoverageBar filled={t.has_my_rating} total={t.total_rows} label="My Rating" />
                 )}
                 {t.has_tmdb_rating > 0 && (
                   <CoverageBar

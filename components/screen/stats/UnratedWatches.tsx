@@ -4,16 +4,16 @@ type UnratedItem = {
   media_type: 'movie' | 'show';
   title: string;
   release_date: string | null;
-  trakt_id: number | null;
+  tmdb_id: number | null;
   watched_at: string;
 };
 
-function getTraktUrl(item: UnratedItem): string | null {
-  if (!item.trakt_id) return null;
+function getTmdbUrl(item: UnratedItem): string | null {
+  if (!item.tmdb_id) return null;
   if (item.media_type === 'movie') {
-    return `https://app.trakt.tv/movies/${item.trakt_id}`;
+    return `https://www.themoviedb.org/movie/${item.tmdb_id}`;
   }
-  return `https://app.trakt.tv/shows/${item.trakt_id}`;
+  return `https://www.themoviedb.org/tv/${item.tmdb_id}`;
 }
 
 export default async function UnratedWatches() {
@@ -28,7 +28,7 @@ export default async function UnratedWatches() {
       <div>
         <h3 className="text-lg font-semibold">Unrated Movies or Shows</h3>
         <p className="text-xs text-muted-foreground mt-1">
-          {movies.length} movies and {shows.length} shows to rate. Click to open on rating platform.
+          {movies.length} movies and {shows.length} shows to rate. Click to open on TMDB.
         </p>
       </div>
 
@@ -38,11 +38,11 @@ export default async function UnratedWatches() {
           <h4 className="text-sm font-medium text-muted-foreground">Movies ({movies.length})</h4>
           <div className="grid gap-1.5 sm:grid-cols-2 lg:grid-cols-3">
             {movies.map((item) => {
-              const url = getTraktUrl(item);
+              const url = getTmdbUrl(item);
               const year = item.release_date ? new Date(item.release_date).getFullYear() : null;
               return (
                 <div
-                  key={`movie-${item.trakt_id || item.title}`}
+                  key={`movie-${item.tmdb_id || item.title}`}
                   className="flex items-center gap-2 rounded border border-border/15 bg-pearl/10 px-2.5 py-1.5 text-xs hover:bg-pearl/30 transition-colors"
                 >
                   <span className="inline-block w-1.5 h-1.5 rounded-full bg-blue-400 shrink-0" />
@@ -75,11 +75,11 @@ export default async function UnratedWatches() {
           <h4 className="text-sm font-medium text-muted-foreground">Shows ({shows.length})</h4>
           <div className="grid gap-1.5 sm:grid-cols-2 lg:grid-cols-3">
             {shows.map((item) => {
-              const url = getTraktUrl(item);
+              const url = getTmdbUrl(item);
               const year = item.release_date ? new Date(item.release_date).getFullYear() : null;
               return (
                 <div
-                  key={`show-${item.trakt_id || item.title}`}
+                  key={`show-${item.tmdb_id || item.title}`}
                   className="flex items-center gap-2 rounded border border-border/15 bg-pearl/10 px-2.5 py-1.5 text-xs hover:bg-pearl/30 transition-colors"
                 >
                   <span className="inline-block w-1.5 h-1.5 rounded-full bg-purple-400 shrink-0" />

@@ -3,7 +3,7 @@
     'movie' as media_type,
     m.title,
     m.release_date,
-    m.trakt_id,
+    m.tmdb_id,
     wh.watched_at
 FROM watch_history wh
 JOIN movies m ON m.tmdb_id = wh.tmdb_id
@@ -16,12 +16,12 @@ UNION ALL
     'show' as media_type,
     s.name as title,
     s.first_air_date as release_date,
-    s.trakt_id,
+    s.tmdb_id,
     MAX(wh.watched_at) as watched_at
 FROM watch_history wh
 JOIN episodes e ON e.tmdb_id = wh.tmdb_id
 JOIN shows s ON s.tmdb_id = e.show_tmdb_id
 WHERE wh.media_type = 'episode'
   AND s.my_rating IS NULL
-GROUP BY s.tmdb_id, s.name, s.first_air_date, s.trakt_id
+GROUP BY s.tmdb_id, s.name, s.first_air_date
 ORDER BY MAX(wh.watched_at) DESC);

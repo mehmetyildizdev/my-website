@@ -61,27 +61,22 @@ export default function MaintenanceActions({
         <div className="flex flex-wrap items-center gap-2">
           {renderAction(
             'Sync Latest',
-            '/api/sync/latest',
+            '/api/screen/sync/latest',
             'hover:text-sapphire hover:border-sapphire/50'
           )}
           {renderAction(
-            'Full Sync',
-            '/api/sync/trakt?full=true',
-            'hover:text-amethyst hover:border-amethyst/50'
-          )}
-          {renderAction(
             'Enrich People',
-            '/api/enrich/people?limit=1000',
+            '/api/screen/enrich/people?limit=1000',
             'hover:text-emerald hover:border-emerald/50'
           )}
           {renderAction(
             'Enrich Episodes',
-            '/api/enrich/episodes?limit=10000',
+            '/api/screen/enrich/episodes?limit=10000',
             'hover:text-topaz hover:border-topaz/50'
           )}
           {renderAction(
             'Enrich Collections',
-            '/api/enrich/collections',
+            '/api/screen/enrich/collections',
             'hover:text-ruby hover:border-ruby/50'
           )}
 
@@ -96,26 +91,6 @@ export default function MaintenanceActions({
         </div>
       ) : (
         <div className="flex flex-wrap items-center gap-2">
-          {isLocalhost ? (
-            <Button
-              asChild
-              variant="glass"
-              size="sm"
-              className="hover:text-gold hover:border-gold/50 text-quicksilver"
-            >
-              <a href={`/api/auth/trakt?secret=${encodeURIComponent(syncSecret)}`}>Connect Trakt</a>
-            </Button>
-          ) : (
-            <Button
-              variant="glass"
-              size="sm"
-              className="hover:text-gold hover:border-gold/50 text-quicksilver"
-              onClick={() => triggerProductionAlert('Connect Trakt')}
-            >
-              Connect Trakt
-            </Button>
-          )}
-
           <Button
             variant="glass"
             size="sm"
