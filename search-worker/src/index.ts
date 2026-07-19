@@ -18,7 +18,7 @@ interface SearchRow {
 // Global in-memory rate limit tracker (per-isolate edge cache)
 const rateLimitMap = new Map<string, { count: number; resetTime: number }>();
 
-export default {
+const worker = {
   async fetch(request: Request, env: Env): Promise<Response> {
     const url = new URL(request.url);
     const path = url.pathname;
@@ -170,3 +170,6 @@ export default {
     });
   },
 };
+
+export default worker;
+

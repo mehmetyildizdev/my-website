@@ -46,7 +46,7 @@ export const structure: StructureResolver = (S, context) => {
         .title("Posts by Date")
         .child(async () => {
           const months = await fetchPostMonthGroups(client);
-          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+           
           const items: any[] = [];
           let currentYear = "";
           for (const m of months) {

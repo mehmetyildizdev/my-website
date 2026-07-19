@@ -2,7 +2,7 @@ import { MotionValue } from "framer-motion";
 
 declare global {
   interface Window {
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+     
     gtag: (...args: any[]) => void;
   }
 

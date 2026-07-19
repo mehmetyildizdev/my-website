@@ -33,8 +33,6 @@ function TreemapCell(props: CustomContentProps & { payload?: any }) {
     depth,
   } = props;
 
-  if (depth === 0) return null;
-
   const [hovered, setHovered] = useState(false);
   const [coords, setCoords] = useState({ x: 0, y: 0 });
   const [mounted, setMounted] = useState(false);
@@ -42,6 +40,8 @@ function TreemapCell(props: CustomContentProps & { payload?: any }) {
   useEffect(() => {
     setMounted(true);
   }, []);
+
+  if (depth === 0) return null;
 
   const handleMouseMove = (e: React.MouseEvent) => {
     const tooltipWidth = 160;

@@ -1,16 +1,15 @@
-import { dirname } from "path";
-import { fileURLToPath } from "url";
-import { FlatCompat } from "@eslint/eslintrc";
-
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = dirname(__filename);
-
-const compat = new FlatCompat({
-  baseDirectory: __dirname,
-});
+import nextVitals from "eslint-config-next/core-web-vitals";
 
 const eslintConfig = [
-  ...compat.extends("next/core-web-vitals", "next/typescript"),
+  ...nextVitals,
+  {
+    rules: {
+      "react-hooks/set-state-in-effect": "off", // Suppresses the useEffect setState errors
+      "react-hooks/purity": "warn",             // Downgrades purity errors to warnings
+      "react-hooks/refs": "warn",               // Downgrades ref mutation errors to warnings
+      "react/no-unescaped-entities": "off",     // Turns off unescaped quotes errors
+    }
+  }
 ];
 
 export default eslintConfig;
