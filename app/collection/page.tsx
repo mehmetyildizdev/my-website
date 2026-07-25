@@ -255,7 +255,7 @@ export default function CollectionPage() {
               <p className="text-base text-metadata leading-relaxed max-w-lg">
                 A personal movie & TV show watch-history dashboard. Track every
                 title, see genre breakdowns, rating trends, director deep-dives,
-                and decade analytics — all synced via Trakt.
+                and decade analytics.
               </p>
 
               <Button variant="glass" asChild className="rounded-xl font-bold border-sapphire/33 text-sapphire hover:bg-sapphire/20 hover:shadow-lg hover:shadow-sapphire/10">
