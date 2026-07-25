@@ -33,6 +33,27 @@ export default function MovieLengthVsRating({ data }: { data: MoviePoint[] }) {
     };
   }, [data]);
 
+  // Group movies by identical (runtime, rating) coordinates and pre-slice top 3 movies for stable rendering
+  const pointGroups = useMemo(() => {
+    const map = new Map<
+      string,
+      { runtime: number; rating: number; visibleMovies: MoviePoint[]; extraCount: number }
+    >();
+    data.forEach((d) => {
+      const key = `${d.runtime}:${d.rating}`;
+      if (!map.has(key)) {
+        map.set(key, { runtime: d.runtime, rating: d.rating, visibleMovies: [], extraCount: 0 });
+      }
+      const entry = map.get(key)!;
+      if (entry.visibleMovies.length < 3) {
+        entry.visibleMovies.push(d);
+      } else {
+        entry.extraCount++;
+      }
+    });
+    return Array.from(map.values());
+  }, [data]);
+
   const chartWidth = 100; // SVG viewBox percentage
   const chartHeight = 500;
   const padding = { top: 20, bottom: 30, left: 5, right: 5 };
@@ -54,7 +75,7 @@ export default function MovieLengthVsRating({ data }: { data: MoviePoint[] }) {
           Runtime vs Rating
         </CardTitle>
         <p className="text-xs text-muted-foreground mt-1">
-          Does movie length correlate with how I rate it? Each dot is a rated movie.
+          Does movie length correlate with how I rate it? Each tick is a rated movie.
         </p>
       </CardHeader>
       <CardContent className="pt-4">
@@ -148,21 +169,40 @@ export default function MovieLengthVsRating({ data }: { data: MoviePoint[] }) {
             ))}
           </svg>
 
-          {/* Overlay tooltips via HTML positioned dots */}
-          {data.map((d) => {
-            const leftPct = (toX(d.runtime) / chartWidth) * 100;
-            const topPct = (toY(d.rating) / chartHeight) * 100;
+          {/* Grouped Tooltips for Overlapping Movies with fixed width container */}
+          {pointGroups.map((group) => {
+            const leftPct = (toX(group.runtime) / chartWidth) * 100;
+            const topPct = (toY(group.rating) / chartHeight) * 100;
+
             return (
               <Tooltip
-                key={`tt-${d.tmdb_id}`}
+                key={`tt-${group.runtime}-${group.rating}`}
                 placement="top"
+                className="w-56 whitespace-normal p-1.5"
                 content={
-                  <div className="flex flex-col gap-0.5">
-                    <span className="font-medium text-gold">{d.title}</span>
-                    <span className="text-muted-foreground">
-                      {d.runtime}m · ★ {d.rating}
-                      {d.release_year ? ` · ${d.release_year}` : ''}
-                    </span>
+                  <div className="flex flex-col gap-1.5 w-full">
+                    {group.visibleMovies.map((m, idx) => (
+                      <div
+                        key={m.tmdb_id}
+                        className={`flex flex-col gap-0.5 ${
+                          idx > 0 ? 'border-t border-border/10 pt-1.5' : ''
+                        }`}
+                      >
+                        <span className="font-medium text-gold leading-tight wrap-break-word">
+                          {m.title}
+                        </span>
+                        <span className="text-muted-foreground text-[10px]">
+                          {m.runtime}m · ★ {m.rating}
+                          {m.release_year ? ` · ${m.release_year}` : ''}
+                        </span>
+                      </div>
+                    ))}
+                    {group.extraCount > 0 && (
+                      <div className="border-t border-border/15 pt-1 text-[10px] italic text-quicksilver/80">
+                        + {group.extraCount} more movie{group.extraCount > 1 ? 's' : ''} at{' '}
+                        {group.runtime}m (★ {group.rating})
+                      </div>
+                    )}
                   </div>
                 }
               >

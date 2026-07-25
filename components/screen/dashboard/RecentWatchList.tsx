@@ -58,7 +58,7 @@ export default function RecentWatchList() {
         <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-6 lg:grid-cols-8 gap-4">
           {loading
             ? Array.from({ length: 16 }).map((_, i) => <SkeletonCard key={i} />)
-            : recentWatches.map((item) => {
+            : recentWatches.map((item, index) => {
                 const href =
                   item.media_type === "movie"
                     ? `/collection/screen/m/${item.tmdb_id ?? 0}`
@@ -78,6 +78,7 @@ export default function RecentWatchList() {
                     subtitle={subtitle ?? undefined}
                     poster_path={item.poster_path ?? null}
                     rating={item.my_rating ?? null}
+                    priority={index < 6}
                     meta={`Watched on ${new Date(item.watched_at.replace(/^"|"$/g, "")).toLocaleDateString("en-GB")}`}
                   />
                 );

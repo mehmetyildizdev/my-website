@@ -6,7 +6,7 @@ import {
 
 export interface EpisodeRowForScheduling {
   tmdb_id: number;
-  trakt_id?: number | null;
+  media_key?: string | null;
   season_number: number;
   episode_number: number;
   title: string | null;
@@ -19,7 +19,7 @@ export type EpisodeRow = EpisodeRowForScheduling;
 
 export interface ScheduledEpisode {
   tmdb_id: number;
-  trakt_id: number | null;
+  media_key: string;
   season: number;
   number: number;
   title: string;
@@ -292,7 +292,7 @@ export function generateSchedule(
 
       scheduled.push({
         tmdb_id: ep.tmdb_id,
-        trakt_id: ep.trakt_id || null,
+        media_key: ep.media_key || "",
         season: ep.season_number,
         number: ep.episode_number,
         title: ep.title || `Episode ${ep.episode_number}`,

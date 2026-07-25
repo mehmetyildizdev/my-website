@@ -1,22 +1,31 @@
 import { NextResponse } from "next/server";
-import fs from 'fs';
-import path from 'path';
-import { writeRecentWatchListCache } from './helper';
+import { query, loadQuery } from "@/lib/screen/db";
+import { revalidatePath } from "next/cache";
 
-export const dynamic = "force-dynamic"; // never cache this route
+// Daily automatic background revalidation (86400 seconds = 24 hours)
+export const revalidate = 86400;
 
-export async function GET() {
-  try {
-    const filePath = path.join(process.cwd(), 'lib/screen/data/recent.json');
-    let data;
-    if (fs.existsSync(filePath)) {
-      data = JSON.parse(fs.readFileSync(filePath, 'utf8'));
-    } else {
-      data = await writeRecentWatchListCache();
+export async function GET(request: Request) {
+  const { searchParams } = new URL(request.url);
+  const secret = searchParams.get("secret");
+  const forceRevalidate = searchParams.get("revalidate") === "true" || Boolean(secret);
+  const envSecret = process.env.MY_API_PHRASE || process.env.REVALIDATE_SECRET || "";
+
+  // On-Demand Revalidation Trigger
+  if (forceRevalidate) {
+    if (!envSecret || secret === envSecret) {
+      revalidatePath("/api/screen/recent");
+      revalidatePath("/collection/screen");
     }
-    return NextResponse.json(data, {
+  }
+
+  try {
+    const res = await query(loadQuery("dashboard/recent_history.sql"));
+    return NextResponse.json(res.rows, {
       headers: {
-        "Cache-Control": "no-store, no-cache, must-revalidate",
+        "Cache-Control": forceRevalidate
+          ? "no-store, no-cache, must-revalidate"
+          : "s-maxage=86400, stale-while-revalidate=604800",
       },
     });
   } catch (error: any) {

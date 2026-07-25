@@ -4,6 +4,7 @@ import { useState, useMemo } from 'react';
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/shadcn/ui/card';
 import { Tooltip } from '@/components/shadcn/ui/tooltip';
 import { Select } from '@/components/shadcn/ui/select';
+import { formatDate } from '@/lib/screen/utils/format';
 
 type ShowProgress = {
   show_tmdb_id: number;
@@ -15,6 +16,7 @@ type ShowProgress = {
   completion_pct: number;
   avg_rating: string | number | null;
   status: string;
+  last_watched_at?: string | null;
 };
 
 type FilterMode = 'all' | 'complete' | 'watching' | 'dropped';
@@ -32,11 +34,12 @@ function statusBadge(status: string) {
   }
 }
 
-function completionColor(pct: number): string {
-  if (pct === 100) return 'bg-emerald';
-  if (pct >= 75) return 'bg-sapphire';
-  if (pct >= 50) return 'bg-topaz';
-  if (pct >= 25) return 'bg-amethyst';
+function completionColor(pct: number | string, status?: string): string {
+  const val = Number(pct);
+  if (val >= 100 || status === 'complete') return 'bg-emerald';
+  if (val >= 75) return 'bg-sapphire';
+  if (val >= 50) return 'bg-topaz';
+  if (val >= 25) return 'bg-amethyst';
   return 'bg-ruby';
 }
 
@@ -90,14 +93,14 @@ export default function ShowSeasonProgress({ data }: { data: ShowProgress[] }) {
           {displayed.map((show) => {
             const rating = show.avg_rating != null ? Number(show.avg_rating) : null;
             const badge = statusBadge(show.status);
-            const barColor = completionColor(show.completion_pct);
+            const barColor = completionColor(show.completion_pct, show.status);
 
             return (
               <Tooltip
                 key={show.show_tmdb_id}
                 placement="mouse"
                 content={
-                  <div className="flex flex-col gap-0.5 min-w-[180px]">
+                  <div className="flex flex-col gap-0.5 min-w-45">
                     <span
                       className="font-semibold text-gold"
                       style={{ fontFamily: 'var(--font-poppins)' }}
@@ -120,6 +123,14 @@ export default function ShowSeasonProgress({ data }: { data: ShowProgress[] }) {
                       <div className="flex justify-between gap-4 text-[11px]">
                         <span className="text-quicksilver">Avg Rating</span>
                         <span className="text-emerald tabular-nums">{rating.toFixed(1)}</span>
+                      </div>
+                    )}
+                    {show.last_watched_at && (
+                      <div className="flex justify-between gap-4 text-[11px]">
+                        <span className="text-quicksilver">Last Watched</span>
+                        <span className="text-platinum tabular-nums">
+                          {formatDate(show.last_watched_at)}
+                        </span>
                       </div>
                     )}
                   </div>

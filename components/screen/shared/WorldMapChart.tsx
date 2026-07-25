@@ -98,7 +98,7 @@ function MapTooltip({ data, visible }: { data: CountryData | null; visible: bool
         className="fixed z-9999 pointer-events-none"
         style={{ left: -9999, top: -9999 }}
       >
-        <TooltipContent className="whitespace-nowrap min-w-[150px]">
+        <TooltipContent className="whitespace-nowrap min-w-37.5">
           <p
             className="font-semibold text-sm text-gold"
             style={{ fontFamily: 'var(--font-poppins)' }}

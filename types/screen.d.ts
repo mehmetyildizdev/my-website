@@ -4,50 +4,6 @@
 // ─── PART 1: Backend Sync, Database, & Fetching Types (lib/screen/ & app/api/)
 // ============================================================================
 
-// --- Trakt API payloads & schemas (lib/screen/trakt.ts & app/api/sync/)
-interface TraktIds {
-  trakt: number;
-  slug?: string;
-  imdb?: string;
-  tmdb: number;
-  tvdb?: number;
-}
-
-interface TraktMovie {
-  title: string;
-  year: number;
-  ids: TraktIds;
-}
-interface TraktShow {
-  title: string;
-  year: number;
-  ids: TraktIds;
-}
-interface TraktEpisode {
-  season: number;
-  number: number;
-  title: string;
-  ids: TraktIds;
-}
-
-interface TraktHistoryItem {
-  id: number;
-  watched_at: string;
-  action: string;
-  type: 'movie' | 'episode' | 'show';
-  movie?: TraktMovie;
-  show?: TraktShow;
-  episode?: TraktEpisode;
-}
-
-interface TraktRatingItem {
-  rated_at: string;
-  rating: number;
-  type: 'movie' | 'show' | 'episode';
-  movie?: TraktMovie;
-  show?: TraktShow;
-  episode?: TraktEpisode;
-}
 
 // --- TMDB API payloads & schemas (lib/screen/tmdb.ts & app/api/enrich/)
 interface TMDBGenre {
@@ -127,6 +83,7 @@ interface TMDBMovieDetail {
   production_countries: TMDBProductionCountry[];
   production_companies: TMDBProductionCompany[];
   belongs_to_collection: TMDBCollection | null;
+  external_ids?: { imdb_id: string | null };
   credits: { cast: (TMDBCastCredit & { order: number })[]; crew: TMDBCrewCredit[] };
 }
 

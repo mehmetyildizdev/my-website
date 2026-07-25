@@ -397,7 +397,12 @@ export default function WatchHeatmap({ data, stats, embedded = false }: Props) {
             </div>
 
             <div className="overflow-x-auto heatmap-grid-wrapper">
-              <div style={{ width: `calc(${grid.length} * var(--cell-step) + 40px)`, minWidth: '100%' }}>
+              <div
+                style={{
+                  width: `calc(${grid.length} * var(--cell-step) + 40px)`,
+                  minWidth: '100%',
+                }}
+              >
                 {/* Month labels */}
                 <div className="relative h-5" style={{ marginLeft: 'calc(28px + 0.375rem)' }}>
                   {monthPositions.map((m, i) => (
@@ -415,7 +420,11 @@ export default function WatchHeatmap({ data, stats, embedded = false }: Props) {
                   {/* Day labels */}
                   <div className="flex flex-col shrink-0 mr-1.5" style={{ gap: 'var(--cell-gap)' }}>
                     {['', 'Mon', '', 'Wed', '', 'Fri', ''].map((label, i) => (
-                      <div key={i} style={{ height: 'var(--cell-size)' }} className="flex items-center">
+                      <div
+                        key={i}
+                        style={{ height: 'var(--cell-size)' }}
+                        className="flex items-center"
+                      >
                         <span className="text-[10px] text-muted-foreground w-7 text-right">
                           {selectedYear === 'recent' ? label : ''}
                         </span>
@@ -426,7 +435,11 @@ export default function WatchHeatmap({ data, stats, embedded = false }: Props) {
                   {/* Heatmap grid */}
                   <div className="flex" style={{ gap: 'var(--cell-gap)' }}>
                     {grid.map((week, weekIdx) => (
-                      <div key={weekIdx} className="flex flex-col" style={{ gap: 'var(--cell-gap)' }}>
+                      <div
+                        key={weekIdx}
+                        className="flex flex-col"
+                        style={{ gap: 'var(--cell-gap)' }}
+                      >
                         {week.map((cell, dayIdx) => {
                           const intensity = getIntensity(cell.count, maxCount);
                           return (
@@ -455,7 +468,10 @@ export default function WatchHeatmap({ data, stats, embedded = false }: Props) {
                 </div>
 
                 {/* Legend */}
-                <div className="flex items-center gap-1.5 mt-4" style={{ marginLeft: 'calc(28px + 0.375rem)' }}>
+                <div
+                  className="flex items-center gap-1.5 mt-4"
+                  style={{ marginLeft: 'calc(28px + 0.375rem)' }}
+                >
                   <span className="text-[10px] text-muted-foreground mr-1">Less</span>
                   {INTENSITY_CLASSES.map((cls, i) => (
                     <div
@@ -533,7 +549,7 @@ function StatBox({
 }) {
   const box = (
     <div className="rounded-lg border border-border/15 bg-pearl/10 p-3 text-center shrink-0 min-w-0 transition-colors hover:bg-pearl/15 cursor-help h-full flex flex-col justify-between">
-      <p className="text-[10px] text-muted-foreground uppercase tracking-wider font-semibold leading-tight min-h-[24px] flex items-center justify-center">
+      <p className="text-[10px] text-muted-foreground uppercase tracking-wider font-semibold leading-tight min-h-6 flex items-center justify-center">
         {label}
       </p>
       <div className="mt-1">

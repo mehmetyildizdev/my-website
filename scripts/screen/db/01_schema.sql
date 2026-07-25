@@ -62,7 +62,7 @@ CREATE TABLE IF NOT EXISTS production_companies (
 CREATE TABLE IF NOT EXISTS movies (
     tmdb_id INTEGER PRIMARY KEY,
     imdb_id VARCHAR(50),
-    trakt_id BIGINT UNIQUE,
+    media_key VARCHAR(255) UNIQUE NOT NULL,
     title TEXT NOT NULL,
     original_title TEXT,
     original_language VARCHAR(20),
@@ -81,7 +81,7 @@ CREATE TABLE IF NOT EXISTS movies (
 CREATE TABLE IF NOT EXISTS shows (
     tmdb_id INTEGER PRIMARY KEY,
     imdb_id VARCHAR(50),
-    trakt_id BIGINT UNIQUE,
+    media_key VARCHAR(255) UNIQUE NOT NULL,
     name TEXT NOT NULL,
     original_name TEXT,
     original_language VARCHAR(20),
@@ -104,23 +104,26 @@ CREATE TABLE IF NOT EXISTS seasons (
     tmdb_id INTEGER PRIMARY KEY,
     show_tmdb_id INTEGER REFERENCES shows(tmdb_id) ON DELETE CASCADE,
     season_number INTEGER NOT NULL,
+    media_key VARCHAR(255) UNIQUE NOT NULL,
     name TEXT,
     overview TEXT,
     poster_path TEXT,
     air_date DATE,
     episode_count INTEGER,
+    my_rating DECIMAL(3,1),
     UNIQUE(show_tmdb_id, season_number)
 );
 
 CREATE TABLE IF NOT EXISTS episodes (
     tmdb_id INTEGER PRIMARY KEY,
-    trakt_id BIGINT UNIQUE,
+    media_key VARCHAR(255) UNIQUE NOT NULL,
     show_tmdb_id INTEGER REFERENCES shows(tmdb_id) ON DELETE CASCADE,
     season_number INTEGER NOT NULL,
     episode_number INTEGER NOT NULL,
     title TEXT,
     runtime INTEGER,
     air_date DATE,
+    my_rating DECIMAL(3,1),
     created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
     UNIQUE(show_tmdb_id, season_number, episode_number)
 );
@@ -133,7 +136,7 @@ CREATE TABLE IF NOT EXISTS watch_history (
     media_type VARCHAR(50) NOT NULL CHECK (media_type IN ('movie', 'episode')),
     watched_at TIMESTAMP WITH TIME ZONE NOT NULL,
     my_rating INTEGER CHECK (my_rating >= 1 AND my_rating <= 10),
-    trakt_id BIGINT UNIQUE, -- To prevent duplicate scrobbles from Trakt
+    media_key VARCHAR(255) UNIQUE NOT NULL,
     created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
     UNIQUE(tmdb_id, media_type) -- Ensures only one record per movie or episode as requested
 );
@@ -208,7 +211,6 @@ CREATE TABLE IF NOT EXISTS show_networks (
 CREATE TABLE IF NOT EXISTS people (
     tmdb_id INTEGER PRIMARY KEY,
     imdb_id VARCHAR(50),
-    trakt_id BIGINT UNIQUE,
     name TEXT NOT NULL,
     profile_path TEXT,
     known_for_department VARCHAR(100),

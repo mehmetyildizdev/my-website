@@ -1,10 +1,10 @@
-@import "tailwindcss";
+@import 'tailwindcss';
 @plugin 'tailwindcss-animate';
 
-@variant dark (&:is(.dark *));
-@variant light (&:is(.light *));
+@custom-variant dark (&:is(.dark *));
+@custom-variant light (&:is(.light *));
 @property --angle {
-  syntax: "<angle>";
+  syntax: '<angle>';
   initial-value: 0deg;
   inherits: false;
 }

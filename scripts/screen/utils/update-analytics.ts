@@ -4,7 +4,7 @@
  * Use this whenever you tweak stats, metrics, or ranking formulas.
  *
  * Usage:
- *   npx tsx scripts/update-views.ts
+ *   pnpm tsx scripts/screen/utils/update-analytics.ts
  */
 import { Pool } from 'pg';
 import fs from 'fs';
@@ -44,12 +44,16 @@ async function main() {
       } else if (fs.existsSync(encryptedPath)) {
         const key = process.env.VIEWS_CRYPT_KEY;
         if (!key) {
-          throw new Error(`VIEWS_CRYPT_KEY environment variable is missing (required to decrypt ${filename}.enc)`);
+          throw new Error(
+            `VIEWS_CRYPT_KEY environment variable is missing (required to decrypt ${filename}.enc)`
+          );
         }
         const ciphertext = fs.readFileSync(encryptedPath, 'utf8');
         sql = decrypt(ciphertext, key);
       } else {
-        throw new Error(`Neither plaintext "${filename}" nor encrypted "${filename}.enc" was found in scripts/screen/db`);
+        throw new Error(
+          `Neither plaintext "${filename}" nor encrypted "${filename}.enc" was found in scripts/screen/db`
+        );
       }
 
       const startTime = Date.now();

@@ -84,7 +84,7 @@ async function main() {
 
   // Search show by name or TMDB ID
   const showRes = await query(
-    `SELECT tmdb_id, name, trakt_id FROM shows WHERE name ILIKE $1 OR tmdb_id::text = $2 LIMIT 5`,
+    `SELECT tmdb_id, name, media_key FROM shows WHERE name ILIKE $1 OR tmdb_id::text = $2 LIMIT 5`,
     [showQuery.includes("%") ? showQuery : `%${showQuery}%`, showQuery]
   );
 
@@ -102,11 +102,11 @@ async function main() {
   }
 
   const show = showRes.rows[0];
-  console.log(`🎬 Found show: "${show.name}" (TMDB: ${show.tmdb_id}, Trakt: ${show.trakt_id})`);
+  console.log(`🎬 Found show: "${show.name}" (TMDB: ${show.tmdb_id}, Key: ${show.media_key})`);
 
   // Fetch watched episodes
   const episodesRes = await query(
-    `SELECT e.tmdb_id, e.trakt_id, e.season_number, e.episode_number, e.title, e.runtime, e.air_date, wh.watched_at as old_watched_at
+    `SELECT e.tmdb_id, e.media_key, e.season_number, e.episode_number, e.title, e.runtime, e.air_date, wh.watched_at as old_watched_at
      FROM episodes e
      JOIN watch_history wh ON e.tmdb_id = wh.tmdb_id AND wh.media_type = 'episode'
      WHERE e.show_tmdb_id = $1
@@ -183,7 +183,7 @@ async function main() {
     show: {
       tmdb_id: show.tmdb_id,
       name: show.name,
-      trakt_id: show.trakt_id,
+      media_key: show.media_key,
     },
     config: {
       start_date: startDateStr,

@@ -64,30 +64,6 @@ async function fetchTMDB(endpoint: string, params: Record<string, string> = {}) 
   return response.json();
 }
 
-async function resolveTraktShowId(tmdbId: number, token: string): Promise<number | null> {
-  const TRAKT_BASE_URL = "https://api.trakt.tv";
-  const url = `${TRAKT_BASE_URL}/search/tmdb/${tmdbId}?type=show`;
-  try {
-    const response = await fetch(url, {
-      headers: {
-        "Content-Type": "application/json",
-        "trakt-api-version": "2",
-        "trakt-api-key": process.env.NEXT_PUBLIC_TRAKT_CLIENT_ID!,
-        Authorization: `Bearer ${token}`,
-        "User-Agent":
-          "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36",
-      },
-    });
-    if (!response.ok) return null;
-    const data = await response.json();
-    if (Array.isArray(data) && data.length > 0 && data[0].show?.ids?.trakt) {
-      return Number(data[0].show.ids.trakt);
-    }
-  } catch (err) {
-    console.error("Error resolving Trakt ID:", err);
-  }
-  return null;
-}
 
 const sleep = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
 
@@ -288,7 +264,7 @@ async function main() {
     show: {
       tmdb_id: showData.id,
       name: showData.name,
-      trakt_id: null,
+      media_key: "show:" + showData.id,
     },
     config: {
       start_date: startDateStr,
@@ -392,196 +368,37 @@ async function main() {
   fs.writeFileSync(reportPath, md, "utf8");
   console.log(`📝 Generated statistics report: ${reportPath}`);
 
-  // 6. Push watch history to Trakt.tv
-  console.log("\n🔐 Authenticating with Trakt...");
-  const { getValidTraktToken } = await import("../../lib/screen/trakt");
-  let token: string | null = null;
-  try {
-    token = await getValidTraktToken();
-    console.log("🔑 Trakt authentication successful.");
-  } catch (err: any) {
-    console.warn(`⚠️ Warning: could not authenticate with Trakt: ${err.message}. Skipping Trakt push.`);
-  }
+  // 6. Write JSON schedule
+  const finalEpisodes = scheduled;
+  const updatedPayload = {
+    show: {
+      tmdb_id: showData.id,
+      name: showData.name,
+      media_key: "show:" + showData.id,
+    },
+    config: {
+      start_date: startDateStr,
+      end_date: endDateStr,
+      generated_at: new Date().toISOString(),
+    },
+    episodes: finalEpisodes,
+  };
+  fs.writeFileSync(outputPath, JSON.stringify(updatedPayload, null, 2), "utf8");
+  console.log(`✓ Wrote JSON schedule to ${outputPath}`);
 
-  let finalEpisodes = scheduled;
-
-  if (token) {
-    console.log("🚀 Pushing watch history to Trakt in chunks of 100...");
-    const chunkSize = 100;
-    const TRAKT_BASE_URL = "https://api.trakt.tv";
-    
-    try {
-      for (let i = 0; i < scheduled.length; i += chunkSize) {
-        if (i > 0) {
-          await sleep(1000); // Respect Trakt POST rate limit of 1 call per second
-        }
-        const chunk = scheduled.slice(i, i + chunkSize);
-        const traktEpisodesPayload = chunk.map((ep) => ({
-          watched_at: ep.new_watched_at,
-          ids: { tmdb: ep.tmdb_id },
-        }));
-
-        const response = await fetch(`${TRAKT_BASE_URL}/sync/history`, {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-            "trakt-api-version": "2",
-            "trakt-api-key": process.env.NEXT_PUBLIC_TRAKT_CLIENT_ID!,
-            Authorization: `Bearer ${token}`,
-            "User-Agent":
-              "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36",
-          },
-          body: JSON.stringify({ episodes: traktEpisodesPayload }),
-        });
-
-        if (!response.ok) {
-          const errorText = await response.text();
-          throw new Error(`Trakt API error: ${response.statusText} - ${errorText}`);
-        }
-
-        const resData = await response.json();
-        console.log(`   ✓ Chunk ${i / chunkSize + 1}: Added ${resData.added.episodes} episodes to Trakt.`);
-      }
-
-      // Fetch the updated Trakt history to resolve trakt scrobble IDs
-      console.log("📥 Fetching scrobble history from Trakt to obtain unique history IDs...");
-      let showTraktId = await resolveTraktShowId(tmdbShowId, token);
-      if (!showTraktId) {
-        console.warn("⚠️ Warning: could not resolve Trakt show ID. Falling back to TMDB ID for history fetch.");
-        showTraktId = tmdbShowId;
-      } else {
-        console.log(`   ✓ Resolved Trakt ID for history fetch: ${showTraktId}`);
-      }
-
-      let page = 1;
-      let hasMore = true;
-      const traktHistory: any[] = [];
-
-      while (hasMore) {
-        const url = `${TRAKT_BASE_URL}/sync/history/shows/${showTraktId}?limit=250&page=${page}`;
-        const response = await fetch(url, {
-          headers: {
-            "Content-Type": "application/json",
-            "trakt-api-version": "2",
-            "trakt-api-key": process.env.NEXT_PUBLIC_TRAKT_CLIENT_ID!,
-            Authorization: `Bearer ${token}`,
-            "User-Agent":
-              "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36",
-          },
-        });
-
-        if (!response.ok) {
-          throw new Error(`Failed to fetch show history from Trakt: ${response.statusText}`);
-        }
-
-        const data = await response.json();
-        if (data.length === 0) {
-          hasMore = false;
-        } else {
-          traktHistory.push(...data);
-          page++;
-        }
-      }
-      console.log(`   ✓ Retrieved ${traktHistory.length} history records from Trakt.`);
-
-      // Update show's trakt_id in database if we found it in the history response
-      if (traktHistory.length > 0) {
-        const sample = traktHistory[0];
-        const traktShowId = sample.show?.ids?.trakt;
-        if (traktShowId) {
-          await query(
-            `UPDATE shows SET trakt_id = $1 WHERE tmdb_id = $2 AND trakt_id IS NULL`,
-            [traktShowId, tmdbShowId]
-          );
-          console.log(`   ✓ Linked show Trakt ID: ${traktShowId}`);
-        }
-      }
-
-      // Map TMDB Episode ID -> Trakt History scrobble ID
-      const tmdbToTraktHistoryIdMap = new Map<number, number>();
-      for (const item of traktHistory) {
-        if (item.type !== "episode") continue;
-        const tmdbEpId = item.episode?.ids?.tmdb;
-        if (tmdbEpId) {
-          tmdbToTraktHistoryIdMap.set(Number(tmdbEpId), Number(item.id));
-        }
-      }
-
-      // Update scheduled episodes with their trakt_id
-      finalEpisodes = scheduled.map((ep) => {
-        const traktId = tmdbToTraktHistoryIdMap.get(ep.tmdb_id) || null;
-        return {
-          ...ep,
-          trakt_id: traktId,
-        };
-      });
-
-      // Rewrite JSON with Trakt IDs populated
-      const updatedPayload = {
-        show: {
-          tmdb_id: showData.id,
-          name: showData.name,
-          trakt_id: traktHistory[0]?.show?.ids?.trakt || null,
-        },
-        config: {
-          start_date: startDateStr,
-          end_date: endDateStr,
-          generated_at: new Date().toISOString(),
-        },
-        episodes: finalEpisodes,
-      };
-      fs.writeFileSync(outputPath, JSON.stringify(updatedPayload, null, 2), "utf8");
-      console.log(`✓ Re-wrote JSON schedule with Trakt scrobble IDs.`);
-
-      // Push rating to Trakt if provided
-      if (rating !== null) {
-        await sleep(1000); // Respect Trakt POST rate limit of 1 call per second
-        console.log(`⭐️ Pushing show rating of ${rating} to Trakt...`);
-        const ratingResponse = await fetch(`${TRAKT_BASE_URL}/sync/ratings`, {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-            "trakt-api-version": "2",
-            "trakt-api-key": process.env.NEXT_PUBLIC_TRAKT_CLIENT_ID!,
-            Authorization: `Bearer ${token}`,
-            "User-Agent":
-              "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36",
-          },
-          body: JSON.stringify({
-            shows: [
-              {
-                rating: rating,
-                ids: { tmdb: tmdbShowId },
-              },
-            ],
-          }),
-        });
-
-        if (!ratingResponse.ok) {
-          const errorText = await ratingResponse.text();
-          console.warn(`⚠️ Warning: failed to push rating to Trakt: ${ratingResponse.statusText} - ${errorText}`);
-        } else {
-          console.log(`   ✓ Rating of ${rating} successfully pushed to Trakt.`);
-        }
-      }
-
-    } catch (err: any) {
-      console.error(`❌ Error pushing to Trakt: ${err.message}. Watch history was scheduled locally and DB will be updated with trakt_id = NULL.`);
-    }
-  }
 
   // 7. Database update for watch history!
   console.log("\n💾 Updating local database watch_history table...");
   let upsertCount = 0;
   for (const item of finalEpisodes) {
     await query(
-      `INSERT INTO watch_history (tmdb_id, media_type, watched_at, trakt_id)
+      `INSERT INTO watch_history (tmdb_id, media_type, watched_at, media_key)
        VALUES ($1, 'episode', $2, $3)
        ON CONFLICT (tmdb_id, media_type)
        DO UPDATE SET
          watched_at = EXCLUDED.watched_at,
-         trakt_id = EXCLUDED.trakt_id`,
-      [item.tmdb_id, item.new_watched_at, item.trakt_id]
+         media_key = EXCLUDED.media_key`,
+      [item.tmdb_id, item.new_watched_at, item.media_key]
     );
     upsertCount++;
   }

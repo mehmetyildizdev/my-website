@@ -9,6 +9,7 @@ const SCREEN_PATHS = [
   "/collection/screen/m",
   "/collection/screen/s",
   "/collection/screen/p",
+  "/api/screen/recent",
 ];
 
 export async function POST(req: NextRequest) {

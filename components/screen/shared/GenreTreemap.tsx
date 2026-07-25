@@ -138,7 +138,7 @@ function TreemapCell(props: CustomContentProps & { payload?: any }) {
               transitionTimingFunction: 'linear',
             }}
           >
-            <TooltipContent className="whitespace-nowrap min-w-[140px]">
+            <TooltipContent className="whitespace-nowrap min-w-35">
               <p
                 className="font-semibold text-sm text-gold"
                 style={{ fontFamily: 'var(--font-poppins)' }}
