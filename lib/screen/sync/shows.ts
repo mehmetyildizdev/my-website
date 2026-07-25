@@ -13,25 +13,16 @@ import { processPeopleCredits } from "./people";
 
 export async function syncShow(
   client: import("pg").PoolClient,
-  traktShow: TraktShow,
+  traktShow: { title: string; ids: { tmdb: number; [key: string]: any } },
   stats: SyncStats,
   options: SyncOptions = {}
 ) {
   const tmdbId = traktShow.ids.tmdb;
   if (!tmdbId) return;
 
-  const insertRes = await client.query(
-    `INSERT INTO shows (tmdb_id, name, trakt_id)
-     VALUES ($1, $2, $3)
-     ON CONFLICT (tmdb_id) DO NOTHING
-     RETURNING tmdb_id`,
-    [tmdbId, traktShow.title, traktShow.ids.trakt]
-  );
-
-  if (!(insertRes.rowCount && insertRes.rowCount > 0)) return;
-
+  const mediaKey = `show:${tmdbId}`;
   stats.new_shows_added++;
-  process.stdout.write(`  ⟳  Fetching show: "${traktShow.title}"…\r`);
+  process.stdout.write(`  ⟳  Fetching show ID ${tmdbId}…\r`);
 
   // Parallel fetch of show detail and aggregate credits
   const [tmdbData, aggCredits] = await Promise.all([
@@ -39,34 +30,44 @@ export async function syncShow(
     fetchTMDB(`/tv/${tmdbId}/aggregate_credits`),
   ]);
 
-  // ── Core show row ────────────────────────────────────────────────────────
+  const showName = tmdbData.name || traktShow.title || `Show #${tmdbId}`;
+
+  // ── Core show row upsert ──────────────────────────────────────────────────
   await client.query(
-    `UPDATE shows SET
-       imdb_id            = $2,
-       original_name      = $3,
-       original_language  = $4,
-       first_air_date     = $5,
-       release_language   = $6,
-       poster_path        = $7,
-       backdrop_path      = $8,
-       overview           = $9,
-       number_of_episodes = $10,
-       number_of_seasons  = $11,
-       tmdb_rating        = $12
-     WHERE tmdb_id = $1`,
+    `INSERT INTO shows (
+       tmdb_id, imdb_id, media_key, name, original_name, original_language,
+       first_air_date, release_language, poster_path, backdrop_path,
+       overview, number_of_episodes, number_of_seasons, tmdb_rating
+     ) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14)
+     ON CONFLICT (tmdb_id) DO UPDATE SET
+       imdb_id            = EXCLUDED.imdb_id,
+       media_key          = EXCLUDED.media_key,
+       name               = EXCLUDED.name,
+       original_name      = EXCLUDED.original_name,
+       original_language  = EXCLUDED.original_language,
+       first_air_date     = EXCLUDED.first_air_date,
+       release_language   = EXCLUDED.release_language,
+       poster_path        = EXCLUDED.poster_path,
+       backdrop_path      = EXCLUDED.backdrop_path,
+       overview           = EXCLUDED.overview,
+       number_of_episodes = EXCLUDED.number_of_episodes,
+       number_of_seasons  = EXCLUDED.number_of_seasons,
+       tmdb_rating        = EXCLUDED.tmdb_rating`,
     [
       tmdbId,
       tmdbData.external_ids?.imdb_id ?? null,
-      tmdbData.original_name,
-      tmdbData.original_language,
+      mediaKey,
+      showName,
+      tmdbData.original_name ?? null,
+      tmdbData.original_language ?? null,
       tmdbData.first_air_date || null,
-      tmdbData.original_language,
-      tmdbData.poster_path,
-      tmdbData.backdrop_path,
-      tmdbData.overview,
-      tmdbData.number_of_episodes,
-      tmdbData.number_of_seasons,
-      tmdbData.vote_average,
+      tmdbData.original_language ?? null,
+      tmdbData.poster_path ?? null,
+      tmdbData.backdrop_path ?? null,
+      tmdbData.overview ?? null,
+      tmdbData.number_of_episodes ?? null,
+      tmdbData.number_of_seasons ?? null,
+      tmdbData.vote_average ?? null,
     ]
   );
 
@@ -146,15 +147,17 @@ export async function syncShow(
   // ── Seasons (skip season 0 = specials) ───────────────────────────────────
   for (const season of tmdbData.seasons ?? []) {
     if (season.season_number === 0) continue; // ignore specials
+    const seasonMediaKey = `season:${tmdbId}:${season.season_number}`;
     await client.query(
-      `INSERT INTO seasons (tmdb_id, show_tmdb_id, season_number, name, overview, poster_path, air_date, episode_count)
-       VALUES ($1, $2, $3, $4, $5, $6, $7, $8)
+      `INSERT INTO seasons (tmdb_id, show_tmdb_id, season_number, name, overview, poster_path, air_date, episode_count, media_key)
+       VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)
        ON CONFLICT (show_tmdb_id, season_number) DO UPDATE SET
          name          = EXCLUDED.name,
          episode_count = EXCLUDED.episode_count,
          air_date      = EXCLUDED.air_date,
-         poster_path   = EXCLUDED.poster_path`,
-      [season.id, tmdbId, season.season_number, season.name, season.overview, season.poster_path, season.air_date || null, season.episode_count]
+         poster_path   = EXCLUDED.poster_path,
+         media_key     = EXCLUDED.media_key`,
+      [season.id, tmdbId, season.season_number, season.name, season.overview, season.poster_path, season.air_date || null, season.episode_count, seasonMediaKey]
     );
   }
 

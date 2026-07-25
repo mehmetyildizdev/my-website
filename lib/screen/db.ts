@@ -2,20 +2,29 @@ import { Pool } from 'pg';
 import fs from 'fs';
 import path from 'path';
 
-// Singleton PG Pool
+// Lazy Singleton PG Pool
 const globalForPg = global as unknown as { pool: Pool };
-export const pool =
-  globalForPg.pool ||
-  new Pool({
-    connectionString: process.env.NEON_DATABASE_URL,
-    ssl: process.env.NEON_DATABASE_URL?.includes('localhost')
-      ? false
-      : { rejectUnauthorized: true },
-  });
 
-if (process.env.NODE_ENV !== 'production') {
-  globalForPg.pool = pool;
+export function getPool(): Pool {
+  if (globalForPg.pool) return globalForPg.pool;
+  const connStr = process.env.NEON_DATABASE_URL;
+  const poolInstance = new Pool({
+    connectionString: connStr,
+    ssl: connStr?.includes('localhost') ? false : { rejectUnauthorized: true },
+  });
+  if (process.env.NODE_ENV !== 'production') {
+    globalForPg.pool = poolInstance;
+  }
+  return poolInstance;
 }
+
+export const pool = new Proxy({} as Pool, {
+  get(_target, prop) {
+    const instance = getPool();
+    const val = (instance as any)[prop];
+    return typeof val === 'function' ? val.bind(instance) : val;
+  },
+});
 
 export const loadQuery = (filename: string) => {
   const filePath = path.join(process.cwd(), 'lib/screen/queries', filename);
@@ -54,9 +63,9 @@ const processRows = (rawRows: any[]) => {
   });
 };
 
-export const query = async (text: string, params: any[] = []): Promise<{ rows: any[] }> => {
+export const query = async (text: string, params: any[] = []): Promise<{ rows: any[]; rowCount: number }> => {
   const res = await pool.query(text, params);
-  return { rows: processRows(res.rows) };
+  return { rows: processRows(res.rows), rowCount: res.rowCount ?? 0 };
 };
 
 export const transaction = async <T>(callback: (client: any) => Promise<T>): Promise<T> => {

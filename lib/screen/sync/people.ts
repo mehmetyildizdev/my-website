@@ -30,15 +30,29 @@ export async function processPeopleCredits(
   const pNames = uniquePeople.map(p => p.name ?? null);
   const pProfiles = uniquePeople.map(p => p.profile_path ?? null);
   const pDepts = uniquePeople.map(p => p.known_for_department ?? null);
+  const pPops = uniquePeople.map(p => p.popularity ?? 0);
 
   const pResult = await client.query(
-    `INSERT INTO people (tmdb_id, name, profile_path, known_for_department)
-     SELECT * FROM UNNEST($1::int[], $2::text[], $3::text[], $4::text[])
-     ON CONFLICT (tmdb_id) DO NOTHING
-     RETURNING tmdb_id`,
-    [pIds, pNames, pProfiles, pDepts]
+    `INSERT INTO people (tmdb_id, name, profile_path, known_for_department, popularity)
+     SELECT * FROM UNNEST($1::int[], $2::text[], $3::text[], $4::text[], $5::decimal[])
+     ON CONFLICT (tmdb_id) DO UPDATE SET
+       name                 = EXCLUDED.name,
+       profile_path         = COALESCE(EXCLUDED.profile_path, people.profile_path),
+       known_for_department = COALESCE(EXCLUDED.known_for_department, people.known_for_department),
+       popularity           = CASE WHEN EXCLUDED.popularity > 0 THEN EXCLUDED.popularity ELSE people.popularity END
+     WHERE (EXCLUDED.popularity > 0 AND people.popularity IS DISTINCT FROM EXCLUDED.popularity)
+        OR (people.profile_path IS NULL AND EXCLUDED.profile_path IS NOT NULL)
+     RETURNING (xmax = 0) AS is_inserted`,
+    [pIds, pNames, pProfiles, pDepts, pPops]
   );
-  stats.new_people_added += pResult.rowCount ?? 0;
+
+  for (const row of pResult.rows) {
+    if (row.is_inserted) {
+      stats.new_people_added++;
+    } else {
+      stats.people_updated++;
+    }
+  }
 
   // ── Bulk upsert CREW credits (one UNNEST query) ───────────────────────────
   if (crew.length > 0) {

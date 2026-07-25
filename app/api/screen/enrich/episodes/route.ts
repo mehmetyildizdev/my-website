@@ -24,7 +24,7 @@ export async function GET(request: Request) {
 
 async function enrichEpisodes(limit: number) {
   const res = await query(
-    `SELECT e.tmdb_id, e.show_tmdb_id, e.season_number, e.episode_number, s.name as show_name
+    `SELECT e.tmdb_id, e.show_tmdb_id, e.season_number, e.episode_number, s.name as show_name, s.original_language
      FROM episodes e
      JOIN shows s ON e.show_tmdb_id = s.tmdb_id
      WHERE e.runtime IS NULL OR e.air_date IS NULL
@@ -46,19 +46,26 @@ async function enrichEpisodes(limit: number) {
 
     await Promise.all(
       batch.map(async (ep) => {
+        const isTurkish = ep.original_language?.toLowerCase() === 'tr';
+        const defaultRuntime = isTurkish ? 100 : 40;
+
         try {
           const d = await fetchTMDB(
             `/tv/${ep.show_tmdb_id}/season/${ep.season_number}/episode/${ep.episode_number}`
           );
 
-          await query(`UPDATE episodes SET runtime = $1, air_date = $2 WHERE tmdb_id = $3`, [
-            d.runtime ?? null,
-            d.air_date ?? null,
-            ep.tmdb_id,
-          ]);
+          const runtime = d.runtime && d.runtime > 0 ? d.runtime : defaultRuntime;
+
+          await query(
+            `UPDATE episodes SET runtime = $1, air_date = $2, title = COALESCE($4, title) WHERE tmdb_id = $3`,
+            [runtime, d.air_date ?? null, ep.tmdb_id, d.name ?? null]
+          );
           count++;
         } catch (err) {
-          // skip
+          await query(`UPDATE episodes SET runtime = COALESCE(runtime, $1) WHERE tmdb_id = $2`, [
+            defaultRuntime,
+            ep.tmdb_id,
+          ]);
         }
       })
     );

@@ -43,6 +43,7 @@ export interface SyncStats {
   new_shows_added: number;
   new_episodes_added: number;
   new_people_added: number;
+  people_updated: number;
   new_cast_added: number;
   new_crew_added: number;
   new_history_added: number;
@@ -68,6 +69,7 @@ export function makeSyncStats(): SyncStats {
     new_shows_added: 0,
     new_episodes_added: 0,
     new_people_added: 0,
+    people_updated: 0,
     new_cast_added: 0,
     new_crew_added: 0,
     new_history_added: 0,
