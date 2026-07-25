@@ -2,6 +2,7 @@ import { Film, Tv, Sparkles, Clapperboard, TrendingUp, Clock } from 'lucide-reac
 import WatchHeatmap from '@/components/screen/shared/WatchHeatmap';
 import { query, loadQuery } from '@/lib/screen/db';
 import GenreBackground from '@/components/screen/slugs/genre/GenreBackground';
+import NowPlayingCard from '@/components/screen/now-playing/NowPlayingCard';
 
 export default async function ScreenHero() {
   // Queries for the hero — heatmap + stats + top genres for background motifs
@@ -62,7 +63,7 @@ export default async function ScreenHero() {
           </div>
 
           {/* Right: Quick stat cards */}
-          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-2 gap-3 lg:min-w-[240px]">
+          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-2 gap-3 lg:min-w-60">
             <QuickStat icon={Film} label="Movies" value="Tracked" />
             <QuickStat icon={Tv} label="TV Shows" value="Episodes" />
             <QuickStat icon={Sparkles} label="Ratings" value="10-GenreScatterPoint" />
@@ -74,8 +75,13 @@ export default async function ScreenHero() {
       </div>
 
       {/* Heatmap section — embedded in hero */}
-      <div className="relative z-10 px-4 md:px-12 py-4 md:py-8">
+      <div className="relative z-10 px-4 md:px-12 py-4 md:py-6">
         <WatchHeatmap data={heatmapRes.rows} stats={statsRes.rows} embedded={false} />
+      </div>
+
+      {/* Now Playing Section — inside overview box below watch history chart */}
+      <div className="relative z-10 px-4 md:px-12 pb-8 md:pb-12">
+        <NowPlayingCard />
       </div>
     </header>
   );

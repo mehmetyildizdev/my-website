@@ -14,6 +14,7 @@ import {
   X,
   Search,
 } from 'lucide-react';
+import NowPlayingSidebar from '@/components/screen/now-playing/NowPlayingSidebar';
 
 const NAV_ITEMS = [
   {
@@ -149,6 +150,9 @@ export default function ScreenSidebar() {
           />
         </div>
       </div>
+
+      {/* Mini Now Playing Section for Desktop Sidebar */}
+      <NowPlayingSidebar />
     </div>
   );
 
