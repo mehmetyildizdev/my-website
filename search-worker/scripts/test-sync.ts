@@ -1,7 +1,7 @@
 import { Pool } from 'pg';
 import dotenv from 'dotenv';
 import path from 'path';
-import { syncSearchIndex } from './sync-search';
+import { syncSearchIndex } from './search-db';
 
 dotenv.config({ path: path.resolve(process.cwd(), '.env.local') });
 

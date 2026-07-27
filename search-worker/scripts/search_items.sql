@@ -30,4 +30,5 @@ SELECT
   profile_path AS image_path,
   popularity::float AS rating,
   known_for_department AS release_date
-FROM public.people;
+FROM public.people
+WHERE profile_path IS NOT NULL AND profile_path != '';

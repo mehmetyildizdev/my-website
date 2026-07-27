@@ -2,6 +2,9 @@ import { Pool } from 'pg';
 import fs from 'fs';
 import path from 'path';
 import { execSync } from 'child_process';
+import dotenv from 'dotenv';
+
+dotenv.config({ path: path.resolve(process.cwd(), '.env.local') });
 
 interface SearchRow {
   type: 'movie' | 'show' | 'person';
@@ -16,7 +19,7 @@ interface SearchRow {
 export async function syncSearchIndex(pool: Pool) {
   console.log('🔄 Querying Neon database for search index metadata...');
 
-  const sqlPath = path.join(__dirname, 'sync-search.sql');
+  const sqlPath = path.join(__dirname, 'search_items.sql');
   const sql = fs.readFileSync(sqlPath, 'utf8');
 
   const result = await pool.query(sql);
@@ -54,7 +57,9 @@ export async function syncSearchIndex(pool: Pool) {
   sqlStatements.push('PRAGMA foreign_keys=OFF;');
   sqlStatements.push('BEGIN TRANSACTION;');
   sqlStatements.push('DROP TABLE IF EXISTS search_items;');
-  sqlStatements.push('CREATE TABLE search_items (type TEXT NOT NULL, tmdb_id INTEGER NOT NULL, name TEXT NOT NULL, extra_name TEXT, image_path TEXT, rating REAL, release_date TEXT, PRIMARY KEY (type, tmdb_id));');
+  sqlStatements.push(
+    'CREATE TABLE search_items (type TEXT NOT NULL, tmdb_id INTEGER NOT NULL, name TEXT NOT NULL, extra_name TEXT, image_path TEXT, rating REAL, release_date TEXT, PRIMARY KEY (type, tmdb_id));'
+  );
   sqlStatements.push('CREATE INDEX idx_search_items_name ON search_items(name);');
   sqlStatements.push('CREATE INDEX idx_search_items_extra_name ON search_items(extra_name);');
 
@@ -92,4 +97,32 @@ export async function syncSearchIndex(pool: Pool) {
       fs.unlinkSync(sqlDumpPath); // Clean up the temp SQL dump
     }
   }
+}
+
+async function main() {
+  const dbUrl = process.env.NEON_DATABASE_URL;
+  if (!dbUrl) {
+    console.error('❌ Error: NEON_DATABASE_URL environment variable is missing.');
+    process.exit(1);
+  }
+
+  const isLocal = dbUrl.includes('localhost') || dbUrl.includes('127.0.0.1');
+
+  const pool = new Pool({
+    connectionString: dbUrl,
+    ssl: isLocal ? false : { rejectUnauthorized: true },
+  });
+
+  try {
+    await syncSearchIndex(pool);
+  } catch (error) {
+    console.error('❌ Sync failed:', error);
+    process.exit(1);
+  } finally {
+    await pool.end();
+  }
+}
+
+if (require.main === module || process.argv[1]?.includes('sync-search')) {
+  main();
 }
