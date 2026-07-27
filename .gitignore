@@ -2,10 +2,17 @@
 .amazonq
 .gemini
 .kiro
-AGENTS.md
-SECURITY-REVIEW-REPORT.md
+.agents
 /app/backup.css
 /app/test/
+/components/shadcn/unused/
+/search-worker/.dev.vars
+/search-worker/node_modules/
+/search-worker/.wrangler/
+/search-worker/src/.wrangler/
+/search-worker/.env
+/search-worker/docs.md
+/search-worker/d1/
 
 # dependencies
 /node_modules
@@ -46,3 +53,33 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+#db_test
+/scripts/screen/test/
+
+# Database view files (encrypted versions committed as .sql.enc)
+/scripts/screen/db/04_*.sql
+/scripts/screen/db/05_*.sql
+/scripts/screen/db/06_*.sql
+/scripts/screen/db/07_*.sql
+/scripts/screen/db/08_*.sql
+/scripts/screen/db/analytics.sqlite
+/scripts/screen/db/*.txt
+
+# database backups
+/backups/
+/scripts/bin/
+/scripts/screen/utils/sync-local-to-neon.ts
+/scripts/screen/utils/sync-neon-to-local.ts
+/scripts/screen/utils/export-to-sqlite.ts
+/scripts/screen/utils/encrypt-views.ts
+
+# history fixer outputs
+/scripts/history_fixer/output/
+/scripts/history_fixer/completed/
+
+#scratch
+/scratch/
+
+#docs
+/zone/
