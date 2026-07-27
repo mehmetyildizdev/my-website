@@ -7,6 +7,12 @@ SELECT
       'name', p.name,
       'profile_path', p.profile_path,
       'known_for_department', p.known_for_department,
+      'birth_date', p.birth_date,
+      'deathday', p.deathday,
+      'place_of_birth', p.place_of_birth,
+      'gender', p.gender,
+      'imdb_id', p.imdb_id,
+      'popularity', p.popularity,
       'biography', 'Biography not yet ingested. Check back after the next database sync.',
       'movies', COALESCE(
          (SELECT jsonb_agg(jsonb_build_object(

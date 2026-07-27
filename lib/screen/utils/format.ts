@@ -3,10 +3,10 @@
  */
 export function formatDate(d: string | null): string | null {
   if (!d) return null;
-  return new Date(d).toLocaleDateString("en-GB", {
-    day: "numeric",
-    month: "long",
-    year: "numeric",
+  return new Date(d).toLocaleDateString('en-GB', {
+    day: 'numeric',
+    month: 'long',
+    year: 'numeric',
   });
 }
 
@@ -14,46 +14,46 @@ export function formatDate(d: string | null): string | null {
  * Converts a raw TMDB gender code into a readable string.
  */
 export function genderLabel(g: number | null): string {
-  if (g === 1) return "Female";
-  if (g === 2) return "Male";
-  return "unspecified";
+  if (g === 1) return 'Female';
+  if (g === 2) return 'Male';
+  return 'unspecified';
 }
 
 /**
  * Returns the tailwind class for the performer's popularity score.
  */
 export function getPopularityColor(pop: number): string {
-  if (pop < 5) return "text-ruby";
-  if (pop < 10) return "text-topaz";
-  if (pop < 25) return "text-emerald";
-  if (pop < 50) return "text-sapphire";
-  return "text-amethyst animate-pulse font-black";
+  if (pop < 5) return 'text-ruby';
+  if (pop < 10) return 'text-topaz';
+  if (pop < 25) return 'text-emerald';
+  if (pop < 50) return 'text-sapphire';
+  return 'text-amethyst animate-pulse font-black';
 }
 
 /**
  * Returns the theme color name (token) for a given 1-10 rating.
  */
 export function getRatingToken(
-  rating: number,
-): "amethyst" | "sapphire" | "emerald" | "topaz" | "ruby" {
-  if (rating > 9) return "amethyst";
-  if (rating > 8) return "sapphire";
-  if (rating >= 7) return "emerald";
-  if (rating >= 5) return "topaz";
-  return "ruby";
+  rating: number
+): 'amethyst' | 'sapphire' | 'emerald' | 'topaz' | 'ruby' {
+  if (rating > 9) return 'amethyst';
+  if (rating > 8) return 'sapphire';
+  if (rating >= 7) return 'emerald';
+  if (rating >= 5) return 'topaz';
+  return 'ruby';
 }
 
 /**
  * Returns the theme color name (token) for a clustered average rating (5.5 - 7.5 scale).
  */
 export function getAvgRatingToken(
-  rating: number,
-): "amethyst" | "sapphire" | "emerald" | "topaz" | "ruby" {
-  if (rating >= 7.0) return "amethyst";
-  if (rating >= 6.5) return "sapphire";
-  if (rating >= 6.0) return "emerald";
-  if (rating >= 5.5) return "topaz";
-  return "ruby";
+  rating: number
+): 'amethyst' | 'sapphire' | 'emerald' | 'topaz' | 'ruby' {
+  if (rating >= 7.0) return 'amethyst';
+  if (rating >= 6.5) return 'sapphire';
+  if (rating >= 6.0) return 'emerald';
+  if (rating >= 5.5) return 'topaz';
+  return 'ruby';
 }
 
 /**
@@ -92,16 +92,16 @@ export function getAvgRatingBgColorClass(rating: number): string {
 }
 
 /**
- * Returns the theme color name (token) for a clustered TV show average rating (7.25 - 8.2 scale).
+ * Returns the theme color name (token) for a clustered TV show average rating (7.0 - 8.0 scale).
  */
 export function getShowAvgRatingToken(
-  rating: number,
-): "amethyst" | "sapphire" | "emerald" | "topaz" | "ruby" {
-  if (rating >= 8.0) return "amethyst";
-  if (rating >= 7.8) return "sapphire";
-  if (rating >= 7.6) return "emerald";
-  if (rating >= 7.4) return "topaz";
-  return "ruby";
+  rating: number
+): 'amethyst' | 'sapphire' | 'emerald' | 'topaz' | 'ruby' {
+  if (rating >= 8.0) return 'amethyst';
+  if (rating >= 7.75) return 'sapphire';
+  if (rating >= 7.5) return 'emerald';
+  if (rating >= 7.25) return 'topaz';
+  return 'ruby';
 }
 
 /**
