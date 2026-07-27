@@ -23,11 +23,14 @@ export async function GET(request: Request) {
 }
 
 async function enrichSeasons(limit: number) {
+  const startTime = Date.now();
+
+  // Find skeleton season rows missing episode_count (un-enriched season stubs)
   const res = await query(
-    `SELECT s.tmdb_id, s.show_tmdb_id, s.season_number, sh.original_language, s.name as season_name
+    `SELECT s.tmdb_id, s.show_tmdb_id, s.season_number, sh.original_language, s.name as season_name, sh.name as show_name
      FROM seasons s
      JOIN shows sh ON s.show_tmdb_id = sh.tmdb_id
-     WHERE s.overview IS NULL OR s.air_date IS NULL OR s.episode_count IS NULL OR s.poster_path IS NULL
+     WHERE s.episode_count IS NULL
      ORDER BY s.show_tmdb_id, s.season_number
      LIMIT $1`,
     [limit]
@@ -35,13 +38,20 @@ async function enrichSeasons(limit: number) {
   const seasons = res.rows;
 
   if (seasons.length === 0) {
-    console.log('[Enrich Seasons] No seasons need enrichment.');
+    process.stdout.write(`\n============================================================\n`);
+    process.stdout.write(`[Enrich Seasons] All seasons currently in database are enriched.\n`);
+    process.stdout.write(`============================================================\n\n`);
     return;
   }
 
-  process.stdout.write(`\n[Enrich Seasons] Starting enrichment for ${seasons.length} seasons...\n`);
+  process.stdout.write(`\n============================================================\n`);
+  process.stdout.write(`[Enrich Seasons] Starting enrichment for ${seasons.length} seasons...\n`);
+  process.stdout.write(`============================================================\n`);
 
-  let count = 0;
+  let seasonsUpdatedCount = 0;
+  let episodesAddedCount = 0;
+  let episodesUpdatedCount = 0;
+  const errorLogs: string[] = [];
   const BATCH_SIZE = 15;
 
   for (let i = 0; i < seasons.length; i += BATCH_SIZE) {
@@ -55,16 +65,16 @@ async function enrichSeasons(limit: number) {
         try {
           const d = await fetchTMDB(`/tv/${s.show_tmdb_id}/season/${s.season_number}`);
 
-          const episodeCount = Array.isArray(d.episodes) ? d.episodes.length : (d.episode_count ?? null);
+          const episodeCount = Array.isArray(d.episodes) ? d.episodes.length : (d.episode_count ?? 0);
 
-          // Update season details
-          await query(
+          // Update season details keeping natural NULL values
+          const upRes = await query(
             `UPDATE seasons SET
                name          = COALESCE($1, name),
                overview      = COALESCE($2, overview),
                poster_path   = COALESCE($3, poster_path),
                air_date      = COALESCE($4, air_date),
-               episode_count = COALESCE($5, episode_count)
+               episode_count = $5
              WHERE show_tmdb_id = $6 AND season_number = $7`,
             [
               d.name ?? null,
@@ -76,8 +86,11 @@ async function enrichSeasons(limit: number) {
               s.season_number,
             ]
           );
+          if ((upRes.rowCount ?? 0) > 0) {
+            seasonsUpdatedCount++;
+          }
 
-          // Upsert episodes included in the season response
+          // Insert / Update episodes included in the season response
           if (Array.isArray(d.episodes)) {
             for (const ep of d.episodes) {
               if (!ep.id) continue;
@@ -86,8 +99,7 @@ async function enrichSeasons(limit: number) {
               const runtime = ep.runtime && ep.runtime > 0 ? ep.runtime : defaultRuntime;
 
               try {
-                // First try: conflict on show_tmdb_id + season_number + episode_number
-                await query(
+                const epRes = await query(
                   `INSERT INTO episodes (
                      tmdb_id, media_key, show_tmdb_id, season_number, episode_number, title, runtime, air_date
                    ) VALUES ($1, $2, $3, $4, $5, $6, $7, $8)
@@ -96,60 +108,93 @@ async function enrichSeasons(limit: number) {
                      media_key      = EXCLUDED.media_key,
                      title          = EXCLUDED.title,
                      runtime        = EXCLUDED.runtime,
-                     air_date       = EXCLUDED.air_date`,
+                     air_date       = EXCLUDED.air_date
+                   RETURNING (xmax = 0) AS is_inserted`,
                   [
                     ep.id,
                     epMediaKey,
                     s.show_tmdb_id,
-                    ep.season_number ?? s.season_number,
+                    epSeason,
                     ep.episode_number,
                     ep.name ?? null,
                     runtime,
                     ep.air_date || null,
                   ]
                 );
-              } catch {
-                // Fallback try: conflict on tmdb_id
-                await query(
+                const isInserted = epRes.rows[0]?.is_inserted;
+                if (isInserted) {
+                  episodesAddedCount++;
+                } else if ((epRes.rowCount ?? 0) > 0) {
+                  episodesUpdatedCount++;
+                }
+              } catch (epConflictErr: any) {
+                // Secondary conflict handling on tmdb_id if unique constraint exists
+                const epRes = await query(
                   `INSERT INTO episodes (
                      tmdb_id, media_key, show_tmdb_id, season_number, episode_number, title, runtime, air_date
                    ) VALUES ($1, $2, $3, $4, $5, $6, $7, $8)
                    ON CONFLICT (tmdb_id) DO UPDATE SET
                      media_key      = EXCLUDED.media_key,
+                     show_tmdb_id   = EXCLUDED.show_tmdb_id,
                      season_number  = EXCLUDED.season_number,
                      episode_number = EXCLUDED.episode_number,
                      title          = EXCLUDED.title,
                      runtime        = EXCLUDED.runtime,
-                     air_date       = EXCLUDED.air_date`,
+                     air_date       = EXCLUDED.air_date
+                   RETURNING (xmax = 0) AS is_inserted`,
                   [
                     ep.id,
                     epMediaKey,
                     s.show_tmdb_id,
-                    ep.season_number ?? s.season_number,
+                    epSeason,
                     ep.episode_number,
                     ep.name ?? null,
                     runtime,
                     ep.air_date || null,
                   ]
                 );
+                const isInserted = epRes.rows[0]?.is_inserted;
+                if (isInserted) {
+                  episodesAddedCount++;
+                } else if ((epRes.rowCount ?? 0) > 0) {
+                  episodesUpdatedCount++;
+                }
               }
             }
           }
-
-          count++;
         } catch (err: any) {
-          console.error(`\n[Enrich Seasons] Failed season ${s.season_number} for show ${s.show_tmdb_id}:`, err?.message);
+          errorLogs.push(`[Show TMDB ID: ${s.show_tmdb_id}] Season ${s.season_number} of "${s.show_name}": ${err.message}`);
         }
       })
     );
 
     const progress = Math.min(i + BATCH_SIZE, seasons.length);
     const percent = ((progress / seasons.length) * 100).toFixed(1);
-    process.stdout.write(`  ⟳  Seasons: ${progress}/${seasons.length} (${percent}%)\r`);
+    process.stdout.write(`  ⟳  Seasons: ${progress}/${seasons.length} (${percent}%) | Updated: ${seasonsUpdatedCount}\n`);
 
-    // Rate limit delay between batches
-    await new Promise((r) => setTimeout(r, 400));
+    await new Promise((r) => setTimeout(r, 250));
   }
 
-  process.stdout.write(`\n  ✓  Season enrichment complete. Updated: ${count}/${seasons.length}\n`);
+  const durationSec = ((Date.now() - startTime) / 1000).toFixed(2);
+
+  process.stdout.write(`\n============================================================\n`);
+  process.stdout.write(`[Enrich Seasons] Complete Summary:\n`);
+  process.stdout.write(`  • Total Execution Time: ${durationSec}s\n`);
+  process.stdout.write(`  • Seasons Processed:    ${seasons.length}\n`);
+  process.stdout.write(`  • Seasons Updated:      ${seasonsUpdatedCount}\n`);
+  process.stdout.write(`  • Episodes Added:       ${episodesAddedCount} new inserted\n`);
+  process.stdout.write(`  • Episodes Updated:     ${episodesUpdatedCount} modified\n`);
+  process.stdout.write(`  • Errors Encountered:   ${errorLogs.length}\n`);
+
+  if (errorLogs.length > 0) {
+    process.stdout.write(`\n[Errors & Warnings Encountered]:\n`);
+    errorLogs.slice(0, 10).forEach((err, idx) => {
+      process.stdout.write(`  ${idx + 1}. ${err}\n`);
+    });
+    if (errorLogs.length > 10) {
+      process.stdout.write(`  ... and ${errorLogs.length - 10} more\n`);
+    }
+  }
+
+  process.stdout.write(`============================================================\n\n`);
 }

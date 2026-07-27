@@ -263,7 +263,7 @@ async function updateMovies(limit: number, singleTmdbId: number | null = null) {
       const progress = Math.min(i + BATCH_SIZE, movies.length);
       const percent = ((progress / movies.length) * 100).toFixed(1);
       process.stdout.write(
-        `  ⟳  Movies: ${progress}/${movies.length} (${percent}%) | Updated: ${totalMoviesChanged} | Added People: ${totalPeopleSynced}\r`
+        `  ⟳  Movies: ${progress}/${movies.length} (${percent}%) | Updated: ${totalMoviesChanged} | Added People: ${totalPeopleSynced}\n`
       );
     }
 

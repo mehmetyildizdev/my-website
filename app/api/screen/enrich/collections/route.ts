@@ -34,23 +34,31 @@ export async function GET(request: Request) {
 }
 
 async function enrichCollections() {
+  const startTime = Date.now();
+
   const res = await query(
     `SELECT tmdb_id, name FROM collections WHERE overview IS NULL OR total_movies IS NULL`
   );
   const collections = res.rows;
 
   if (collections.length === 0) {
-    console.log('[Enrich Collections] All collections enriched.');
+    process.stdout.write(`\n============================================================\n`);
+    process.stdout.write(`[Enrich Collections] All collections currently in database are enriched.\n`);
+    process.stdout.write(`============================================================\n\n`);
     return;
   }
 
-  process.stdout.write(`\n[Enrich Collections] Updating ${collections.length} collections...\n`);
+  process.stdout.write(`\n============================================================\n`);
+  process.stdout.write(`[Enrich Collections] Starting enrichment for ${collections.length} collections...\n`);
+  process.stdout.write(`============================================================\n`);
 
-  let updated = 0;
-  let deleted = 0;
-  let failed = 0;
+  let updatedCount = 0;
+  let bridgeMoviesLinked = 0;
+  let deletedCount = 0;
+  const errorLogs: string[] = [];
 
-  for (const col of collections) {
+  for (let idx = 0; idx < collections.length; idx++) {
+    const col = collections[idx];
     try {
       const d = await fetchTMDB(`/collection/${col.tmdb_id}`);
       const parts = Array.isArray(d.parts) ? d.parts : [];
@@ -94,27 +102,54 @@ async function enrichCollections() {
                release_date = EXCLUDED.release_date`,
             [col.tmdb_id, p.id, i, p.title ?? null, p.poster_path ?? null, p.release_date || null]
           );
+          bridgeMoviesLinked++;
         }
       });
 
-      updated++;
-      process.stdout.write(`  ✓  Updated: ${col.name} (${sorted.length} movies)\n`);
+      updatedCount++;
+      process.stdout.write(
+        `✓ [${idx + 1}/${collections.length}] Collection TMDB ID: ${col.tmdb_id} ("${col.name}") — ${sorted.length} parts linked\n`
+      );
+
+      await new Promise((r) => setTimeout(r, 150));
     } catch (err: any) {
-      const msg = err?.message ?? String(err);
-      // TMDB returned 404 — id is no longer a valid collection. Drop it.
-      // Cascades: movies.collection_id → NULL, collection_movies → deleted.
-      if (msg.includes('Not Found')) {
-        await query(`DELETE FROM collections WHERE tmdb_id = $1`, [col.tmdb_id]);
-        deleted++;
-        process.stdout.write(`  ⌫  Removed: ${col.name} (TMDB 404, id=${col.tmdb_id})\n`);
+      if (err.status === 404 || err.message?.includes('404')) {
+        // TMDB 404: collection page deleted on TMDB
+        try {
+          await query(`DELETE FROM collections WHERE tmdb_id = $1`, [col.tmdb_id]);
+          deletedCount++;
+          process.stdout.write(
+            `🗑 [${idx + 1}/${collections.length}] Deleted orphaned Collection TMDB ID: ${col.tmdb_id} ("${col.name}")\n`
+          );
+        } catch (delErr: any) {
+          errorLogs.push(`[Collection TMDB ID: ${col.tmdb_id}] Failed to delete orphaned collection: ${delErr.message}`);
+        }
       } else {
-        failed++;
-        process.stdout.write(`  ✗  Failed:  ${col.name} — ${msg}\n`);
+        errorLogs.push(`[Collection TMDB ID: ${col.tmdb_id}] "${col.name}": ${err.message}`);
+        process.stdout.write(
+          `✗ [${idx + 1}/${collections.length}] Error on Collection TMDB ID: ${col.tmdb_id} ("${col.name}"): ${err.message}\n`
+        );
       }
     }
   }
 
-  process.stdout.write(
-    `\n[Enrich Collections] Done — ${updated} updated · ${deleted} removed (404) · ${failed} failed · ${collections.length} total\n`
-  );
+  const durationSec = ((Date.now() - startTime) / 1000).toFixed(2);
+
+  process.stdout.write(`\n============================================================\n`);
+  process.stdout.write(`[Enrich Collections] Complete Summary:\n`);
+  process.stdout.write(`  • Total Execution Time: ${durationSec}s\n`);
+  process.stdout.write(`  • Collections Checked:  ${collections.length}\n`);
+  process.stdout.write(`  • Collections Updated:  ${updatedCount}\n`);
+  process.stdout.write(`  • Movie Bridge Rows:    ${bridgeMoviesLinked} linked\n`);
+  process.stdout.write(`  • Deleted (404/Drift):  ${deletedCount}\n`);
+  process.stdout.write(`  • Errors Encountered:   ${errorLogs.length}\n`);
+
+  if (errorLogs.length > 0) {
+    process.stdout.write(`\n[Errors & Warnings Encountered]:\n`);
+    errorLogs.forEach((err, idx) => {
+      process.stdout.write(`  ${idx + 1}. ${err}\n`);
+    });
+  }
+
+  process.stdout.write(`============================================================\n\n`);
 }

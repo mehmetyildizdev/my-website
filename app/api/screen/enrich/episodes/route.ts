@@ -23,22 +23,34 @@ export async function GET(request: Request) {
 }
 
 async function enrichEpisodes(limit: number) {
+  const startTime = Date.now();
+
+  // Query episodes missing runtime (once runtime is populated, episode is considered enriched)
   const res = await query(
     `SELECT e.tmdb_id, e.show_tmdb_id, e.season_number, e.episode_number, s.name as show_name, s.original_language
      FROM episodes e
      JOIN shows s ON e.show_tmdb_id = s.tmdb_id
-     WHERE e.runtime IS NULL OR e.air_date IS NULL
+     WHERE e.runtime IS NULL
+     ORDER BY e.show_tmdb_id, e.season_number, e.episode_number
      LIMIT $1`,
     [limit]
   );
   const episodes = res.rows;
 
   if (episodes.length === 0) {
-    console.log('[Enrich Episodes] No episodes need enrichment.');
+    process.stdout.write(`\n============================================================\n`);
+    process.stdout.write(`[Enrich Episodes] All episodes currently in database are enriched.\n`);
+    process.stdout.write(`============================================================\n\n`);
     return;
   }
 
-  let count = 0;
+  process.stdout.write(`\n============================================================\n`);
+  process.stdout.write(`[Enrich Episodes] Starting enrichment for ${episodes.length} episodes...\n`);
+  process.stdout.write(`============================================================\n`);
+
+  let updatedCount = 0;
+  let fallbackCount = 0;
+  const errorLogs: string[] = [];
   const BATCH_SIZE = 20;
 
   for (let i = 0; i < episodes.length; i += BATCH_SIZE) {
@@ -55,13 +67,25 @@ async function enrichEpisodes(limit: number) {
           );
 
           const runtime = d.runtime && d.runtime > 0 ? d.runtime : defaultRuntime;
+          if (!d.runtime || d.runtime <= 0) fallbackCount++;
 
-          await query(
-            `UPDATE episodes SET runtime = $1, air_date = $2, title = COALESCE($4, title) WHERE tmdb_id = $3`,
+          const upRes = await query(
+            `UPDATE episodes SET 
+               runtime  = $1, 
+               air_date = COALESCE($2, air_date), 
+               title    = COALESCE($4, title) 
+             WHERE tmdb_id = $3 AND (runtime IS DISTINCT FROM $1 OR air_date IS DISTINCT FROM $2)`,
             [runtime, d.air_date ?? null, ep.tmdb_id, d.name ?? null]
           );
-          count++;
-        } catch (err) {
+
+          if ((upRes.rowCount ?? 0) > 0) {
+            updatedCount++;
+          }
+        } catch (err: any) {
+          fallbackCount++;
+          errorLogs.push(`[Episode TMDB ID: ${ep.tmdb_id}] Show ID: ${ep.show_tmdb_id} (${ep.show_name} S${ep.season_number}E${ep.episode_number}): ${err.message}`);
+          
+          // Guarantee runtime is set so this episode is not repeatedly queried
           await query(`UPDATE episodes SET runtime = COALESCE(runtime, $1) WHERE tmdb_id = $2`, [
             defaultRuntime,
             ep.tmdb_id,
@@ -70,13 +94,32 @@ async function enrichEpisodes(limit: number) {
       })
     );
 
-    // Log only after each batch to reduce terminal noise
-    const percent = ((count / episodes.length) * 100).toFixed(1);
-    process.stdout.write(`  ⟳  Episodes: ${count}/${episodes.length} (${percent}%)\r`);
+    const progress = Math.min(i + BATCH_SIZE, episodes.length);
+    const percent = ((progress / episodes.length) * 100).toFixed(1);
+    process.stdout.write(`  ⟳  Episodes: ${progress}/${episodes.length} (${percent}%) | Updated: ${updatedCount}\n`);
 
-    // Wait a bit after the batch to respect TMDB rate limits
-    await new Promise((r) => setTimeout(r, 400));
+    await new Promise((r) => setTimeout(r, 350));
   }
 
-  process.stdout.write(`\n  ✓  Episode enrichment complete. Updated: ${count}\n`);
+  const durationSec = ((Date.now() - startTime) / 1000).toFixed(2);
+
+  process.stdout.write(`\n============================================================\n`);
+  process.stdout.write(`[Enrich Episodes] Complete Summary:\n`);
+  process.stdout.write(`  • Total Execution Time: ${durationSec}s\n`);
+  process.stdout.write(`  • Episodes Processed:   ${episodes.length}\n`);
+  process.stdout.write(`  • Episodes Updated:     ${updatedCount}\n`);
+  process.stdout.write(`  • Fallback Runtimes:    ${fallbackCount} applied\n`);
+  process.stdout.write(`  • Errors / Fallbacks:   ${errorLogs.length}\n`);
+
+  if (errorLogs.length > 0) {
+    process.stdout.write(`\n[Errors & Warnings Encountered]:\n`);
+    errorLogs.slice(0, 10).forEach((err, idx) => {
+      process.stdout.write(`  ${idx + 1}. ${err}\n`);
+    });
+    if (errorLogs.length > 10) {
+      process.stdout.write(`  ... and ${errorLogs.length - 10} more\n`);
+    }
+  }
+
+  process.stdout.write(`============================================================\n\n`);
 }

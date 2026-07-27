@@ -29,6 +29,8 @@ export async function GET(request: Request) {
 }
 
 async function enrichPeople(limit: number) {
+  const startTime = Date.now();
+
   // Find skeleton people rows that haven't been enriched yet (gender IS NULL)
   const res = await query(
     `SELECT tmdb_id, name FROM people 
@@ -40,12 +42,19 @@ async function enrichPeople(limit: number) {
   const toEnrich = res.rows;
 
   if (toEnrich.length === 0) {
-    console.log('[Enrich People] All people currently in DB are enriched.');
+    process.stdout.write(`\n============================================================\n`);
+    process.stdout.write(`[Enrich People] All people currently in database are already enriched.\n`);
+    process.stdout.write(`============================================================\n\n`);
     return;
   }
 
-  process.stdout.write(`\n[Enrich People] Starting enrichment for ${toEnrich.length} people...\n`);
-  let enriched = 0;
+  process.stdout.write(`\n============================================================\n`);
+  process.stdout.write(`[Enrich People] Starting enrichment for ${toEnrich.length} people...\n`);
+  process.stdout.write(`============================================================\n`);
+
+  let enrichedCount = 0;
+  let countryLinksCount = 0;
+  const errorLogs: string[] = [];
 
   for (let i = 0; i < toEnrich.length; i += BATCH_SIZE) {
     const batch = toEnrich.slice(i, i + BATCH_SIZE);
@@ -55,7 +64,7 @@ async function enrichPeople(limit: number) {
         try {
           const d = await fetchTMDB(`/person/${p.tmdb_id}?append_to_response=external_ids`);
 
-          await query(
+          const upRes = await query(
             `UPDATE people SET
                imdb_id    = COALESCE($1, imdb_id),
                popularity = $2,
@@ -77,6 +86,10 @@ async function enrichPeople(limit: number) {
             ]
           );
 
+          if ((upRes.rowCount ?? 0) > 0) {
+            enrichedCount++;
+          }
+
           if (d.place_of_birth) {
             const isoCode = parseBirthplaceToCountry(d.place_of_birth);
             if (isoCode) {
@@ -89,19 +102,20 @@ async function enrichPeople(limit: number) {
                 `INSERT INTO person_countries (person_tmdb_id, country_iso) VALUES ($1, $2) ON CONFLICT DO NOTHING`,
                 [p.tmdb_id, isoCode]
               );
+              countryLinksCount++;
             }
           }
-          enriched++;
-        } catch {
-          // Skip silently (deleted/restricted on TMDB)
+        } catch (err: any) {
+          errorLogs.push(`[Person TMDB ID: ${p.tmdb_id}] "${p.name}": ${err.message}`);
         }
       })
     );
 
     const progress = Math.min(i + BATCH_SIZE, toEnrich.length);
     const percent = ((progress / toEnrich.length) * 100).toFixed(1);
+    const lastPerson = batch[batch.length - 1]?.name || '';
     process.stdout.write(
-      `  ⟳  People: ${progress}/${toEnrich.length} (${percent}%) | Last: "${batch[batch.length - 1].name}"\r`
+      `  ⟳  People: ${progress}/${toEnrich.length} (${percent}%) | Enriched: ${enrichedCount} | Last: "${lastPerson}"\n`
     );
 
     if (i + BATCH_SIZE < toEnrich.length) {
@@ -109,5 +123,25 @@ async function enrichPeople(limit: number) {
     }
   }
 
-  process.stdout.write(`\n  ✓  People enrichment complete. Enriched: ${enriched}\n`);
+  const durationSec = ((Date.now() - startTime) / 1000).toFixed(2);
+
+  process.stdout.write(`\n============================================================\n`);
+  process.stdout.write(`[Enrich People] Complete Summary:\n`);
+  process.stdout.write(`  • Total Execution Time: ${durationSec}s\n`);
+  process.stdout.write(`  • People Checked:       ${toEnrich.length}\n`);
+  process.stdout.write(`  • People Enriched:      ${enrichedCount}\n`);
+  process.stdout.write(`  • Birthplace Countries: ${countryLinksCount} linked\n`);
+  process.stdout.write(`  • Errors / Skipped:     ${errorLogs.length}\n`);
+
+  if (errorLogs.length > 0) {
+    process.stdout.write(`\n[Errors & Warnings Encountered]:\n`);
+    errorLogs.slice(0, 10).forEach((err, idx) => {
+      process.stdout.write(`  ${idx + 1}. ${err}\n`);
+    });
+    if (errorLogs.length > 10) {
+      process.stdout.write(`  ... and ${errorLogs.length - 10} more\n`);
+    }
+  }
+
+  process.stdout.write(`============================================================\n\n`);
 }

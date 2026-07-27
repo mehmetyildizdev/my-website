@@ -1,175 +1,99 @@
-# Screen Sync Pipeline
+# Screen Sync & Metadata Pipeline
 
-Documents the order of operations, API calls, and data fetched at each step.
-
----
-
-## Entry Point
-
-**`index.ts`** — triggered by `GET /api/sync/trakt[?full=true][?limit=N]`
+Overview of data ingestion, TMDB enrichment workflows, database schemas, and maintenance scripts for movies, TV shows, people, and watch history.
 
 ---
 
-## Step 1 — Trakt History Pages
+## 1. Data Ingestion (MemoStream)
 
-**File:** `index.ts`  
-**API:** `GET https://api.trakt.tv/users/me/history?limit=N&page=P`  
-**Auth:** Trakt OAuth access token (stored in `api_auth` table)
+**Source:** MemoStream Scrobbler / API  
+**Target:** `watch_history` table (`tmdb_id`, `media_type`, `media_key`, `watched_at`, `my_rating`, `episode_tmdb_id`)
 
-Fetched per page until either:
-- an already-known `trakt_id` appears in `watch_history` *(Quick Sync fast-forward)*, or
-- all pages are exhausted *(Full Sync)*
-
-**Data extracted per item:**
-- `type` — `movie` or `episode`
-- `watched_at` — scrobble timestamp
-- `id` — Trakt scrobble ID (used as `trakt_id` to deduplicate)
-- `movie.ids.tmdb` / `show.ids.tmdb` / `episode.ids.tmdb`
-- `episode.season`, `episode.number`, `episode.title`
+Scrobbles from MemoStream arrive containing TMDB media identifiers, timestamps, and personal ratings. When a new scrobble arrives, missing metadata is enriched into PostgreSQL.
 
 ---
 
-## Step 2a — Movie Metadata
+## 2. Enrichment & Update Pipeline
 
-**File:** `movies.ts`  
-**API:** `GET https://api.themoviedb.org/3/movie/{tmdb_id}?append_to_response=credits,external_ids`
+### Step 2a — Movie Metadata & Credits
+**APIs:** `GET /movie/{tmdb_id}?append_to_response=credits,external_ids`
 
-Only called once per unique movie per sync run (deduped by `syncedMovies` Set).  
-Skipped entirely if the `movies` row already exists in DB.
-
-**Data extracted:**
-| Field | Target |
+| Extracted Field | Target Database Table |
 |---|---|
-| `imdb_id` | `movies.imdb_id` |
-| `original_title`, `original_language` | `movies` |
-| `release_date`, `runtime`, `vote_average` | `movies` |
-| `poster_path`, `backdrop_path`, `overview` | `movies` |
-| `belongs_to_collection` | `collections` table + `movies.collection_id` FK |
+| `title`, `original_title`, `original_language`, `release_date`, `runtime`, `vote_average`, `overview`, `poster_path`, `backdrop_path`, `imdb_id` | `movies` |
+| `belongs_to_collection` | `collections` + `movies.collection_id` FK |
 | `genres[]` | `genres` + `movie_genres` |
 | `production_countries[]` | `countries` + `movie_countries` |
 | `production_companies[]` | `production_companies` + `movie_production_companies` |
-| `credits.crew[]` (filtered by `CREW_JOBS`) | `movie_crew` |
-| `credits.cast[]` (profile_path required) | `movie_cast` with `cast_order` + `role` |
+| `credits.crew[]` (filtered by `CREW_JOBS`) | `people` + `movie_crew` |
+| `credits.cast[]` (requires `profile_path`) | `people` + `movie_cast` (`cast_order`, `role`) |
 
-**Cast role classification** (`constants.ts → castRole()`):  
-`order 0–3` → **lead** · `order 4–9` → **supporting** · `order 10+` → **minor**
+* **Cast Roles (`constants.ts → castRole()`):** `order 0–3` → **lead** · `order 4–9` → **supporting** · `order 10+` → **minor**
 
 ---
 
-## Step 2b — Show Metadata
+### Step 2b — Show, Season & Episode Metadata
+**APIs:**
+1. `GET /tv/{tmdb_id}?append_to_response=external_ids`
+2. `GET /tv/{tmdb_id}/aggregate_credits`
+3. `GET /tv/{tmdb_id}/season/{season_number}`
 
-**File:** `shows.ts`  
-**APIs (parallel):**
-1. `GET https://api.themoviedb.org/3/tv/{tmdb_id}?append_to_response=external_ids`
-2. `GET https://api.themoviedb.org/3/tv/{tmdb_id}/aggregate_credits`
-
-Only called once per unique show per sync run. Skipped if show row already exists.
-
-**From `/tv/{id}`:**
-| Field | Target |
+| Extracted Field | Target Database Table |
 |---|---|
-| `imdb_id` (via `external_ids`) | `shows.imdb_id` |
-| `original_name`, `original_language` | `shows` |
-| `first_air_date`, `vote_average` | `shows` |
-| `number_of_episodes`, `number_of_seasons` | `shows` |
-| `poster_path`, `backdrop_path`, `overview` | `shows` |
+| `name`, `original_name`, `original_language`, `first_air_date`, `number_of_episodes`, `number_of_seasons`, `vote_average`, `poster_path`, `backdrop_path`, `overview`, `imdb_id` | `shows` |
 | `genres[]` | `genres` + `show_genres` |
 | `production_countries[]` | `countries` + `show_countries` |
 | `production_companies[]` | `production_companies` + `show_production_companies` |
 | `networks[]` | `networks` + `show_networks` |
-| `seasons[]` | `seasons` (season_number, episode_count, air_date, poster) |
-| `created_by[]` | injected as `Creator` job into `show_crew` |
-
-**From `/tv/{id}/aggregate_credits`:**
-| Field | Target |
-|---|---|
-| `crew[].jobs[].job` (filtered by `CREW_JOBS`) | `show_crew.job` |
-| `crew[].jobs[].episode_count` | `show_crew.episode_count` |
-| `cast[].roles[0].character` (profile_path required) | `show_cast.character` |
-| `cast[].total_episode_count` | `show_cast.episode_count` |
-
-> Aggregate credits give accurate per-episode counts across the full run of the show.  
-> Season count is **not** stored — it is not available from TMDB without per-season API calls.
+| `seasons[]` | `seasons` (`season_number`, `episode_count`, `air_date`, `poster_path`) |
+| `episodes[]` | `episodes` (`episode_number`, `name`, `air_date`, `runtime`, `overview`) |
+| `aggregate_credits.crew[]` + `created_by[]` | `people` + `show_crew` (`job`, `episode_count`) |
+| `aggregate_credits.cast[]` | `people` + `show_cast` (`character`, `episode_count`) |
 
 ---
 
-## Step 2c — People & Credits
+### Step 2c — People & Birthplace Parsing
+**APIs:** `GET /person/{tmdb_id}?append_to_response=external_ids`
 
-**File:** `people.ts`  
-**API:** `GET https://api.themoviedb.org/3/person/{tmdb_id}?append_to_response=external_ids`
-
-Called in **parallel** only for people not yet in DB (identified by missing `imdb_id`).  
-Inserts are done **sequentially, sorted by `tmdb_id`** to prevent deadlocks under parallel transactions.
-
-**Data extracted:**
-| Field | Target |
-|---|---|
-| `external_ids.imdb_id` | `people.imdb_id` |
-| `popularity` | `people.popularity` |
-| `birthday` | `people.birth_date` |
-| `gender` | `people.gender` |
-| `place_of_birth` | `person_countries` (parsed to ISO code) |
-
-**Filtering rules:**
-- **Cast** — must have `profile_path` (both movies and shows)
-- **Crew** — no `profile_path` requirement; filtered only by job title (`CREW_JOBS` set)
+- **Bulk Inserts (`people.ts`):** People rows, cast credits, and crew credits are inserted in bulk `UNNEST` SQL queries sorted by `tmdb_id` to prevent PostgreSQL deadlocks.
+- **Birthplace Parser (`lib/screen/utils/birthplace.ts`):** `parseBirthplaceToCountry()` parses `place_of_birth` text into ISO 3166-1 alpha-2 country codes for `person_countries`.
+  - Supports diacritics stripping (NFD normalization) and alias matching for historical/colonial names (e.g. *British Nigeria* → `NG`, *Soviet Union* → `RU`, *West Germany* → `DE`, *Ottoman Empire* → `TR`) and native spellings (e.g. *Türkiye*, *Deutschland*, *España*, *Brasil*, *Magyarország*, *Polska*, *Srbija*, *Éire*).
 
 ---
 
-## Step 2d — Episode Metadata
+## 3. Tracked Crew Jobs (`CREW_JOBS`)
 
-**File:** `history.ts`  
-**API:** `GET https://api.themoviedb.org/3/tv/{show_id}/season/{n}/episode/{n}`
-
-Called only for newly inserted episode rows.
-
-**Data extracted:**
-- `runtime` → `episodes.runtime`
-- `air_date` → `episodes.air_date`
-
----
-
-## Step 3 — Watch History
-
-**File:** `history.ts`  
-No external API call — inserts the `watch_history` row using data already in hand from Step 1.
-
----
-
-## Step 4 — Trakt Ratings Bulk Sync
-
-**File:** `ratings.ts`  
-**APIs:**
-1. `GET https://api.trakt.tv/users/me/ratings/movies`
-2. `GET https://api.trakt.tv/users/me/ratings/shows`
-
-Bulk-updates `movies.my_rating`, `shows.my_rating`, and `watch_history.rating` using PostgreSQL `UNNEST`.
-
----
-
-## Crew Jobs Tracked (`CREW_JOBS` — `constants.ts`)
-
-```
+```text
 Director · Director of Photography
 Original Story · Novel · Comic Book · Characters · Graphic Novel
 Original Music Composer
 Executive Producer · Co-Executive Producer
 Screenplay · Writer
 Production Design
-Creator  (injected from created_by, not from crew array)
+Creator (injected from created_by array)
 ```
 
 ---
 
-## File Map
+## 4. Dedicated Repair Scripts
 
-```
-lib/screen/sync/
-  index.ts      Orchestrator — page loop, dedup, delegates to sub-modules
-  movies.ts     Movie TMDB enrichment + credits
-  shows.ts      Show TMDB enrichment (seasons, networks, aggregate credits)
-  people.ts     People upsert + cast/crew credit row insertion
-  history.ts    Episode metadata + watch_history recording
-  ratings.ts    Trakt ratings bulk sync
-  constants.ts  CREW_JOBS set, castRole(), COUNTRY_MAP, SyncStats type
+- **Cast & Crew Repair (`scripts/screen/db/fix_cast_links.ts`)**: High-speed script that re-links missing `movie_cast`, `movie_crew`, `show_cast`, and `show_crew` in parallel batches (~28.5 req/sec) without fetching any season or episode data (~1 min runtime).
+- **Person Country Repair (`scripts/screen/db/fix_person_countries.ts`)**: Parses stored `place_of_birth` records instantly (0 API calls) and backfills missing TMDB birthplaces into `person_countries`.
+- **Sequence Reset (`scripts/screen/db/fix_sequence.ts`)**: Resets PostgreSQL primary key serial sequences.
+
+---
+
+## 5. Sync Module File Structure
+
+```text
+lib/screen/
+├── sync/
+│   ├── index.ts        # Orchestrator & scrobble ingestion pipeline
+│   ├── movies.ts       # Movie metadata & credits sync
+│   ├── shows.ts        # TV Show metadata & aggregate credits sync
+│   ├── people.ts       # Bulk UNNEST upsert for people, cast & crew
+│   ├── history.ts      # Episode metadata & watch_history recording
+│   └── constants.ts   # CREW_JOBS whitelist, castRole(), SyncStats
+└── utils/
+    └── birthplace.ts   # Robust birthplace text → ISO country parser
 ```
