@@ -6,7 +6,6 @@ import {
   SiShadcnui,
   SiTailwindcss,
   SiSanity,
-  SiTrakt,
   SiGoogleanalytics,
   SiThemoviedatabase,
 } from "react-icons/si";
@@ -90,7 +89,7 @@ export default function MyWebsite() {
             Knowledge is a universal commodity that gains value only when it is shared. I try my best to lean toward <strong>open-source</strong> technologies because I believe the &quot;Great Work&quot; of digital progress is a collaborative effort. By building on these platforms, I am standing on the shoulders of giants, aiming to contribute back to that collective wisdom.
           </p>
           <p>
-            Currently, I am working on a personal <strong>Unification Project</strong> to aggregate my various media hobbies into a centralized, custom database—leveraging the <strong>Trakt.tv API</strong> and <strong>TMDB</strong>. My goal is to build environments that are sustainable, performant, and accessible, where the complexity of the machine remains hidden, leaving the user with an experience as clear as a well-cut gemstone.
+            Currently, I am working on a personal <strong>Unification Project</strong> to aggregate my various media hobbies into a centralized, custom database—leveraging <strong>TMDB</strong> and my own structured data. My goal is to build environments that are sustainable, performant, and accessible, where the complexity of the machine remains hidden, leaving the user with an experience as clear as a well-cut gemstone.
           </p>
 
           <hr className="border-border/10 my-6" />
@@ -143,10 +142,7 @@ export default function MyWebsite() {
             <SiSanity className="text-3xl text-ruby hover:scale-110 transition-transform" />
             <span className="text-[10px] uppercase mt-1 opacity-0 group-hover:opacity-100 transition-opacity">Sanity</span>
           </div>
-          <div className="flex flex-col items-center group">
-            <SiTrakt className="text-3xl text-ruby hover:scale-110 transition-transform" />
-            <span className="text-[10px] uppercase mt-1 opacity-0 group-hover:opacity-100 transition-opacity">Trakt</span>
-          </div>
+
           <div className="flex flex-col items-center group">
             <SiThemoviedatabase className="text-3xl text-cyan-400 hover:scale-110 transition-transform" />
             <span className="text-[10px] uppercase mt-1 opacity-0 group-hover:opacity-100 transition-opacity">TMDB</span>

@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import { usePathname } from "next/navigation";
 import Link from "next/link";
 import Image from "next/image";
 import { Menu } from "lucide-react";
@@ -15,6 +16,7 @@ import {
 import { MobileMenu } from "./MobileMenu";
 
 export default function NavBar() {
+  const pathname = usePathname();
   const [isOpen, setIsOpen] = useState(false);
   const { resolvedTheme } = useTheme();
   const [mounted, setMounted] = useState(false);
@@ -51,6 +53,8 @@ export default function NavBar() {
     { href: "https://t.me/memostar91", icon: <FaTelegram size={20} /> },
   ];
 
+  const isScreenPage = pathname?.startsWith("/collection/screen");
+
   return (
     <header>
       <nav
@@ -58,7 +62,9 @@ export default function NavBar() {
           "fixed top-0 w-full h-16 z-999 transition-all duration-500 border-b border-transparent",
           shadow
             ? "bg-background/80 backdrop-blur-md border-border/20 shadow-[0_5px_5px_-5px_rgba(220,177,24,0.3)]"
-            : "bg-transparent"
+            : isScreenPage
+              ? "bg-background/20 backdrop-blur-lg border-border/20"
+              : "bg-transparent"
         )}
       >
         <div className="lg:px-16 flex h-16 items-center justify-between">
