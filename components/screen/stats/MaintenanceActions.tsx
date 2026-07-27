@@ -63,14 +63,14 @@ export default function MaintenanceActions({
     window.location.href = href;
   };
 
-  // Helper to render buttons conditionally:
+  // Helper to render buttons conditionally with explicit cursor pointer:
   // - Localhost: renders as an anchor link pointing to the secret-protected API
   // - Production: renders as a button that pops up the security modal explanation
   const renderAction = (label: string, endpoint: string, hoverClass: string) => {
     if (isLocalhost) {
       const href = `${endpoint}${endpoint.includes('?') ? '&' : '?'}secret=${encodeURIComponent(syncSecret)}`;
       return (
-        <Button asChild variant="glass" size="sm" className={`${hoverClass} text-quicksilver`}>
+        <Button asChild variant="glass" size="sm" className={`${hoverClass} text-quicksilver cursor-pointer`}>
           <a href={href}>{label}</a>
         </Button>
       );
@@ -80,7 +80,7 @@ export default function MaintenanceActions({
       <Button
         variant="glass"
         size="sm"
-        className={`${hoverClass} text-quicksilver`}
+        className={`${hoverClass} text-quicksilver cursor-pointer`}
         onClick={() => triggerProductionAlert(label)}
       >
         {label}
@@ -97,19 +97,19 @@ export default function MaintenanceActions({
             <Button
               variant="glass"
               size="sm"
-              className="hover:text-gold hover:border-gold/50 text-quicksilver"
-              onClick={() => handleOpenPrompt('shows')}
+              className="hover:text-sapphire hover:border-sapphire/50 text-quicksilver cursor-pointer"
+              onClick={() => handleOpenPrompt('movies')}
             >
-              Update Shows
+              Update Movies
             </Button>
 
             <Button
               variant="glass"
               size="sm"
-              className="hover:text-sapphire hover:border-sapphire/50 text-quicksilver"
-              onClick={() => handleOpenPrompt('movies')}
+              className="hover:text-gold hover:border-gold/50 text-quicksilver cursor-pointer"
+              onClick={() => handleOpenPrompt('shows')}
             >
-              Update Movies
+              Update Shows
             </Button>
 
             {renderAction(
@@ -122,9 +122,9 @@ export default function MaintenanceActions({
           {/* Bottom Row: Enrich Actions */}
           <div className="flex flex-wrap items-center gap-2">
             {renderAction(
-              'Enrich People',
-              '/api/screen/enrich/people?limit=1000',
-              'hover:text-emerald hover:border-emerald/50'
+              'Enrich Seasons',
+              '/api/screen/enrich/seasons?limit=10000',
+              'hover:text-sapphire hover:border-sapphire/50'
             )}
             {renderAction(
               'Enrich Episodes',
@@ -132,38 +132,40 @@ export default function MaintenanceActions({
               'hover:text-topaz hover:border-topaz/50'
             )}
             {renderAction(
-              'Enrich Seasons',
-              '/api/screen/enrich/seasons?limit=10000',
-              'hover:text-sapphire hover:border-sapphire/50'
-            )}
-            {renderAction(
               'Enrich Collections',
               '/api/screen/enrich/collections',
-              'hover:text-ruby hover:border-ruby/50'
+              'hover:text-gold hover:border-gold/50'
+            )}
+            {renderAction(
+              'Enrich People',
+              '/api/screen/enrich/people?limit=1000',
+              'hover:text-emerald hover:border-emerald/50'
             )}
 
-            <Button
-              variant="glass"
-              size="sm"
-              className="hover:text-gold hover:border-gold/50 text-quicksilver/70"
-              onClick={() => triggerProductionAlert('Test Action')}
-            >
-              Test Alert
-            </Button>
+            {isLocalhost && (
+              <Button
+                variant="glass"
+                size="sm"
+                className="hover:text-ruby hover:border-ruby/50 text-quicksilver/70 cursor-pointer"
+                onClick={() => triggerProductionAlert('Test Action')}
+              >
+                Test Alert
+              </Button>
+            )}
           </div>
         </div>
-      ) : (
+      ) : isLocalhost ? (
         <div className="flex flex-wrap items-center gap-2">
           <Button
             variant="glass"
             size="sm"
-            className="hover:text-gold hover:border-gold/50 text-quicksilver/70"
+            className="hover:text-ruby hover:border-ruby/50 text-quicksilver/70 cursor-pointer"
             onClick={() => triggerProductionAlert('Test Action')}
           >
             Test Alert
           </Button>
         </div>
-      )}
+      ) : null}
 
       {/* Reusable Themed Input Prompt Modal */}
       <ThemedPromptModal

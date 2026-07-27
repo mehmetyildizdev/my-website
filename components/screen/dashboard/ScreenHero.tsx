@@ -41,19 +41,20 @@ export default async function ScreenHero() {
             </h1>
 
             <div
-              className="text-quicksilver text-sm sm:text-base leading-relaxed max-w-3xl space-y-4 border-l-2 border-gold/30 pl-4 py-1"
+              className="text-quicksilver text-sm sm:text-base leading-relaxed max-w-4xl space-y-4 border-l-2 border-gold/30 pl-4 py-1"
               style={{ fontFamily: 'var(--font-poppins)' }}
             >
               <p className="font-medium text-foreground/90">
-                A curated archive of cinematic exploration, watch history tracking, rating
-                analytics, and actor/director trends synced from a personal database at regular
-                intervals using GitHub actions.
+                A curated archive of cinematic exploration, synced from my personal streaming
+                platform, powered by serverless PostgreSQL and Cloudflare Workers with TMDB data.
               </p>
               <p className="text-quicksilver/90 text-[13px] sm:text-[14px]">
                 Dive into movies, shows, and people through custom data-driven insights. I believe
                 owning and controlling our personal data is increasingly vital in an era of
                 automated, black-box algorithms. Instead of relying on volatile, ad-supported
                 third-party platforms, this ecosystem is built to be a permanent personal space.
+                Live playback events are tracked in real time, while the rest of the dataset is
+                refreshed daily via GitHub Actions.
               </p>
               <p className="text-xs text-emerald dark:text-gold/80 italic font-medium pt-1">
                 Want to have your own version? Feel free to reach out. I'd be happy to share the

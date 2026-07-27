@@ -4,7 +4,11 @@ import { useState, useMemo } from 'react';
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/shadcn/ui/card';
 import { Select } from '@/components/shadcn/ui/select';
 import { Tooltip } from '@/components/shadcn/ui/tooltip';
-import { getRatingToken, getAvgRatingToken, getShowAvgRatingToken } from '@/lib/screen/utils/format';
+import {
+  getRatingToken,
+  getAvgRatingToken,
+  getShowAvgRatingToken,
+} from '@/lib/screen/utils/format';
 // Split combined genres for filtering
 function expandGenres(genres: string[]): string[] {
   return genres ? genres.filter(Boolean) : [];
@@ -103,7 +107,7 @@ export default function RatingsComparison({
         {(lockedMedia === 'show' || mediaFilter === 'show') && (
           <p className="text-xs text-muted-foreground mt-1">
             Shows are generally rated higher in average and breaks the pattern. So, I added separate
-            pattern for shows alone that is 7.4-8.0 range.
+            pattern for shows alone that is 7.0-8.0 range.
           </p>
         )}
       </CardHeader>
@@ -142,7 +146,7 @@ export default function RatingsComparison({
               <p className="text-[10px] text-muted-foreground uppercase tracking-wider">My Avg</p>
               <p
                 className={`text-lg font-bold tabular-nums text-${
-                  (lockedMedia === 'show' || mediaFilter === 'show')
+                  lockedMedia === 'show' || mediaFilter === 'show'
                     ? getShowAvgRatingToken(stats.myAvg)
                     : getAvgRatingToken(stats.myAvg)
                 }`}
@@ -237,7 +241,7 @@ export default function RatingsComparison({
             <h4 className="text-sm font-medium text-muted-foreground mb-3">
               Individual Ratings ({filtered.length} items)
             </h4>
-            <div className="space-y-px max-h-[400px] overflow-y-auto pr-1">
+            <div className="space-y-px max-h-100 overflow-y-auto pr-1">
               {filtered.slice(0, 100).map((item) => {
                 const tmdb = Number(item.tmdb_rating);
                 const diff = item.my_rating - tmdb;
@@ -248,7 +252,7 @@ export default function RatingsComparison({
                     key={`${item.media_type}-${item.tmdb_id}`}
                     placement="mouse"
                     content={
-                      <div className="flex flex-col gap-0.5 min-w-[180px]">
+                      <div className="flex flex-col gap-0.5 min-w-45">
                         <span
                           className="font-semibold text-gold"
                           style={{ fontFamily: 'var(--font-poppins)' }}

@@ -77,6 +77,9 @@ export default function MovieLengthVsRating({ data }: { data: MoviePoint[] }) {
         <p className="text-xs text-muted-foreground mt-1">
           Does movie length correlate with how I rate it? Each tick is a rated movie.
         </p>
+        <p className="text-xs text-muted-foreground mt-1">
+          It appears I do like longer movies more. ☺️
+        </p>
       </CardHeader>
       <CardContent className="pt-4">
         <div className="w-full relative" style={{ height: chartHeight }}>

@@ -53,7 +53,7 @@ function RankedGrid({
             key={item.id}
             placement="mouse"
             content={
-              <div className="flex flex-col gap-0.5 min-w-[160px]">
+              <div className="flex flex-col gap-0.5 min-w-40">
                 <span
                   className="font-semibold text-gold"
                   style={{ fontFamily: 'var(--font-poppins)' }}
@@ -82,8 +82,9 @@ function RankedGrid({
               </span>
 
               {/* Fixed-size logo container */}
-              <div className="w-16 h-16 p-1 dark:bg-quicksilver flex items-center justify-center shrink-0 mt-1">
+              <div className="w-16 h-16 p-1 dark:bg-accent flex items-center justify-center shrink-0 mt-1">
                 {item.logo_path ? (
+                  // eslint-disable-next-line @next/next/no-img-element
                   <img
                     src={`https://image.tmdb.org/t/p/w154${item.logo_path}`}
                     alt={item.name}

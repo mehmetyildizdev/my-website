@@ -52,6 +52,19 @@ export default async function TopActors() {
         <CardTitle className="text-xl font-bold tracking-tight text-accent">
           Top Rated Actors
         </CardTitle>
+        <p className="text-xs text-muted-foreground mt-1">
+          Ratings in my website are calculated with my own bayesian formula using role weights,
+          exposure indexes and personal rating on the titles for actors.
+        </p>
+        <p className="text-xs text-muted-foreground mt-1">
+          Ratings basically represents likelihood of me liking the title the actor would appear on.
+        </p>
+        <p className="text-xs text-muted-foreground mt-1">
+          Show runtime is approximated from my average watched-episode length per show.
+        </p>
+        <p className="text-xs text-muted-foreground mt-1">
+          Watched count ratings are simple title based counts ranked in order.
+        </p>
       </CardHeader>
       <CardContent>
         <TopActorsTabs data={data} />

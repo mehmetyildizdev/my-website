@@ -22,10 +22,10 @@ const MOVIE_LEGEND = [
 
 const SHOW_LEGEND = [
   { tier: 'amethyst' as const, label: '≥8.0' },
-  { tier: 'sapphire' as const, label: '7.8–8.0' },
-  { tier: 'emerald' as const, label: '7.6–7.8' },
-  { tier: 'topaz' as const, label: '7.4–7.6' },
-  { tier: 'ruby' as const, label: '<7.4' },
+  { tier: 'sapphire' as const, label: '7.75–8.0' },
+  { tier: 'emerald' as const, label: '7.5–7.75' },
+  { tier: 'topaz' as const, label: '7.25–7.5' },
+  { tier: 'ruby' as const, label: '<7.25' },
 ];
 
 export default function GenreRatingsBars({
@@ -85,7 +85,7 @@ export default function GenreRatingsBars({
                 key={g.name}
                 placement="mouse"
                 content={
-                  <div className="flex flex-col gap-0.5 min-w-[160px]">
+                  <div className="flex flex-col gap-0.5 min-w-40">
                     <span
                       className="font-semibold text-gold"
                       style={{ fontFamily: 'var(--font-poppins)' }}

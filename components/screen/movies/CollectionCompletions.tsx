@@ -2,7 +2,6 @@
 
 import { useState, useMemo } from 'react';
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/shadcn/ui/card';
-import { Select } from '@/components/shadcn/ui/select';
 import { Button } from '@/components/shadcn/ui/button';
 import { Tooltip } from '@/components/shadcn/ui/tooltip';
 import Image from 'next/image';
@@ -32,7 +31,7 @@ function completionColor(pct: number): string {
 }
 
 export default function CollectionCompletions({ data }: { data: CollectionData[] }) {
-  const [filter, setFilter] = useState<FilterMode>('all');
+  const [filter, setFilter] = useState<FilterMode>('complete');
   const [showAll, setShowAll] = useState(false);
 
   const filtered = useMemo(() => {
@@ -71,20 +70,51 @@ export default function CollectionCompletions({ data }: { data: CollectionData[]
             Collection Completions
           </CardTitle>
           <p className="text-xs text-muted-foreground mt-1">
-            Ranked by average rating. Showing {filtered.length} collections.
+            Ordered by average rating of movies in collection. Showing {filtered.length}{' '}
+            collections.
           </p>
         </div>
-        <Select
-          value={filter}
-          onChange={(e) => {
-            setFilter(e.target.value as FilterMode);
-            setShowAll(false);
-          }}
-        >
-          <option value="all">All ({data.length})</option>
-          <option value="complete">Complete ({overall?.completeCollections ?? 0})</option>
-          <option value="incomplete">In Progress ({overall?.incompleteCollections ?? 0})</option>
-        </Select>
+        <div className="flex items-center gap-1 p-1 rounded-lg bg-pearl/20 border border-border/10 w-fit shrink-0">
+          <button
+            onClick={() => {
+              setFilter('all');
+              setShowAll(false);
+            }}
+            className={`px-3 py-1.5 rounded-md text-xs font-medium transition-all cursor-pointer ${
+              filter === 'all'
+                ? 'bg-accent text-background shadow-sm font-semibold'
+                : 'text-muted-foreground hover:text-foreground hover:bg-pearl/30'
+            }`}
+          >
+            All ({data.length})
+          </button>
+          <button
+            onClick={() => {
+              setFilter('complete');
+              setShowAll(false);
+            }}
+            className={`px-3 py-1.5 rounded-md text-xs font-medium transition-all cursor-pointer ${
+              filter === 'complete'
+                ? 'bg-emerald text-background shadow-sm font-semibold'
+                : 'text-muted-foreground hover:text-foreground hover:bg-pearl/30'
+            }`}
+          >
+            Complete ({overall?.completeCollections ?? 0})
+          </button>
+          <button
+            onClick={() => {
+              setFilter('incomplete');
+              setShowAll(false);
+            }}
+            className={`px-3 py-1.5 rounded-md text-xs font-medium transition-all cursor-pointer ${
+              filter === 'incomplete'
+                ? 'bg-sapphire text-background shadow-sm font-semibold'
+                : 'text-muted-foreground hover:text-foreground hover:bg-pearl/30'
+            }`}
+          >
+            In Progress ({overall?.incompleteCollections ?? 0})
+          </button>
+        </div>
       </CardHeader>
       <CardContent className="pt-2">
         {/* Stats banner */}
@@ -120,7 +150,7 @@ export default function CollectionCompletions({ data }: { data: CollectionData[]
                 key={collection.tmdb_id}
                 placement="mouse"
                 content={
-                  <div className="flex flex-col gap-0.5 min-w-[160px]">
+                  <div className="flex flex-col gap-0.5 min-w-40">
                     <span
                       className="font-semibold text-gold"
                       style={{ fontFamily: 'var(--font-poppins)' }}
@@ -145,7 +175,7 @@ export default function CollectionCompletions({ data }: { data: CollectionData[]
               >
                 <div className="rounded-lg border border-border/10 bg-pearl/10 overflow-hidden hover:border-border/30 transition-all group">
                   {/* Poster */}
-                  <div className="relative aspect-2/3 bg-obsidian/30">
+                  <div className="relative aspect-2/3 bg-obsidian/30 overflow-hidden">
                     {collection.poster_path ? (
                       <Image
                         src={`https://image.tmdb.org/t/p/w300${collection.poster_path}`}
@@ -236,7 +266,7 @@ export default function CollectionCompletions({ data }: { data: CollectionData[]
 
 function StatBanner({ label, value, sub }: { label: string; value: string; sub?: string }) {
   return (
-    <div className="rounded-lg border border-border/15 bg-pearl/10 px-3 py-2 text-center shrink-0 min-w-[100px]">
+    <div className="rounded-lg border border-border/15 bg-pearl/10 px-3 py-2 text-center shrink-0 min-w-25">
       <p className="text-[9px] text-muted-foreground uppercase tracking-wider">{label}</p>
       <p className="text-base font-bold text-platinum tabular-nums mt-0.5">{value}</p>
       {sub && <p className="text-[10px] text-quicksilver tabular-nums">{sub}</p>}

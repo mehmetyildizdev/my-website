@@ -31,6 +31,10 @@ export default async function TopCrew() {
         <CardTitle className="text-xl font-bold tracking-tight text-accent">
           Top Rated Crew
         </CardTitle>
+        <p className="text-xs text-muted-foreground mt-1">
+          Ratings basically represents likelihood of me liking the title the crew member would be
+          involved in.
+        </p>
       </CardHeader>
       <CardContent>
         <TopCrewTabs data={buckets} />

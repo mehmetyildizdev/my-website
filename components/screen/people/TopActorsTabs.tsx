@@ -58,13 +58,6 @@ export default function TopActorsTabs({ data }: { data: TopActorsBuckets }) {
         ))}
       </div>
 
-      {/* Subtle hint when the rating is approximate */}
-      {mode === 'most_exposed' && scope !== 'movies' && (
-        <p className="text-[10px] text-muted-foreground italic">
-          Show runtime is approximated from your average watched-episode length per show.
-        </p>
-      )}
-
       <InfinitePerformerGrid initialItems={items} mode={mode} weighted={weighted} />
     </div>
   );

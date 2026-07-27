@@ -141,7 +141,7 @@ function SampleTable({ entityType, data }: { entityType: string; data: Record<st
         <h4 className="font-semibold text-sm capitalize">{entityType} Sample</h4>
         {displayName && (
           <span
-            className="text-[10px] bg-accent/15 text-accent border border-accent/20 px-2 py-0.5 rounded-full font-medium max-w-[150px] truncate"
+            className="text-[10px] bg-accent/15 text-accent border border-accent/20 px-2 py-0.5 rounded-full font-medium max-w-37.5 truncate"
             title={displayName}
           >
             {displayName}
@@ -203,7 +203,7 @@ export default async function DbOverview() {
         </div>
 
         <div
-          className="grid grid-cols-1 md:grid-cols-2 gap-8 text-quicksilver text-sm sm:text-base leading-relaxed border-l-2 border-gold/30 pl-4 py-1"
+          className="grid grid-cols-1 md:grid-cols-2 gap-16 text-quicksilver text-sm sm:text-base leading-relaxed border-l-2 border-gold/30 pl-4 py-1"
           style={{ fontFamily: 'var(--font-poppins)' }}
         >
           <div className="space-y-3">
@@ -213,20 +213,21 @@ export default async function DbOverview() {
             </h4>
             <ul className="text-quicksilver/90 text-[13px] sm:text-[14px] leading-relaxed space-y-2 list-disc pl-4">
               <li>
-                <strong>Primary Datastore:</strong> Single source of truth for full watch history,
-                rating metrics, and catalog listings.
+                <strong>Primary Datastore:</strong> Primary source of truth for up-to-date watch
+                history, title ratings, and metadata records for website caching.
               </li>
               <li>
                 <strong>Serverless PostgreSQL:</strong> High-performance relational backend hosting
-                custom materialized views and stats tables.
+                custom materialized views and stats tables to feed the website's frontend and api.
               </li>
               <li>
                 <strong>Nightly Sync Pipeline:</strong> Aggregated view data and stats tables
                 recompiled automatically via GitHub Actions.
               </li>
               <li>
-                <strong>Granular Metrics:</strong> Stores user ratings on a precise 1-10 scale for
-                advanced movie/TV analytics.
+                <strong>Granular Metrics:</strong> Calculated by personal ratings of titles
+                throughout the years to determine affinity based stats to use in rankings and
+                charts.
               </li>
             </ul>
           </div>
@@ -237,20 +238,22 @@ export default async function DbOverview() {
             </h4>
             <ul className="text-quicksilver/90 text-[13px] sm:text-[14px] leading-relaxed space-y-2 list-disc pl-4">
               <li>
-                <strong>Instant Search Index:</strong> Highly compressed SQLite database
-                pre-compiled offline for edge distribution.
-              </li>
-              <li>
-                <strong>Ultra-Fast Queries:</strong> Database lookups execute in under 1ms,
-                completely bypassing database cold starts.
+                <strong>Instant Search Index:</strong> SQLite database pre-compiled offline for edge
+                distribution, executing ultra-fast queries, completely bypassing cold starts that
+                would normally happen in Neon.
               </li>
               <li>
                 <strong>Secure Edge Proxy:</strong> Serves search endpoints and proxies TMDB
                 requests, protecting private API credentials on the server side.
               </li>
               <li>
-                <strong>Abuse Protection:</strong> Built-in edge rate limiting restricts client
+                <strong>Abuse Protection:</strong> Implemented edge rate limiting restricts client
                 searches to a maximum of 3 requests per 10 seconds.
+              </li>
+              <li>
+                <strong>Live Scrobbling API:</strong> Receives real-time playback payloads at
+                minute-based intervals or event triggers from my streaming platform{' '}
+                <i>MemoStream</i> to power the live Now-Playing state.
               </li>
             </ul>
           </div>
@@ -260,14 +263,26 @@ export default async function DbOverview() {
           <div>
             <h3 className="text-lg font-semibold">Database Maintenance</h3>
             <p className="text-xs text-muted-foreground mt-1">
-              Control buttons for synchronisation between my streaming application and the database
-              as well as triggering data aggregation.
+              Control buttons to use after synchronisation between my streaming application and the
+              database, they work locally as the hosting provider Vercel does not let runtime of
+              functions more than 10 seconds.
+            </p>
+            <p className="px-4 text-xs text-muted-foreground mt-1">
+              Update buttons make a full scan of all attributed tables to update data to the latest
+              state from TMDB.
+            </p>
+            <p className="px-4 text-xs text-muted-foreground mt-1">
+              Update from history button is used for finding the records that are added to history
+              table but failed on updating canonical tables when MemoStream sends scrobble loads. It
+              runs targeted update for those missing movie and show titles.
+            </p>
+            <p className="px-4 text-xs text-muted-foreground mt-1">
+              Enrich buttons fill the empty fields of the tables using the data from TMDB one by one
+              as the appended endpoints for updating from TMDB does not provide some data that I use
+              in this website.
             </p>
           </div>
-          <MaintenanceActions
-            isAuthenticated={true}
-            syncSecret={process.env.MY_API_PHRASE || ''}
-          />
+          <MaintenanceActions isAuthenticated={true} syncSecret={process.env.MY_API_PHRASE || ''} />
         </div>
       </div>
 
@@ -511,7 +526,7 @@ export default async function DbOverview() {
                       <td className="py-2.5 px-4 text-right font-semibold tabular-nums">
                         {totalWatches.toLocaleString()}
                       </td>
-                      <td className="py-2.5 px-4 min-w-[140px]">
+                      <td className="py-2.5 px-4 min-w-35">
                         <div className="flex items-center gap-2">
                           <div className="h-2 w-20 rounded-full bg-border/20 overflow-hidden shrink-0">
                             <div
