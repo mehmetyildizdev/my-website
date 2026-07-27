@@ -3,10 +3,6 @@
 .gemini
 .kiro
 .agents
-AGENTS.md
-SECURITY-REVIEW-REPORT.md
-DESIGN_SYSTEM.md
-/reminder.md
 /app/backup.css
 /app/test/
 /components/shadcn/unused/
@@ -73,6 +69,7 @@ next-env.d.ts
 # database backups
 /backups/
 /scripts/bin/
+/scripts/screen/utils/sync-local-to-neon.ts
 /scripts/screen/utils/sync-neon-to-local.ts
 /scripts/screen/utils/export-to-sqlite.ts
 /scripts/screen/utils/encrypt-views.ts
@@ -84,8 +81,5 @@ next-env.d.ts
 #scratch
 /scratch/
 
-#trash
-/trash/
-
-
-
+#docs
+/zone/
