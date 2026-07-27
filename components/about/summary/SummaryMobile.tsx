@@ -1,8 +1,9 @@
-"use client";
-import { TABS } from "../tabs/Constants";
-import { useSummaryMobileScroll } from "@/hooks/about/useSummaryMobileScroll";
-import { SummaryMobileNav } from "./SummaryMobileNav";
-import { SummaryMobilePanels } from "./SummaryMobilePanels";
+'use client';
+
+import { TABS } from '../tabs/Constants';
+import { useSummaryMobileScroll } from '@/hooks/about/useSummaryMobileScroll';
+import { SummaryMobileNav } from './SummaryMobileNav';
+import { SummaryMobilePanels } from './SummaryMobilePanels';
 
 export default function SummaryMobile({
   id,
@@ -15,10 +16,7 @@ export default function SummaryMobile({
   const activeColor = TABS[activeIdx].color;
 
   return (
-    <section
-      id={id}
-      className="h-dvh flex flex-col overflow-hidden bg-diamond relative pt-24"
-    >
+    <section id={id} className="h-dvh flex flex-col overflow-hidden bg-diamond relative pt-24">
       <div
         className="absolute inset-0 opacity-5 transition-colors duration-700 pointer-events-none"
         style={{ backgroundColor: `var(--color-${activeColor})` }}
@@ -37,11 +35,7 @@ export default function SummaryMobile({
             style={{ backgroundColor: `var(--color-${activeColor})` }}
           />
 
-          <SummaryMobileNav
-            containerRef={navRef}
-            activeIdx={activeIdx}
-            onTabChange={onTabChange}
-          />
+          <SummaryMobileNav containerRef={navRef} activeIdx={activeIdx} onTabChange={onTabChange} />
 
           <SummaryMobilePanels
             containerRef={scrollRef}

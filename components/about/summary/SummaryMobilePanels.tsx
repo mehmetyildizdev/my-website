@@ -1,6 +1,6 @@
-import { TABS } from "../tabs/Constants";
-import { SummaryMobileAboutIntro } from "./SummaryMobileAboutIntro";
-import { cn } from "@/lib/shadcn/utils";
+import { TABS } from '../tabs/Constants';
+import { SummaryMobileAboutIntro } from './SummaryMobileAboutIntro';
+import { cn } from '@/lib/shadcn/utils';
 
 export function SummaryMobilePanels({
   containerRef,
@@ -26,17 +26,13 @@ export function SummaryMobilePanels({
             aria-hidden={!isActive}
             tabIndex={isActive ? 0 : -1}
             className={cn(
-              "flex h-full min-w-full w-full shrink-0 snap-start snap-always flex-col overscroll-y-contain transition-opacity duration-300",
-              !tab.noScroll && "overflow-y-auto",
-              hideContent ? "opacity-0" : "opacity-100"
+              'flex h-full min-w-full w-full shrink-0 snap-start snap-always flex-col overscroll-y-contain transition-opacity duration-300',
+              !tab.noScroll && 'overflow-y-auto',
+              hideContent ? 'opacity-0' : 'opacity-100'
             )}
           >
             {idx === 0 && <SummaryMobileAboutIntro />}
-            <Panel
-              {...(tab.name === "Contact Me"
-                ? { onCheckingChange: () => { } }
-                : {})}
-            />
+            <Panel {...(tab.name === 'Contact Me' ? { onCheckingChange: () => {} } : {})} />
           </article>
         );
       })}

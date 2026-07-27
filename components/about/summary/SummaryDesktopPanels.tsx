@@ -1,6 +1,6 @@
-import { m } from "framer-motion";
-import { TABS } from "../tabs/Constants";
-import { cn } from "@/lib/shadcn/utils";
+import { m } from 'framer-motion';
+import { TABS } from '../tabs/Constants';
+import { cn } from '@/lib/shadcn/utils';
 
 export function SummaryDesktopPanels({
   gradient,
@@ -17,8 +17,8 @@ export function SummaryDesktopPanels({
       <div className="w-full h-full flex justify-center items-center drop-shadow-2xl">
         <div
           className={cn(
-            "bg-pearl w-[95%] h-[94%] rounded-2xl relative transition-opacity duration-300",
-            hideContent ? "opacity-0" : "opacity-100"
+            'bg-pearl w-[95%] h-[94%] rounded-2xl relative transition-opacity duration-300',
+            hideContent ? 'opacity-0' : 'opacity-100'
           )}
         >
           {TABS.map((tab, index) => {
@@ -31,15 +31,13 @@ export function SummaryDesktopPanels({
                 key={index}
                 className={cn(
                   isActive
-                    ? "relative h-full opacity-100 transition-opacity duration-300 z-10"
-                    : "absolute inset-0 opacity-0 pointer-events-none transition-opacity duration-300 z-0",
-                  !noScroll && "overflow-y-auto"
+                    ? 'relative h-full opacity-100 transition-opacity duration-300 z-10'
+                    : 'absolute inset-0 opacity-0 pointer-events-none transition-opacity duration-300 z-0',
+                  !noScroll && 'overflow-y-auto'
                 )}
               >
                 <Component
-                  {...(tab.name === "Contact Me"
-                    ? { onCheckingChange: onToggleCheck }
-                    : {})}
+                  {...(tab.name === 'Contact Me' ? { onCheckingChange: onToggleCheck } : {})}
                 />
               </div>
             );

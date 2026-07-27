@@ -1,11 +1,11 @@
-"use client";
+'use client';
 
-import Image from "next/image";
-import { useState } from "react";
-import { cn } from "@/lib/shadcn/utils";
+import Image from 'next/image';
+import { useState } from 'react';
+import { cn } from '@/lib/shadcn/utils';
 
 const AVATAR_RING =
-  "conic-gradient(var(--color-ruby), var(--color-amethyst), var(--color-sapphire), var(--color-emerald), var(--color-topaz), var(--color-ruby))";
+  'conic-gradient(var(--color-ruby), var(--color-amethyst), var(--color-sapphire), var(--color-emerald), var(--color-topaz), var(--color-ruby))';
 
 export function SummaryMobileAboutIntro() {
   const [imageLoaded, setImageLoaded] = useState(false);
@@ -25,8 +25,8 @@ export function SummaryMobileAboutIntro() {
           <Image
             src="/images/pp.webp"
             className={cn(
-              "rounded-full transition-opacity duration-500",
-              imageLoaded ? "opacity-100" : "opacity-0"
+              'rounded-full transition-opacity duration-500',
+              imageLoaded ? 'opacity-100' : 'opacity-0'
             )}
             alt="Mehmet Yildiz"
             width={64}

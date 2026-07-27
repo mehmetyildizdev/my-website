@@ -1,40 +1,36 @@
-"use client";
-import { useState, useCallback } from "react";
-import { useSummaryGradients } from "@/hooks/about/useSummaryGradients";
-import { SummaryDesktopPhoto } from "./SummaryDesktopPhoto";
-import { SummaryDesktopNav } from "./SummaryDesktopNav";
-import { SummaryDesktopPanels } from "./SummaryDesktopPanels";
+'use client';
+import { useState, useCallback } from 'react';
+import { useSummaryGradients } from '@/hooks/about/useSummaryGradients';
+import { SummaryDesktopPhoto } from './SummaryDesktopPhoto';
+import { SummaryDesktopNav } from './SummaryDesktopNav';
+import { SummaryDesktopPanels } from './SummaryDesktopPanels';
 
 export default function SummaryDesktop({
   id,
   isActive = true,
   hideContent = false,
 }: SummaryUIProps) {
-  const [activeIdx, setActiveIdx] = useState(2);
+  const [activeIdx, setActiveIdx] = useState(0);
   const [isTurnstileChecking, setIsTurnstileChecking] = useState(false);
 
   const handleToggleCheck = useCallback((checking: boolean) => {
     setIsTurnstileChecking(checking);
   }, []);
 
-  const animPauseStyle = isTurnstileChecking
-    ? { animationPlayState: "paused" as const }
-    : {};
+  const animPauseStyle = isTurnstileChecking ? { animationPlayState: 'paused' as const } : {};
 
-  const { angle, bgClockwise, bgAntiClockwise, bgClockwiseStatic } =
-    useSummaryGradients(isActive, isTurnstileChecking);
+  const { angle, bgClockwise, bgAntiClockwise, bgClockwiseStatic } = useSummaryGradients(
+    isActive,
+    isTurnstileChecking
+  );
 
   return (
     <section
       id={id}
-      className="3xl:w-[85%] px-16 h-screen mx-auto flex justify-center items-center max-w-[1560px]"
+      className="3xl:w-[85%] px-16 h-screen mx-auto flex justify-center items-center max-w-390"
     >
       <div className="w-2/5 h-144 relative flex xl:items-center">
-        <SummaryDesktopPhoto
-          gradient={bgClockwiseStatic}
-          angle={angle}
-          hideContent={hideContent}
-        />
+        <SummaryDesktopPhoto gradient={bgClockwiseStatic} angle={angle} hideContent={hideContent} />
 
         <SummaryDesktopNav
           gradient={bgAntiClockwise}

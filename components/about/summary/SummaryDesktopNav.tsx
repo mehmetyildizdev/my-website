@@ -1,6 +1,6 @@
-import { m } from "framer-motion";
-import { TABS } from "../tabs/Constants";
-import { SyncButton } from "./SyncButton";
+import { m } from 'framer-motion';
+import { TABS } from '../tabs/Constants';
+import { SyncButton } from './SyncButton';
 
 export function SummaryDesktopNav({
   gradient,

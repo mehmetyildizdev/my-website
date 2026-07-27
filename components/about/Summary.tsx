@@ -1,9 +1,9 @@
-"use client";
+'use client';
 
-import SummaryDesktop from "./summary/SummaryDesktop";
-import SummaryMobile from "./summary/SummaryMobile";
-import { useIsXlBreakpoint } from "@/hooks/about/useIsXlBreakpoint";
-import { MotionLazy } from "@/components/main/MotionLazy";
+import SummaryDesktop from './summary/SummaryDesktop';
+import SummaryMobile from './summary/SummaryMobile';
+import { useIsXlBreakpoint } from '@/hooks/about/useIsXlBreakpoint';
+import { MotionLazy } from '@/components/main/MotionLazy';
 
 /**
  * Summary — mounts both desktop and mobile versions, using CSS
