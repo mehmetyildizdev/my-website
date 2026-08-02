@@ -3,10 +3,7 @@ import { useNowPlaying } from './NowPlayingContext';
 import { calculateTimelineState } from './timeline';
 import { PlaybackState } from './types';
 
-export function useNowPlayingTimeline(
-  mockPlayback?: PlaybackState | null,
-  mockServerNowMs?: number
-) {
+export function useNowPlayingTimeline(mockPlayback?: PlaybackState | null, mockServerNowMs?: number) {
   const context = useNowPlaying();
   const playback = mockPlayback !== undefined ? mockPlayback : context.playback;
   const serverNowMs = mockServerNowMs !== undefined ? mockServerNowMs : context.serverNowMs;
@@ -49,9 +46,7 @@ export function useNowPlayingTimeline(
         playback.state !== 'completed')
     : false;
 
-  const isFinished = !isPaused && playback?.durationSeconds
-    ? state.positionSeconds >= playback.durationSeconds
-    : false;
+  const isFinished = !isPaused && playback?.durationSeconds ? state.positionSeconds >= playback.durationSeconds : false;
 
   return {
     playback,

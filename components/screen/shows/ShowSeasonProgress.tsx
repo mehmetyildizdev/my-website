@@ -67,12 +67,9 @@ export default function ShowSeasonProgress({ data }: { data: ShowProgress[] }) {
     <Card className="bg-pearl/30 border-border/15 shadow-2xl backdrop-blur-md">
       <CardHeader className="pb-2 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
         <div>
-          <CardTitle className="text-lg font-bold tracking-tight text-accent">
-            Show Progress Tracker
-          </CardTitle>
+          <CardTitle className="text-lg font-bold tracking-tight text-accent">Show Progress Tracker</CardTitle>
           <p className="text-xs text-muted-foreground mt-1">
-            {stats.total} shows · {stats.totalEps.toLocaleString()} episodes watched ·{' '}
-            {stats.complete} completed
+            {stats.total} shows · {stats.totalEps.toLocaleString()} episodes watched · {stats.complete} completed
           </p>
         </div>
         <Select
@@ -101,10 +98,7 @@ export default function ShowSeasonProgress({ data }: { data: ShowProgress[] }) {
                 placement="mouse"
                 content={
                   <div className="flex flex-col gap-0.5 min-w-45">
-                    <span
-                      className="font-semibold text-gold"
-                      style={{ fontFamily: 'var(--font-poppins)' }}
-                    >
+                    <span className="font-semibold text-gold" style={{ fontFamily: 'var(--font-poppins)' }}>
                       {show.show_name}
                     </span>
                     <div className="flex justify-between gap-4 text-[11px] mt-1">
@@ -128,9 +122,7 @@ export default function ShowSeasonProgress({ data }: { data: ShowProgress[] }) {
                     {show.last_watched_at && (
                       <div className="flex justify-between gap-4 text-[11px]">
                         <span className="text-quicksilver">Last Watched</span>
-                        <span className="text-platinum tabular-nums">
-                          {formatDate(show.last_watched_at)}
-                        </span>
+                        <span className="text-platinum tabular-nums">{formatDate(show.last_watched_at)}</span>
                       </div>
                     )}
                   </div>
@@ -139,9 +131,7 @@ export default function ShowSeasonProgress({ data }: { data: ShowProgress[] }) {
                 <div className="grid grid-cols-[1fr_80px_60px_50px] items-center gap-3 py-1.5 px-2 hover:bg-pearl/30 rounded transition-colors">
                   <div className="flex items-center gap-2 min-w-0">
                     <span className="text-sm text-foreground/90 truncate">{show.show_name}</span>
-                    <span
-                      className={`text-[9px] px-1.5 py-0.5 rounded-full shrink-0 hidden sm:inline-block ${badge.color}`}
-                    >
+                    <span className={`text-[9px] px-1.5 py-0.5 rounded-full shrink-0 hidden sm:inline-block ${badge.color}`}>
                       {badge.label}
                     </span>
                   </div>
@@ -154,9 +144,7 @@ export default function ShowSeasonProgress({ data }: { data: ShowProgress[] }) {
                   <span className="text-xs tabular-nums text-muted-foreground text-right">
                     {show.watched_episodes}/{show.total_episodes}
                   </span>
-                  <span className="text-xs tabular-nums text-platinum text-right font-medium">
-                    {show.completion_pct}%
-                  </span>
+                  <span className="text-xs tabular-nums text-platinum text-right font-medium">{show.completion_pct}%</span>
                 </div>
               </Tooltip>
             );

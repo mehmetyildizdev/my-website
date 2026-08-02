@@ -1,27 +1,17 @@
-import Link from "next/link";
-import { notFound } from "next/navigation";
-import { PostRenderer } from "@/components/blog/PostRenderer";
-import { MoveLeft } from "lucide-react";
-import { getCategoryTheme } from "@/lib/post/categoryBasedSelector";
-import { getPostPageData } from "@/lib/post/utils/postData";
-import {
-  resolveParams,
-  type BlogPostPageParams,
-} from "@/lib/post/utils/params";
-import {
-  getAllPosts,
-  extractPlainText,
-  calculateReadingTime,
-  resolveHeroMedia,
-  wrapHtmlVisual,
-  formatPublishedDate,
-} from "@/lib/post";
-import { TranslateToggleButton } from "@/components/blog/TranslateToggleButton";
-import { Badge } from "@/components/shadcn/ui/badge";
-import { Button } from "@/components/shadcn/ui/button";
-import { Separator } from "@/components/shadcn/ui/separator";
-import { HeroImageContent } from "@/components/blog/HeroImageContent";
-import { cn } from "@/lib/shadcn/utils";
+import Link from 'next/link';
+import { notFound } from 'next/navigation';
+import { PostRenderer } from '@/components/blog/PostRenderer';
+import { MoveLeft } from 'lucide-react';
+import { getCategoryTheme } from '@/lib/post/categoryBasedSelector';
+import { getPostPageData } from '@/lib/post/utils/postData';
+import { resolveParams, type BlogPostPageParams } from '@/lib/post/utils/params';
+import { getAllPosts, extractPlainText, calculateReadingTime, resolveHeroMedia, wrapHtmlVisual, formatPublishedDate } from '@/lib/post';
+import { TranslateToggleButton } from '@/components/blog/TranslateToggleButton';
+import { Badge } from '@/components/shadcn/ui/badge';
+import { Button } from '@/components/shadcn/ui/button';
+import { Separator } from '@/components/shadcn/ui/separator';
+import { HeroImageContent } from '@/components/blog/HeroImageContent';
+import { cn } from '@/lib/shadcn/utils';
 
 export default async function BlogPostPageVariant({
   params,
@@ -39,7 +29,7 @@ export default async function BlogPostPageVariant({
   const { post } = await getPostPageData(slug);
   const plainText = extractPlainText(post.body ?? []);
   const readingTime = calculateReadingTime(plainText);
-  const publishedDate = formatPublishedDate(post.publishedAt ?? "");
+  const publishedDate = formatPublishedDate(post.publishedAt ?? '');
   const categories = post.categories?.map((category) => category.title) ?? [];
   const tags = post.tags?.map((tag) => tag.title) ?? [];
   const heroMedia = resolveHeroMedia(post);
@@ -47,36 +37,25 @@ export default async function BlogPostPageVariant({
 
   // Translation toggle — URL param ?translated=1
   const resolvedParams = searchParams ? await searchParams : {};
-  const isTurkish = tags.some((t) => t.toLowerCase() === "türkçe");
+  const isTurkish = tags.some((t) => t.toLowerCase() === 'türkçe');
   const hasTranslation = isTurkish && !!post.translationBody?.length;
-  const showingTranslation = hasTranslation && resolvedParams?.translated === "1";
+  const showingTranslation = hasTranslation && resolvedParams?.translated === '1';
   const activeBody = showingTranslation ? post.translationBody! : post.body;
 
   return (
     <article className="relative isolate">
-      <div
-        className={`absolute inset-x-0 top-0 -z-10 h-108 md:h-96 lg:h-84 bg-linear-to-b ${theme.from} from-0% to-pearl/33 to-90%`}
-      />
-      <div
-        className={`absolute inset-x-0 top-0 -z-11 h-108 md:h-96 lg:h-84 ${theme.backgroundImage} opacity-33 bg-cover md:bg-auto`}
-      />
+      <div className={`absolute inset-x-0 top-0 -z-10 h-108 md:h-96 lg:h-84 bg-linear-to-b ${theme.from} from-0% to-pearl/33 to-90%`} />
+      <div className={`absolute inset-x-0 top-0 -z-11 h-108 md:h-96 lg:h-84 ${theme.backgroundImage} opacity-33 bg-cover md:bg-auto`} />
 
       <div className="flex flex-col gap-4">
         <div className="flex items-center justify-between">
           <Button variant="glass" size="sm" asChild className="rounded-none text-platinum text-shadow-sm">
-            <Link
-              href="/blog"
-              aria-label="Back to blog"
-              className="group inline-flex items-center gap-1"
-            >
+            <Link href="/blog" aria-label="Back to blog" className="group inline-flex items-center gap-1">
               <MoveLeft className="group-hover:-translate-x-1 transition-transform duration-300" />
               Blog
             </Link>
           </Button>
-          <TranslateToggleButton
-            isActive={hasTranslation}
-            showingTranslation={showingTranslation}
-          />
+          <TranslateToggleButton isActive={hasTranslation} showingTranslation={showingTranslation} />
         </div>
         <header className="flex flex-col gap-4">
           <div className="flex flex-col gap-2">
@@ -101,7 +80,9 @@ export default async function BlogPostPageVariant({
               </div>
 
               <div className="flex items-center gap-3 text-xs text-shadow-lg font-medium">
-                <time suppressHydrationWarning dateTime={post.publishedAt}>{publishedDate}</time>
+                <time suppressHydrationWarning dateTime={post.publishedAt}>
+                  {publishedDate}
+                </time>
                 <span aria-hidden="true">•</span>
                 <span>{readingTime} min read</span>
               </div>
@@ -110,41 +91,35 @@ export default async function BlogPostPageVariant({
         </header>
 
         {/* excerpt (padded from left a bit) */}
-        <div
-          id="post-excerpt"
-          className={`flex justify-end mx-auto w-full max-w-3x border-t-2 ${theme.border}`}
-        >
+        <div id="post-excerpt" className={`flex justify-end mx-auto w-full max-w-3x border-t-2 ${theme.border}`}>
           <div className="flex rounded-bl-lg py-4 pr-6 lg:pr-12 lg:w-[75%]">
-            <p className="text-base text-metadata text-shadow-md pl-4 md:pb-6 lg:pb-2">
-              {post.metaDescription}
-            </p>
+            <p className="text-base text-metadata text-shadow-md pl-4 md:pb-6 lg:pb-2">{post.metaDescription}</p>
           </div>
         </div>
 
         {/* hero image / HTML visual with colorful border — aspect-ratio preserves 16:9 at all widths */}
         {heroMedia && (
-          <figure
-            id="hero-image"
-            className="group relative mx-auto mt-2 px-2 w-full max-w-4xl"
-          >
+          <figure id="hero-image" className="group relative mx-auto mt-2 px-2 w-full max-w-4xl">
             {/* aspect-video = 16:9; height is always width × (9/16), p-1 is the colored border */}
             <div className={`rounded-2xl aspect-video p-1 ${theme.bg}`}>
               <HeroImageContent
                 kind={heroMedia.kind}
-                url={heroMedia.kind === "image" ? heroMedia.url : undefined}
-                htmlCode={heroMedia.kind === "htmlVisual" ? wrapHtmlVisual(heroMedia.htmlCode) : undefined}
+                url={heroMedia.kind === 'image' ? heroMedia.url : undefined}
+                htmlCode={heroMedia.kind === 'htmlVisual' ? wrapHtmlVisual(heroMedia.htmlCode) : undefined}
                 alt={heroMedia.alt ?? post.title}
                 themeBg={theme.bg}
                 priority
               />
 
               {heroMedia.caption && (
-                <figcaption className={cn(
-                  "absolute left-0 right-0 bottom-0 bg-muted/66 backdrop-blur-md px-6 py-3 text-sm font-medium transition-opacity duration-300 opacity-0 group-hover:opacity-100 pointer-events-none border-t",
-                  theme.border,
-                  theme.text
-                )}>
-                  <span className={cn("mr-4 inline-block h-2 w-2", theme.bg)} />
+                <figcaption
+                  className={cn(
+                    'absolute left-0 right-0 bottom-0 bg-muted/66 backdrop-blur-md px-6 py-3 text-sm font-medium transition-opacity duration-300 opacity-0 group-hover:opacity-100 pointer-events-none border-t',
+                    theme.border,
+                    theme.text,
+                  )}
+                >
+                  <span className={cn('mr-4 inline-block h-2 w-2', theme.bg)} />
                   {heroMedia.caption}
                 </figcaption>
               )}
@@ -160,9 +135,7 @@ export default async function BlogPostPageVariant({
             <div className="flex flex-col gap-8 text-md text-muted-foreground">
               <Separator className="mt-4" />
               <div className="flex flex-wrap items-center gap-x-4 gap-y-3 py-8">
-                <span className="text-lg text-shadow-md font-bold uppercase tracking-[0.15em] text-foreground/75">
-                  Tags:
-                </span>
+                <span className="text-lg text-shadow-md font-bold uppercase tracking-[0.15em] text-foreground/75">Tags:</span>
                 {tags.length > 0 ? (
                   <div className="flex flex-wrap gap-4">
                     {tags.map((tag) => (
@@ -175,9 +148,7 @@ export default async function BlogPostPageVariant({
                     ))}
                   </div>
                 ) : (
-                  <span className="text-xs italic text-muted-foreground">
-                    No tags yet
-                  </span>
+                  <span className="text-xs italic text-muted-foreground">No tags yet</span>
                 )}
               </div>
             </div>

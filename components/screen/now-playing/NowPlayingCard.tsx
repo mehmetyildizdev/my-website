@@ -29,10 +29,7 @@ export default function NowPlayingCard({
   playback?: PlaybackState | null;
   serverNowMs?: number;
 } = {}) {
-  const { playback, position, progress, isExpired, isFinished, isPaused } = useNowPlayingTimeline(
-    mockPlayback,
-    mockServerNowMs
-  );
+  const { playback, position, progress, isExpired, isFinished, isPaused } = useNowPlayingTimeline(mockPlayback, mockServerNowMs);
 
   // If expired, stopped, or no active media, render nothing
   if (isExpired || !playback || !playback.media) {
@@ -51,14 +48,7 @@ export default function NowPlayingCard({
       {/* Ambient glowing backdrop motif */}
       {backdropUrl && (
         <div className="absolute inset-0 pointer-events-none z-0 overflow-hidden select-none">
-          <Image
-            src={backdropUrl}
-            alt=""
-            fill
-            priority
-            className="object-cover opacity-[0.08] blur-xl scale-110"
-            unoptimized
-          />
+          <Image src={backdropUrl} alt="" fill priority className="object-cover opacity-[0.08] blur-xl scale-110" unoptimized />
         </div>
       )}
 
@@ -68,14 +58,7 @@ export default function NowPlayingCard({
           {/* Poster Artwork container */}
           <div className="relative shrink-0 w-24 sm:w-28 md:w-32 aspect-2/3 rounded-lg overflow-hidden bg-obsidian border border-border/10 shadow-lg">
             {posterUrl ? (
-              <Image
-                src={posterUrl}
-                alt={media.title || 'Media poster'}
-                fill
-                priority
-                className="object-cover"
-                unoptimized
-              />
+              <Image src={posterUrl} alt={media.title || 'Media poster'} fill priority className="object-cover" unoptimized />
             ) : (
               <div className="flex h-full items-center justify-center text-quicksilver/40">
                 <Clapperboard className="h-8 w-8" />
@@ -95,9 +78,7 @@ export default function NowPlayingCard({
                 {isFinished ? 'Syncing' : isPaused ? 'Paused' : 'Now Playing'}
               </span>
               <span className="text-[10px] text-quicksilver/40 font-medium">•</span>
-              <span className="text-[10px] text-quicksilver/70 font-medium font-rubik">
-                Live from MemoStream
-              </span>
+              <span className="text-[10px] text-quicksilver/70 font-medium font-rubik">Live from MemoStream</span>
             </div>
 
             {/* Media Title */}
@@ -108,8 +89,7 @@ export default function NowPlayingCard({
             {/* Subtitles (Episode info or Release year) */}
             {media.mediaType === 'episode' ? (
               <p className="text-md text-platinum/90 mt-0.5 line-clamp-1 leading-normal font-rubik font-medium">
-                S{String(media.seasonNumber ?? 0).padStart(2, '0')}E
-                {String(media.episodeNumber ?? 0).padStart(2, '0')} •{' '}
+                S{String(media.seasonNumber ?? 0).padStart(2, '0')}E{String(media.episodeNumber ?? 0).padStart(2, '0')} •{' '}
                 {media.episodeTitle || 'Untitled Episode'}
               </p>
             ) : (
@@ -122,11 +102,7 @@ export default function NowPlayingCard({
             )}
 
             {/* Tagline */}
-            {media.tagline && (
-              <p className="text-sm italic text-ruby/70 font-rubik line-clamp-1 mt-1">
-                "{media.tagline}"
-              </p>
-            )}
+            {media.tagline && <p className="text-sm italic text-ruby/70 font-rubik line-clamp-1 mt-1">"{media.tagline}"</p>}
 
             {/* Overview snippet (Fills desktop nicely) */}
             {media.overview && (
@@ -183,9 +159,7 @@ export default function NowPlayingCard({
             /* Fallback time format if duration is missing */
             <div className="text-[10px] text-quicksilver font-bold font-rubik tracking-wider uppercase flex items-center gap-1.5">
               <span>{isPaused ? 'Paused at:' : 'Elapsed:'}</span>
-              <span className={isPaused ? 'text-topaz' : 'text-gold'}>
-                {formatSeconds(position)}
-              </span>
+              <span className={isPaused ? 'text-topaz' : 'text-gold'}>{formatSeconds(position)}</span>
             </div>
           )}
         </div>

@@ -10,10 +10,7 @@ interface MaintenanceActionsProps {
   syncSecret: string;
 }
 
-export default function MaintenanceActions({
-  isAuthenticated,
-  syncSecret,
-}: MaintenanceActionsProps) {
+export default function MaintenanceActions({ isAuthenticated, syncSecret }: MaintenanceActionsProps) {
   const [isLocalhost, setIsLocalhost] = useState(false);
   const [modalOpen, setModalOpen] = useState(false);
   const [blockedAction, setBlockedAction] = useState('');
@@ -49,13 +46,9 @@ export default function MaintenanceActions({
     let endpoint = '';
 
     if (promptType === 'shows') {
-      endpoint = trimmed
-        ? `/api/screen/update/shows?tmdb_id=${encodeURIComponent(trimmed)}`
-        : '/api/screen/update/shows?limit=1000';
+      endpoint = trimmed ? `/api/screen/update/shows?tmdb_id=${encodeURIComponent(trimmed)}` : '/api/screen/update/shows?limit=1000';
     } else {
-      endpoint = trimmed
-        ? `/api/screen/update/movies?tmdb_id=${encodeURIComponent(trimmed)}`
-        : '/api/screen/update/movies?limit=10000';
+      endpoint = trimmed ? `/api/screen/update/movies?tmdb_id=${encodeURIComponent(trimmed)}` : '/api/screen/update/movies?limit=10000';
     }
 
     const href = `${endpoint}${endpoint.includes('?') ? '&' : '?'}secret=${encodeURIComponent(syncSecret)}`;
@@ -112,35 +105,15 @@ export default function MaintenanceActions({
               Update Shows
             </Button>
 
-            {renderAction(
-              'Update from History',
-              '/api/screen/enrich/history?limit=1000',
-              'hover:text-amethyst hover:border-amethyst/50'
-            )}
+            {renderAction('Update from History', '/api/screen/enrich/history?limit=1000', 'hover:text-amethyst hover:border-amethyst/50')}
           </div>
 
           {/* Bottom Row: Enrich Actions */}
           <div className="flex flex-wrap items-center gap-2">
-            {renderAction(
-              'Enrich Seasons',
-              '/api/screen/enrich/seasons?limit=10000',
-              'hover:text-sapphire hover:border-sapphire/50'
-            )}
-            {renderAction(
-              'Enrich Episodes',
-              '/api/screen/enrich/episodes?limit=10000',
-              'hover:text-topaz hover:border-topaz/50'
-            )}
-            {renderAction(
-              'Enrich Collections',
-              '/api/screen/enrich/collections',
-              'hover:text-gold hover:border-gold/50'
-            )}
-            {renderAction(
-              'Enrich People',
-              '/api/screen/enrich/people?limit=1000',
-              'hover:text-emerald hover:border-emerald/50'
-            )}
+            {renderAction('Enrich Seasons', '/api/screen/enrich/seasons?limit=10000', 'hover:text-sapphire hover:border-sapphire/50')}
+            {renderAction('Enrich Episodes', '/api/screen/enrich/episodes?limit=10000', 'hover:text-topaz hover:border-topaz/50')}
+            {renderAction('Enrich Collections', '/api/screen/enrich/collections', 'hover:text-gold hover:border-gold/50')}
+            {renderAction('Enrich People', '/api/screen/enrich/people?limit=1000', 'hover:text-emerald hover:border-emerald/50')}
 
             {isLocalhost && (
               <Button
@@ -192,14 +165,12 @@ export default function MaintenanceActions({
         title="Access Denied"
         description={
           <>
-            Action <span className="text-ruby font-semibold">"{blockedAction}"</span> is reserved
-            for my use only. We wouldn't want you triggering a full sync and burning down my
-            server, would we? 😉
+            Action <span className="text-ruby font-semibold">"{blockedAction}"</span> is reserved for my use only. We wouldn't want you
+            triggering a full sync and burning down my server, would we? 😉
             <br />
             <br />
             <span className="text-xs italic text-quicksilver bg-pearl/10 border border-border/10 rounded px-2 py-1 block mt-1">
-              Security Info: The production API endpoints are protected by an environment-injected
-              secret passphrase check.
+              Security Info: The production API endpoints are protected by an environment-injected secret passphrase check.
             </span>
           </>
         }

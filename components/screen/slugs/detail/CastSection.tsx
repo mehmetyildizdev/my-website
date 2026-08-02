@@ -34,31 +34,18 @@ export default function CastSection({ cast, leadCount = 4 }: CastSectionProps) {
   const hiddenCount = restAll.length - rest.length;
 
   return (
-    <SectionShell
-      title="Acting"
-      blurb="The faces on screen"
-      token="gold"
-      aside={`${cast.length} credited`}
-    >
+    <SectionShell title="Acting" blurb="The faces on screen" token="gold" aside={`${cast.length} credited`}>
       {/* Featured leads — editorial portrait row */}
       <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 mb-8">
         {leads.map((m) => (
           <div key={m.tmdb_id} className="group relative">
-            <PersonCard
-              tmdb_id={m.tmdb_id}
-              name={m.name}
-              profile_path={m.profile_path}
-              token="gold"
-              variant="portrait"
-            />
+            <PersonCard tmdb_id={m.tmdb_id} name={m.name} profile_path={m.profile_path} token="gold" variant="portrait" />
             {m.character && (
               <p className="mt-1 px-0.5 text-xs md:text-sm italic text-quicksilver leading-snug line-clamp-2">
                 as <span className="text-platinum not-italic font-medium">{m.character}</span>
               </p>
             )}
-            {m.episode_count != null && (
-              <p className="px-0.5 text-xs text-quicksilver/80">{m.episode_count} eps</p>
-            )}
+            {m.episode_count != null && <p className="px-0.5 text-xs text-quicksilver/80">{m.episode_count} eps</p>}
           </div>
         ))}
       </div>
@@ -66,9 +53,7 @@ export default function CastSection({ cast, leadCount = 4 }: CastSectionProps) {
       {/* Supporting ensemble — compact rectangle grid */}
       {rest.length > 0 && (
         <>
-          <p className="mb-4 text-[11px] uppercase tracking-widest text-quicksilver/70">
-            Supporting Ensemble
-          </p>
+          <p className="mb-4 text-[11px] uppercase tracking-widest text-quicksilver/70">Supporting Ensemble</p>
           <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-6 lg:grid-cols-8 gap-x-4 gap-y-5">
             {rest.map((m) => (
               <PersonCard

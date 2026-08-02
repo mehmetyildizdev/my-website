@@ -52,15 +52,7 @@ export const DEPARTMENTS: DepartmentDef[] = [
     title: 'Source Material',
     blurb: 'Where it all began',
     token: 'quicksilver',
-    jobs: [
-      'Original Story',
-      'Novel',
-      'Comic Book',
-      'Characters',
-      'Graphic Novel',
-      'Book',
-      'Short Story',
-    ],
+    jobs: ['Original Story', 'Novel', 'Comic Book', 'Characters', 'Graphic Novel', 'Book', 'Short Story'],
   },
 ];
 

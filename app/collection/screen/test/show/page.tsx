@@ -1,11 +1,11 @@
 // app/collection/screen/test/show/page.tsx
 // Renders ShowDetail with mock fixtures.
-import ShowDetail from "@/components/screen/slugs/ShowDetail";
-import { MOCK_SHOW, MOCK_CAST, MOCK_CREW } from "../mockData";
+import ShowDetail from '@/components/screen/slugs/ShowDetail';
+import { MOCK_SHOW, MOCK_CAST, MOCK_CREW } from '../mockData';
 
-export const metadata = { title: "Show Detail — Preview" };
+export const metadata = { title: 'Show Detail — Preview' };
 
-const SHOW_GENRES = [{ name: "Crime" }, { name: "Mystery" }, { name: "Drama" }];
+const SHOW_GENRES = [{ name: 'Crime' }, { name: 'Mystery' }, { name: 'Drama' }];
 
 export default function TestShowPage() {
   return (

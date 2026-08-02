@@ -6,7 +6,7 @@ let activeFetchPromise: Promise<NowPlayingResponse> | null = null;
 
 export async function fetchNowPlaying(signal?: AbortSignal): Promise<NowPlayingResponse> {
   const now = Date.now();
-  
+
   // 1. Return cache if fetched within the last 2 seconds (covers Strict Mode / concurrent mounts)
   if (cachedResponse && now - lastFetchTime < 2000) {
     return cachedResponse;
@@ -19,7 +19,7 @@ export async function fetchNowPlaying(signal?: AbortSignal): Promise<NowPlayingR
 
   // Client-side calls hit our Next.js API proxy to avoid CORS issues
   const url = '/api/screen/now-playing';
-  
+
   const controller = new AbortController();
   const timeoutId = setTimeout(() => controller.abort(), 8000); // 8-second request timeout
 
@@ -44,9 +44,11 @@ export async function fetchNowPlaying(signal?: AbortSignal): Promise<NowPlayingR
   })();
 
   // Handle errors on the cleanup branch to prevent unhandled rejection leakage
-  activeFetchPromise.catch(() => {}).finally(() => {
-    activeFetchPromise = null;
-  });
+  activeFetchPromise
+    .catch(() => {})
+    .finally(() => {
+      activeFetchPromise = null;
+    });
 
   return activeFetchPromise;
 }

@@ -3,15 +3,7 @@ import { m, useMotionTemplate, useTransform, useMotionValue } from 'framer-motio
 import { trackClick } from 'tools/TrackClicks';
 import { cn } from '@/lib/shadcn/utils';
 
-export function SyncButton({
-  tab,
-  index,
-  activeIdx,
-  onTabChange,
-  animPauseStyle,
-  angle,
-  hideContent,
-}: SummaryUIProps) {
+export function SyncButton({ tab, index, activeIdx, onTabChange, animPauseStyle, angle, hideContent }: SummaryUIProps) {
   const fallbackAngle = useMotionValue(0);
   const activeAngle = angle || fallbackAngle;
 
@@ -81,20 +73,15 @@ export function SyncButton({
         }}
         className="absolute inset-y-[7.5%] left-2 right-0 bg-no-repeat bg-cover rounded-l-2xl bg-blend-multiply drop-shadow-lg"
       />
-      <m.div
-        style={{ x: inverseX }}
-        className="absolute inset-0 flex justify-start items-center pl-2 z-10 pointer-events-none"
-      >
+      <m.div style={{ x: inverseX }} className="absolute inset-0 flex justify-start items-center pl-2 z-10 pointer-events-none">
         <p
           className={cn(
             'text-platinum light:text-pearl text-xl flex justify-start items-center gap-2 drop-shadow-[0_2px_3px_rgba(0,0,0,0.9)] transition-opacity duration-300 whitespace-nowrap',
-            hideContent ? 'opacity-0' : 'opacity-100'
+            hideContent ? 'opacity-0' : 'opacity-100',
           )}
         >
           <span className="w-10 pl-2 flex justify-center">
-            {tab?.icon && (
-              <tab.icon className="text-xl xl:text-3xl drop-shadow-[0_2px_3px_rgba(0,0,0,0.8)]" />
-            )}
+            {tab?.icon && <tab.icon className="text-xl xl:text-3xl drop-shadow-[0_2px_3px_rgba(0,0,0,0.8)]" />}
           </span>
           <span className="text-lg">{tab?.name}</span>
         </p>

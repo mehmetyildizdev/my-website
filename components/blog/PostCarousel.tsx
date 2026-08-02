@@ -1,15 +1,15 @@
-"use client";
+'use client';
 
-import { useRef, useState, useEffect, useCallback } from "react";
-import Link from "next/link";
-import Image from "next/image";
-import { ChevronLeft, ChevronRight } from "lucide-react";
-import { getCategoryTheme } from "@/lib/post/categoryBasedSelector";
-import { formatDate } from "@/lib/post";
-import { Badge } from "@/components/shadcn/ui/badge";
-import { Button } from "@/components/shadcn/ui/button";
-import { Separator } from "@/components/shadcn/ui/separator";
-import { cn } from "@/lib/shadcn/utils";
+import { useRef, useState, useEffect, useCallback } from 'react';
+import Link from 'next/link';
+import Image from 'next/image';
+import { ChevronLeft, ChevronRight } from 'lucide-react';
+import { getCategoryTheme } from '@/lib/post/categoryBasedSelector';
+import { formatDate } from '@/lib/post';
+import { Badge } from '@/components/shadcn/ui/badge';
+import { Button } from '@/components/shadcn/ui/button';
+import { Separator } from '@/components/shadcn/ui/separator';
+import { cn } from '@/lib/shadcn/utils';
 
 // ── Config ─────────────────────────────────────────────────────────────────
 /** Maximum number of posts shown in the carousel. Change this freely. */
@@ -32,14 +32,12 @@ const CARDS_PER_VIEW: 1 | 2 | 3 | 4 = 4;
  *   - lg+       : CARDS_PER_VIEW cards
  */
 const CARD_WIDTH_CLASSES: Record<1 | 2 | 3 | 4, string> = {
-  1: "w-[calc(100%-1.5rem)] md:w-[calc(100%-1.5rem)]        lg:w-[calc(100%-1.5rem)]",
-  2: "w-[calc(100%-1.5rem)] md:w-[calc(50%-0.75rem)]         lg:w-[calc(50%-0.75rem)]",
-  3: "w-[calc(100%-1.5rem)] md:w-[calc(50%-0.75rem)]         lg:w-[calc(33.333%-1rem)]",
-  4: "w-[calc(100%-1.5rem)] md:w-[calc(50%-0.75rem)]         lg:w-[calc(25%-1.125rem)]",
+  1: 'w-[calc(100%-1.5rem)] md:w-[calc(100%-1.5rem)]        lg:w-[calc(100%-1.5rem)]',
+  2: 'w-[calc(100%-1.5rem)] md:w-[calc(50%-0.75rem)]         lg:w-[calc(50%-0.75rem)]',
+  3: 'w-[calc(100%-1.5rem)] md:w-[calc(50%-0.75rem)]         lg:w-[calc(33.333%-1rem)]',
+  4: 'w-[calc(100%-1.5rem)] md:w-[calc(50%-0.75rem)]         lg:w-[calc(25%-1.125rem)]',
 };
 const cardWidthClass = CARD_WIDTH_CLASSES[CARDS_PER_VIEW];
-
-
 
 interface PostCarouselProps {
   posts: Post[];
@@ -47,9 +45,7 @@ interface PostCarouselProps {
 }
 
 export function PostCarousel({ posts, currentSlug }: PostCarouselProps) {
-  const carouselPosts = posts
-    .filter((p) => p.slug?.current !== currentSlug)
-    .slice(0, MAX_CAROUSEL_POSTS);
+  const carouselPosts = posts.filter((p) => p.slug?.current !== currentSlug).slice(0, MAX_CAROUSEL_POSTS);
 
   const trackRef = useRef<HTMLDivElement>(null);
   const [canScrollLeft, setCanScrollLeft] = useState(false);
@@ -75,22 +71,22 @@ export function PostCarousel({ posts, currentSlug }: PostCarouselProps) {
     if (!el) return;
 
     checkScroll();
-    el.addEventListener("scroll", checkScroll, { passive: true });
+    el.addEventListener('scroll', checkScroll, { passive: true });
     const ro = new ResizeObserver(checkScroll);
     ro.observe(el);
     return () => {
-      el.removeEventListener("scroll", checkScroll);
+      el.removeEventListener('scroll', checkScroll);
       ro.disconnect();
     };
   }, [checkScroll]);
 
   /** Arrow-button scroll — always one full "page" so snap works cleanly. */
-  const scroll = (dir: "left" | "right") => {
+  const scroll = (dir: 'left' | 'right') => {
     const el = trackRef.current;
     if (!el) return;
     el.scrollBy({
-      left: dir === "left" ? -el.clientWidth : el.clientWidth,
-      behavior: "smooth",
+      left: dir === 'left' ? -el.clientWidth : el.clientWidth,
+      behavior: 'smooth',
     });
   };
 
@@ -129,20 +125,15 @@ export function PostCarousel({ posts, currentSlug }: PostCarouselProps) {
   if (carouselPosts.length === 0) return null;
 
   return (
-    <section
-      aria-label="More articles"
-      className="relative w-full pt-16 pb-8 bg-background"
-    >
+    <section aria-label="More articles" className="relative w-full pt-16 pb-8 bg-background">
       <Separator />
 
       {/* Header row */}
       <div className="flex items-center justify-between mt-16 px-6 lg:px-8 mb-8">
-        <h2 className="text-2xl font-black tracking-tight text-foreground">
-          More to Read
-        </h2>
+        <h2 className="text-2xl font-black tracking-tight text-foreground">More to Read</h2>
         <div className="flex items-center gap-2">
           <Button
-            onClick={() => scroll("left")}
+            onClick={() => scroll('left')}
             disabled={!canScrollLeft}
             aria-label="Scroll left"
             variant="glass"
@@ -152,7 +143,7 @@ export function PostCarousel({ posts, currentSlug }: PostCarouselProps) {
             <ChevronLeft className="h-4 w-4" />
           </Button>
           <Button
-            onClick={() => scroll("right")}
+            onClick={() => scroll('right')}
             disabled={!canScrollRight}
             aria-label="Scroll right"
             variant="glass"
@@ -172,18 +163,18 @@ export function PostCarousel({ posts, currentSlug }: PostCarouselProps) {
         onMouseUp={onDragEnd}
         onMouseLeave={onDragEnd}
         className={cn(
-          "flex gap-6 overflow-x-auto px-6 lg:px-8 pb-8 snap-x snap-mandatory",
-          "[scrollbar-width:none] [&::-webkit-scrollbar]:hidden",
-          "cursor-grab active:cursor-grabbing select-none",
-          "scroll-pl-6 lg:scroll-pl-8",
+          'flex gap-6 overflow-x-auto px-6 lg:px-8 pb-8 snap-x snap-mandatory',
+          '[scrollbar-width:none] [&::-webkit-scrollbar]:hidden',
+          'cursor-grab active:cursor-grabbing select-none',
+          'scroll-pl-6 lg:scroll-pl-8',
           // Dynamic mask to fade edges when scrollable
-          canScrollLeft && canScrollRight 
-            ? "mask-[linear-gradient(to_right,transparent,black_10%,black_90%,transparent)]"
-            : canScrollLeft 
-              ? "mask-[linear-gradient(to_right,transparent,black_10%)]"
+          canScrollLeft && canScrollRight
+            ? 'mask-[linear-gradient(to_right,transparent,black_10%,black_90%,transparent)]'
+            : canScrollLeft
+              ? 'mask-[linear-gradient(to_right,transparent,black_10%)]'
               : canScrollRight
-                ? "mask-[linear-gradient(to_left,transparent,black_10%)]"
-                : "mask-none"
+                ? 'mask-[linear-gradient(to_left,transparent,black_10%)]'
+                : 'mask-none',
         )}
       >
         {carouselPosts.map((post) => {
@@ -217,7 +208,9 @@ export function PostCarousel({ posts, currentSlug }: PostCarouselProps) {
                   {formatDate(post.publishedAt)}
                 </time>
 
-                <h3 className={`mt-2 text-base font-bold text-foreground leading-snug drop-shadow-sm transition-colors ${catGroupHoverText} line-clamp-2 flex-1`}>
+                <h3
+                  className={`mt-2 text-base font-bold text-foreground leading-snug drop-shadow-sm transition-colors ${catGroupHoverText} line-clamp-2 flex-1`}
+                >
                   {post.title}
                 </h3>
 
@@ -229,10 +222,11 @@ export function PostCarousel({ posts, currentSlug }: PostCarouselProps) {
                   ) : (
                     <span />
                   )}
-                  <span
-                    className={`font-bold text-xs ${catText} flex items-center gap-1 group-hover:translate-x-1 transition-transform`}
-                  >
-                    Read <span aria-hidden className="text-base leading-none">→</span>
+                  <span className={`font-bold text-xs ${catText} flex items-center gap-1 group-hover:translate-x-1 transition-transform`}>
+                    Read{' '}
+                    <span aria-hidden className="text-base leading-none">
+                      →
+                    </span>
                   </span>
                 </div>
               </article>

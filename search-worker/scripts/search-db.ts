@@ -58,14 +58,14 @@ export async function syncSearchIndex(pool: Pool) {
   sqlStatements.push('BEGIN TRANSACTION;');
   sqlStatements.push('DROP TABLE IF EXISTS search_items;');
   sqlStatements.push(
-    'CREATE TABLE search_items (type TEXT NOT NULL, tmdb_id INTEGER NOT NULL, name TEXT NOT NULL, extra_name TEXT, image_path TEXT, rating REAL, release_date TEXT, PRIMARY KEY (type, tmdb_id));'
+    'CREATE TABLE search_items (type TEXT NOT NULL, tmdb_id INTEGER NOT NULL, name TEXT NOT NULL, extra_name TEXT, image_path TEXT, rating REAL, release_date TEXT, PRIMARY KEY (type, tmdb_id));',
   );
   sqlStatements.push('CREATE INDEX idx_search_items_name ON search_items(name);');
   sqlStatements.push('CREATE INDEX idx_search_items_extra_name ON search_items(extra_name);');
 
   for (const row of rows) {
     sqlStatements.push(
-      `INSERT INTO search_items (type, tmdb_id, name, extra_name, image_path, rating, release_date) VALUES (${escapeSql(row.type)}, ${row.tmdb_id}, ${escapeSql(row.name)}, ${escapeSql(row.extra_name)}, ${escapeSql(row.image_path)}, ${row.rating !== null ? row.rating : 'NULL'}, ${escapeSql(row.release_date)});`
+      `INSERT INTO search_items (type, tmdb_id, name, extra_name, image_path, rating, release_date) VALUES (${escapeSql(row.type)}, ${row.tmdb_id}, ${escapeSql(row.name)}, ${escapeSql(row.extra_name)}, ${escapeSql(row.image_path)}, ${row.rating !== null ? row.rating : 'NULL'}, ${escapeSql(row.release_date)});`,
     );
   }
   sqlStatements.push('COMMIT;');

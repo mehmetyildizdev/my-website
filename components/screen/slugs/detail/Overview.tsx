@@ -18,9 +18,7 @@ export default function Overview({ text }: OverviewProps) {
       <div className="mb-5 flex items-center gap-3">
         <span className="h-7 w-1 rounded-full bg-linear-to-b from-gold to-transparent" />
         <div>
-          <h2 className="font-poppins text-lg md:text-xl font-semibold text-obsidian dark:text-gold leading-none">
-            Overview
-          </h2>
+          <h2 className="font-poppins text-lg md:text-xl font-semibold text-obsidian dark:text-gold leading-none">Overview</h2>
           <p className="mt-1 text-[11px] uppercase tracking-widest text-quicksilver">Synopsis</p>
         </div>
       </div>

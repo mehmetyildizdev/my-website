@@ -55,9 +55,7 @@ const worker = {
         const numericIdStr = isNaN(tmdbId) ? '-1' : trimmed;
 
         // Check if table exists (in case sync has never run)
-        const tableCheck = await env.DB.prepare(
-          "SELECT name FROM sqlite_master WHERE type='table' AND name='search_items'"
-        ).first();
+        const tableCheck = await env.DB.prepare("SELECT name FROM sqlite_master WHERE type='table' AND name='search_items'").first();
 
         if (!tableCheck) {
           return new Response(JSON.stringify({ movies: [], shows: [], people: [] }), {
@@ -70,7 +68,7 @@ const worker = {
            FROM search_items
            WHERE name LIKE ?1 OR extra_name LIKE ?1 OR CAST(tmdb_id AS TEXT) = ?2
            ORDER BY rating DESC, name ASC
-           LIMIT 60`
+           LIMIT 60`,
         )
           .bind(term, numericIdStr)
           .all<SearchRow>();
@@ -119,13 +117,10 @@ const worker = {
           rateLimitMap.set(clientIp, { count: 1, resetTime: now + windowMs });
         } else {
           if (limit.count >= maxRequests) {
-            return new Response(
-              JSON.stringify({ error: 'Too Many Requests. Rate limit exceeded.' }),
-              {
-                status: 429,
-                headers: { 'Content-Type': 'application/json', ...corsHeaders },
-              }
-            );
+            return new Response(JSON.stringify({ error: 'Too Many Requests. Rate limit exceeded.' }), {
+              status: 429,
+              headers: { 'Content-Type': 'application/json', ...corsHeaders },
+            });
           }
           limit.count += 1;
         }
@@ -134,9 +129,7 @@ const worker = {
       }
 
       try {
-        const tmdbUrl = `https://api.themoviedb.org/3/search/multi?query=${encodeURIComponent(
-          trimmed
-        )}&page=1`;
+        const tmdbUrl = `https://api.themoviedb.org/3/search/multi?query=${encodeURIComponent(trimmed)}&page=1`;
         const response = await fetch(tmdbUrl, {
           headers: {
             Authorization: `Bearer ${env.TMDB_API_READ_ACCESS_TOKEN}`,
@@ -172,4 +165,3 @@ const worker = {
 };
 
 export default worker;
-

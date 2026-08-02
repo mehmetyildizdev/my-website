@@ -21,14 +21,7 @@ export default function NowPlayingSidebar({
   playback?: PlaybackState | null;
   serverNowMs?: number;
 } = {}) {
-  const {
-    playback,
-    position,
-    progress,
-    isExpired,
-    isFinished,
-    isPaused,
-  } = useNowPlayingTimeline(mockPlayback, mockServerNowMs);
+  const { playback, position, progress, isExpired, isFinished, isPaused } = useNowPlayingTimeline(mockPlayback, mockServerNowMs);
 
   // If expired, stopped, or no active media, render nothing
   if (isExpired || !playback || !playback.media) {
@@ -72,11 +65,7 @@ export default function NowPlayingSidebar({
             </span>
             <span
               className={`text-[9px] uppercase tracking-wider font-bold font-poppins ${
-                isFinished
-                  ? 'text-emerald'
-                  : isPaused
-                    ? 'text-topaz'
-                    : 'text-gold'
+                isFinished ? 'text-emerald' : isPaused ? 'text-topaz' : 'text-gold'
               }`}
             >
               {isFinished ? 'Syncing' : isPaused ? 'Paused' : 'Now Playing'}
@@ -110,20 +99,12 @@ export default function NowPlayingSidebar({
             aria-label="Playback progress"
           >
             <div
-              className={`h-full rounded-full transition-all duration-300 ${
-                isFinished
-                  ? 'bg-emerald'
-                  : isPaused
-                    ? 'bg-topaz'
-                    : 'bg-gold'
-              }`}
+              className={`h-full rounded-full transition-all duration-300 ${isFinished ? 'bg-emerald' : isPaused ? 'bg-topaz' : 'bg-gold'}`}
               style={{ width: `${isFinished ? 100 : progress * 100}%` }}
             />
           </div>
           <div className="flex justify-between items-center text-[9px] text-quicksilver/70 font-mono mt-1">
-            <span className={isPaused ? 'text-topaz' : ''}>
-              {formatSeconds(isFinished ? playback.durationSeconds : position)}
-            </span>
+            <span className={isPaused ? 'text-topaz' : ''}>{formatSeconds(isFinished ? playback.durationSeconds : position)}</span>
             <span>{formatSeconds(playback.durationSeconds)}</span>
           </div>
         </div>

@@ -31,14 +31,7 @@ function RatingCoin({ value, label, colorClass, href }: RatingCoinProps) {
         {/* SVG Progress Ring */}
         <svg className="absolute inset-0 h-full w-full -rotate-90" viewBox="0 0 48 48">
           {/* Background circle */}
-          <circle
-            className="text-border/10 stroke-current"
-            strokeWidth={strokeWidth}
-            fill="transparent"
-            r={radius}
-            cx="24"
-            cy="24"
-          />
+          <circle className="text-border/10 stroke-current" strokeWidth={strokeWidth} fill="transparent" r={radius} cx="24" cy="24" />
           {/* Fill circle */}
           <circle
             className={`${colorClass} stroke-current`}
@@ -52,9 +45,7 @@ function RatingCoin({ value, label, colorClass, href }: RatingCoinProps) {
             cy="24"
           />
         </svg>
-        <span className={`font-poppins text-sm font-black leading-none ${colorClass}`}>
-          {numValue.toFixed(1).replace(/\.0$/, '')}
-        </span>
+        <span className={`font-poppins text-sm font-black leading-none ${colorClass}`}>{numValue.toFixed(1).replace(/\.0$/, '')}</span>
       </div>
       <div className="leading-tight">
         {href ? (
@@ -75,32 +66,13 @@ function RatingCoin({ value, label, colorClass, href }: RatingCoinProps) {
   );
 }
 
-export default function RatingCluster({
-  myRating,
-  tmdbRating,
-  tmdbId,
-  mediaType,
-}: RatingClusterProps) {
-  const tmdbLink =
-    tmdbId && mediaType ? `https://www.themoviedb.org/${mediaType}/${tmdbId}` : undefined;
+export default function RatingCluster({ myRating, tmdbRating, tmdbId, mediaType }: RatingClusterProps) {
+  const tmdbLink = tmdbId && mediaType ? `https://www.themoviedb.org/${mediaType}/${tmdbId}` : undefined;
 
   return (
     <>
-      {myRating != null && (
-        <RatingCoin
-          value={myRating}
-          label="My Rating"
-          colorClass={getRatingTextColorClass(myRating)}
-        />
-      )}
-      {tmdbRating != null && (
-        <RatingCoin
-          value={Number(tmdbRating)}
-          label="TMDB"
-          colorClass="text-gold"
-          href={tmdbLink}
-        />
-      )}
+      {myRating != null && <RatingCoin value={myRating} label="My Rating" colorClass={getRatingTextColorClass(myRating)} />}
+      {tmdbRating != null && <RatingCoin value={Number(tmdbRating)} label="TMDB" colorClass="text-gold" href={tmdbLink} />}
     </>
   );
 }

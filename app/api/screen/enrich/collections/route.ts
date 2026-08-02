@@ -23,10 +23,10 @@ export async function GET(request: Request) {
   const envSecret = process.env.MY_API_PHRASE || '';
 
   if (!envSecret || !secret || secret !== envSecret) {
-    return new Response(
-      JSON.stringify({ error: '🔒 Access Denied: Invalid sync secret phrase.' }),
-      { status: 403, headers: { 'Content-Type': 'application/json' } }
-    );
+    return new Response(JSON.stringify({ error: '🔒 Access Denied: Invalid sync secret phrase.' }), {
+      status: 403,
+      headers: { 'Content-Type': 'application/json' },
+    });
   }
 
   enrichCollections().catch((err) => console.error('\n[Enrich Collections] Error:', err.message));
@@ -36,9 +36,7 @@ export async function GET(request: Request) {
 async function enrichCollections() {
   const startTime = Date.now();
 
-  const res = await query(
-    `SELECT tmdb_id, name FROM collections WHERE overview IS NULL OR total_movies IS NULL`
-  );
+  const res = await query(`SELECT tmdb_id, name FROM collections WHERE overview IS NULL OR total_movies IS NULL`);
   const collections = res.rows;
 
   if (collections.length === 0) {
@@ -78,13 +76,7 @@ async function enrichCollections() {
              overview          = $3,
              total_movies      = $4
            WHERE tmdb_id = $5`,
-          [
-            d.original_name ?? null,
-            d.original_language ?? null,
-            d.overview ?? null,
-            sorted.length,
-            col.tmdb_id,
-          ]
+          [d.original_name ?? null, d.original_language ?? null, d.overview ?? null, sorted.length, col.tmdb_id],
         );
 
         for (let i = 0; i < sorted.length; i++) {
@@ -100,7 +92,7 @@ async function enrichCollections() {
                title        = EXCLUDED.title,
                poster_path  = EXCLUDED.poster_path,
                release_date = EXCLUDED.release_date`,
-            [col.tmdb_id, p.id, i, p.title ?? null, p.poster_path ?? null, p.release_date || null]
+            [col.tmdb_id, p.id, i, p.title ?? null, p.poster_path ?? null, p.release_date || null],
           );
           bridgeMoviesLinked++;
         }
@@ -108,7 +100,7 @@ async function enrichCollections() {
 
       updatedCount++;
       process.stdout.write(
-        `✓ [${idx + 1}/${collections.length}] Collection TMDB ID: ${col.tmdb_id} ("${col.name}") — ${sorted.length} parts linked\n`
+        `✓ [${idx + 1}/${collections.length}] Collection TMDB ID: ${col.tmdb_id} ("${col.name}") — ${sorted.length} parts linked\n`,
       );
 
       await new Promise((r) => setTimeout(r, 150));
@@ -119,7 +111,7 @@ async function enrichCollections() {
           await query(`DELETE FROM collections WHERE tmdb_id = $1`, [col.tmdb_id]);
           deletedCount++;
           process.stdout.write(
-            `🗑 [${idx + 1}/${collections.length}] Deleted orphaned Collection TMDB ID: ${col.tmdb_id} ("${col.name}")\n`
+            `🗑 [${idx + 1}/${collections.length}] Deleted orphaned Collection TMDB ID: ${col.tmdb_id} ("${col.name}")\n`,
           );
         } catch (delErr: any) {
           errorLogs.push(`[Collection TMDB ID: ${col.tmdb_id}] Failed to delete orphaned collection: ${delErr.message}`);
@@ -127,7 +119,7 @@ async function enrichCollections() {
       } else {
         errorLogs.push(`[Collection TMDB ID: ${col.tmdb_id}] "${col.name}": ${err.message}`);
         process.stdout.write(
-          `✗ [${idx + 1}/${collections.length}] Error on Collection TMDB ID: ${col.tmdb_id} ("${col.name}"): ${err.message}\n`
+          `✗ [${idx + 1}/${collections.length}] Error on Collection TMDB ID: ${col.tmdb_id} ("${col.name}"): ${err.message}\n`,
         );
       }
     }

@@ -10,12 +10,10 @@
  */
 
 export function isImageBlock(block: BodyBlock): block is ImageBlock {
-  return block._type === "image";
+  return block._type === 'image';
 }
 
-export function pickFirstBodyImage(
-  blocks?: BodyBlock[],
-): ImageBlock | undefined {
+export function pickFirstBodyImage(blocks?: BodyBlock[]): ImageBlock | undefined {
   return blocks?.find((block) => isImageBlock(block) && !!block.asset?.url);
 }
 
@@ -24,11 +22,11 @@ export function resolveHeroMedia(post: Post): HeroMedia | undefined {
   // HTML visual takes priority — only shown on post page
   if (post.htmlVisual?.htmlCode) {
     return {
-      kind: "htmlVisual",
+      kind: 'htmlVisual',
       htmlCode: post.htmlVisual.htmlCode,
       alt: post.htmlVisual.alt,
       caption: post.htmlVisual.caption,
-      aspectRatio: post.htmlVisual.aspectRatio ?? "16 / 9",
+      aspectRatio: post.htmlVisual.aspectRatio ?? '16 / 9',
     };
   }
 
@@ -36,7 +34,7 @@ export function resolveHeroMedia(post: Post): HeroMedia | undefined {
   const mi = post.mainImage;
   if (mi?.asset?.url) {
     return {
-      kind: "image",
+      kind: 'image',
       url: mi.asset.url,
       alt: mi.alt ?? post.title,
       caption: mi.caption,
@@ -49,7 +47,7 @@ export function resolveHeroMedia(post: Post): HeroMedia | undefined {
   const bodyImage = pickFirstBodyImage(post.body);
   if (bodyImage?.asset?.url) {
     return {
-      kind: "image",
+      kind: 'image',
       url: bodyImage.asset.url,
       alt: bodyImage.alt ?? post.title,
       caption: bodyImage.caption,

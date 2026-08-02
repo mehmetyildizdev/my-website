@@ -13,15 +13,7 @@ export const revalidate = 86400; // 24h — refreshed by nightly GitHub Action
 export const metadata = createScreenMetadata(SCREEN_SEO_CONFIG.shows);
 
 export default async function ShowChartsPage() {
-  const [
-    bumpRes,
-    networksRes,
-    comparisonRes,
-    seasonProgressRes,
-    networkTimelineRes,
-    bingeRes,
-    ratingDistRes,
-  ] = await Promise.all([
+  const [bumpRes, networksRes, comparisonRes, seasonProgressRes, networkTimelineRes, bingeRes, ratingDistRes] = await Promise.all([
     query(loadQuery('shows/genre_yearly_ratings.sql')),
     query(loadQuery('shows/top_networks.sql')),
     query(loadQuery('shows/ratings_comparison_shows.sql')),
@@ -38,8 +30,7 @@ export default async function ShowChartsPage() {
         <div>
           <h2 className="text-2xl font-bold tracking-tight text-accent font-poppins">Show Analytics</h2>
           <p className="text-sm text-muted-foreground mt-1">
-            Track your TV show journey — season progress, network preferences, and genre rating
-            trends over time.
+            Track your TV show journey — season progress, network preferences, and genre rating trends over time.
           </p>
         </div>
 

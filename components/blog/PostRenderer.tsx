@@ -1,40 +1,50 @@
-import { PortableText, type PortableTextComponents } from "@portabletext/react";
-import Image from "next/image";
-import { slugify } from "@/lib/post/utils/headings";
-import ReactMarkdown from "react-markdown";
-import remarkGfm from "remark-gfm";
-import { wrapHtmlVisual } from "@/lib/post/utils/htmlVisual";
+import { PortableText, type PortableTextComponents } from '@portabletext/react';
+import Image from 'next/image';
+import { slugify } from '@/lib/post/utils/headings';
+import ReactMarkdown from 'react-markdown';
+import remarkGfm from 'remark-gfm';
+import { wrapHtmlVisual } from '@/lib/post/utils/htmlVisual';
 
 interface PostRendererProps {
   value: BodyBlock[];
 }
 
 function getTextFromValue(value: any): string {
-  return Array.isArray(value.children)
-    ? value.children.map((c: any) => c.text || "").join(" ")
-    : "";
+  return Array.isArray(value.children) ? value.children.map((c: any) => c.text || '').join(' ') : '';
 }
 
 const components: PortableTextComponents = {
   block: {
     normal: ({ children }) => <p className="mb-4 font-rubik leading-relaxed text-pretty">{children}</p>,
     h1: ({ children, value }) => (
-      <h1 id={slugify(getTextFromValue(value))} className="mt-12 mb-6 text-4xl font-extrabold text-foreground tracking-tight text-pretty">{children}</h1>
+      <h1 id={slugify(getTextFromValue(value))} className="mt-12 mb-6 text-4xl font-extrabold text-foreground tracking-tight text-pretty">
+        {children}
+      </h1>
     ),
     h2: ({ children, value }) => (
-      <h2 id={slugify(getTextFromValue(value))} className="mt-6 mb-6 text-3xl font-bold text-foreground/90 tracking-normal text-pretty">{children}</h2>
+      <h2 id={slugify(getTextFromValue(value))} className="mt-6 mb-6 text-3xl font-bold text-foreground/90 tracking-normal text-pretty">
+        {children}
+      </h2>
     ),
     h3: ({ children, value }) => (
-      <h3 id={slugify(getTextFromValue(value))} className="mt-2 mb-4 text-2xl font-semibold text-foreground/85 tracking-normal text-pretty">{children}</h3>
+      <h3 id={slugify(getTextFromValue(value))} className="mt-2 mb-4 text-2xl font-semibold text-foreground/85 tracking-normal text-pretty">
+        {children}
+      </h3>
     ),
     h4: ({ children, value }) => (
-      <h4 id={slugify(getTextFromValue(value))} className="mt-1 mb-2 text-xl font-medium text-foreground/80 tracking-tight text-pretty">{children}</h4>
+      <h4 id={slugify(getTextFromValue(value))} className="mt-1 mb-2 text-xl font-medium text-foreground/80 tracking-tight text-pretty">
+        {children}
+      </h4>
     ),
     h5: ({ children, value }) => (
-      <h5 id={slugify(getTextFromValue(value))} className="mb-1 text-lg font-medium text-foreground/80 tracking-tight text-pretty">{children}</h5>
+      <h5 id={slugify(getTextFromValue(value))} className="mb-1 text-lg font-medium text-foreground/80 tracking-tight text-pretty">
+        {children}
+      </h5>
     ),
     h6: ({ children, value }) => (
-      <h6 id={slugify(getTextFromValue(value))} className="mb-1 text-base font-medium text-foreground/80 tracking-tight text-pretty">{children}</h6>
+      <h6 id={slugify(getTextFromValue(value))} className="mb-1 text-base font-medium text-foreground/80 tracking-tight text-pretty">
+        {children}
+      </h6>
     ),
     blockquote: ({ children }) => (
       <blockquote className="mb-6 border-l-4 border-gold bg-card/66 pl-6 py-2 italic text-highlight/85 backdrop-blur-sm rounded-r-lg shadow-sm text-pretty">
@@ -54,7 +64,12 @@ const components: PortableTextComponents = {
     strong: ({ children }) => <strong className="font-semibold">{children}</strong>,
     em: ({ children }) => <em className="text-metadata/80">{children}</em>,
     link: ({ value, children }) => (
-      <a href={value.href} target="_blank" rel="noopener noreferrer" className="text-link font-semibold underline decoration-link/30 underline-offset-4 transition-colors hover:text-link-hover hover:decoration-link-hover/50">
+      <a
+        href={value.href}
+        target="_blank"
+        rel="noopener noreferrer"
+        className="text-link font-semibold underline decoration-link/30 underline-offset-4 transition-colors hover:text-link-hover hover:decoration-link-hover/50"
+      >
         {children}
       </a>
     ),
@@ -74,7 +89,7 @@ const components: PortableTextComponents = {
         <figure>
           <Image
             src={image.asset.url}
-            alt={image.alt ?? ""}
+            alt={image.alt ?? ''}
             width={width}
             height={height}
             className="my-8 w-full rounded-xl bg-muted/33"
@@ -94,12 +109,7 @@ const components: PortableTextComponents = {
       return (
         <figure>
           {codeBlock.filename && <figcaption>{codeBlock.filename}</figcaption>}
-          <pre
-            data-language={codeBlock.language}
-            data-highlighted-lines={JSON.stringify(
-              codeBlock.highlightedLines ?? []
-            )}
-          >
+          <pre data-language={codeBlock.language} data-highlighted-lines={JSON.stringify(codeBlock.highlightedLines ?? [])}>
             <code>{codeBlock.code}</code>
           </pre>
         </figure>
@@ -114,39 +124,16 @@ const components: PortableTextComponents = {
             <ReactMarkdown
               remarkPlugins={[remarkGfm]}
               components={{
-                table: ({ children }) => (
-                  <table className="w-full border-collapse text-sm">
-                    {children}
-                  </table>
-                ),
-                thead: ({ children }) => (
-                  <thead className="bg-foreground/8 text-foreground/90">
-                    {children}
-                  </thead>
-                ),
-                tbody: ({ children }) => (
-                  <tbody className="divide-y divide-foreground/10">
-                    {children}
-                  </tbody>
-                ),
-                tr: ({ children }) => (
-                  <tr className="even:bg-foreground/4 hover:bg-foreground/8 transition-colors">
-                    {children}
-                  </tr>
-                ),
+                table: ({ children }) => <table className="w-full border-collapse text-sm">{children}</table>,
+                thead: ({ children }) => <thead className="bg-foreground/8 text-foreground/90">{children}</thead>,
+                tbody: ({ children }) => <tbody className="divide-y divide-foreground/10">{children}</tbody>,
+                tr: ({ children }) => <tr className="even:bg-foreground/4 hover:bg-foreground/8 transition-colors">{children}</tr>,
                 th: ({ children }) => (
-                  <th
-                    scope="col"
-                    className="px-4 py-3 text-left whitespace-nowrap border-b border-foreground/15"
-                  >
+                  <th scope="col" className="px-4 py-3 text-left whitespace-nowrap border-b border-foreground/15">
                     {children}
                   </th>
                 ),
-                td: ({ children }) => (
-                  <td className="px-4 py-3 border-r border-foreground/10 last:border-r-0">
-                    {children}
-                  </td>
-                ),
+                td: ({ children }) => <td className="px-4 py-3 border-r border-foreground/10 last:border-r-0">{children}</td>,
                 p: ({ children }) => <p className="my-4">{children}</p>,
                 a: ({ href, children }) => (
                   <a href={href} target="_blank" rel="noopener noreferrer">
@@ -163,28 +150,28 @@ const components: PortableTextComponents = {
     },
     embedBlock: ({ value }) => {
       const block = value as EmbedBlock;
-      const ratio = block.aspectRatio ?? "16 / 9";
+      const ratio = block.aspectRatio ?? '16 / 9';
 
       let iframeEl: React.ReactNode = null;
 
-      if (block.embedType === "url" && block.embedUrl) {
+      if (block.embedType === 'url' && block.embedUrl) {
         iframeEl = (
           <iframe
             src={block.embedUrl}
-            title={block.alt ?? "Embedded content"}
+            title={block.alt ?? 'Embedded content'}
             allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
             allowFullScreen
-            style={{ border: "none", width: "100%", height: "100%", display: "block" }}
+            style={{ border: 'none', width: '100%', height: '100%', display: 'block' }}
           />
         );
-      } else if (block.embedType === "htmlCode" && block.htmlCode) {
+      } else if (block.embedType === 'htmlCode' && block.htmlCode) {
         iframeEl = (
           <iframe
             srcDoc={wrapHtmlVisual(block.htmlCode)}
-            title={block.alt ?? "HTML Visual"}
+            title={block.alt ?? 'HTML Visual'}
             sandbox="allow-scripts"
             scrolling="no"
-            style={{ border: "none", width: "100%", height: "100%", display: "block" }}
+            style={{ border: 'none', width: '100%', height: '100%', display: 'block' }}
           />
         );
       }
@@ -192,21 +179,14 @@ const components: PortableTextComponents = {
       if (!iframeEl) return null;
 
       return (
-        <figure
-          className="my-8 w-full overflow-hidden rounded-xl"
-          style={{ aspectRatio: ratio }}
-        >
+        <figure className="my-8 w-full overflow-hidden rounded-xl" style={{ aspectRatio: ratio }}>
           {iframeEl}
-          {block.caption && (
-            <figcaption className="mt-2 text-center text-sm text-muted-foreground">
-              {block.caption}
-            </figcaption>
-          )}
+          {block.caption && <figcaption className="mt-2 text-center text-sm text-muted-foreground">{block.caption}</figcaption>}
         </figure>
       );
     },
   },
-}
+};
 
 export function PostRenderer({ value }: PostRendererProps) {
   return <PortableText value={value} components={components} />;

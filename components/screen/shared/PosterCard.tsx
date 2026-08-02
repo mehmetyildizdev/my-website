@@ -15,16 +15,7 @@ interface PosterCardProps {
   priority?: boolean;
 }
 
-export function PosterCard({
-  tmdb_id,
-  href,
-  title,
-  subtitle,
-  poster_path,
-  rating,
-  meta,
-  priority = false,
-}: PosterCardProps) {
+export function PosterCard({ tmdb_id, href, title, subtitle, poster_path, rating, meta, priority = false }: PosterCardProps) {
   const [isLoaded, setIsLoaded] = useState(false);
 
   return (
@@ -41,15 +32,11 @@ export function PosterCard({
               unoptimized
               priority={priority}
               onLoad={() => setIsLoaded(true)}
-              className={`object-cover transition-all duration-500 group-hover:scale-105 z-10 ${
-                isLoaded ? 'opacity-100' : 'opacity-0'
-              }`}
+              className={`object-cover transition-all duration-500 group-hover:scale-105 z-10 ${isLoaded ? 'opacity-100' : 'opacity-0'}`}
             />
           </>
         ) : (
-          <div className="flex h-full items-center justify-center text-quicksilver text-xs text-center px-2">
-            No Poster
-          </div>
+          <div className="flex h-full items-center justify-center text-quicksilver text-xs text-center px-2">No Poster</div>
         )}
 
         {/* Hover overlay (Muted dark tint + backdrop-blur + rating & details) */}
@@ -58,9 +45,7 @@ export function PosterCard({
           {rating != null ? (
             <div className="flex flex-col items-center justify-center flex-1 animate-in zoom-in-95 duration-300">
               <div className="relative flex items-center justify-center w-24 h-24 rounded-full border-[3px] border-gold bg-pearl/66 backdrop-blur-md shadow-[0_0_15px_rgba(250,204,21,0.25)] dark:shadow-[0_0_20px_rgba(250,204,21,0.15)] select-none">
-                <span className="text-5xl font-black text-gold tracking-tight leading-none">
-                  {Number(rating).toFixed(0)}
-                </span>
+                <span className="text-5xl font-black text-gold tracking-tight leading-none">{Number(rating).toFixed(0)}</span>
               </div>
             </div>
           ) : (
@@ -75,12 +60,8 @@ export function PosterCard({
                 const dateStr = match[1];
                 return (
                   <div className="animate-in fade-in-0 slide-in-from-bottom-2 duration-300 mt-auto flex flex-col items-center bg-pearl/80 border border-border/10 py-1 px-2 rounded-md backdrop-blur-xs text-center w-full">
-                    <span className="text-[9px] text-quicksilver uppercase tracking-wider font-bold">
-                      Watched on
-                    </span>
-                    <span className="text-[11px] text-gold font-semibold leading-relaxed mt-0.5">
-                      {dateStr}
-                    </span>
+                    <span className="text-[9px] text-quicksilver uppercase tracking-wider font-bold">Watched on</span>
+                    <span className="text-[11px] text-gold font-semibold leading-relaxed mt-0.5">{dateStr}</span>
                   </div>
                 );
               }
@@ -100,11 +81,7 @@ export function PosterCard({
         <h3 className="font-semibold text-sm sm:text-base text-titanium line-clamp-1 group-hover:text-gold transition-colors font-poppins">
           {title}
         </h3>
-        {subtitle && (
-          <p className="text-xs sm:text-sm text-platinum/66 mt-0.5 line-clamp-1 leading-normal">
-            {subtitle}
-          </p>
-        )}
+        {subtitle && <p className="text-xs sm:text-sm text-platinum/66 mt-0.5 line-clamp-1 leading-normal">{subtitle}</p>}
       </div>
     </Link>
   );

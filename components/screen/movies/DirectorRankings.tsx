@@ -30,12 +30,8 @@ export default function DirectorRankings({ data }: { data: DirectorData[] }) {
   return (
     <Card className="bg-pearl/30 border-border/15 shadow-2xl backdrop-blur-md">
       <CardHeader className="pb-2">
-        <CardTitle className="text-lg font-bold tracking-tight text-accent">
-          Top Directors
-        </CardTitle>
-        <p className="text-xs text-muted-foreground mt-1">
-          Directors ranked by average rating across my watched movies (3+ films).
-        </p>
+        <CardTitle className="text-lg font-bold tracking-tight text-accent">Top Directors</CardTitle>
+        <p className="text-xs text-muted-foreground mt-1">Directors ranked by average rating across my watched movies (3+ films).</p>
       </CardHeader>
       <CardContent className="pt-4">
         <div className="space-y-1.5">
@@ -48,10 +44,7 @@ export default function DirectorRankings({ data }: { data: DirectorData[] }) {
                 placement="mouse"
                 content={
                   <div className="flex flex-col gap-0.5 min-w-[180px]">
-                    <span
-                      className="font-semibold text-gold"
-                      style={{ fontFamily: 'var(--font-poppins)' }}
-                    >
+                    <span className="font-semibold text-gold" style={{ fontFamily: 'var(--font-poppins)' }}>
                       {d.name}
                     </span>
                     <div className="flex justify-between gap-4 text-[11px] mt-1">
@@ -64,17 +57,13 @@ export default function DirectorRankings({ data }: { data: DirectorData[] }) {
                     </div>
                     <div className="flex justify-between gap-4 text-[11px] pt-1 mt-1 border-t border-border/20">
                       <span className="text-quicksilver">Best Film</span>
-                      <span className="text-foreground/80 text-right max-w-[120px] truncate">
-                        {d.best_movie}
-                      </span>
+                      <span className="text-foreground/80 text-right max-w-[120px] truncate">{d.best_movie}</span>
                     </div>
                   </div>
                 }
               >
                 <div className="grid grid-cols-[24px_1fr_80px_50px] items-center gap-2 py-1 px-2 hover:bg-pearl/30 rounded transition-colors">
-                  <span className="text-[10px] text-muted-foreground tabular-nums text-right">
-                    #{idx + 1}
-                  </span>
+                  <span className="text-[10px] text-muted-foreground tabular-nums text-right">#{idx + 1}</span>
                   <span className="text-sm text-foreground/90 truncate">{d.name}</span>
                   <div className="relative h-2.5 rounded-full bg-border/15 overflow-hidden">
                     <div
@@ -82,9 +71,7 @@ export default function DirectorRankings({ data }: { data: DirectorData[] }) {
                       style={{ width: `${barPct}%`, opacity: 0.75 }}
                     />
                   </div>
-                  <span
-                    className={`text-sm tabular-nums font-mono font-semibold text-right ${ratingColor(rating)}`}
-                  >
+                  <span className={`text-sm tabular-nums font-mono font-semibold text-right ${ratingColor(rating)}`}>
                     {rating.toFixed(1)}
                   </span>
                 </div>

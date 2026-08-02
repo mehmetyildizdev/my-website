@@ -8,8 +8,8 @@ function slugify(text: string) {
   return text
     .toLowerCase()
     .trim()
-    .replace(/[\s]+/g, "-")
-    .replace(/[^a-z0-9\-]/g, "");
+    .replace(/[\s]+/g, '-')
+    .replace(/[^a-z0-9\-]/g, '');
 }
 
 export { slugify };
@@ -21,16 +21,16 @@ export function extractHeadings(blocks?: BodyBlock[]): HeadingItem[] {
   const usedIds = new Set<string>();
 
   for (const block of blocks) {
-    if (block && (block as any)._type === "block") {
+    if (block && (block as any)._type === 'block') {
       const b = block as any;
-      const style = b.style || "normal";
+      const style = b.style || 'normal';
       // consider h1..h4
       if (/^h[1-4]$/.test(style)) {
         const children = Array.isArray(b.children) ? b.children : [];
         const text = children
-          .map((c: any) => (typeof c?.text === "string" ? c.text : ""))
-          .join(" ")
-          .replace(/\s+/g, " ")
+          .map((c: any) => (typeof c?.text === 'string' ? c.text : ''))
+          .join(' ')
+          .replace(/\s+/g, ' ')
           .trim();
         if (text) {
           let id = slugify(text);
@@ -40,7 +40,7 @@ export function extractHeadings(blocks?: BodyBlock[]): HeadingItem[] {
             counter++;
           }
           usedIds.add(id);
-          const level = Number(style.replace("h", ""));
+          const level = Number(style.replace('h', ''));
           headings.push({ id, text, level });
         }
       }

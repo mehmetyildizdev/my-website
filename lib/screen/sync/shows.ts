@@ -6,16 +6,16 @@
 //   are inserted via the pool-level `query` (auto-committed) so parallel
 //   show transactions never race on the same lookup rows.
 
-import { getTMDBShow, fetchTMDB } from "../tmdb";
-import { query } from "../db";
-import { SyncStats, SyncOptions, CREW_JOBS } from "./constants";
-import { processPeopleCredits } from "./people";
+import { getTMDBShow, fetchTMDB } from '../tmdb';
+import { query } from '../db';
+import { SyncStats, SyncOptions, CREW_JOBS } from './constants';
+import { processPeopleCredits } from './people';
 
 export async function syncShow(
-  client: import("pg").PoolClient,
+  client: import('pg').PoolClient,
   traktShow: { title: string; ids: { tmdb: number; [key: string]: any } },
   stats: SyncStats,
-  options: SyncOptions = {}
+  options: SyncOptions = {},
 ) {
   const tmdbId = traktShow.ids.tmdb;
   if (!tmdbId) return;
@@ -25,10 +25,7 @@ export async function syncShow(
   process.stdout.write(`  ⟳  Fetching show ID ${tmdbId}…\r`);
 
   // Parallel fetch of show detail and aggregate credits
-  const [tmdbData, aggCredits] = await Promise.all([
-    getTMDBShow(tmdbId),
-    fetchTMDB(`/tv/${tmdbId}/aggregate_credits`),
-  ]);
+  const [tmdbData, aggCredits] = await Promise.all([getTMDBShow(tmdbId), fetchTMDB(`/tv/${tmdbId}/aggregate_credits`)]);
 
   const showName = tmdbData.name || traktShow.title || `Show #${tmdbId}`;
 
@@ -68,51 +65,45 @@ export async function syncShow(
       tmdbData.number_of_episodes ?? null,
       tmdbData.number_of_seasons ?? null,
       tmdbData.vote_average ?? null,
-    ]
+    ],
   );
 
   // ── Genres (shared lookup — pool query) ───────────────────────────────────
   for (const genre of tmdbData.genres ?? []) {
     let genresToInsert = [{ id: genre.id, name: genre.name }];
-    if (genre.id === 10765 || genre.name === "Sci-Fi & Fantasy") {
+    if (genre.id === 10765 || genre.name === 'Sci-Fi & Fantasy') {
       genresToInsert = [
-        { id: 878, name: "Science Fiction" },
-        { id: 14, name: "Fantasy" },
+        { id: 878, name: 'Science Fiction' },
+        { id: 14, name: 'Fantasy' },
       ];
-    } else if (genre.id === 10759 || genre.name === "Action & Adventure") {
+    } else if (genre.id === 10759 || genre.name === 'Action & Adventure') {
       genresToInsert = [
-        { id: 28, name: "Action" },
-        { id: 12, name: "Adventure" },
+        { id: 28, name: 'Action' },
+        { id: 12, name: 'Adventure' },
       ];
-    } else if (genre.id === 10768 || genre.name === "War & Politics") {
+    } else if (genre.id === 10768 || genre.name === 'War & Politics') {
       genresToInsert = [
-        { id: 10752, name: "War" },
-        { id: 107681, name: "Politics" },
+        { id: 10752, name: 'War' },
+        { id: 107681, name: 'Politics' },
       ];
     }
 
     for (const g of genresToInsert) {
-      await query(
-        `INSERT INTO genres (id, name) VALUES ($1, $2) ON CONFLICT (id) DO NOTHING`,
-        [g.id, g.name]
-      );
-      await client.query(
-        `INSERT INTO show_genres (show_tmdb_id, genre_id) VALUES ($1, $2) ON CONFLICT DO NOTHING`,
-        [tmdbId, g.id]
-      );
+      await query(`INSERT INTO genres (id, name) VALUES ($1, $2) ON CONFLICT (id) DO NOTHING`, [g.id, g.name]);
+      await client.query(`INSERT INTO show_genres (show_tmdb_id, genre_id) VALUES ($1, $2) ON CONFLICT DO NOTHING`, [tmdbId, g.id]);
     }
   }
 
   // ── Countries (shared lookup — pool query) ────────────────────────────────
   for (const country of tmdbData.production_countries ?? []) {
-    await query(
-      `INSERT INTO countries (iso_3166_1, name) VALUES ($1, $2) ON CONFLICT (iso_3166_1) DO NOTHING`,
-      [country.iso_3166_1, country.name]
-    );
-    await client.query(
-      `INSERT INTO show_countries (show_tmdb_id, country_iso) VALUES ($1, $2) ON CONFLICT DO NOTHING`,
-      [tmdbId, country.iso_3166_1]
-    );
+    await query(`INSERT INTO countries (iso_3166_1, name) VALUES ($1, $2) ON CONFLICT (iso_3166_1) DO NOTHING`, [
+      country.iso_3166_1,
+      country.name,
+    ]);
+    await client.query(`INSERT INTO show_countries (show_tmdb_id, country_iso) VALUES ($1, $2) ON CONFLICT DO NOTHING`, [
+      tmdbId,
+      country.iso_3166_1,
+    ]);
   }
 
   // ── Production companies (shared lookup — pool query) ──────────────────────
@@ -121,12 +112,12 @@ export async function syncShow(
       `INSERT INTO production_companies (tmdb_id, name, logo_path, country_iso)
        VALUES ($1, $2, $3, $4)
        ON CONFLICT (tmdb_id) DO NOTHING`,
-      [company.id, company.name, company.logo_path ?? null, company.origin_country ?? null]
+      [company.id, company.name, company.logo_path ?? null, company.origin_country ?? null],
     );
     await client.query(
       `INSERT INTO show_production_companies (show_tmdb_id, company_tmdb_id)
        VALUES ($1, $2) ON CONFLICT DO NOTHING`,
-      [tmdbId, company.id]
+      [tmdbId, company.id],
     );
   }
 
@@ -136,12 +127,12 @@ export async function syncShow(
       `INSERT INTO networks (tmdb_id, name, logo_path, country_iso)
        VALUES ($1, $2, $3, $4)
        ON CONFLICT (tmdb_id) DO NOTHING`,
-      [network.id, network.name, network.logo_path ?? null, network.origin_country ?? null]
+      [network.id, network.name, network.logo_path ?? null, network.origin_country ?? null],
     );
-    await client.query(
-      `INSERT INTO show_networks (show_tmdb_id, network_tmdb_id) VALUES ($1, $2) ON CONFLICT DO NOTHING`,
-      [tmdbId, network.id]
-    );
+    await client.query(`INSERT INTO show_networks (show_tmdb_id, network_tmdb_id) VALUES ($1, $2) ON CONFLICT DO NOTHING`, [
+      tmdbId,
+      network.id,
+    ]);
   }
 
   // ── Seasons (skip season 0 = specials) ───────────────────────────────────
@@ -157,7 +148,17 @@ export async function syncShow(
          air_date      = EXCLUDED.air_date,
          poster_path   = EXCLUDED.poster_path,
          media_key     = EXCLUDED.media_key`,
-      [season.id, tmdbId, season.season_number, season.name, season.overview, season.poster_path, season.air_date || null, season.episode_count, seasonMediaKey]
+      [
+        season.id,
+        tmdbId,
+        season.season_number,
+        season.name,
+        season.overview,
+        season.poster_path,
+        season.air_date || null,
+        season.episode_count,
+        seasonMediaKey,
+      ],
     );
   }
 
@@ -185,21 +186,20 @@ export async function syncShow(
       name: creator.name,
       profile_path: creator.profile_path,
       known_for_department: null,
-      job: "Creator",
+      job: 'Creator',
       episode_count: null,
     });
   }
 
   // ── CAST from aggregate_credits ─────────────────────────────────────────
-  const castToSync = (aggCredits.cast ?? [])
-    .map((c: any) => ({
-      id: c.id,
-      name: c.name,
-      profile_path: c.profile_path,
-      known_for_department: c.known_for_department,
-      character: c.roles?.[0]?.character ?? null,
-      episode_count: c.total_episode_count ?? null,
-    }));
+  const castToSync = (aggCredits.cast ?? []).map((c: any) => ({
+    id: c.id,
+    name: c.name,
+    profile_path: c.profile_path,
+    known_for_department: c.known_for_department,
+    character: c.roles?.[0]?.character ?? null,
+    episode_count: c.total_episode_count ?? null,
+  }));
 
-  await processPeopleCredits(client, tmdbId, crewToSync, castToSync, "show", stats);
+  await processPeopleCredits(client, tmdbId, crewToSync, castToSync, 'show', stats);
 }

@@ -8,29 +8,29 @@
 //
 // NO TMDB PERSON API CALLS — enrichment is done via POST /api/enrich/people.
 
-import { CREW_JOBS, COUNTRY_MAP, castRole, SyncStats } from "./constants";
+import { CREW_JOBS, COUNTRY_MAP, castRole, SyncStats } from './constants';
 
 export async function processPeopleCredits(
-  client: import("pg").PoolClient,
+  client: import('pg').PoolClient,
   mediaTmdbId: number,
   crew: any[],
   cast: any[],
-  mediaType: "movie" | "show",
-  stats: SyncStats
+  mediaType: 'movie' | 'show',
+  stats: SyncStats,
 ) {
   const allPeople = [...crew, ...cast];
   if (allPeople.length === 0) return;
 
   // Deduplicate by tmdb id, sort ascending to prevent deadlocks
-  const uniquePeopleMap = new Map(allPeople.map(p => [p.id, p]));
+  const uniquePeopleMap = new Map(allPeople.map((p) => [p.id, p]));
   const uniquePeople = Array.from(uniquePeopleMap.values()).sort((a, b) => a.id - b.id);
 
   // ── Bulk upsert people rows (one UNNEST query) ────────────────────────────
-  const pIds = uniquePeople.map(p => p.id);
-  const pNames = uniquePeople.map(p => p.name ?? null);
-  const pProfiles = uniquePeople.map(p => p.profile_path ?? null);
-  const pDepts = uniquePeople.map(p => p.known_for_department ?? null);
-  const pPops = uniquePeople.map(p => p.popularity ?? 0);
+  const pIds = uniquePeople.map((p) => p.id);
+  const pNames = uniquePeople.map((p) => p.name ?? null);
+  const pProfiles = uniquePeople.map((p) => p.profile_path ?? null);
+  const pDepts = uniquePeople.map((p) => p.known_for_department ?? null);
+  const pPops = uniquePeople.map((p) => p.popularity ?? 0);
 
   const pResult = await client.query(
     `INSERT INTO people (tmdb_id, name, profile_path, known_for_department, popularity)
@@ -43,7 +43,7 @@ export async function processPeopleCredits(
      WHERE (EXCLUDED.popularity > 0 AND people.popularity IS DISTINCT FROM EXCLUDED.popularity)
         OR (people.profile_path IS NULL AND EXCLUDED.profile_path IS NOT NULL)
      RETURNING (xmax = 0) AS is_inserted`,
-    [pIds, pNames, pProfiles, pDepts, pPops]
+    [pIds, pNames, pProfiles, pDepts, pPops],
   );
 
   for (const row of pResult.rows) {
@@ -69,28 +69,28 @@ export async function processPeopleCredits(
     }
     const sortedCrew = Array.from(crewMap.values()).sort((a, b) => a.id - b.id);
 
-    if (mediaType === "movie") {
-      const cIds = sortedCrew.map(m => m.id);
-      const cJobs = sortedCrew.map(m => m.job);
+    if (mediaType === 'movie') {
+      const cIds = sortedCrew.map((m) => m.id);
+      const cJobs = sortedCrew.map((m) => m.job);
       const r = await client.query(
         `INSERT INTO movie_crew (movie_tmdb_id, person_tmdb_id, job)
          SELECT $1, * FROM UNNEST($2::int[], $3::text[])
          ON CONFLICT DO NOTHING
          RETURNING id`,
-        [mediaTmdbId, cIds, cJobs]
+        [mediaTmdbId, cIds, cJobs],
       );
       stats.new_crew_added += r.rowCount ?? 0;
     } else {
-      const cIds = sortedCrew.map(m => m.id);
-      const cJobs = sortedCrew.map(m => m.job);
-      const cEps = sortedCrew.map(m => m.episode_count ?? null);
+      const cIds = sortedCrew.map((m) => m.id);
+      const cJobs = sortedCrew.map((m) => m.job);
+      const cEps = sortedCrew.map((m) => m.episode_count ?? null);
       const r = await client.query(
         `INSERT INTO show_crew (show_tmdb_id, person_tmdb_id, job, episode_count)
          SELECT $1, * FROM UNNEST($2::int[], $3::text[], $4::int[])
          ON CONFLICT (show_tmdb_id, person_tmdb_id, job)
          DO UPDATE SET episode_count = EXCLUDED.episode_count
          RETURNING id`,
-        [mediaTmdbId, cIds, cJobs, cEps]
+        [mediaTmdbId, cIds, cJobs, cEps],
       );
       stats.new_crew_added += r.rowCount ?? 0;
     }
@@ -111,30 +111,30 @@ export async function processPeopleCredits(
     }
     const sortedCast = Array.from(castMap.values()).sort((a, b) => a.id - b.id);
 
-    if (mediaType === "movie") {
-      const mIds = sortedCast.map(m => m.id);
-      const mChars = sortedCast.map(m => m.character ?? null);
-      const mOrders = sortedCast.map(m => m.order ?? 99);
-      const mRoles = sortedCast.map(m => castRole(m.order ?? 99));
+    if (mediaType === 'movie') {
+      const mIds = sortedCast.map((m) => m.id);
+      const mChars = sortedCast.map((m) => m.character ?? null);
+      const mOrders = sortedCast.map((m) => m.order ?? 99);
+      const mRoles = sortedCast.map((m) => castRole(m.order ?? 99));
       const r = await client.query(
         `INSERT INTO movie_cast (movie_tmdb_id, person_tmdb_id, character, cast_order, role)
          SELECT $1, * FROM UNNEST($2::int[], $3::text[], $4::int[], $5::text[])
          ON CONFLICT (movie_tmdb_id, person_tmdb_id, character) DO NOTHING
          RETURNING id`,
-        [mediaTmdbId, mIds, mChars, mOrders, mRoles]
+        [mediaTmdbId, mIds, mChars, mOrders, mRoles],
       );
       stats.new_cast_added += r.rowCount ?? 0;
     } else {
-      const sIds = sortedCast.map(m => m.id);
-      const sChars = sortedCast.map(m => m.character ?? null);
-      const sEps = sortedCast.map(m => m.episode_count ?? null);
+      const sIds = sortedCast.map((m) => m.id);
+      const sChars = sortedCast.map((m) => m.character ?? null);
+      const sEps = sortedCast.map((m) => m.episode_count ?? null);
       const r = await client.query(
         `INSERT INTO show_cast (show_tmdb_id, person_tmdb_id, character, episode_count)
          SELECT $1, * FROM UNNEST($2::int[], $3::text[], $4::int[])
          ON CONFLICT (show_tmdb_id, person_tmdb_id, character)
          DO UPDATE SET episode_count = EXCLUDED.episode_count
          RETURNING id`,
-        [mediaTmdbId, sIds, sChars, sEps]
+        [mediaTmdbId, sIds, sChars, sEps],
       );
       stats.new_cast_added += r.rowCount ?? 0;
     }

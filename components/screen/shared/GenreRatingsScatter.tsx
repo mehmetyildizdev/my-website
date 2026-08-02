@@ -104,14 +104,9 @@ export default function GenreRatingsScatter({ data }: { data: GenreRating[] }) {
   };
 
   return (
-    <Card
-      className="bg-pearl/30 border-border/15 shadow-2xl backdrop-blur-md"
-      onClick={handleDismissLock}
-    >
+    <Card className="bg-pearl/30 border-border/15 shadow-2xl backdrop-blur-md" onClick={handleDismissLock}>
       <CardHeader className="pb-2">
-        <CardTitle className="text-lg font-bold tracking-tight text-accent">
-          Genre Affinity Scatter
-        </CardTitle>
+        <CardTitle className="text-lg font-bold tracking-tight text-accent">Genre Affinity Scatter</CardTitle>
         <p className="text-xs text-muted-foreground mt-1">
           {isMobile
             ? 'X = avg rating, Y = items watched. Bubble size scales with count. Click a bubble to lock tooltip.'
@@ -188,10 +183,7 @@ export default function GenreRatingsScatter({ data }: { data: GenreRating[] }) {
                   position: isMobile ? 'top' : 'right',
                 }}
               />
-              <RechartsTooltip
-                cursor={{ stroke: 'var(--silver)', strokeWidth: 1, strokeDasharray: '1 1' }}
-                content={() => null}
-              />
+              <RechartsTooltip cursor={{ stroke: 'var(--silver)', strokeWidth: 1, strokeDasharray: '1 1' }} content={() => null} />
               {lockedSvgCoords && (
                 <g pointerEvents="none">
                   <line
@@ -216,13 +208,7 @@ export default function GenreRatingsScatter({ data }: { data: GenreRating[] }) {
                   />
                 </g>
               )}
-              <Scatter
-                data={points}
-                fillOpacity={0.65}
-                strokeOpacity={0.9}
-                isAnimationActive={false}
-                onClick={handleScatterClick}
-              >
+              <Scatter data={points} fillOpacity={0.65} strokeOpacity={0.9} isAnimationActive={false} onClick={handleScatterClick}>
                 {points.map((entry, idx) => (
                   <Cell
                     key={`cell-${idx}`}
@@ -268,33 +254,24 @@ export default function GenreRatingsScatter({ data }: { data: GenreRating[] }) {
             }}
           >
             <TooltipContent className="whitespace-nowrap min-w-[160px]">
-              <p
-                className="font-semibold text-sm text-gold"
-                style={{ fontFamily: 'var(--font-poppins)' }}
-              >
+              <p className="font-semibold text-sm text-gold" style={{ fontFamily: 'var(--font-poppins)' }}>
                 {hoveredData.name}
               </p>
               <div className="mt-1.5 space-y-0.5">
                 <div className="flex justify-between gap-4 text-[11px]">
                   <span className="text-quicksilver">Avg Rating</span>
-                  <span className="text-platinum font-semibold tabular-nums">
-                    {hoveredData.avg_rating.toFixed(2)}
-                  </span>
+                  <span className="text-platinum font-semibold tabular-nums">{hoveredData.avg_rating.toFixed(2)}</span>
                 </div>
                 {hoveredData.avg_movie_rating != null && (
                   <div className="flex justify-between gap-4 text-[11px]">
                     <span className="text-quicksilver">Movies ({hoveredData.movie_count})</span>
-                    <span className="text-sapphire tabular-nums">
-                      {hoveredData.avg_movie_rating.toFixed(2)}
-                    </span>
+                    <span className="text-sapphire tabular-nums">{hoveredData.avg_movie_rating.toFixed(2)}</span>
                   </div>
                 )}
                 {hoveredData.avg_show_rating != null && (
                   <div className="flex justify-between gap-4 text-[11px]">
                     <span className="text-quicksilver">Shows ({hoveredData.show_count})</span>
-                    <span className="text-amethyst tabular-nums">
-                      {hoveredData.avg_show_rating.toFixed(2)}
-                    </span>
+                    <span className="text-amethyst tabular-nums">{hoveredData.avg_show_rating.toFixed(2)}</span>
                   </div>
                 )}
                 <div className="flex justify-between gap-4 text-[11px] pt-1 mt-1 border-t border-border/20">
@@ -304,7 +281,7 @@ export default function GenreRatingsScatter({ data }: { data: GenreRating[] }) {
               </div>
             </TooltipContent>
           </div>,
-          document.body
+          document.body,
         )}
     </Card>
   );

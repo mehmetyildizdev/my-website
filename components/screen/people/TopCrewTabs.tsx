@@ -50,9 +50,7 @@ export default function TopCrewTabs({ data }: { data: CrewBuckets }) {
               }`}
             >
               {CATEGORY_LABEL[cat]}
-              {count > 0 && (
-                <span className="ml-1.5 text-[10px] tabular-nums opacity-60">{count}</span>
-              )}
+              {count > 0 && <span className="ml-1.5 text-[10px] tabular-nums opacity-60">{count}</span>}
             </button>
           );
         })}

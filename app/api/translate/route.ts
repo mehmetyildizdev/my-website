@@ -8,9 +8,9 @@
  * while preserving the full Portable Text / block structure.
  */
 
-import { NextRequest, NextResponse } from "next/server";
+import { NextRequest, NextResponse } from 'next/server';
 
-const GEMINI_MODEL = "gemini-2.5-flash";
+const GEMINI_MODEL = 'gemini-2.5-flash';
 
 const SYSTEM_PROMPT = `You are a precise JSON translator. Your job is to translate Turkish text to English inside a Portable Text JSON array (used by Sanity CMS).
 
@@ -38,8 +38,8 @@ function extractJsonArray(raw: string): unknown[] | null {
 
   // 2. Strip a single pair of markdown fences then try again
   const stripped = raw
-    .replace(/^```(?:json)?\s*/im, "")
-    .replace(/\s*```\s*$/m, "")
+    .replace(/^```(?:json)?\s*/im, '')
+    .replace(/\s*```\s*$/m, '')
     .trim();
   try {
     const parsed = JSON.parse(stripped);
@@ -47,14 +47,14 @@ function extractJsonArray(raw: string): unknown[] | null {
   } catch {}
 
   // 3. Find the first '[' and the matching closing ']' via bracket counting
-  const start = raw.indexOf("[");
+  const start = raw.indexOf('[');
   if (start === -1) return null;
 
   let depth = 0;
   let end = -1;
   for (let i = start; i < raw.length; i++) {
-    if (raw[i] === "[") depth++;
-    else if (raw[i] === "]") {
+    if (raw[i] === '[') depth++;
+    else if (raw[i] === ']') {
       depth--;
       if (depth === 0) {
         end = i;
@@ -76,22 +76,16 @@ function extractJsonArray(raw: string): unknown[] | null {
 export async function POST(req: NextRequest) {
   const apiKey = process.env.GEMINI_API_KEY;
   if (!apiKey) {
-    return NextResponse.json(
-      { error: "GEMINI_API_KEY not configured." },
-      { status: 500 },
-    );
+    return NextResponse.json({ error: 'GEMINI_API_KEY not configured.' }, { status: 500 });
   }
 
   let body: unknown[];
   try {
     const json = await req.json();
     body = json.body;
-    if (!Array.isArray(body)) throw new Error("body must be an array");
+    if (!Array.isArray(body)) throw new Error('body must be an array');
   } catch {
-    return NextResponse.json(
-      { error: "Invalid request body." },
-      { status: 400 },
-    );
+    return NextResponse.json({ error: 'Invalid request body.' }, { status: 400 });
   }
 
   const userPrompt = `${SYSTEM_PROMPT}\n\n${JSON.stringify(body, null, 2)}`;
@@ -101,47 +95,40 @@ export async function POST(req: NextRequest) {
   let geminiRes: Response;
   try {
     geminiRes = await fetch(geminiUrl, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
         contents: [{ parts: [{ text: userPrompt }] }],
         generationConfig: {
           temperature: 0.1,
           maxOutputTokens: 65536,
-          responseMimeType: "application/json", // instruct Gemini to output raw JSON
+          responseMimeType: 'application/json', // instruct Gemini to output raw JSON
         },
       }),
     });
   } catch {
-    return NextResponse.json(
-      { error: "Failed to reach Gemini API." },
-      { status: 502 },
-    );
+    return NextResponse.json({ error: 'Failed to reach Gemini API.' }, { status: 502 });
   }
 
   if (!geminiRes.ok) {
     const err = await geminiRes.text();
-    console.error("[translate] Gemini HTTP error:", err);
-    return NextResponse.json(
-      { error: `Gemini API error: ${err}` },
-      { status: 502 },
-    );
+    console.error('[translate] Gemini HTTP error:', err);
+    return NextResponse.json({ error: `Gemini API error: ${err}` }, { status: 502 });
   }
 
   const geminiData = await geminiRes.json();
-  const rawText: string =
-    geminiData?.candidates?.[0]?.content?.parts?.[0]?.text ?? "";
+  const rawText: string = geminiData?.candidates?.[0]?.content?.parts?.[0]?.text ?? '';
 
   // Log full raw output server-side so you can inspect it in the terminal
-  console.log("[translate] Gemini raw output (first 500 chars):", rawText.slice(0, 500));
+  console.log('[translate] Gemini raw output (first 500 chars):', rawText.slice(0, 500));
 
   const translatedBody = extractJsonArray(rawText);
 
   if (!translatedBody) {
-    console.error("[translate] Could not extract JSON array. Full raw output:\n", rawText);
+    console.error('[translate] Could not extract JSON array. Full raw output:\n', rawText);
     return NextResponse.json(
       {
-        error: "Gemini returned non-JSON output. Check server logs for the raw text.",
+        error: 'Gemini returned non-JSON output. Check server logs for the raw text.',
         raw: rawText.slice(0, 2000), // send first 2000 chars to client for debugging
       },
       { status: 502 },

@@ -15,7 +15,7 @@ function TooltipContent({ className, children, ...props }: TooltipContentProps) 
     <div
       className={cn(
         'rounded-md border border-border/30 bg-background/95 backdrop-blur-sm px-2.5 py-1.5 shadow-lg text-xs text-foreground',
-        className
+        className,
       )}
       {...props}
     >
@@ -37,14 +37,7 @@ type TooltipProps = {
   delay?: number;
 };
 
-function Tooltip({
-  content,
-  children,
-  className,
-  placement = 'mouse',
-  offset = 12,
-  delay = 0,
-}: TooltipProps) {
+function Tooltip({ content, children, className, placement = 'mouse', offset = 12, delay = 0 }: TooltipProps) {
   const [visible, setVisible] = React.useState(false);
   const [coords, setCoords] = React.useState({ x: 0, y: 0 });
   const [mounted, setMounted] = React.useState(false);
@@ -112,7 +105,7 @@ function Tooltip({
 
       setCoords({ x, y });
     },
-    [placement, offset, getTriggerRect]
+    [placement, offset, getTriggerRect],
   );
 
   const show = (e: React.MouseEvent) => {
@@ -153,28 +146,16 @@ function Tooltip({
 
   return (
     <>
-      <span
-        ref={triggerRef}
-        onMouseEnter={show}
-        onMouseMove={move}
-        onMouseLeave={hide}
-        style={{ display: 'contents' }}
-      >
+      <span ref={triggerRef} onMouseEnter={show} onMouseMove={move} onMouseLeave={hide} style={{ display: 'contents' }}>
         {children}
       </span>
       {mounted &&
         visible &&
         createPortal(
-          <div
-            ref={tooltipRef}
-            className="fixed z-9999 pointer-events-none"
-            style={{ left: `${coords.x}px`, top: `${coords.y}px` }}
-          >
-            <TooltipContent className={cn('whitespace-nowrap', className)}>
-              {content}
-            </TooltipContent>
+          <div ref={tooltipRef} className="fixed z-9999 pointer-events-none" style={{ left: `${coords.x}px`, top: `${coords.y}px` }}>
+            <TooltipContent className={cn('whitespace-nowrap', className)}>{content}</TooltipContent>
           </div>,
-          document.body
+          document.body,
         )}
     </>
   );

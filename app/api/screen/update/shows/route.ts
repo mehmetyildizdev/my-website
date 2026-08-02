@@ -11,10 +11,10 @@ export async function GET(request: Request) {
   const envSecret = process.env.MY_API_PHRASE || '';
 
   if (!envSecret || !secret || secret !== envSecret) {
-    return new Response(
-      JSON.stringify({ error: '🔒 Access Denied: Invalid sync secret phrase.' }),
-      { status: 403, headers: { 'Content-Type': 'application/json' } }
-    );
+    return new Response(JSON.stringify({ error: '🔒 Access Denied: Invalid sync secret phrase.' }), {
+      status: 403,
+      headers: { 'Content-Type': 'application/json' },
+    });
   }
 
   const limit = parseInt(searchParams.get('limit') ?? '1000', 10);
@@ -66,10 +66,7 @@ async function updateShows(limit: number, singleTmdbId: number | null = null) {
 
     try {
       // 1. Fetch show detail and aggregate credits in parallel
-      const [tmdbData, aggCredits] = await Promise.all([
-        getTMDBShow(tmdbId),
-        fetchTMDB(`/tv/${tmdbId}/aggregate_credits`),
-      ]);
+      const [tmdbData, aggCredits] = await Promise.all([getTMDBShow(tmdbId), fetchTMDB(`/tv/${tmdbId}/aggregate_credits`)]);
 
       const showName = tmdbData.name || show.name || `Show #${tmdbId}`;
       const isTurkish = tmdbData.original_language?.toLowerCase() === 'tr';
@@ -136,7 +133,7 @@ async function updateShows(limit: number, singleTmdbId: number | null = null) {
             tmdbData.number_of_episodes ?? null,
             tmdbData.number_of_seasons ?? null,
             tmdbData.vote_average ?? null,
-          ]
+          ],
         );
 
         // Genres (shared lookup with TMDB unified genre splitting)
@@ -162,27 +159,21 @@ async function updateShows(limit: number, singleTmdbId: number | null = null) {
           genresCount += genresToInsert.length;
 
           for (const g of genresToInsert) {
-            await query(
-              `INSERT INTO genres (id, name) VALUES ($1, $2) ON CONFLICT (id) DO NOTHING`,
-              [g.id, g.name]
-            );
-            await client.query(
-              `INSERT INTO show_genres (show_tmdb_id, genre_id) VALUES ($1, $2) ON CONFLICT DO NOTHING`,
-              [tmdbId, g.id]
-            );
+            await query(`INSERT INTO genres (id, name) VALUES ($1, $2) ON CONFLICT (id) DO NOTHING`, [g.id, g.name]);
+            await client.query(`INSERT INTO show_genres (show_tmdb_id, genre_id) VALUES ($1, $2) ON CONFLICT DO NOTHING`, [tmdbId, g.id]);
           }
         }
 
         // Countries (shared lookup)
         for (const country of tmdbData.production_countries ?? []) {
-          await query(
-            `INSERT INTO countries (iso_3166_1, name) VALUES ($1, $2) ON CONFLICT (iso_3166_1) DO NOTHING`,
-            [country.iso_3166_1, country.name]
-          );
-          await client.query(
-            `INSERT INTO show_countries (show_tmdb_id, country_iso) VALUES ($1, $2) ON CONFLICT DO NOTHING`,
-            [tmdbId, country.iso_3166_1]
-          );
+          await query(`INSERT INTO countries (iso_3166_1, name) VALUES ($1, $2) ON CONFLICT (iso_3166_1) DO NOTHING`, [
+            country.iso_3166_1,
+            country.name,
+          ]);
+          await client.query(`INSERT INTO show_countries (show_tmdb_id, country_iso) VALUES ($1, $2) ON CONFLICT DO NOTHING`, [
+            tmdbId,
+            country.iso_3166_1,
+          ]);
         }
 
         // Production Companies (shared lookup)
@@ -191,12 +182,12 @@ async function updateShows(limit: number, singleTmdbId: number | null = null) {
             `INSERT INTO production_companies (tmdb_id, name, logo_path, country_iso)
              VALUES ($1, $2, $3, $4)
              ON CONFLICT (tmdb_id) DO NOTHING`,
-            [company.id, company.name, company.logo_path ?? null, company.origin_country ?? null]
+            [company.id, company.name, company.logo_path ?? null, company.origin_country ?? null],
           );
           await client.query(
             `INSERT INTO show_production_companies (show_tmdb_id, company_tmdb_id)
              VALUES ($1, $2) ON CONFLICT DO NOTHING`,
-            [tmdbId, company.id]
+            [tmdbId, company.id],
           );
         }
 
@@ -206,12 +197,12 @@ async function updateShows(limit: number, singleTmdbId: number | null = null) {
             `INSERT INTO networks (tmdb_id, name, logo_path, country_iso)
              VALUES ($1, $2, $3, $4)
              ON CONFLICT (tmdb_id) DO NOTHING`,
-            [network.id, network.name, network.logo_path ?? null, network.origin_country ?? null]
+            [network.id, network.name, network.logo_path ?? null, network.origin_country ?? null],
           );
-          await client.query(
-            `INSERT INTO show_networks (show_tmdb_id, network_tmdb_id) VALUES ($1, $2) ON CONFLICT DO NOTHING`,
-            [tmdbId, network.id]
-          );
+          await client.query(`INSERT INTO show_networks (show_tmdb_id, network_tmdb_id) VALUES ($1, $2) ON CONFLICT DO NOTHING`, [
+            tmdbId,
+            network.id,
+          ]);
         }
 
         // Cast & Crew / People Credits
@@ -243,16 +234,15 @@ async function updateShows(limit: number, singleTmdbId: number | null = null) {
           });
         }
 
-        const castToSync = (aggCredits.cast ?? [])
-          .map((c: any) => ({
-            id: c.id,
-            name: c.name,
-            profile_path: c.profile_path,
-            known_for_department: c.known_for_department,
-            popularity: c.popularity ?? 0,
-            character: c.roles?.[0]?.character ?? null,
-            episode_count: c.total_episode_count ?? null,
-          }));
+        const castToSync = (aggCredits.cast ?? []).map((c: any) => ({
+          id: c.id,
+          name: c.name,
+          profile_path: c.profile_path,
+          known_for_department: c.known_for_department,
+          popularity: c.popularity ?? 0,
+          character: c.roles?.[0]?.character ?? null,
+          episode_count: c.total_episode_count ?? null,
+        }));
 
         await processPeopleCredits(client, tmdbId, crewToSync, castToSync, 'show', stats);
       });
@@ -266,9 +256,7 @@ async function updateShows(limit: number, singleTmdbId: number | null = null) {
         try {
           const seasonData = await fetchTMDB(`/tv/${tmdbId}/season/${season.season_number}`);
           const seasonMediaKey = `season:${tmdbId}:${season.season_number}`;
-          const epCount = Array.isArray(seasonData.episodes)
-            ? seasonData.episodes.length
-            : (season.episode_count ?? null);
+          const epCount = Array.isArray(seasonData.episodes) ? seasonData.episodes.length : (season.episode_count ?? null);
 
           // Update Season (Only count if fields actually changed)
           const seasonRes = await query(
@@ -298,7 +286,7 @@ async function updateShows(limit: number, singleTmdbId: number | null = null) {
               seasonData.air_date || season.air_date || null,
               epCount,
               seasonMediaKey,
-            ]
+            ],
           );
           if ((seasonRes.rowCount ?? 0) > 0) {
             seasonsChanged++;
@@ -334,16 +322,7 @@ async function updateShows(limit: number, singleTmdbId: number | null = null) {
                      episodes.runtime        IS DISTINCT FROM EXCLUDED.runtime OR
                      episodes.air_date       IS DISTINCT FROM EXCLUDED.air_date OR
                      episodes.media_key      IS DISTINCT FROM EXCLUDED.media_key`,
-                  [
-                    ep.id,
-                    epMediaKey,
-                    tmdbId,
-                    epSeason,
-                    ep.episode_number,
-                    ep.name ?? null,
-                    runtime,
-                    ep.air_date || null,
-                  ]
+                  [ep.id, epMediaKey, tmdbId, epSeason, ep.episode_number, ep.name ?? null, runtime, ep.air_date || null],
                 );
               };
 
@@ -357,7 +336,7 @@ async function updateShows(limit: number, singleTmdbId: number | null = null) {
                 // Temporarily move conflicting episode number to negative, then retry
                 await query(
                   `UPDATE episodes SET episode_number = -episode_number WHERE show_tmdb_id = $1 AND season_number = $2 AND episode_number = $3`,
-                  [tmdbId, epSeason, ep.episode_number]
+                  [tmdbId, epSeason, ep.episode_number],
                 );
                 const retryRes = await runUpsert();
                 if ((retryRes.rowCount ?? 0) > 0) {
@@ -367,10 +346,10 @@ async function updateShows(limit: number, singleTmdbId: number | null = null) {
             }
 
             // Cleanup any negative episode numbers that were not reassigned
-            await query(
-              `DELETE FROM episodes WHERE show_tmdb_id = $1 AND season_number = $2 AND episode_number < 0`,
-              [tmdbId, season.season_number]
-            );
+            await query(`DELETE FROM episodes WHERE show_tmdb_id = $1 AND season_number = $2 AND episode_number < 0`, [
+              tmdbId,
+              season.season_number,
+            ]);
           }
         } catch (seasonErr: any) {
           const msg = `Show ${tmdbId} ("${showName}") - Season ${season.season_number}: ${seasonErr.message}`;
@@ -390,10 +369,10 @@ async function updateShows(limit: number, singleTmdbId: number | null = null) {
       // Print clean progress log per Show ID
       process.stdout.write(
         `✓ [${idx + 1}/${shows.length}] Show ID ${tmdbId} ("${showName}")\n` +
-        `  ├── Seasons: ${seasonsChanged} updated (${seasonsChecked} checked)\n` +
-        `  ├── Episodes: ${episodesChanged} updated (${episodesChecked} checked)\n` +
-        `  ├── People: ${stats.new_people_added} new added (${stats.people_updated} updated)\n` +
-        `  └── Links: ${genresCount} genres, ${networksCount} networks, ${companiesCount} companies, ${countriesCount} countries\n`
+          `  ├── Seasons: ${seasonsChanged} updated (${seasonsChecked} checked)\n` +
+          `  ├── Episodes: ${episodesChanged} updated (${episodesChecked} checked)\n` +
+          `  ├── People: ${stats.new_people_added} new added (${stats.people_updated} updated)\n` +
+          `  └── Links: ${genresCount} genres, ${networksCount} networks, ${companiesCount} companies, ${countriesCount} countries\n`,
       );
 
       // Brief delay to respect TMDB rate limits

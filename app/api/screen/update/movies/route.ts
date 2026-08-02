@@ -14,10 +14,10 @@ export async function GET(request: Request) {
   const envSecret = process.env.MY_API_PHRASE || '';
 
   if (!envSecret || !secret || secret !== envSecret) {
-    return new Response(
-      JSON.stringify({ error: '🔒 Access Denied: Invalid sync secret phrase.' }),
-      { status: 403, headers: { 'Content-Type': 'application/json' } }
-    );
+    return new Response(JSON.stringify({ error: '🔒 Access Denied: Invalid sync secret phrase.' }), {
+      status: 403,
+      headers: { 'Content-Type': 'application/json' },
+    });
   }
 
   const limit = parseInt(searchParams.get('limit') ?? '10000', 10);
@@ -86,12 +86,7 @@ async function updateMovies(limit: number, singleTmdbId: number | null = null) {
                  name          = EXCLUDED.name,
                  poster_path   = COALESCE(EXCLUDED.poster_path, collections.poster_path),
                  backdrop_path = COALESCE(EXCLUDED.backdrop_path, collections.backdrop_path)`,
-              [
-                collectionId,
-                collectionName,
-                d.belongs_to_collection.poster_path ?? null,
-                d.belongs_to_collection.backdrop_path ?? null,
-              ]
+              [collectionId, collectionName, d.belongs_to_collection.poster_path ?? null, d.belongs_to_collection.backdrop_path ?? null],
             );
           }
 
@@ -147,7 +142,7 @@ async function updateMovies(limit: number, singleTmdbId: number | null = null) {
                 d.overview ?? null,
                 d.vote_average ?? null,
                 collectionId,
-              ]
+              ],
             );
 
             if ((movieRes.rowCount ?? 0) > 0) {
@@ -170,27 +165,24 @@ async function updateMovies(limit: number, singleTmdbId: number | null = null) {
               }
 
               for (const g of genresToInsert) {
-                await query(
-                  `INSERT INTO genres (id, name) VALUES ($1, $2) ON CONFLICT (id) DO NOTHING`,
-                  [g.id, g.name]
-                );
-                await client.query(
-                  `INSERT INTO movie_genres (movie_tmdb_id, genre_id) VALUES ($1, $2) ON CONFLICT DO NOTHING`,
-                  [tmdbId, g.id]
-                );
+                await query(`INSERT INTO genres (id, name) VALUES ($1, $2) ON CONFLICT (id) DO NOTHING`, [g.id, g.name]);
+                await client.query(`INSERT INTO movie_genres (movie_tmdb_id, genre_id) VALUES ($1, $2) ON CONFLICT DO NOTHING`, [
+                  tmdbId,
+                  g.id,
+                ]);
               }
             }
 
             // Production Countries (shared lookup)
             for (const country of d.production_countries ?? []) {
-              await query(
-                `INSERT INTO countries (iso_3166_1, name) VALUES ($1, $2) ON CONFLICT (iso_3166_1) DO NOTHING`,
-                [country.iso_3166_1, country.name]
-              );
-              await client.query(
-                `INSERT INTO movie_countries (movie_tmdb_id, country_iso) VALUES ($1, $2) ON CONFLICT DO NOTHING`,
-                [tmdbId, country.iso_3166_1]
-              );
+              await query(`INSERT INTO countries (iso_3166_1, name) VALUES ($1, $2) ON CONFLICT (iso_3166_1) DO NOTHING`, [
+                country.iso_3166_1,
+                country.name,
+              ]);
+              await client.query(`INSERT INTO movie_countries (movie_tmdb_id, country_iso) VALUES ($1, $2) ON CONFLICT DO NOTHING`, [
+                tmdbId,
+                country.iso_3166_1,
+              ]);
             }
 
             // Production Companies (shared lookup)
@@ -199,12 +191,12 @@ async function updateMovies(limit: number, singleTmdbId: number | null = null) {
                 `INSERT INTO production_companies (tmdb_id, name, logo_path, country_iso)
                  VALUES ($1, $2, $3, $4)
                  ON CONFLICT (tmdb_id) DO NOTHING`,
-                [company.id, company.name, company.logo_path ?? null, company.origin_country ?? null]
+                [company.id, company.name, company.logo_path ?? null, company.origin_country ?? null],
               );
               await client.query(
                 `INSERT INTO movie_production_companies (movie_tmdb_id, company_tmdb_id)
                  VALUES ($1, $2) ON CONFLICT DO NOTHING`,
-                [tmdbId, company.id]
+                [tmdbId, company.id],
               );
             }
 
@@ -220,16 +212,15 @@ async function updateMovies(limit: number, singleTmdbId: number | null = null) {
                 job: m.job,
               }));
 
-            const castToSync = (d.credits?.cast ?? [])
-              .map((c: any) => ({
-                id: c.id,
-                name: c.name,
-                profile_path: c.profile_path,
-                known_for_department: c.known_for_department,
-                popularity: c.popularity ?? 0,
-                character: c.character ?? null,
-                order: c.order,
-              }));
+            const castToSync = (d.credits?.cast ?? []).map((c: any) => ({
+              id: c.id,
+              name: c.name,
+              profile_path: c.profile_path,
+              known_for_department: c.known_for_department,
+              popularity: c.popularity ?? 0,
+              character: c.character ?? null,
+              order: c.order,
+            }));
 
             await processPeopleCredits(client, tmdbId, crewToSync, castToSync, 'movie', stats);
           });
@@ -242,12 +233,12 @@ async function updateMovies(limit: number, singleTmdbId: number | null = null) {
           if (singleTmdbId) {
             process.stdout.write(
               `✓ Movie ID ${tmdbId} ("${movieTitle}")\n` +
-              `  ├── Core Metadata: ${changed ? 'updated' : 'unchanged'}\n` +
-              `  ├── Collection: ${collectionName ? `"${collectionName}"` : 'none'}\n` +
-              `  ├── Genres: ${genresCount} linked\n` +
-              `  ├── Countries: ${countriesCount} linked\n` +
-              `  ├── Companies: ${companiesCount} linked\n` +
-              `  └── People: ${stats.new_people_added} new people added\n`
+                `  ├── Core Metadata: ${changed ? 'updated' : 'unchanged'}\n` +
+                `  ├── Collection: ${collectionName ? `"${collectionName}"` : 'none'}\n` +
+                `  ├── Genres: ${genresCount} linked\n` +
+                `  ├── Countries: ${countriesCount} linked\n` +
+                `  ├── Companies: ${companiesCount} linked\n` +
+                `  └── People: ${stats.new_people_added} new people added\n`,
             );
           }
         } catch (err: any) {
@@ -255,14 +246,14 @@ async function updateMovies(limit: number, singleTmdbId: number | null = null) {
           const msg = `Movie ID ${tmdbId} ("${m.title}"): ${err.message}`;
           errorLogs.push(msg);
         }
-      })
+      }),
     );
 
     if (!singleTmdbId) {
       const progress = Math.min(i + BATCH_SIZE, movies.length);
       const percent = ((progress / movies.length) * 100).toFixed(1);
       process.stdout.write(
-        `  ⟳  Movies: ${progress}/${movies.length} (${percent}%) | Updated: ${totalMoviesChanged} | Added People: ${totalPeopleSynced}\n`
+        `  ⟳  Movies: ${progress}/${movies.length} (${percent}%) | Updated: ${totalMoviesChanged} | Added People: ${totalPeopleSynced}\n`,
       );
     }
 

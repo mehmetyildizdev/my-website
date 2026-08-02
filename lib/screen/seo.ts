@@ -20,7 +20,8 @@ export const SCREEN_SEO_CONFIG = {
   },
   shows: {
     title: 'TV Show Analytics & Charts',
-    description: 'Visual analytics of TV show watch history — network breakdowns, season progress, binge patterns, and rating distributions.',
+    description:
+      'Visual analytics of TV show watch history — network breakdowns, season progress, binge patterns, and rating distributions.',
     path: '/collection/screen/s',
     image: '/images/seo/og-shows.webp',
   },
@@ -101,11 +102,7 @@ export function createScreenMetadata(options?: ScreenSeoOptions): Metadata {
     noIndex = false,
   } = options || {};
 
-  const fullTitle = title
-    ? title.includes('Screen')
-      ? title
-      : `${title} | Screen`
-    : DEFAULT_SCREEN_TITLE;
+  const fullTitle = title ? (title.includes('Screen') ? title : `${title} | Screen`) : DEFAULT_SCREEN_TITLE;
 
   return {
     title: fullTitle,

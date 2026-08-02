@@ -34,21 +34,12 @@ export default function GlobalSection({ loading, waiting, results, query }: Glob
       <CardHeader className="pb-2 flex flex-row items-center justify-between">
         <div>
           <CardTitle className="text-base font-bold tracking-tight text-accent font-poppins flex items-center gap-2">
-            {waiting ? (
-              <Loader2 className="h-4 w-4 text-gold animate-spin" />
-            ) : (
-              <Globe className="h-4 w-4 text-gold" />
-            )}
+            {waiting ? <Loader2 className="h-4 w-4 text-gold animate-spin" /> : <Globe className="h-4 w-4 text-gold" />}
             <span>Global TMDB Catalog</span>
           </CardTitle>
-          <p className="text-[11px] text-muted-foreground mt-0.5">
-            Search results across TMDB's public catalog.
-          </p>
+          <p className="text-[11px] text-muted-foreground mt-0.5">Search results across TMDB's public catalog.</p>
         </div>
-        <Badge
-          variant="outline"
-          className="border-accent/40 text-accent font-semibold gap-1 text-[10px]"
-        >
+        <Badge variant="outline" className="border-accent/40 text-accent font-semibold gap-1 text-[10px]">
           TMDB
         </Badge>
       </CardHeader>
@@ -124,9 +115,7 @@ export default function GlobalSection({ loading, waiting, results, query }: Glob
           <div className="flex flex-col items-center justify-center py-16 text-center">
             <Globe className="h-6 w-6 text-quicksilver/40 mb-2" />
             <h4 className="text-xs font-semibold text-foreground">No Global Matches</h4>
-            <p className="text-[10px] text-muted-foreground mt-1 max-w-[200px]">
-              No external matches found for "{query}" on TMDB.
-            </p>
+            <p className="text-[10px] text-muted-foreground mt-1 max-w-[200px]">No external matches found for "{query}" on TMDB.</p>
           </div>
         )}
       </CardContent>

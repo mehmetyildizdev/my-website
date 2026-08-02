@@ -1,8 +1,7 @@
-import { MotionValue } from "framer-motion";
+import { MotionValue } from 'framer-motion';
 
 declare global {
   interface Window {
-     
     gtag: (...args: any[]) => void;
   }
 

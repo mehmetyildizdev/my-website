@@ -2,9 +2,9 @@
 // Database Initialization Script (NodeJS / ES Modules)
 // ==============================================================================
 // Purpose:
-//   Provides a JS-native (ES Modules) migration runner to set up the database 
-//   schema from scratch on a clean PostgreSQL instance. 
-//   Useful for cross-platform installations (Windows/macOS/Linux) where the 
+//   Provides a JS-native (ES Modules) migration runner to set up the database
+//   schema from scratch on a clean PostgreSQL instance.
+//   Useful for cross-platform installations (Windows/macOS/Linux) where the
 //   `psql` CLI utility is not installed.
 //
 // Requirements:
@@ -38,12 +38,7 @@ async function migrate() {
     await client.connect();
     console.log('Connected to Neon Database.');
 
-    const sqlFiles = [
-      '00_extensions.sql',
-      '01_schema.sql',
-      '02_indexes.sql',
-      '03_data_patches.sql',
-    ];
+    const sqlFiles = ['00_extensions.sql', '01_schema.sql', '02_indexes.sql', '03_data_patches.sql'];
 
     console.log('Executing database setup scripts...');
     for (const file of sqlFiles) {

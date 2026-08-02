@@ -24,20 +24,7 @@ type Props = {
   embedded?: boolean;
 };
 
-const MONTH_LABELS = [
-  'Jan',
-  'Feb',
-  'Mar',
-  'Apr',
-  'May',
-  'Jun',
-  'Jul',
-  'Aug',
-  'Sep',
-  'Oct',
-  'Nov',
-  'Dec',
-];
+const MONTH_LABELS = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
 
 const INTENSITY_CLASSES = [
   'bg-border/10', // 0: empty
@@ -145,22 +132,14 @@ export default function WatchHeatmap({ data, stats, embedded = false }: Props) {
     if (selectedYear === 'recent') {
       const today = new Date();
       rangeEnd = new Date(today.getFullYear(), today.getMonth(), today.getDate());
-      rangeStart = new Date(
-        rangeEnd.getFullYear() - 1,
-        rangeEnd.getMonth(),
-        rangeEnd.getDate() + 1
-      );
+      rangeStart = new Date(rangeEnd.getFullYear() - 1, rangeEnd.getMonth(), rangeEnd.getDate() + 1);
     } else {
       const year = selectedYear === 'all' ? currentYear : parseInt(selectedYear);
       rangeStart = new Date(year, 0, 1);
       rangeEnd = new Date(year, 11, 31);
     }
 
-    const gridStart = new Date(
-      rangeStart.getFullYear(),
-      rangeStart.getMonth(),
-      rangeStart.getDate()
-    );
+    const gridStart = new Date(rangeStart.getFullYear(), rangeStart.getMonth(), rangeStart.getDate());
     if (selectedYear === 'recent') {
       const startDow = gridStart.getDay();
       if (startDow !== 0) gridStart.setDate(gridStart.getDate() - startDow);
@@ -201,10 +180,7 @@ export default function WatchHeatmap({ data, stats, embedded = false }: Props) {
           total += count;
         }
 
-        const tooltipLabel =
-          selectedYear === 'all'
-            ? `${MONTH_LABELS[cellDate.getMonth()]} ${cellDate.getDate()}`
-            : dateStr;
+        const tooltipLabel = selectedYear === 'all' ? `${MONTH_LABELS[cellDate.getMonth()]} ${cellDate.getDate()}` : dateStr;
 
         week.push({ date: dateStr, count, tooltipLabel });
 
@@ -367,9 +343,7 @@ export default function WatchHeatmap({ data, stats, embedded = false }: Props) {
         }
       `}</style>
       <CardHeader className="pb-2">
-        <CardTitle className="text-lg font-bold tracking-tight text-accent">
-          Watch History
-        </CardTitle>
+        <CardTitle className="text-lg font-bold tracking-tight text-accent">Watch History</CardTitle>
       </CardHeader>
       <CardContent className="pt-2 pb-4">
         <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
@@ -383,11 +357,7 @@ export default function WatchHeatmap({ data, stats, embedded = false }: Props) {
                 {selectedYear === 'recent' && ' (last 12 months)'}
                 {selectedYear !== 'all' && selectedYear !== 'recent' && ` in ${selectedYear}`}
               </p>
-              <Select
-                value={selectedYear}
-                onChange={(e) => setSelectedYear(e.target.value)}
-                className="w-40"
-              >
+              <Select value={selectedYear} onChange={(e) => setSelectedYear(e.target.value)} className="w-40">
                 {yearOptions.map((opt) => (
                   <option key={opt.value} value={opt.value}>
                     {opt.label}
@@ -420,14 +390,8 @@ export default function WatchHeatmap({ data, stats, embedded = false }: Props) {
                   {/* Day labels */}
                   <div className="flex flex-col shrink-0 mr-1.5" style={{ gap: 'var(--cell-gap)' }}>
                     {['', 'Mon', '', 'Wed', '', 'Fri', ''].map((label, i) => (
-                      <div
-                        key={i}
-                        style={{ height: 'var(--cell-size)' }}
-                        className="flex items-center"
-                      >
-                        <span className="text-[10px] text-muted-foreground w-7 text-right">
-                          {selectedYear === 'recent' ? label : ''}
-                        </span>
+                      <div key={i} style={{ height: 'var(--cell-size)' }} className="flex items-center">
+                        <span className="text-[10px] text-muted-foreground w-7 text-right">{selectedYear === 'recent' ? label : ''}</span>
                       </div>
                     ))}
                   </div>
@@ -435,11 +399,7 @@ export default function WatchHeatmap({ data, stats, embedded = false }: Props) {
                   {/* Heatmap grid */}
                   <div className="flex" style={{ gap: 'var(--cell-gap)' }}>
                     {grid.map((week, weekIdx) => (
-                      <div
-                        key={weekIdx}
-                        className="flex flex-col"
-                        style={{ gap: 'var(--cell-gap)' }}
-                      >
+                      <div key={weekIdx} className="flex flex-col" style={{ gap: 'var(--cell-gap)' }}>
                         {week.map((cell, dayIdx) => {
                           const intensity = getIntensity(cell.count, maxCount);
                           return (
@@ -449,9 +409,7 @@ export default function WatchHeatmap({ data, stats, embedded = false }: Props) {
                               content={
                                 <div className="flex flex-col gap-0.5">
                                   <span className="font-medium">{cell.tooltipLabel}</span>
-                                  <span className="text-muted-foreground">
-                                    {cell.count} watched
-                                  </span>
+                                  <span className="text-muted-foreground">{cell.count} watched</span>
                                 </div>
                               }
                             >
@@ -468,17 +426,10 @@ export default function WatchHeatmap({ data, stats, embedded = false }: Props) {
                 </div>
 
                 {/* Legend */}
-                <div
-                  className="flex items-center gap-1.5 mt-4"
-                  style={{ marginLeft: 'calc(28px + 0.375rem)' }}
-                >
+                <div className="flex items-center gap-1.5 mt-4" style={{ marginLeft: 'calc(28px + 0.375rem)' }}>
                   <span className="text-[10px] text-muted-foreground mr-1">Less</span>
                   {INTENSITY_CLASSES.map((cls, i) => (
-                    <div
-                      key={i}
-                      className={`rounded-[3px] ${cls}`}
-                      style={{ width: 'var(--cell-size)', height: 'var(--cell-size)' }}
-                    />
+                    <div key={i} className={`rounded-[3px] ${cls}`} style={{ width: 'var(--cell-size)', height: 'var(--cell-size)' }} />
                   ))}
                   <span className="text-[10px] text-muted-foreground ml-1">More</span>
                 </div>
@@ -536,17 +487,7 @@ export default function WatchHeatmap({ data, stats, embedded = false }: Props) {
   );
 }
 
-function StatBox({
-  label,
-  value,
-  sub,
-  tooltip,
-}: {
-  label: string;
-  value: string;
-  sub?: string;
-  tooltip?: string;
-}) {
+function StatBox({ label, value, sub, tooltip }: { label: string; value: string; sub?: string; tooltip?: string }) {
   const box = (
     <div className="rounded-lg border border-border/15 bg-pearl/10 p-3 text-center shrink-0 min-w-0 transition-colors hover:bg-pearl/15 cursor-help h-full flex flex-col justify-between">
       <p className="text-[10px] text-muted-foreground uppercase tracking-wider font-semibold leading-tight min-h-6 flex items-center justify-center">

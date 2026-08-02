@@ -34,15 +34,7 @@ function countryFlag(iso: string | null): string {
 
 const PAGE_SIZE = SCREEN_CONFIG.pagination.companiesNetworks;
 
-function RankedGrid({
-  items,
-  visible,
-  onLoadMore,
-}: {
-  items: RankedGridItem[];
-  visible: number;
-  onLoadMore: () => void;
-}) {
+function RankedGrid({ items, visible, onLoadMore }: { items: RankedGridItem[]; visible: number; onLoadMore: () => void }) {
   const visibleItems = items.slice(0, visible);
 
   return (
@@ -54,17 +46,12 @@ function RankedGrid({
             placement="mouse"
             content={
               <div className="flex flex-col gap-0.5 min-w-40">
-                <span
-                  className="font-semibold text-gold"
-                  style={{ fontFamily: 'var(--font-poppins)' }}
-                >
+                <span className="font-semibold text-gold" style={{ fontFamily: 'var(--font-poppins)' }}>
                   {item.name}
                 </span>
                 <div className="flex justify-between gap-4 text-[11px] mt-1">
                   <span className="text-quicksilver">Avg Rating</span>
-                  <span className="text-platinum font-semibold tabular-nums">
-                    {item.avg_rating.toFixed(2)}
-                  </span>
+                  <span className="text-platinum font-semibold tabular-nums">{item.avg_rating.toFixed(2)}</span>
                 </div>
                 <div className="flex justify-between gap-4 text-[11px]">
                   <span className="text-quicksilver">{item.countLabel}</span>
@@ -77,9 +64,7 @@ function RankedGrid({
               className={`relative flex flex-col items-center p-3 rounded-xl border ${ratingBorder(item.avg_rating)} bg-pearl/10 hover:bg-pearl/25 transition-colors h-full`}
             >
               {/* Rank badge */}
-              <span className="absolute top-1.5 left-2 text-[10px] text-muted-foreground tabular-nums font-medium">
-                #{idx + 1}
-              </span>
+              <span className="absolute top-1.5 left-2 text-[10px] text-muted-foreground tabular-nums font-medium">#{idx + 1}</span>
 
               {/* Fixed-size logo container */}
               <div className="w-16 h-16 p-1 dark:bg-accent flex items-center justify-center shrink-0 mt-1">
@@ -93,9 +78,7 @@ function RankedGrid({
                   />
                 ) : (
                   <div className="w-10 h-10 rounded-lg bg-border/20 flex items-center justify-center">
-                    <span className="text-xs text-muted-foreground font-medium">
-                      {item.name.charAt(0)}
-                    </span>
+                    <span className="text-xs text-muted-foreground font-medium">{item.name.charAt(0)}</span>
                   </div>
                 )}
               </div>
@@ -105,14 +88,10 @@ function RankedGrid({
               </span>
 
               {/* Name — fixed 2-line height */}
-              <span className="text-sm text-foreground/90 text-center leading-tight line-clamp-2 w-full min-h-[2lh] mt-2">
-                {item.name}
-              </span>
+              <span className="text-sm text-foreground/90 text-center leading-tight line-clamp-2 w-full min-h-[2lh] mt-2">{item.name}</span>
 
               {/* Rating */}
-              <span
-                className={`text-lg font-mono font-semibold tabular-nums ${ratingColor(item.avg_rating)}`}
-              >
+              <span className={`text-lg font-mono font-semibold tabular-nums ${ratingColor(item.avg_rating)}`}>
                 {item.avg_rating.toFixed(1)}
               </span>
             </div>
@@ -159,9 +138,7 @@ export default function TopCompaniesNetworks({ companies, networks }: Props) {
     <Card className="bg-pearl/30 border-border/15 shadow-2xl backdrop-blur-md">
       <CardHeader className="pb-2">
         <CardTitle className="text-lg font-bold tracking-tight text-accent">Most Favored</CardTitle>
-        <p className="text-xs text-muted-foreground mt-1">
-          Production companies and TV networks ranked by my average rating.
-        </p>
+        <p className="text-xs text-muted-foreground mt-1">Production companies and TV networks ranked by my average rating.</p>
       </CardHeader>
       <CardContent className="pt-2">
         {companies.length > 0 && networks.length > 0 ? (
@@ -172,33 +149,17 @@ export default function TopCompaniesNetworks({ companies, networks }: Props) {
             </TabsList>
 
             <TabsContent value="companies">
-              <RankedGrid
-                items={companyItems}
-                visible={companiesVisible}
-                onLoadMore={() => setCompaniesVisible((v) => v + PAGE_SIZE)}
-              />
+              <RankedGrid items={companyItems} visible={companiesVisible} onLoadMore={() => setCompaniesVisible((v) => v + PAGE_SIZE)} />
             </TabsContent>
 
             <TabsContent value="networks">
-              <RankedGrid
-                items={networkItems}
-                visible={networksVisible}
-                onLoadMore={() => setNetworksVisible((v) => v + PAGE_SIZE)}
-              />
+              <RankedGrid items={networkItems} visible={networksVisible} onLoadMore={() => setNetworksVisible((v) => v + PAGE_SIZE)} />
             </TabsContent>
           </Tabs>
         ) : companies.length > 0 ? (
-          <RankedGrid
-            items={companyItems}
-            visible={companiesVisible}
-            onLoadMore={() => setCompaniesVisible((v) => v + PAGE_SIZE)}
-          />
+          <RankedGrid items={companyItems} visible={companiesVisible} onLoadMore={() => setCompaniesVisible((v) => v + PAGE_SIZE)} />
         ) : (
-          <RankedGrid
-            items={networkItems}
-            visible={networksVisible}
-            onLoadMore={() => setNetworksVisible((v) => v + PAGE_SIZE)}
-          />
+          <RankedGrid items={networkItems} visible={networksVisible} onLoadMore={() => setNetworksVisible((v) => v + PAGE_SIZE)} />
         )}
       </CardContent>
     </Card>

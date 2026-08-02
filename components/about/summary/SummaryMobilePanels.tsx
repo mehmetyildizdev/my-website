@@ -2,12 +2,7 @@ import { TABS } from '../tabs/Constants';
 import { SummaryMobileAboutIntro } from './SummaryMobileAboutIntro';
 import { cn } from '@/lib/shadcn/utils';
 
-export function SummaryMobilePanels({
-  containerRef,
-  activeIdx,
-  onScroll,
-  hideContent,
-}: SummaryUIProps) {
+export function SummaryMobilePanels({ containerRef, activeIdx, onScroll, hideContent }: SummaryUIProps) {
   return (
     <div
       ref={containerRef as any}
@@ -28,7 +23,7 @@ export function SummaryMobilePanels({
             className={cn(
               'flex h-full min-w-full w-full shrink-0 snap-start snap-always flex-col overscroll-y-contain transition-opacity duration-300',
               !tab.noScroll && 'overflow-y-auto',
-              hideContent ? 'opacity-0' : 'opacity-100'
+              hideContent ? 'opacity-0' : 'opacity-100',
             )}
           >
             {idx === 0 && <SummaryMobileAboutIntro />}

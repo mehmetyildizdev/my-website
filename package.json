@@ -10,6 +10,7 @@
     "build": "next build",
     "start": "next start",
     "lint": "eslint .",
+    "format": "prettier --write .",
     "preinstall": "npx only-allow pnpm"
   },
   "dependencies": {
@@ -67,6 +68,7 @@
     "eslint": "^9.20.0",
     "eslint-config-next": "16.2.4",
     "postcss": "^8.5.10",
+    "prettier": "^3.9.6",
     "tailwindcss": "^4.2.2",
     "tsx": "^4.22.4",
     "typescript": "^6.0.3",

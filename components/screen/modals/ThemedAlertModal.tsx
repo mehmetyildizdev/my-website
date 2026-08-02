@@ -26,14 +26,7 @@ interface ThemedAlertModalProps {
   onClose: () => void;
 }
 
-export function ThemedAlertModal({
-  open,
-  title,
-  description,
-  icon = '🔒',
-  buttonText = 'Understood',
-  onClose,
-}: ThemedAlertModalProps) {
+export function ThemedAlertModal({ open, title, description, icon = '🔒', buttonText = 'Understood', onClose }: ThemedAlertModalProps) {
   const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
@@ -60,17 +53,12 @@ export function ThemedAlertModal({
         </div>
 
         {/* Title */}
-        <h3
-          className="text-lg font-bold tracking-tight text-accent relative z-10"
-          style={{ fontFamily: 'var(--font-poppins)' }}
-        >
+        <h3 className="text-lg font-bold tracking-tight text-accent relative z-10" style={{ fontFamily: 'var(--font-poppins)' }}>
           {title}
         </h3>
 
         {/* Description */}
-        <div className="text-sm text-muted-foreground relative z-10 leading-relaxed">
-          {description}
-        </div>
+        <div className="text-sm text-muted-foreground relative z-10 leading-relaxed">{description}</div>
 
         {/* Close button */}
         <Button
@@ -83,6 +71,6 @@ export function ThemedAlertModal({
         </Button>
       </div>
     </div>,
-    document.body
+    document.body,
   );
 }

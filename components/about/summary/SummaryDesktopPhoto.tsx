@@ -29,18 +29,13 @@ export function SummaryDesktopPhoto({ gradient, angle, hideContent }: SummaryUIP
         <div
           className={cn(
             'w-96 h-96 rounded-full relative transition-opacity duration-300 pointer-events-auto',
-            hideContent ? 'opacity-0' : 'opacity-100'
+            hideContent ? 'opacity-0' : 'opacity-100',
           )}
         >
-          {!imageLoaded && (
-            <div className="absolute inset-0 rounded-full w-full h-full animate-pulse bg-muted/50" />
-          )}
+          {!imageLoaded && <div className="absolute inset-0 rounded-full w-full h-full animate-pulse bg-muted/50" />}
           <Image
             src="/images/pp.webp"
-            className={cn(
-              'rounded-l-full transition-opacity duration-500',
-              imageLoaded ? 'opacity-100' : 'opacity-0'
-            )}
+            className={cn('rounded-l-full transition-opacity duration-500', imageLoaded ? 'opacity-100' : 'opacity-0')}
             alt="me"
             width={480}
             height={480}

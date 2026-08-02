@@ -83,11 +83,7 @@ export function NowPlayingProvider({ children }: { children: React.ReactNode }) 
     };
   }, []);
 
-  return (
-    <NowPlayingContext.Provider value={{ playback, serverNowMs, loading }}>
-      {children}
-    </NowPlayingContext.Provider>
-  );
+  return <NowPlayingContext.Provider value={{ playback, serverNowMs, loading }}>{children}</NowPlayingContext.Provider>;
 }
 
 export function useNowPlaying() {

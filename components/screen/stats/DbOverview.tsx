@@ -92,10 +92,7 @@ function CoverageBar({ filled, total, label }: { filled: number; total: number; 
     <div className="flex items-center gap-2 text-xs">
       <span className="w-28 shrink-0 text-muted-foreground">{label}</span>
       <div className="h-2 flex-1 rounded-full bg-border/30 overflow-hidden">
-        <div
-          className="h-full rounded-full bg-accent/70 transition-all"
-          style={{ width: `${pct}%` }}
-        />
+        <div className="h-full rounded-full bg-accent/70 transition-all" style={{ width: `${pct}%` }} />
       </div>
       <span className="w-20 shrink-0 text-right tabular-nums text-muted-foreground">
         {filled.toLocaleString()}/{total.toLocaleString()}
@@ -118,11 +115,7 @@ function RelationLabel({ name }: { name: string }) {
     production_companies: 'bg-topaz/20 text-topaz border-topaz/30',
   };
   const color = colors[name] || 'bg-muted text-muted-foreground border-border/30';
-  return (
-    <span className={`inline-block rounded border px-1.5 py-0.5 text-[10px] font-mono ${color}`}>
-      {name}
-    </span>
-  );
+  return <span className={`inline-block rounded border px-1.5 py-0.5 text-[10px] font-mono ${color}`}>{name}</span>;
 }
 
 function SampleTable({ entityType, data }: { entityType: string; data: Record<string, unknown> }) {
@@ -197,8 +190,7 @@ export default async function DbOverview() {
         <div>
           <h2 className="text-2xl font-bold tracking-tight text-accent">Database Overview</h2>
           <p className="text-sm text-muted-foreground mt-1">
-            Live snapshot of all tables, data coverage, and relationships. This is made to identify
-            gaps and plan charts.
+            Live snapshot of all tables, data coverage, and relationships. This is made to identify gaps and plan charts.
           </p>
         </div>
 
@@ -213,21 +205,19 @@ export default async function DbOverview() {
             </h4>
             <ul className="text-quicksilver/90 text-[13px] sm:text-[14px] leading-relaxed space-y-2 list-disc pl-4">
               <li>
-                <strong>Primary Datastore:</strong> Primary source of truth for up-to-date watch
-                history, title ratings, and metadata records for website caching.
+                <strong>Primary Datastore:</strong> Primary source of truth for up-to-date watch history, title ratings, and metadata
+                records for website caching.
               </li>
               <li>
-                <strong>Serverless PostgreSQL:</strong> High-performance relational backend hosting
-                custom materialized views and stats tables to feed the website's frontend and api.
+                <strong>Serverless PostgreSQL:</strong> High-performance relational backend hosting custom materialized views and stats
+                tables to feed the website's frontend and api.
               </li>
               <li>
-                <strong>Nightly Sync Pipeline:</strong> Aggregated view data and stats tables
-                recompiled automatically via GitHub Actions.
+                <strong>Nightly Sync Pipeline:</strong> Aggregated view data and stats tables recompiled automatically via GitHub Actions.
               </li>
               <li>
-                <strong>Granular Metrics:</strong> Calculated by personal ratings of titles
-                throughout the years to determine affinity based stats to use in rankings and
-                charts.
+                <strong>Granular Metrics:</strong> Calculated by personal ratings of titles throughout the years to determine affinity based
+                stats to use in rankings and charts.
               </li>
             </ul>
           </div>
@@ -238,22 +228,20 @@ export default async function DbOverview() {
             </h4>
             <ul className="text-quicksilver/90 text-[13px] sm:text-[14px] leading-relaxed space-y-2 list-disc pl-4">
               <li>
-                <strong>Instant Search Index:</strong> SQLite database pre-compiled offline for edge
-                distribution, executing ultra-fast queries, completely bypassing cold starts that
-                would normally happen in Neon.
+                <strong>Instant Search Index:</strong> SQLite database pre-compiled offline for edge distribution, executing ultra-fast
+                queries, completely bypassing cold starts that would normally happen in Neon.
               </li>
               <li>
-                <strong>Secure Edge Proxy:</strong> Serves search endpoints and proxies TMDB
-                requests, protecting private API credentials on the server side.
+                <strong>Secure Edge Proxy:</strong> Serves search endpoints and proxies TMDB requests, protecting private API credentials on
+                the server side.
               </li>
               <li>
-                <strong>Abuse Protection:</strong> Implemented edge rate limiting restricts client
-                searches to a maximum of 3 requests per 10 seconds.
+                <strong>Abuse Protection:</strong> Implemented edge rate limiting restricts client searches to a maximum of 3 requests per
+                10 seconds.
               </li>
               <li>
-                <strong>Live Scrobbling API:</strong> Receives real-time playback payloads at
-                minute-based intervals or event triggers from my streaming platform{' '}
-                <i>MemoStream</i> to power the live Now-Playing state.
+                <strong>Live Scrobbling API:</strong> Receives real-time playback payloads at minute-based intervals or event triggers from
+                my streaming platform <i>MemoStream</i> to power the live Now-Playing state.
               </li>
             </ul>
           </div>
@@ -263,23 +251,19 @@ export default async function DbOverview() {
           <div>
             <h3 className="text-lg font-semibold">Database Maintenance</h3>
             <p className="text-xs text-muted-foreground mt-1">
-              Control buttons to use after synchronisation between my streaming application and the
-              database, they work locally as the hosting provider Vercel does not let runtime of
-              functions more than 10 seconds.
+              Control buttons to use after synchronisation between my streaming application and the database, they work locally as the
+              hosting provider Vercel does not let runtime of functions more than 10 seconds.
             </p>
             <p className="px-4 text-xs text-muted-foreground mt-1">
-              Update buttons make a full scan of all attributed tables to update data to the latest
-              state from TMDB.
+              Update buttons make a full scan of all attributed tables to update data to the latest state from TMDB.
             </p>
             <p className="px-4 text-xs text-muted-foreground mt-1">
-              Update from history button is used for finding the records that are added to history
-              table but failed on updating canonical tables when MemoStream sends scrobble loads. It
-              runs targeted update for those missing movie and show titles.
+              Update from history button is used for finding the records that are added to history table but failed on updating canonical
+              tables when MemoStream sends scrobble loads. It runs targeted update for those missing movie and show titles.
             </p>
             <p className="px-4 text-xs text-muted-foreground mt-1">
-              Enrich buttons fill the empty fields of the tables using the data from TMDB one by one
-              as the appended endpoints for updating from TMDB does not provide some data that I use
-              in this website.
+              Enrich buttons fill the empty fields of the tables using the data from TMDB one by one as the appended endpoints for updating
+              from TMDB does not provide some data that I use in this website.
             </p>
           </div>
           <MaintenanceActions isAuthenticated={true} syncSecret={process.env.MY_API_PHRASE || ''} />
@@ -289,9 +273,7 @@ export default async function DbOverview() {
       {/* ── Sample Rows ────────────────────────────────────────────── */}
       <div>
         <h3 className="text-lg font-semibold mb-4">Sample Rows</h3>
-        <p className="text-xs text-muted-foreground mb-3">
-          One row from each core table showing all column names.
-        </p>
+        <p className="text-xs text-muted-foreground mb-3">One row from each core table showing all column names.</p>
         <div className="grid gap-4 lg:grid-cols-3">
           {samples.map((s) => (
             <SampleTable key={s.entity_type} entityType={s.entity_type} data={s.data} />
@@ -304,10 +286,7 @@ export default async function DbOverview() {
         <h3 className="text-lg font-semibold mb-4">Data Coverage</h3>
         <div className="grid gap-4 md:grid-cols-2">
           {coreTables.map((t) => (
-            <div
-              key={t.table_name}
-              className="rounded-lg border border-border/20 bg-pearl/20 p-4 space-y-3"
-            >
+            <div key={t.table_name} className="rounded-lg border border-border/20 bg-pearl/20 p-4 space-y-3">
               <div className="flex items-center justify-between flex-wrap gap-2">
                 <div className="flex items-center gap-2">
                   <h4 className="font-semibold text-base capitalize">{t.table_name}</h4>
@@ -322,61 +301,27 @@ export default async function DbOverview() {
                       </span>
                     ))}
                 </div>
-                <span className="text-sm tabular-nums font-mono text-muted-foreground">
-                  {t.total_rows.toLocaleString()} rows
-                </span>
+                <span className="text-sm tabular-nums font-mono text-muted-foreground">{t.total_rows.toLocaleString()} rows</span>
               </div>
               <div className="space-y-1.5">
                 {(t.table_name === 'movies' || t.table_name === 'shows') && (
                   <CoverageBar filled={t.has_my_rating} total={t.total_rows} label="My Rating" />
                 )}
-                {t.has_tmdb_rating > 0 && (
-                  <CoverageBar
-                    filled={t.has_tmdb_rating}
-                    total={t.total_rows}
-                    label="TMDB Rating"
-                  />
-                )}
-                {t.has_poster > 0 && (
-                  <CoverageBar filled={t.has_poster} total={t.total_rows} label="Poster" />
-                )}
-                {t.has_backdrop > 0 && (
-                  <CoverageBar filled={t.has_backdrop} total={t.total_rows} label="Backdrop" />
-                )}
-                {t.has_overview > 0 && (
-                  <CoverageBar filled={t.has_overview} total={t.total_rows} label="Overview" />
-                )}
-                {t.has_imdb_id > 0 && (
-                  <CoverageBar filled={t.has_imdb_id} total={t.total_rows} label="IMDB ID" />
-                )}
+                {t.has_tmdb_rating > 0 && <CoverageBar filled={t.has_tmdb_rating} total={t.total_rows} label="TMDB Rating" />}
+                {t.has_poster > 0 && <CoverageBar filled={t.has_poster} total={t.total_rows} label="Poster" />}
+                {t.has_backdrop > 0 && <CoverageBar filled={t.has_backdrop} total={t.total_rows} label="Backdrop" />}
+                {t.has_overview > 0 && <CoverageBar filled={t.has_overview} total={t.total_rows} label="Overview" />}
+                {t.has_imdb_id > 0 && <CoverageBar filled={t.has_imdb_id} total={t.total_rows} label="IMDB ID" />}
                 {t.has_release_date > 0 && (
-                  <CoverageBar
-                    filled={t.has_release_date}
-                    total={t.total_rows}
-                    label={t.table_name === 'people' ? 'Birth Date' : 'Date'}
-                  />
+                  <CoverageBar filled={t.has_release_date} total={t.total_rows} label={t.table_name === 'people' ? 'Birth Date' : 'Date'} />
                 )}
-                {t.has_runtime > 0 && (
-                  <CoverageBar filled={t.has_runtime} total={t.total_rows} label="Runtime" />
-                )}
-                {t.has_collection > 0 && (
-                  <CoverageBar filled={t.has_collection} total={t.total_rows} label="Collection" />
-                )}
-                {t.has_seasons > 0 && (
-                  <CoverageBar filled={t.has_seasons} total={t.total_rows} label="Seasons" />
-                )}
-                {t.has_episodes > 0 && (
-                  <CoverageBar filled={t.has_episodes} total={t.total_rows} label="Episodes" />
-                )}
-                {t.has_popularity > 0 && (
-                  <CoverageBar filled={t.has_popularity} total={t.total_rows} label="Popularity" />
-                )}
-                {t.has_gender > 0 && (
-                  <CoverageBar filled={t.has_gender} total={t.total_rows} label="Gender" />
-                )}
-                {t.has_deathday > 0 && (
-                  <CoverageBar filled={t.has_deathday} total={t.total_rows} label="Deceased Date" />
-                )}
+                {t.has_runtime > 0 && <CoverageBar filled={t.has_runtime} total={t.total_rows} label="Runtime" />}
+                {t.has_collection > 0 && <CoverageBar filled={t.has_collection} total={t.total_rows} label="Collection" />}
+                {t.has_seasons > 0 && <CoverageBar filled={t.has_seasons} total={t.total_rows} label="Seasons" />}
+                {t.has_episodes > 0 && <CoverageBar filled={t.has_episodes} total={t.total_rows} label="Episodes" />}
+                {t.has_popularity > 0 && <CoverageBar filled={t.has_popularity} total={t.total_rows} label="Popularity" />}
+                {t.has_gender > 0 && <CoverageBar filled={t.has_gender} total={t.total_rows} label="Gender" />}
+                {t.has_deathday > 0 && <CoverageBar filled={t.has_deathday} total={t.total_rows} label="Deceased Date" />}
               </div>
             </div>
           ))}
@@ -401,20 +346,12 @@ export default async function DbOverview() {
               {relations.map((r) => (
                 <tr key={r.relation} className="border-b border-border/10 hover:bg-pearl/30">
                   <td className="py-2 pr-4 font-mono text-xs">{r.relation}</td>
-                  <td className="py-2 pr-4 text-right tabular-nums">
-                    {r.total_rows.toLocaleString()}
-                  </td>
-                  <td className="py-2 pr-4 text-right tabular-nums">
-                    {r.movie_entries > 0 ? r.movie_entries.toLocaleString() : '—'}
-                  </td>
-                  <td className="py-2 pr-4 text-right tabular-nums">
-                    {r.episode_entries > 0 ? r.episode_entries.toLocaleString() : '—'}
-                  </td>
+                  <td className="py-2 pr-4 text-right tabular-nums">{r.total_rows.toLocaleString()}</td>
+                  <td className="py-2 pr-4 text-right tabular-nums">{r.movie_entries > 0 ? r.movie_entries.toLocaleString() : '—'}</td>
+                  <td className="py-2 pr-4 text-right tabular-nums">{r.episode_entries > 0 ? r.episode_entries.toLocaleString() : '—'}</td>
                   <td className="py-2 text-xs text-muted-foreground">
-                    {r.relation === 'watch_history' &&
-                      `${r.movie_entries} movies, ${r.episode_entries} episodes, ${r.has_rating} rated`}
-                    {r.relation === 'movie_cast' &&
-                      `${r.has_rating} lead, ${r.extra_stat_1} supporting, ${r.extra_stat_2} minor`}
+                    {r.relation === 'watch_history' && `${r.movie_entries} movies, ${r.episode_entries} episodes, ${r.has_rating} rated`}
+                    {r.relation === 'movie_cast' && `${r.has_rating} lead, ${r.extra_stat_1} supporting, ${r.extra_stat_2} minor`}
                     {r.relation === 'movie_crew' && `${r.has_rating} directors`}
                     {r.relation === 'show_cast' && `${r.has_rating} with ep count`}
                     {r.relation === 'show_crew' && `${r.has_rating} directors/creators`}
@@ -429,9 +366,7 @@ export default async function DbOverview() {
       {/* ── Relationship Map ───────────────────────────────────────── */}
       <div>
         <h3 className="text-lg font-semibold mb-4">Relationship Map</h3>
-        <p className="text-xs text-muted-foreground mb-3">
-          How core entities connect through junction/relational tables.
-        </p>
+        <p className="text-xs text-muted-foreground mb-3">How core entities connect through junction/relational tables.</p>
         <div className="grid gap-2 md:grid-cols-2 lg:grid-cols-3">
           {SCHEMA_RELATIONS.map((rel, i) => (
             <div
@@ -441,9 +376,7 @@ export default async function DbOverview() {
               <RelationLabel name={rel.from} />
               <span className="text-muted-foreground">→</span>
               <RelationLabel name={rel.to} />
-              <span className="text-[10px] text-muted-foreground/70 font-mono break-all">
-                {rel.label}
-              </span>
+              <span className="text-[10px] text-muted-foreground/70 font-mono break-all">{rel.label}</span>
             </div>
           ))}
         </div>
@@ -453,8 +386,8 @@ export default async function DbOverview() {
       <div>
         <h3 className="text-lg font-semibold mb-4">Genre Data Coverage</h3>
         <p className="text-xs text-muted-foreground mb-3">
-          Number of movie and show entries associated with each genre. Combined TMDB genres (like
-          "Sci-Fi & Fantasy") are flagged with a warning if they contain records.
+          Number of movie and show entries associated with each genre. Combined TMDB genres (like "Sci-Fi & Fantasy") are flagged with a
+          warning if they contain records.
         </p>
         <div className="overflow-x-auto rounded-lg border border-border/20 bg-pearl/20">
           <table className="w-full text-sm border-collapse">
@@ -471,36 +404,21 @@ export default async function DbOverview() {
             </thead>
             <tbody>
               {(() => {
-                const sortedGenres = [...genreCoverage].sort(
-                  (a, b) => b.movie_count + b.show_count - (a.movie_count + a.show_count)
-                );
-                const totalMovies = Number(
-                  coreTables.find((t) => t.table_name === 'movies')?.total_rows ?? 0
-                );
-                const totalShows = Number(
-                  coreTables.find((t) => t.table_name === 'shows')?.total_rows ?? 0
-                );
+                const sortedGenres = [...genreCoverage].sort((a, b) => b.movie_count + b.show_count - (a.movie_count + a.show_count));
+                const totalMovies = Number(coreTables.find((t) => t.table_name === 'movies')?.total_rows ?? 0);
+                const totalShows = Number(coreTables.find((t) => t.table_name === 'shows')?.total_rows ?? 0);
                 const grandTotal = totalMovies + totalShows || 1;
 
                 return sortedGenres.map((g) => {
-                  const isUnified = [
-                    'Sci-Fi & Fantasy',
-                    'Action & Adventure',
-                    'War & Politics',
-                  ].includes(g.name);
+                  const isUnified = ['Sci-Fi & Fantasy', 'Action & Adventure', 'War & Politics'].includes(g.name);
                   const hasArtifacts = isUnified && (g.movie_count > 0 || g.show_count > 0);
                   const totalWatches = Number(g.movie_count) + Number(g.show_count);
                   const pct = Math.round((totalWatches / grandTotal) * 100);
                   const genreColor = getGenreColor(g.name);
 
                   return (
-                    <tr
-                      key={g.id}
-                      className="border-b border-border/10 hover:bg-pearl/30 transition-colors"
-                    >
-                      <td className="py-2.5 px-4 font-mono text-xs text-muted-foreground">
-                        {g.id}
-                      </td>
+                    <tr key={g.id} className="border-b border-border/10 hover:bg-pearl/30 transition-colors">
+                      <td className="py-2.5 px-4 font-mono text-xs text-muted-foreground">{g.id}</td>
                       <td className="py-2.5 px-4">
                         <span
                           className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-semibold"
@@ -510,22 +428,13 @@ export default async function DbOverview() {
                             border: `1px solid color-mix(in oklch, ${genreColor}, transparent 75%)`,
                           }}
                         >
-                          <span
-                            className="w-1.5 h-1.5 rounded-full"
-                            style={{ backgroundColor: genreColor }}
-                          />
+                          <span className="w-1.5 h-1.5 rounded-full" style={{ backgroundColor: genreColor }} />
                           {g.name}
                         </span>
                       </td>
-                      <td className="py-2.5 px-4 text-right tabular-nums text-muted-foreground">
-                        {g.movie_count.toLocaleString()}
-                      </td>
-                      <td className="py-2.5 px-4 text-right tabular-nums text-muted-foreground">
-                        {g.show_count.toLocaleString()}
-                      </td>
-                      <td className="py-2.5 px-4 text-right font-semibold tabular-nums">
-                        {totalWatches.toLocaleString()}
-                      </td>
+                      <td className="py-2.5 px-4 text-right tabular-nums text-muted-foreground">{g.movie_count.toLocaleString()}</td>
+                      <td className="py-2.5 px-4 text-right tabular-nums text-muted-foreground">{g.show_count.toLocaleString()}</td>
+                      <td className="py-2.5 px-4 text-right font-semibold tabular-nums">{totalWatches.toLocaleString()}</td>
                       <td className="py-2.5 px-4 min-w-35">
                         <div className="flex items-center gap-2">
                           <div className="h-2 w-20 rounded-full bg-border/20 overflow-hidden shrink-0">

@@ -3,25 +3,27 @@
  */
 export function groupUniqueMovies(movies: PersonMovieCredit[]): PersonMovieCredit[] {
   return Array.from(
-    movies.reduce((acc, current) => {
-      const existing = acc.get(current.tmdb_id);
-      if (existing) {
-        if (current.role && existing.role && !existing.role.includes(current.role)) {
-          existing.role = `${existing.role} / ${current.role}`;
-        } else if (current.role && !existing.role) {
-          existing.role = current.role;
+    movies
+      .reduce((acc, current) => {
+        const existing = acc.get(current.tmdb_id);
+        if (existing) {
+          if (current.role && existing.role && !existing.role.includes(current.role)) {
+            existing.role = `${existing.role} / ${current.role}`;
+          } else if (current.role && !existing.role) {
+            existing.role = current.role;
+          }
+          if (!existing.watched_at && current.watched_at) {
+            existing.watched_at = current.watched_at;
+          }
+          if (!existing.user_rating && current.user_rating) {
+            existing.user_rating = current.user_rating;
+          }
+        } else {
+          acc.set(current.tmdb_id, { ...current });
         }
-        if (!existing.watched_at && current.watched_at) {
-          existing.watched_at = current.watched_at;
-        }
-        if (!existing.user_rating && current.user_rating) {
-          existing.user_rating = current.user_rating;
-        }
-      } else {
-        acc.set(current.tmdb_id, { ...current });
-      }
-      return acc;
-    }, new Map<number, PersonMovieCredit>()).values()
+        return acc;
+      }, new Map<number, PersonMovieCredit>())
+      .values(),
   );
 }
 
@@ -30,18 +32,20 @@ export function groupUniqueMovies(movies: PersonMovieCredit[]): PersonMovieCredi
  */
 export function groupUniqueShows(shows: PersonShowCredit[]): PersonShowCredit[] {
   return Array.from(
-    shows.reduce((acc, current) => {
-      const existing = acc.get(current.tmdb_id);
-      if (existing) {
-        if (current.role && existing.role && !existing.role.includes(current.role)) {
-          existing.role = `${existing.role} / ${current.role}`;
-        } else if (current.role && !existing.role) {
-          existing.role = current.role;
+    shows
+      .reduce((acc, current) => {
+        const existing = acc.get(current.tmdb_id);
+        if (existing) {
+          if (current.role && existing.role && !existing.role.includes(current.role)) {
+            existing.role = `${existing.role} / ${current.role}`;
+          } else if (current.role && !existing.role) {
+            existing.role = current.role;
+          }
+        } else {
+          acc.set(current.tmdb_id, { ...current });
         }
-      } else {
-        acc.set(current.tmdb_id, { ...current });
-      }
-      return acc;
-    }, new Map<number, PersonShowCredit>()).values()
+        return acc;
+      }, new Map<number, PersonShowCredit>())
+      .values(),
   );
 }

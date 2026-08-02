@@ -23,9 +23,7 @@ export function SummaryMobileNav({ containerRef, activeIdx, onTabChange }: Summa
             onClick={() => onTabChange?.(idx)}
             className={cn(
               'flex shrink-0 items-center gap-1.5 border-b-2 px-3 py-2.5 text-[11px] font-semibold uppercase tracking-wide transition-colors',
-              isActive
-                ? 'border-current'
-                : 'border-transparent text-platinum/70 hover:text-platinum'
+              isActive ? 'border-current' : 'border-transparent text-platinum/70 hover:text-platinum',
             )}
             style={
               isActive

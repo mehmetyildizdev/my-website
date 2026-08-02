@@ -25,7 +25,7 @@ if (!connectionString) {
 
 const rl = readline.createInterface({
   input: process.stdin,
-  output: process.stdout
+  output: process.stdout,
 });
 
 const question = (query) => new Promise((resolve) => rl.question(query, resolve));
@@ -38,8 +38,8 @@ async function callTMDB(url, method = 'GET', body = null) {
   const options = {
     method,
     headers: {
-      'Content-Type': 'application/json;charset=utf-8'
-    }
+      'Content-Type': 'application/json;charset=utf-8',
+    },
   };
   if (body) {
     options.body = JSON.stringify(body);
@@ -64,9 +64,7 @@ async function getSessionId() {
   console.log('🔑 Authentication required to rate items on your TMDB profile.');
   console.log('Step 1: Requesting a TMDB request token...');
 
-  const tokenRes = await callTMDB(
-    `https://api.themoviedb.org/3/authentication/token/new?api_key=${apiKey}`
-  );
+  const tokenRes = await callTMDB(`https://api.themoviedb.org/3/authentication/token/new?api_key=${apiKey}`);
 
   const requestToken = tokenRes.request_token;
   const authUrl = `https://www.themoviedb.org/authenticate/${requestToken}`;
@@ -80,11 +78,9 @@ async function getSessionId() {
 
   console.log('\nStep 2: Creating a TMDB session...');
   try {
-    const sessionRes = await callTMDB(
-      `https://api.themoviedb.org/3/authentication/session/new?api_key=${apiKey}`,
-      'POST',
-      { request_token: requestToken }
-    );
+    const sessionRes = await callTMDB(`https://api.themoviedb.org/3/authentication/session/new?api_key=${apiKey}`, 'POST', {
+      request_token: requestToken,
+    });
 
     const sessionId = sessionRes.session_id;
     console.log(`✅ Session created successfully! Session ID: ${sessionId}`);
@@ -121,9 +117,7 @@ async function main() {
   const sessionId = await getSessionId();
 
   console.log('👤 Fetching TMDB account details...');
-  const accountRes = await callTMDB(
-    `https://api.themoviedb.org/3/account?api_key=${apiKey}&session_id=${sessionId}`
-  );
+  const accountRes = await callTMDB(`https://api.themoviedb.org/3/account?api_key=${apiKey}&session_id=${sessionId}`);
   const accountId = accountRes.id;
   console.log(`✅ Logged in as: ${accountRes.username} (Account ID: ${accountId})\n`);
 
@@ -133,9 +127,9 @@ async function main() {
   const tmdbEpisodesList = await fetchAllTMDBRatedItems(accountId, sessionId, 'tv/episodes');
 
   // Build lookup maps
-  const tmdbMoviesMap = new Map(tmdbMoviesList.map(m => [m.id, m.rating]));
-  const tmdbShowsMap = new Map(tmdbShowsList.map(s => [s.id, s.rating]));
-  const tmdbEpisodesMap = new Map(tmdbEpisodesList.map(e => [`${e.show_id}-${e.season_number}-${e.episode_number}`, e.rating]));
+  const tmdbMoviesMap = new Map(tmdbMoviesList.map((m) => [m.id, m.rating]));
+  const tmdbShowsMap = new Map(tmdbShowsList.map((s) => [s.id, s.rating]));
+  const tmdbEpisodesMap = new Map(tmdbEpisodesList.map((e) => [`${e.show_id}-${e.season_number}-${e.episode_number}`, e.rating]));
 
   console.log(`\n✅ Existing TMDB Ratings Count:`);
   console.log(`   - Movies: ${tmdbMoviesMap.size}`);
@@ -147,15 +141,11 @@ async function main() {
 
   try {
     // 1. Fetch rated movies
-    const moviesRes = await pool.query(
-      `SELECT tmdb_id, title, my_rating FROM movies WHERE my_rating IS NOT NULL`
-    );
+    const moviesRes = await pool.query(`SELECT tmdb_id, title, my_rating FROM movies WHERE my_rating IS NOT NULL`);
     const ratedMovies = moviesRes.rows;
 
     // 2. Fetch rated shows
-    const showsRes = await pool.query(
-      `SELECT tmdb_id, name as title, my_rating FROM shows WHERE my_rating IS NOT NULL`
-    );
+    const showsRes = await pool.query(`SELECT tmdb_id, name as title, my_rating FROM shows WHERE my_rating IS NOT NULL`);
     const ratedShows = showsRes.rows;
 
     // 3. Fetch rated episodes
@@ -168,7 +158,7 @@ async function main() {
          e.title
        FROM watch_history wh
        JOIN episodes e ON wh.tmdb_id = e.tmdb_id
-       WHERE wh.media_type = 'episode' AND wh.my_rating IS NOT NULL`
+       WHERE wh.media_type = 'episode' AND wh.my_rating IS NOT NULL`,
     );
     const ratedEpisodes = episodesRes.rows;
 
@@ -178,17 +168,17 @@ async function main() {
     console.log(`   - TV Episodes: ${ratedEpisodes.length}\n`);
 
     // Filter to only include missing or modified ratings
-    const moviesToRate = ratedMovies.filter(item => {
+    const moviesToRate = ratedMovies.filter((item) => {
       const tmdbRating = tmdbMoviesMap.get(item.tmdb_id);
       return tmdbRating === undefined || Number(tmdbRating) !== Number(item.my_rating);
     });
 
-    const showsToRate = ratedShows.filter(item => {
+    const showsToRate = ratedShows.filter((item) => {
       const tmdbRating = tmdbShowsMap.get(item.tmdb_id);
       return tmdbRating === undefined || Number(tmdbRating) !== Number(item.my_rating);
     });
 
-    const episodesToRate = ratedEpisodes.filter(item => {
+    const episodesToRate = ratedEpisodes.filter((item) => {
       const key = `${item.show_tmdb_id}-${item.season_number}-${item.episode_number}`;
       const tmdbRating = tmdbEpisodesMap.get(key);
       return tmdbRating === undefined || Number(tmdbRating) !== Number(item.my_rating);
@@ -214,7 +204,7 @@ async function main() {
     }
 
     console.log('\n🚀 Starting TMDB Export...');
-    console.log('ℹ️ Throttling requests to 20 per second (50ms intervals) to stay safely within TMDB\'s rate limits.\n');
+    console.log("ℹ️ Throttling requests to 20 per second (50ms intervals) to stay safely within TMDB's rate limits.\n");
 
     let processedCount = 0;
 
@@ -224,12 +214,12 @@ async function main() {
       processedCount++;
       const percent = ((processedCount / totalToRate) * 100).toFixed(1);
       try {
-        console.log(`[${processedCount}/${totalToRate} - ${percent}%] Rating Movie: "${item.title}" (ID: ${item.tmdb_id}) → ${item.my_rating}/10`);
-        await callTMDB(
-          `https://api.themoviedb.org/3/movie/${item.tmdb_id}/rating?api_key=${apiKey}&session_id=${sessionId}`,
-          'POST',
-          { value: Number(item.my_rating) }
+        console.log(
+          `[${processedCount}/${totalToRate} - ${percent}%] Rating Movie: "${item.title}" (ID: ${item.tmdb_id}) → ${item.my_rating}/10`,
         );
+        await callTMDB(`https://api.themoviedb.org/3/movie/${item.tmdb_id}/rating?api_key=${apiKey}&session_id=${sessionId}`, 'POST', {
+          value: Number(item.my_rating),
+        });
         await sleep(50);
       } catch (err) {
         console.error(`❌ Failed to rate movie "${item.title}":`, err.message);
@@ -242,12 +232,12 @@ async function main() {
       processedCount++;
       const percent = ((processedCount / totalToRate) * 100).toFixed(1);
       try {
-        console.log(`[${processedCount}/${totalToRate} - ${percent}%] Rating Show: "${item.title}" (ID: ${item.tmdb_id}) → ${item.my_rating}/10`);
-        await callTMDB(
-          `https://api.themoviedb.org/3/tv/${item.tmdb_id}/rating?api_key=${apiKey}&session_id=${sessionId}`,
-          'POST',
-          { value: Number(item.my_rating) }
+        console.log(
+          `[${processedCount}/${totalToRate} - ${percent}%] Rating Show: "${item.title}" (ID: ${item.tmdb_id}) → ${item.my_rating}/10`,
         );
+        await callTMDB(`https://api.themoviedb.org/3/tv/${item.tmdb_id}/rating?api_key=${apiKey}&session_id=${sessionId}`, 'POST', {
+          value: Number(item.my_rating),
+        });
         await sleep(50);
       } catch (err) {
         console.error(`❌ Failed to rate show "${item.title}":`, err.message);
@@ -261,11 +251,13 @@ async function main() {
       const percent = ((processedCount / totalToRate) * 100).toFixed(1);
       const epName = item.title || `S${item.season_number}E${item.episode_number}`;
       try {
-        console.log(`[${processedCount}/${totalToRate} - ${percent}%] Rating Episode: "${epName}" (Show ID: ${item.show_tmdb_id}, S${item.season_number}E${item.episode_number}) → ${item.my_rating}/10`);
+        console.log(
+          `[${processedCount}/${totalToRate} - ${percent}%] Rating Episode: "${epName}" (Show ID: ${item.show_tmdb_id}, S${item.season_number}E${item.episode_number}) → ${item.my_rating}/10`,
+        );
         await callTMDB(
           `https://api.themoviedb.org/3/tv/${item.show_tmdb_id}/season/${item.season_number}/episode/${item.episode_number}/rating?api_key=${apiKey}&session_id=${sessionId}`,
           'POST',
-          { value: Number(item.my_rating) }
+          { value: Number(item.my_rating) },
         );
         await sleep(50);
       } catch (err) {
@@ -274,7 +266,6 @@ async function main() {
     }
 
     console.log('\n🎉 Export finished successfully!');
-
   } catch (err) {
     console.error('❌ Database error:', err.message);
   } finally {
@@ -283,7 +274,7 @@ async function main() {
   }
 }
 
-main().catch(err => {
+main().catch((err) => {
   console.error('❌ Unhandled error:', err);
   rl.close();
 });

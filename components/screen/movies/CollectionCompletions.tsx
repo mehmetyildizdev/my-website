@@ -52,13 +52,8 @@ export default function CollectionCompletions({ data }: { data: CollectionData[]
           completeCollections: data[0].complete_collections,
           incompleteCollections: data[0].total_collections - data[0].complete_collections,
           collectionRate:
-            data[0].total_watched_movies > 0
-              ? Math.round((data[0].movies_in_collections / data[0].total_watched_movies) * 100)
-              : 0,
-          completionRate:
-            data[0].total_collections > 0
-              ? Math.round((data[0].complete_collections / data[0].total_collections) * 100)
-              : 0,
+            data[0].total_watched_movies > 0 ? Math.round((data[0].movies_in_collections / data[0].total_watched_movies) * 100) : 0,
+          completionRate: data[0].total_collections > 0 ? Math.round((data[0].complete_collections / data[0].total_collections) * 100) : 0,
         }
       : null;
 
@@ -66,12 +61,9 @@ export default function CollectionCompletions({ data }: { data: CollectionData[]
     <Card className="bg-pearl/30 border-border/15 shadow-2xl backdrop-blur-md">
       <CardHeader className="pb-2 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
         <div>
-          <CardTitle className="text-lg font-bold tracking-tight text-accent">
-            Collection Completions
-          </CardTitle>
+          <CardTitle className="text-lg font-bold tracking-tight text-accent">Collection Completions</CardTitle>
           <p className="text-xs text-muted-foreground mt-1">
-            Ordered by average rating of movies in collection. Showing {filtered.length}{' '}
-            collections.
+            Ordered by average rating of movies in collection. Showing {filtered.length} collections.
           </p>
         </div>
         <div className="flex items-center gap-1 p-1 rounded-lg bg-pearl/20 border border-border/10 w-fit shrink-0">
@@ -121,21 +113,10 @@ export default function CollectionCompletions({ data }: { data: CollectionData[]
         {overall && (
           <div className="flex gap-3 mb-5 overflow-x-auto pb-1">
             <StatBanner label="Collections" value={overall.totalCollections.toString()} />
-            <StatBanner
-              label="Complete"
-              value={`${overall.completeCollections}`}
-              sub={`${overall.completionRate}%`}
-            />
+            <StatBanner label="Complete" value={`${overall.completeCollections}`} sub={`${overall.completionRate}%`} />
             <StatBanner label="In Progress" value={`${overall.incompleteCollections}`} />
-            <StatBanner
-              label="Movies in Collections"
-              value={`${overall.moviesInCollections}`}
-              sub={`${overall.collectionRate}% of all`}
-            />
-            <StatBanner
-              label="Total Movies Watched"
-              value={overall.totalWatchedMovies.toString()}
-            />
+            <StatBanner label="Movies in Collections" value={`${overall.moviesInCollections}`} sub={`${overall.collectionRate}% of all`} />
+            <StatBanner label="Total Movies Watched" value={overall.totalWatchedMovies.toString()} />
           </div>
         )}
 
@@ -151,17 +132,13 @@ export default function CollectionCompletions({ data }: { data: CollectionData[]
                 placement="mouse"
                 content={
                   <div className="flex flex-col gap-0.5 min-w-40">
-                    <span
-                      className="font-semibold text-gold"
-                      style={{ fontFamily: 'var(--font-poppins)' }}
-                    >
+                    <span className="font-semibold text-gold" style={{ fontFamily: 'var(--font-poppins)' }}>
                       {collection.name}
                     </span>
                     <div className="flex justify-between gap-4 text-[11px] mt-1">
                       <span className="text-quicksilver">Progress</span>
                       <span className="text-platinum font-semibold tabular-nums">
-                        {collection.watched_movies}/{collection.total_movies} (
-                        {collection.completion_pct}%)
+                        {collection.watched_movies}/{collection.total_movies} ({collection.completion_pct}%)
                       </span>
                     </div>
                     {rating != null && (
@@ -186,9 +163,7 @@ export default function CollectionCompletions({ data }: { data: CollectionData[]
                         sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 20vw"
                       />
                     ) : (
-                      <div className="absolute inset-0 flex items-center justify-center text-muted-foreground/30 text-xs">
-                        No poster
-                      </div>
+                      <div className="absolute inset-0 flex items-center justify-center text-muted-foreground/30 text-xs">No poster</div>
                     )}
                     {/* Rating badge */}
                     {rating != null && (
@@ -206,9 +181,7 @@ export default function CollectionCompletions({ data }: { data: CollectionData[]
 
                   {/* Info */}
                   <div className="p-2 space-y-1.5">
-                    <p className="text-[11px] text-foreground/80 truncate leading-tight">
-                      {collection.name}
-                    </p>
+                    <p className="text-[11px] text-foreground/80 truncate leading-tight">{collection.name}</p>
                     <div className="flex items-center gap-1.5">
                       <div className="flex-1 h-1.5 rounded-full bg-border/15 overflow-hidden">
                         <div
@@ -230,12 +203,7 @@ export default function CollectionCompletions({ data }: { data: CollectionData[]
         {/* Load more */}
         {!showAll && filtered.length > 20 && (
           <div className="flex justify-center mt-4">
-            <Button
-              variant="glass"
-              size="sm"
-              onClick={() => setShowAll(true)}
-              className="text-quicksilver hover:text-foreground"
-            >
+            <Button variant="glass" size="sm" onClick={() => setShowAll(true)} className="text-quicksilver hover:text-foreground">
               Show all {filtered.length} collections
             </Button>
           </div>

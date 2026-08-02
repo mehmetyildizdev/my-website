@@ -1,15 +1,11 @@
-import React from "react";
-import ScreenSidebar from "@/components/screen/dashboard/ScreenSidebar";
-import { NowPlayingProvider } from "@/components/screen/now-playing/NowPlayingContext";
-import { createScreenLayoutMetadata } from "@/lib/screen/seo";
+import React from 'react';
+import ScreenSidebar from '@/components/screen/dashboard/ScreenSidebar';
+import { NowPlayingProvider } from '@/components/screen/now-playing/NowPlayingContext';
+import { createScreenLayoutMetadata } from '@/lib/screen/seo';
 
 export const metadata = createScreenLayoutMetadata();
 
-export default function ScreenLayout({
-  children,
-}: {
-  children: React.ReactNode;
-}) {
+export default function ScreenLayout({ children }: { children: React.ReactNode }) {
   return (
     <NowPlayingProvider>
       <div className="min-h-screen bg-background text-foreground font-rubik selection:bg-selection">
@@ -18,9 +14,7 @@ export default function ScreenLayout({
             {/* Sticky sidebar navigation — desktop only */}
             <ScreenSidebar />
             {/* Main content — full width */}
-            <main className="flex-1 min-w-0">
-              {children}
-            </main>
+            <main className="flex-1 min-w-0">{children}</main>
           </div>
         </div>
       </div>

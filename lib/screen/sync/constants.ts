@@ -3,37 +3,37 @@
 
 /** Crew jobs we persist. No profile_path requirement – these are story/creative roles. */
 export const CREW_JOBS = new Set([
-  "Director",
-  "Director of Photography",
-  "Original Story",
-  "Novel",
-  "Comic Book",
-  "Characters",
-  "Graphic Novel",
-  "Original Music Composer",
-  "Executive Producer",
-  "Co-Executive Producer",
-  "Screenplay",
-  "Writer",
-  "Production Design",
-  "Creator",        // injected from created_by array
+  'Director',
+  'Director of Photography',
+  'Original Story',
+  'Novel',
+  'Comic Book',
+  'Characters',
+  'Graphic Novel',
+  'Original Music Composer',
+  'Executive Producer',
+  'Co-Executive Producer',
+  'Screenplay',
+  'Writer',
+  'Production Design',
+  'Creator', // injected from created_by array
 ]);
 
 /** top 4 cast order → lead, next 6 → supporting, rest → minor */
-export function castRole(order: number): "lead" | "supporting" | "minor" {
-  if (order <= 3) return "lead";
-  if (order <= 9) return "supporting";
-  return "minor";
+export function castRole(order: number): 'lead' | 'supporting' | 'minor' {
+  if (order <= 3) return 'lead';
+  if (order <= 9) return 'supporting';
+  return 'minor';
 }
 
 /** Best-effort mapping of place_of_birth text → ISO 3166-1 alpha-2 */
 export const COUNTRY_MAP: Record<string, string> = {
-  "USA": "US",
-  "U.S.A.": "US",
-  "United States": "US",
-  "UK": "GB",
-  "U.K.": "GB",
-  "United Kingdom": "GB",
+  USA: 'US',
+  'U.S.A.': 'US',
+  'United States': 'US',
+  UK: 'GB',
+  'U.K.': 'GB',
+  'United Kingdom': 'GB',
 };
 
 export interface SyncStats {
@@ -90,7 +90,7 @@ export function printStats(stats: SyncStats) {
   console.log(`New History Records:  ${stats.new_history_added}`);
   console.log(`Errors:               ${stats.errors.length}`);
   if (stats.errors.length > 0) {
-    console.log("Error Details:");
-    stats.errors.forEach(e => console.log(`  - ${e}`));
+    console.log('Error Details:');
+    stats.errors.forEach((e) => console.log(`  - ${e}`));
   }
 }

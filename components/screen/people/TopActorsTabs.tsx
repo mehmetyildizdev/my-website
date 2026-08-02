@@ -31,9 +31,7 @@ export default function TopActorsTabs({ data }: { data: TopActorsBuckets }) {
             key={s.id}
             onClick={() => setScope(s.id)}
             className={`px-3 py-1.5 rounded-md text-xs font-medium transition-all ${
-              scope === s.id
-                ? 'bg-accent text-background shadow-sm'
-                : 'text-muted-foreground hover:text-foreground hover:bg-pearl/30'
+              scope === s.id ? 'bg-accent text-background shadow-sm' : 'text-muted-foreground hover:text-foreground hover:bg-pearl/30'
             }`}
           >
             {s.label}

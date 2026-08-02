@@ -1,9 +1,9 @@
-"use client";
+'use client';
 
-import { useEffect, useState } from "react";
-import { Card, CardHeader, CardTitle, CardContent } from "@/components/shadcn/ui/card";
-import { PosterCard } from "@/components/screen/shared/PosterCard";
-import GenreBackground from "@/components/screen/slugs/genre/GenreBackground";
+import { useEffect, useState } from 'react';
+import { Card, CardHeader, CardTitle, CardContent } from '@/components/shadcn/ui/card';
+import { PosterCard } from '@/components/screen/shared/PosterCard';
+import GenreBackground from '@/components/screen/slugs/genre/GenreBackground';
 
 interface RecentWatchItem {
   history_id: number;
@@ -21,9 +21,7 @@ interface RecentWatchItem {
 }
 
 function SkeletonCard() {
-  return (
-    <div className="aspect-2/3 rounded-lg bg-white/5 animate-pulse" />
-  );
+  return <div className="aspect-2/3 rounded-lg bg-white/5 animate-pulse" />;
 }
 
 export default function RecentWatchList() {
@@ -31,7 +29,7 @@ export default function RecentWatchList() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    fetch("/api/screen/recent")
+    fetch('/api/screen/recent')
       .then((r) => r.json())
       .then((data) => {
         setRecentWatches(Array.isArray(data) ? data : []);
@@ -44,15 +42,10 @@ export default function RecentWatchList() {
     <Card className="relative overflow-hidden bg-pearl/30 border-border/15 shadow-2xl backdrop-blur-md">
       <GenreBackground genres={[]} intensity={0.2} variant="container" />
       <CardHeader className="relative z-10 pb-2">
-        <CardTitle
-          className="text-xl font-bold tracking-tight text-accent"
-          style={{ fontFamily: "var(--font-poppins)" }}
-        >
+        <CardTitle className="text-xl font-bold tracking-tight text-accent" style={{ fontFamily: 'var(--font-poppins)' }}>
           Recently Watched
         </CardTitle>
-        <p className="text-xs text-muted-foreground mt-1">
-          Chronological feed of my most recently watched movies and episodes.
-        </p>
+        <p className="text-xs text-muted-foreground mt-1">Chronological feed of my most recently watched movies and episodes.</p>
       </CardHeader>
       <CardContent className="relative z-10 pt-2">
         <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-6 lg:grid-cols-8 gap-4">
@@ -60,14 +53,14 @@ export default function RecentWatchList() {
             ? Array.from({ length: 16 }).map((_, i) => <SkeletonCard key={i} />)
             : recentWatches.map((item, index) => {
                 const href =
-                  item.media_type === "movie"
+                  item.media_type === 'movie'
                     ? `/collection/screen/m/${item.tmdb_id ?? 0}`
                     : `/collection/screen/s/${item.show_tmdb_id ?? item.tmdb_id ?? 0}`;
                 const subtitle =
-                  item.media_type === "episode"
+                  item.media_type === 'episode'
                     ? `S${item.season_number}E${item.episode_number}`
                     : item.release_date
-                      ? String(new Date(item.release_date.replace(/^"|"$/g, "")).getFullYear())
+                      ? String(new Date(item.release_date.replace(/^"|"$/g, '')).getFullYear())
                       : undefined;
                 return (
                   <PosterCard
@@ -79,7 +72,7 @@ export default function RecentWatchList() {
                     poster_path={item.poster_path ?? null}
                     rating={item.my_rating ?? null}
                     priority={index < 6}
-                    meta={`Watched on ${new Date(item.watched_at.replace(/^"|"$/g, "")).toLocaleDateString("en-GB")}`}
+                    meta={`Watched on ${new Date(item.watched_at.replace(/^"|"$/g, '')).toLocaleDateString('en-GB')}`}
                   />
                 );
               })}

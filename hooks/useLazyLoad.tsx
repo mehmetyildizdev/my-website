@@ -34,7 +34,7 @@ export function useLazyLoad<T>(items: T[], options: UseLazyLoadOptions) {
           setVisibleCount((prev) => Math.min(prev + increment, items.length));
         }
       },
-      { rootMargin }
+      { rootMargin },
     );
 
     const currentSentinel = sentinelRef.current;
@@ -102,10 +102,7 @@ export function LazyLoadTrigger({
           {buttonLabel}
         </Button>
       ) : (
-        <div
-          ref={sentinelRef}
-          className="flex items-center gap-2 text-quicksilver text-xs animate-pulse"
-        >
+        <div ref={sentinelRef} className="flex items-center gap-2 text-quicksilver text-xs animate-pulse">
           <Loader2 className="w-4 h-4 animate-spin text-emerald" />
           <span>{loadingText}</span>
         </div>

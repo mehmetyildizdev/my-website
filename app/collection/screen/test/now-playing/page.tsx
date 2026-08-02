@@ -152,8 +152,7 @@ export default function NowPlayingPreviewPage() {
       <header>
         <h1 className="font-poppins text-3xl font-bold text-gold">Now Playing — Previews</h1>
         <p className="mt-2 text-sm text-quicksilver">
-          Visual sandbox to inspect standard and compact (sidebar) versions of the Now Playing
-          component under different playback scenarios.
+          Visual sandbox to inspect standard and compact (sidebar) versions of the Now Playing component under different playback scenarios.
         </p>
       </header>
 
@@ -161,14 +160,10 @@ export default function NowPlayingPreviewPage() {
       <div className="grid gap-8 lg:grid-cols-12">
         {/* Full Card Previews (takes 8 cols) */}
         <div className="lg:col-span-8 space-y-8">
-          <h2 className="text-xl font-bold text-titanium font-poppins border-b border-border/10 pb-2">
-            Full Dashboard Cards
-          </h2>
+          <h2 className="text-xl font-bold text-titanium font-poppins border-b border-border/10 pb-2">Full Dashboard Cards</h2>
 
           <div className="space-y-4">
-            <h3 className="text-sm font-semibold text-quicksilver uppercase tracking-wider">
-              1. Movie Active Playback (Avatar)
-            </h3>
+            <h3 className="text-sm font-semibold text-quicksilver uppercase tracking-wider">1. Movie Active Playback (Avatar)</h3>
             <NowPlayingCard playback={MOCK_MOVIE_PLAYING} serverNowMs={SERVER_NOW} />
           </div>
 
@@ -180,23 +175,17 @@ export default function NowPlayingPreviewPage() {
           </div>
 
           <div className="space-y-4">
-            <h3 className="text-sm font-semibold text-quicksilver uppercase tracking-wider">
-              3. Paused Movie (Interstellar)
-            </h3>
+            <h3 className="text-sm font-semibold text-quicksilver uppercase tracking-wider">3. Paused Movie (Interstellar)</h3>
             <NowPlayingCard playback={MOCK_MOVIE_PAUSED} serverNowMs={SERVER_NOW} />
           </div>
 
           <div className="space-y-4">
-            <h3 className="text-sm font-semibold text-quicksilver uppercase tracking-wider">
-              4. Loading Episode (Breaking Bad)
-            </h3>
+            <h3 className="text-sm font-semibold text-quicksilver uppercase tracking-wider">4. Loading Episode (Breaking Bad)</h3>
             <NowPlayingCard playback={MOCK_EPISODE_LOADING} serverNowMs={SERVER_NOW} />
           </div>
 
           <div className="space-y-4">
-            <h3 className="text-sm font-semibold text-quicksilver uppercase tracking-wider">
-              5. Missing Duration & Artwork (Degraded)
-            </h3>
+            <h3 className="text-sm font-semibold text-quicksilver uppercase tracking-wider">5. Missing Duration & Artwork (Degraded)</h3>
             <NowPlayingCard playback={MOCK_MISSING_DURATION} serverNowMs={SERVER_NOW} />
           </div>
 
@@ -220,50 +209,36 @@ export default function NowPlayingPreviewPage() {
 
         {/* Sidebar Compact Previews (takes 4 cols) */}
         <div className="lg:col-span-4 space-y-8 border-l border-border/10 pl-0 lg:pl-8">
-          <h2 className="text-xl font-bold text-titanium font-poppins border-b border-border/10 pb-2">
-            Compact Sidebar Previews
-          </h2>
+          <h2 className="text-xl font-bold text-titanium font-poppins border-b border-border/10 pb-2">Compact Sidebar Previews</h2>
 
           <div className="max-w-60 space-y-6">
             <div>
-              <h3 className="text-xs font-semibold text-quicksilver uppercase tracking-wider mb-2">
-                1. Movie Playing
-              </h3>
+              <h3 className="text-xs font-semibold text-quicksilver uppercase tracking-wider mb-2">1. Movie Playing</h3>
               <NowPlayingSidebar playback={MOCK_MOVIE_PLAYING} serverNowMs={SERVER_NOW} />
             </div>
 
             <div>
-              <h3 className="text-xs font-semibold text-quicksilver uppercase tracking-wider mb-2">
-                2. Episode Playing
-              </h3>
+              <h3 className="text-xs font-semibold text-quicksilver uppercase tracking-wider mb-2">2. Episode Playing</h3>
               <NowPlayingSidebar playback={MOCK_EPISODE_PLAYING} serverNowMs={SERVER_NOW} />
             </div>
 
             <div>
-              <h3 className="text-xs font-semibold text-quicksilver uppercase tracking-wider mb-2">
-                3. Movie Paused
-              </h3>
+              <h3 className="text-xs font-semibold text-quicksilver uppercase tracking-wider mb-2">3. Movie Paused</h3>
               <NowPlayingSidebar playback={MOCK_MOVIE_PAUSED} serverNowMs={SERVER_NOW} />
             </div>
 
             <div>
-              <h3 className="text-xs font-semibold text-quicksilver uppercase tracking-wider mb-2">
-                4. Episode Loading
-              </h3>
+              <h3 className="text-xs font-semibold text-quicksilver uppercase tracking-wider mb-2">4. Episode Loading</h3>
               <NowPlayingSidebar playback={MOCK_EPISODE_LOADING} serverNowMs={SERVER_NOW} />
             </div>
 
             <div>
-              <h3 className="text-xs font-semibold text-quicksilver uppercase tracking-wider mb-2">
-                5. Degraded State
-              </h3>
+              <h3 className="text-xs font-semibold text-quicksilver uppercase tracking-wider mb-2">5. Degraded State</h3>
               <NowPlayingSidebar playback={MOCK_MISSING_DURATION} serverNowMs={SERVER_NOW} />
             </div>
 
             <div>
-              <h3 className="text-xs font-semibold text-quicksilver uppercase tracking-wider mb-2">
-                6. Watch Completed / Syncing
-              </h3>
+              <h3 className="text-xs font-semibold text-quicksilver uppercase tracking-wider mb-2">6. Watch Completed / Syncing</h3>
               <NowPlayingSidebar playback={MOCK_COMPLETED_PLAYBACK} serverNowMs={SERVER_NOW} />
             </div>
           </div>

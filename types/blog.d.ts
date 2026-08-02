@@ -1,37 +1,29 @@
 declare global {
-  type BodyBlock =
-    | PortableTextBlock
-    | CodeBlock
-    | TableBlock
-    | ImageBlock
-    | EmbedBlock
-    | any;
+  type BodyBlock = PortableTextBlock | CodeBlock | TableBlock | ImageBlock | EmbedBlock | any;
 
   interface PortableTextSpan {
-    _type: "span";
+    _type: 'span';
     _key: string;
     text: string;
     marks?: string[];
   }
 
   interface PortableTextBlock {
-    _type: "block";
+    _type: 'block';
     _key: string;
-    style?: "normal" | "h1" | "h2" | "h3" | "h4" | "h5" | "h6" | "blockquote";
-    children: Array<
-      PortableTextSpan | { _type: string; _key: string; [key: string]: any }
-    >;
+    style?: 'normal' | 'h1' | 'h2' | 'h3' | 'h4' | 'h5' | 'h6' | 'blockquote';
+    children: Array<PortableTextSpan | { _type: string; _key: string; [key: string]: any }>;
     markDefs?: Array<{
       _type: string;
       _key: string;
       [key: string]: any;
     }>;
-    listItem?: "bullet" | "number";
+    listItem?: 'bullet' | 'number';
     level?: number;
   }
 
   interface CodeBlock {
-    _type: "code";
+    _type: 'code';
     _key: string;
     code: string;
     language?: string;
@@ -44,24 +36,24 @@ declare global {
     cells: string[];
   }
   interface TableBlock {
-    _type: "table";
+    _type: 'table';
     _key: string;
     rows: TableRow[];
     caption?: string;
   }
   interface ImageBlock {
-    _type: "image";
+    _type: 'image';
     _key: string;
-    asset?: SanityImage["asset"];
+    asset?: SanityImage['asset'];
     alt?: string;
     caption?: string;
   }
 
   /** Universal body embed — either a URL-based iframe or a raw HTML snippet. */
   interface EmbedBlock {
-    _type: "embedBlock";
+    _type: 'embedBlock';
     _key: string;
-    embedType: "url" | "htmlCode";
+    embedType: 'url' | 'htmlCode';
     embedUrl?: string;
     htmlCode?: string;
     aspectRatio?: string;
@@ -71,8 +63,8 @@ declare global {
 
   /** The resolved hero media for a post — either an image URL or an HTML visual. */
   type HeroMedia =
-    | { kind: "image"; url: string; alt?: string; caption?: string; width?: number; height?: number }
-    | { kind: "htmlVisual"; htmlCode: string; alt?: string; caption?: string; aspectRatio?: string };
+    | { kind: 'image'; url: string; alt?: string; caption?: string; width?: number; height?: number }
+    | { kind: 'htmlVisual'; htmlCode: string; alt?: string; caption?: string; aspectRatio?: string };
 
   interface HeroImage {
     url: string;

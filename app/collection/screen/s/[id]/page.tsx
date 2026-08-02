@@ -1,18 +1,18 @@
-import { query, loadQuery } from "@/lib/screen/db";
-import { notFound } from "next/navigation";
-import ShowDetail from "@/components/screen/slugs/ShowDetail";
+import { query, loadQuery } from '@/lib/screen/db';
+import { notFound } from 'next/navigation';
+import ShowDetail from '@/components/screen/slugs/ShowDetail';
 export const revalidate = 604800; // 7 days — on-demand only, never pre-built
 export const dynamicParams = true;
 
 type Props = { params: Promise<{ id: string }> };
 
-import { createScreenDetailMetadata } from "@/lib/screen/seo";
+import { createScreenDetailMetadata } from '@/lib/screen/seo';
 
 export async function generateMetadata({ params }: Props) {
   const { id } = await params;
   const tmdbId = parseInt(id, 10);
   if (isNaN(tmdbId)) return { robots: { index: false, follow: false } };
-  const res = await query(loadQuery("slugs/show_detail.sql"), [tmdbId]);
+  const res = await query(loadQuery('slugs/show_detail.sql'), [tmdbId]);
   if (!res.rows[0]) return { robots: { index: false, follow: false } };
   const show = res.rows[0] as ShowDetail;
 
@@ -30,7 +30,7 @@ export default async function ShowDetailPage({ params }: Props) {
   const tmdbId = parseInt(id, 10);
   if (isNaN(tmdbId)) notFound();
 
-  const res = await query(loadQuery("slugs/show_detail.sql"), [tmdbId]);
+  const res = await query(loadQuery('slugs/show_detail.sql'), [tmdbId]);
   if (!res.rows[0]) notFound();
 
   const showRow = res.rows[0] as ShowDetail & {

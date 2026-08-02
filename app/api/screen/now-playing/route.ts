@@ -1,11 +1,11 @@
-import { NextResponse } from "next/server";
+import { NextResponse } from 'next/server';
 
-export const dynamic = "force-dynamic"; // never cache this route
+export const dynamic = 'force-dynamic'; // never cache this route
 
 export async function GET() {
   const url = process.env.NEXT_PUBLIC_NOW_PLAYING_WORKER_URL;
   if (!url) {
-    console.error("[api/screen/now-playing] NEXT_PUBLIC_NOW_PLAYING_WORKER_URL is not defined in the environment.");
+    console.error('[api/screen/now-playing] NEXT_PUBLIC_NOW_PLAYING_WORKER_URL is not defined in the environment.');
     return NextResponse.json({ playback: null, serverNowMs: Date.now() });
   }
 
@@ -13,7 +13,7 @@ export async function GET() {
     const res = await fetch(url, {
       cache: 'no-store',
       headers: {
-        'Accept': 'application/json',
+        Accept: 'application/json',
       },
     });
 
@@ -25,11 +25,11 @@ export async function GET() {
     const data = await res.json();
     return NextResponse.json(data, {
       headers: {
-        "Cache-Control": "no-store, no-cache, must-revalidate",
+        'Cache-Control': 'no-store, no-cache, must-revalidate',
       },
     });
   } catch (error: any) {
-    console.error("[api/screen/now-playing] Error fetching from worker:", error.message);
+    console.error('[api/screen/now-playing] Error fetching from worker:', error.message);
     // Silent recovery: return null playback on error to keep the page clean
     return NextResponse.json({ playback: null, serverNowMs: Date.now() });
   }

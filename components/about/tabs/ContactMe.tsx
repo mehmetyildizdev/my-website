@@ -1,14 +1,7 @@
 'use client';
 import React, { useState, useEffect } from 'react';
 import { Turnstile } from 'nextjs-turnstile';
-import {
-  FaEnvelope,
-  FaLinkedinIn,
-  FaTelegram,
-  FaXTwitter,
-  FaInstagram,
-  FaGithub,
-} from 'react-icons/fa6';
+import { FaEnvelope, FaLinkedinIn, FaTelegram, FaXTwitter, FaInstagram, FaGithub } from 'react-icons/fa6';
 import { IoClose } from 'react-icons/io5';
 
 interface ContactMeProps {
@@ -90,9 +83,8 @@ const ContactMe = ({ onCheckingChange }: ContactMeProps) => {
           Let&apos;s Connect
         </h2>
         <p className="text-lg text-foreground/70 leading-relaxed">
-          Whether you have a specific project in mind, a technical challenge to solve, or just want
-          to exchange ideas about digital architecture. I&apos;m always excited to connect with
-          fellow creators and innovators.
+          Whether you have a specific project in mind, a technical challenge to solve, or just want to exchange ideas about digital
+          architecture. I&apos;m always excited to connect with fellow creators and innovators.
         </p>
       </div>
 
@@ -108,9 +100,7 @@ const ContactMe = ({ onCheckingChange }: ContactMeProps) => {
 
       {/* Social Links Grid */}
       <div className="flex flex-col items-center space-y-6 pt-8 border-t border-border/10 w-full max-w-xs">
-        <span className="text-sm font-semibold uppercase tracking-widest text-foreground/40">
-          Connect Elsewhere
-        </span>
+        <span className="text-sm font-semibold uppercase tracking-widest text-foreground/40">Connect Elsewhere</span>
         <div className="flex flex-wrap justify-center gap-4">
           {socialLinks.map((link, index) => (
             <a
@@ -144,10 +134,7 @@ const ContactMe = ({ onCheckingChange }: ContactMeProps) => {
                   <h3 className="text-3xl font-bold text-foreground">Send a Message</h3>
                   <p className="text-foreground/50 mt-1">I usually respond within a few hours.</p>
                 </div>
-                <button
-                  onClick={() => setIsModalOpen(false)}
-                  className="p-3 rounded-full hover:bg-muted transition-colors"
-                >
+                <button onClick={() => setIsModalOpen(false)} className="p-3 rounded-full hover:bg-muted transition-colors">
                   <IoClose size={28} />
                 </button>
               </div>
@@ -155,10 +142,7 @@ const ContactMe = ({ onCheckingChange }: ContactMeProps) => {
               <form onSubmit={handleSubmit} className="space-y-4">
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div>
-                    <label
-                      htmlFor="modal-name"
-                      className="block text-xs font-bold uppercase tracking-wider text-foreground/40 mb-1 ml-1"
-                    >
+                    <label htmlFor="modal-name" className="block text-xs font-bold uppercase tracking-wider text-foreground/40 mb-1 ml-1">
                       Name
                     </label>
                     <input
@@ -172,10 +156,7 @@ const ContactMe = ({ onCheckingChange }: ContactMeProps) => {
                     />
                   </div>
                   <div>
-                    <label
-                      htmlFor="modal-email"
-                      className="block text-xs font-bold uppercase tracking-wider text-foreground/40 mb-1 ml-1"
-                    >
+                    <label htmlFor="modal-email" className="block text-xs font-bold uppercase tracking-wider text-foreground/40 mb-1 ml-1">
                       Email
                     </label>
                     <input
@@ -190,10 +171,7 @@ const ContactMe = ({ onCheckingChange }: ContactMeProps) => {
                   </div>
                 </div>
                 <div>
-                  <label
-                    htmlFor="modal-message"
-                    className="block text-xs font-bold uppercase tracking-wider text-foreground/40 mb-1 ml-1"
-                  >
+                  <label htmlFor="modal-message" className="block text-xs font-bold uppercase tracking-wider text-foreground/40 mb-1 ml-1">
                     Message
                   </label>
                   <textarea
@@ -228,9 +206,7 @@ const ContactMe = ({ onCheckingChange }: ContactMeProps) => {
                 {status.message && (
                   <div
                     className={`p-4 rounded-xl text-sm font-semibold text-center border ${
-                      status.type === 'success'
-                        ? 'bg-emerald/10 text-emerald border-emerald/20'
-                        : 'bg-ruby/10 text-ruby border-ruby/20'
+                      status.type === 'success' ? 'bg-emerald/10 text-emerald border-emerald/20' : 'bg-ruby/10 text-ruby border-ruby/20'
                     }`}
                   >
                     {status.message}

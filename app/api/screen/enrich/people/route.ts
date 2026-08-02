@@ -13,10 +13,10 @@ export async function GET(request: Request) {
   const envSecret = process.env.MY_API_PHRASE || '';
 
   if (!envSecret || !secret || secret !== envSecret) {
-    return new Response(
-      JSON.stringify({ error: '🔒 Access Denied: Invalid sync secret phrase.' }),
-      { status: 403, headers: { 'Content-Type': 'application/json' } }
-    );
+    return new Response(JSON.stringify({ error: '🔒 Access Denied: Invalid sync secret phrase.' }), {
+      status: 403,
+      headers: { 'Content-Type': 'application/json' },
+    });
   }
 
   const limit = parseInt(searchParams.get('limit') ?? '100000', 10);
@@ -37,7 +37,7 @@ async function enrichPeople(limit: number) {
      WHERE gender IS NULL 
      ORDER BY tmdb_id 
      LIMIT $1`,
-    [limit]
+    [limit],
   );
   const toEnrich = res.rows;
 
@@ -83,7 +83,7 @@ async function enrichPeople(limit: number) {
               d.known_for_department ?? null,
               d.place_of_birth ?? '', // store empty string so it is not NULL
               p.tmdb_id,
-            ]
+            ],
           );
 
           if ((upRes.rowCount ?? 0) > 0) {
@@ -94,28 +94,25 @@ async function enrichPeople(limit: number) {
             const isoCode = parseBirthplaceToCountry(d.place_of_birth);
             if (isoCode) {
               const countryName = d.place_of_birth.split(',').pop()?.trim() ?? '';
-              await query(
-                `INSERT INTO countries (iso_3166_1, name) VALUES ($1, $2) ON CONFLICT DO NOTHING`,
-                [isoCode, countryName]
-              );
-              await query(
-                `INSERT INTO person_countries (person_tmdb_id, country_iso) VALUES ($1, $2) ON CONFLICT DO NOTHING`,
-                [p.tmdb_id, isoCode]
-              );
+              await query(`INSERT INTO countries (iso_3166_1, name) VALUES ($1, $2) ON CONFLICT DO NOTHING`, [isoCode, countryName]);
+              await query(`INSERT INTO person_countries (person_tmdb_id, country_iso) VALUES ($1, $2) ON CONFLICT DO NOTHING`, [
+                p.tmdb_id,
+                isoCode,
+              ]);
               countryLinksCount++;
             }
           }
         } catch (err: any) {
           errorLogs.push(`[Person TMDB ID: ${p.tmdb_id}] "${p.name}": ${err.message}`);
         }
-      })
+      }),
     );
 
     const progress = Math.min(i + BATCH_SIZE, toEnrich.length);
     const percent = ((progress / toEnrich.length) * 100).toFixed(1);
     const lastPerson = batch[batch.length - 1]?.name || '';
     process.stdout.write(
-      `  ⟳  People: ${progress}/${toEnrich.length} (${percent}%) | Enriched: ${enrichedCount} | Last: "${lastPerson}"\n`
+      `  ⟳  People: ${progress}/${toEnrich.length} (${percent}%) | Enriched: ${enrichedCount} | Last: "${lastPerson}"\n`,
     );
 
     if (i + BATCH_SIZE < toEnrich.length) {

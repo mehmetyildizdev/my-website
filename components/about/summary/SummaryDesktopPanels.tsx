@@ -2,12 +2,7 @@ import { m } from 'framer-motion';
 import { TABS } from '../tabs/Constants';
 import { cn } from '@/lib/shadcn/utils';
 
-export function SummaryDesktopPanels({
-  gradient,
-  activeIdx,
-  onToggleCheck,
-  hideContent,
-}: SummaryUIProps) {
+export function SummaryDesktopPanels({ gradient, activeIdx, onToggleCheck, hideContent }: SummaryUIProps) {
   return (
     <m.div
       id="content"
@@ -18,7 +13,7 @@ export function SummaryDesktopPanels({
         <div
           className={cn(
             'bg-pearl w-[95%] h-[94%] rounded-2xl relative transition-opacity duration-300',
-            hideContent ? 'opacity-0' : 'opacity-100'
+            hideContent ? 'opacity-0' : 'opacity-100',
           )}
         >
           {TABS.map((tab, index) => {
@@ -33,12 +28,10 @@ export function SummaryDesktopPanels({
                   isActive
                     ? 'relative h-full opacity-100 transition-opacity duration-300 z-10'
                     : 'absolute inset-0 opacity-0 pointer-events-none transition-opacity duration-300 z-0',
-                  !noScroll && 'overflow-y-auto'
+                  !noScroll && 'overflow-y-auto',
                 )}
               >
-                <Component
-                  {...(tab.name === 'Contact Me' ? { onCheckingChange: onToggleCheck } : {})}
-                />
+                <Component {...(tab.name === 'Contact Me' ? { onCheckingChange: onToggleCheck } : {})} />
               </div>
             );
           })}

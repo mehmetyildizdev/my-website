@@ -8,7 +8,7 @@ export async function fetchTMDB(endpoint: string, params: Record<string, string>
   if (!token) throw new Error('TMDB_API_READ_ACCESS_TOKEN is missing');
 
   const url = new URL(`${TMDB_BASE_URL}${endpoint}`);
-  Object.keys(params).forEach(key => url.searchParams.append(key, params[key]));
+  Object.keys(params).forEach((key) => url.searchParams.append(key, params[key]));
 
   const controller = new AbortController();
   const timer = setTimeout(() => controller.abort(), TMDB_TIMEOUT_MS);
@@ -30,12 +30,7 @@ export async function fetchTMDB(endpoint: string, params: Record<string, string>
     // and the AbortController signal may not interrupt body reading on all runtimes.
     return await Promise.race([
       response.json(),
-      new Promise((_, reject) =>
-        setTimeout(
-          () => reject(new Error(`TMDB body timeout (${endpoint})`)),
-          TMDB_TIMEOUT_MS
-        )
-      ),
+      new Promise((_, reject) => setTimeout(() => reject(new Error(`TMDB body timeout (${endpoint})`)), TMDB_TIMEOUT_MS)),
     ]);
   } catch (err: any) {
     if (err.name === 'AbortError') {

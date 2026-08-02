@@ -1,41 +1,41 @@
-import type { Metadata, Viewport } from "next";
-import { Rubik, Poppins } from "next/font/google";
-import "./global.css";
-import NavBar from "tools/NavBar";
-import { ThemeProvider } from "tools/ThemeProvider";
-import GoogleAnalytics from "tools/GoogleAnalytics";
+import type { Metadata, Viewport } from 'next';
+import { Rubik, Poppins } from 'next/font/google';
+import './global.css';
+import NavBar from 'tools/NavBar';
+import { ThemeProvider } from 'tools/ThemeProvider';
+import GoogleAnalytics from 'tools/GoogleAnalytics';
 
 const rubik = Rubik({
-  variable: "--font-rubik",
-  subsets: ["latin"],
-  weight: ["300", "400", "500", "600", "700", "900"],
+  variable: '--font-rubik',
+  subsets: ['latin'],
+  weight: ['300', '400', '500', '600', '700', '900'],
 });
 
 const poppins = Poppins({
-  variable: "--font-poppins",
-  subsets: ["latin"],
-  weight: ["200", "300", "400", "500", "600", "700"],
+  variable: '--font-poppins',
+  subsets: ['latin'],
+  weight: ['200', '300', '400', '500', '600', '700'],
 });
 
 export const viewport: Viewport = {
-  width: "device-width",
+  width: 'device-width',
   initialScale: 1,
-  viewportFit: "cover",
+  viewportFit: 'cover',
 };
 
 export const metadata: Metadata = {
-  title: "Mehmet Yildiz | Developer & IT Support",
+  title: 'Mehmet Yildiz | Developer & IT Support',
   description:
-    "Welcome to the personal website and blog of Mehmet Yildiz, a passionate Front-End Web Developer and IT Support Specialist based in Turkey. Explore my portfolio, read my latest tech articles, and connect with me for innovative solutions.",
+    'Welcome to the personal website and blog of Mehmet Yildiz, a passionate Front-End Web Developer and IT Support Specialist based in Turkey. Explore my portfolio, read my latest tech articles, and connect with me for innovative solutions.',
   icons: {
     icon: [
-      { url: "/favicon.png", sizes: '32x32', type: 'image/png' },
+      { url: '/favicon.png', sizes: '32x32', type: 'image/png' },
       {
         url: '/favicon-96x96.png',
         sizes: '96x96',
         type: 'image/png',
       },
-      { url: "/favicon.ico", sizes: 'any', rel: 'shortcut icon' },
+      { url: '/favicon.ico', sizes: 'any', rel: 'shortcut icon' },
     ],
     apple: [
       {
@@ -50,28 +50,28 @@ export const metadata: Metadata = {
       },
     ],
   },
-  applicationName: "Mehmet Yildiz Portfolio",
-  authors: [{ name: "Mehmet Yildiz" }],
-  generator: "Next.js",
-  publisher: "Mehmet Yildiz",
-  metadataBase: new URL("https://mehmetyildiz.dev"),
+  applicationName: 'Mehmet Yildiz Portfolio',
+  authors: [{ name: 'Mehmet Yildiz' }],
+  generator: 'Next.js',
+  publisher: 'Mehmet Yildiz',
+  metadataBase: new URL('https://mehmetyildiz.dev'),
   alternates: {
-    canonical: "/",
+    canonical: '/',
   },
   openGraph: {
-    title: "Mehmet Yildiz | Developer & IT Support",
-    description: "Full-stack development and systemic critiques of issues in the world.",
-    url: "https://mehmetyildiz.dev",
-    siteName: "Mehmet Yildiz",
-    locale: "en_US",
-    type: "website",
-    images: ["/og-image.webp"],
+    title: 'Mehmet Yildiz | Developer & IT Support',
+    description: 'Full-stack development and systemic critiques of issues in the world.',
+    url: 'https://mehmetyildiz.dev',
+    siteName: 'Mehmet Yildiz',
+    locale: 'en_US',
+    type: 'website',
+    images: ['/og-image.webp'],
   },
   twitter: {
-    card: "summary_large_image",
-    title: "Mehmet Yildiz | Developer & IT Support",
-    description: "Full-stack development and systemic critiques of issues in the world.",
-    images: ["/og-image.webp"],
+    card: 'summary_large_image',
+    title: 'Mehmet Yildiz | Developer & IT Support',
+    description: 'Full-stack development and systemic critiques of issues in the world.',
+    images: ['/og-image.webp'],
   },
 };
 
@@ -85,7 +85,7 @@ export default function RootLayout({
   return (
     <html lang="en" suppressHydrationWarning className="overflow-y-scroll">
       <body className={` ${rubik.variable} ${poppins.variable} antialiased`}>
-        <GoogleAnalytics trackingID={trackingID || ""} />
+        <GoogleAnalytics trackingID={trackingID || ''} />
         <ThemeProvider>
           <NavBar />
           <main>{children}</main>

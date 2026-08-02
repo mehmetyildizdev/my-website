@@ -1,10 +1,5 @@
-import React from "react";
-import {
-  FaXTwitter,
-  FaLinkedinIn,
-  FaFacebookF,
-  FaReddit,
-} from "react-icons/fa6";
+import React from 'react';
+import { FaXTwitter, FaLinkedinIn, FaFacebookF, FaReddit } from 'react-icons/fa6';
 
 interface Props {
   shareLinks: ShareLink[];
@@ -14,13 +9,13 @@ interface Props {
 export const ShareBar: React.FC<Props> = ({ shareLinks, categoryTextColor }) => {
   const getIcon = (label: string) => {
     switch (label.toLowerCase()) {
-      case "x":
+      case 'x':
         return <FaXTwitter />;
-      case "linkedin":
+      case 'linkedin':
         return <FaLinkedinIn />;
-      case "facebook":
+      case 'facebook':
         return <FaFacebookF />;
-      case "reddit":
+      case 'reddit':
         return <FaReddit />;
       default:
         return null;
@@ -29,9 +24,7 @@ export const ShareBar: React.FC<Props> = ({ shareLinks, categoryTextColor }) => 
 
   return (
     <div className="flex flex-col items-center gap-6 py-4">
-      <span className="text-xs font-bold uppercase tracking-[0.3em] text-metadata/75 [writing-mode:vertical-lr] rotate-360">
-        Share
-      </span>
+      <span className="text-xs font-bold uppercase tracking-[0.3em] text-metadata/75 [writing-mode:vertical-lr] rotate-360">Share</span>
       <div className="flex flex-col gap-4">
         {shareLinks.map((link) => (
           <a

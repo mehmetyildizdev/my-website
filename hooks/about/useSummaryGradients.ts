@@ -1,4 +1,4 @@
-import { useAnimationFrame, useMotionValue, useMotionTemplate, useTransform, MotionValue } from "framer-motion";
+import { useAnimationFrame, useMotionValue, useMotionTemplate, useTransform, MotionValue } from 'framer-motion';
 
 export function useSummaryGradients(isActive: boolean, isTurnstileChecking: boolean) {
   const angle = useMotionValue(0);

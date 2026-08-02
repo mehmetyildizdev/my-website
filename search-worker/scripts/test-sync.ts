@@ -5,9 +5,7 @@ import { syncSearchIndex } from './search-db';
 
 dotenv.config({ path: path.resolve(process.cwd(), '.env.local') });
 
-const isLocal =
-  process.env.NEON_DATABASE_URL?.includes('localhost') ||
-  process.env.NEON_DATABASE_URL?.includes('127.0.0.1');
+const isLocal = process.env.NEON_DATABASE_URL?.includes('localhost') || process.env.NEON_DATABASE_URL?.includes('127.0.0.1');
 
 const pool = new Pool({
   connectionString: process.env.NEON_DATABASE_URL,

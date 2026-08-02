@@ -15,32 +15,16 @@ interface SectionShellProps {
   className?: string;
 }
 
-export default function SectionShell({
-  title,
-  blurb,
-  token = 'gold',
-  aside,
-  children,
-  className = '',
-}: SectionShellProps) {
+export default function SectionShell({ title, blurb, token = 'gold', aside, children, className = '' }: SectionShellProps) {
   return (
     <section className={className}>
       <div className="mb-5 flex items-end justify-between gap-4">
         <div className="flex items-center gap-3">
           {/* accent tick */}
-          <span
-            className="h-7 w-1 rounded-full"
-            style={{ background: `linear-gradient(to bottom, ${VAR[token]}, transparent)` }}
-          />
+          <span className="h-7 w-1 rounded-full" style={{ background: `linear-gradient(to bottom, ${VAR[token]}, transparent)` }} />
           <div>
-            <h2
-              className={`font-poppins text-lg md:text-xl font-semibold ${TEXT[token]} leading-none`}
-            >
-              {title}
-            </h2>
-            {blurb && (
-              <p className="mt-1 text-[11px] uppercase tracking-widest text-quicksilver">{blurb}</p>
-            )}
+            <h2 className={`font-poppins text-lg md:text-xl font-semibold ${TEXT[token]} leading-none`}>{title}</h2>
+            {blurb && <p className="mt-1 text-[11px] uppercase tracking-widest text-quicksilver">{blurb}</p>}
           </div>
         </div>
         {aside && <div className="shrink-0 text-xs text-quicksilver">{aside}</div>}

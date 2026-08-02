@@ -1,9 +1,9 @@
-import Link from "next/link";
-import { Card } from "@/components/shadcn/ui/card";
-import { Badge } from "@/components/shadcn/ui/badge";
-import { HeroImageContent } from "@/components/blog/HeroImageContent";
-import { getCategoryTheme } from "@/lib/post/categoryBasedSelector";
-import { formatDate } from "@/lib/post";
+import Link from 'next/link';
+import { Card } from '@/components/shadcn/ui/card';
+import { Badge } from '@/components/shadcn/ui/badge';
+import { HeroImageContent } from '@/components/blog/HeroImageContent';
+import { getCategoryTheme } from '@/lib/post/categoryBasedSelector';
+import { formatDate } from '@/lib/post';
 
 export function FeaturedPost({ post }: { post: Post }) {
   const category = post.categories?.[0]?.title;
@@ -33,16 +33,14 @@ export function FeaturedPost({ post }: { post: Post }) {
                 {category}
               </Badge>
               <div className="h-1 w-1 rounded-full bg-foreground/30" />
-              <time className="text-xs font-semibold uppercase tracking-widest text-metadata">
-                {formatDate(post.publishedAt)}
-              </time>
+              <time className="text-xs font-semibold uppercase tracking-widest text-metadata">{formatDate(post.publishedAt)}</time>
             </div>
-            <h2 className={`mt-4 text-2xl md:text-4xl font-extrabold text-foreground leading-tight text-shadow-sm transition-colors ${theme.groupHoverText}`}>
+            <h2
+              className={`mt-4 text-2xl md:text-4xl font-extrabold text-foreground leading-tight text-shadow-sm transition-colors ${theme.groupHoverText}`}
+            >
               {post.title}
             </h2>
-            <p className="text-metadata mt-4 leading-relaxed line-clamp-3">
-              {post.metaDescription}
-            </p>
+            <p className="text-metadata mt-4 leading-relaxed line-clamp-3">{post.metaDescription}</p>
           </div>
         </Card>
       </Link>

@@ -1,42 +1,42 @@
-import { defineType } from "sanity";
+import { defineType } from 'sanity';
 
 export const codeType = defineType({
-  name: "code",
-  title: "Code",
-  type: "object",
+  name: 'code',
+  title: 'Code',
+  type: 'object',
   fields: [
     {
-      name: "code",
-      title: "Code",
+      name: 'code',
+      title: 'Code',
       // uses the code input if the plugin is available; otherwise fallback to text
-      type: "code",
+      type: 'code',
       options: {
         withFilename: true,
-        language: "javascript",
+        language: 'javascript',
         languageAlternatives: [
-          { title: "JavaScript", value: "javascript" },
-          { title: "TypeScript", value: "typescript" },
-          { title: "HTML", value: "html" },
-          { title: "CSS", value: "css" },
-          { title: "Shell", value: "sh" },
+          { title: 'JavaScript', value: 'javascript' },
+          { title: 'TypeScript', value: 'typescript' },
+          { title: 'HTML', value: 'html' },
+          { title: 'CSS', value: 'css' },
+          { title: 'Shell', value: 'sh' },
         ],
       },
     },
     {
-      name: "language",
-      title: "Language",
-      type: "string",
+      name: 'language',
+      title: 'Language',
+      type: 'string',
     },
     {
-      name: "filename",
-      title: "Filename",
-      type: "string",
+      name: 'filename',
+      title: 'Filename',
+      type: 'string',
     },
     {
-      name: "highlightedLines",
-      title: "Highlighted lines",
-      type: "array",
-      of: [{ type: "number" }],
+      name: 'highlightedLines',
+      title: 'Highlighted lines',
+      type: 'array',
+      of: [{ type: 'number' }],
     },
   ],
 });

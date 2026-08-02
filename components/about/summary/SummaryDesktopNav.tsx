@@ -2,14 +2,7 @@ import { m } from 'framer-motion';
 import { TABS } from '../tabs/Constants';
 import { SyncButton } from './SyncButton';
 
-export function SummaryDesktopNav({
-  gradient,
-  activeIdx,
-  onTabChange,
-  animPauseStyle,
-  angle,
-  hideContent,
-}: SummaryUIProps) {
+export function SummaryDesktopNav({ gradient, activeIdx, onTabChange, animPauseStyle, angle, hideContent }: SummaryUIProps) {
   return (
     <m.div
       id="buttons"

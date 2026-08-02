@@ -21,17 +21,7 @@ type CustomContentProps = {
 };
 
 function TreemapCell(props: CustomContentProps & { payload?: any }) {
-  const {
-    x = 0,
-    y = 0,
-    width = 0,
-    height = 0,
-    name,
-    index = 0,
-    total_count,
-    payload,
-    depth,
-  } = props;
+  const { x = 0, y = 0, width = 0, height = 0, name, index = 0, total_count, payload, depth } = props;
 
   const [hovered, setHovered] = useState(false);
   const [coords, setCoords] = useState({ x: 0, y: 0 });
@@ -139,10 +129,7 @@ function TreemapCell(props: CustomContentProps & { payload?: any }) {
             }}
           >
             <TooltipContent className="whitespace-nowrap min-w-35">
-              <p
-                className="font-semibold text-sm text-gold"
-                style={{ fontFamily: 'var(--font-poppins)' }}
-              >
+              <p className="font-semibold text-sm text-gold" style={{ fontFamily: 'var(--font-poppins)' }}>
                 {genreName}
               </p>
               <div className="mt-1.5 space-y-0.5">
@@ -161,7 +148,7 @@ function TreemapCell(props: CustomContentProps & { payload?: any }) {
               </div>
             </TooltipContent>
           </div>,
-          document.body
+          document.body,
         )}
     </>
   );
@@ -182,9 +169,7 @@ export default function GenreTreemap({ data }: { data: GenreData[] }) {
   return (
     <Card className="bg-pearl/30 border-border/15 shadow-2xl backdrop-blur-md">
       <CardHeader className="pb-2">
-        <CardTitle className="text-lg font-bold tracking-tight text-accent">
-          Genre Distribution
-        </CardTitle>
+        <CardTitle className="text-lg font-bold tracking-tight text-accent">Genre Distribution</CardTitle>
         <p className="text-xs text-muted-foreground mt-1">
           Treemap of genres across watched movies and shows. Size represents total count.
         </p>
@@ -192,13 +177,7 @@ export default function GenreTreemap({ data }: { data: GenreData[] }) {
       <CardContent className="pt-2">
         <div className="w-full" style={{ minHeight: 500 }}>
           <ResponsiveContainer width="100%" height={500}>
-            <Treemap
-              data={filteredData}
-              dataKey="total_count"
-              aspectRatio={4 / 3}
-              content={<TreemapCell />}
-              isAnimationActive={false}
-            />
+            <Treemap data={filteredData} dataKey="total_count" aspectRatio={4 / 3} content={<TreemapCell />} isAnimationActive={false} />
           </ResponsiveContainer>
         </div>
       </CardContent>

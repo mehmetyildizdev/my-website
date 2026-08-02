@@ -1,9 +1,9 @@
 // app/collection/screen/test/movie/page.tsx
 // Renders MovieDetail with mock fixtures.
-import MovieDetail from "@/components/screen/slugs/MovieDetail";
-import { MOCK_MOVIE, MOCK_CAST, MOCK_CREW, MOCK_GENRES_MULTI } from "../mockData";
+import MovieDetail from '@/components/screen/slugs/MovieDetail';
+import { MOCK_MOVIE, MOCK_CAST, MOCK_CREW, MOCK_GENRES_MULTI } from '../mockData';
 
-export const metadata = { title: "Movie Detail — Preview" };
+export const metadata = { title: 'Movie Detail — Preview' };
 
 export default function TestMoviePage() {
   return (

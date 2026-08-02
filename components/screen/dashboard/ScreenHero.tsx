@@ -45,20 +45,17 @@ export default async function ScreenHero() {
               style={{ fontFamily: 'var(--font-poppins)' }}
             >
               <p className="font-medium text-foreground/90">
-                A curated archive of cinematic exploration, synced from my personal streaming
-                platform, powered by serverless PostgreSQL and Cloudflare Workers with TMDB data.
+                A curated archive of cinematic exploration, synced from my personal streaming platform, powered by serverless PostgreSQL and
+                Cloudflare Workers with TMDB data.
               </p>
               <p className="text-quicksilver/90 text-[13px] sm:text-[14px]">
-                Dive into movies, shows, and people through custom data-driven insights. I believe
-                owning and controlling our personal data is increasingly vital in an era of
-                automated, black-box algorithms. Instead of relying on volatile, ad-supported
-                third-party platforms, this ecosystem is built to be a permanent personal space.
-                Live playback events are tracked in real time, while the rest of the dataset is
-                refreshed daily via GitHub Actions.
+                Dive into movies, shows, and people through custom data-driven insights. I believe owning and controlling our personal data
+                is increasingly vital in an era of automated, black-box algorithms. Instead of relying on volatile, ad-supported third-party
+                platforms, this ecosystem is built to be a permanent personal space. Live playback events are tracked in real time, while
+                the rest of the dataset is refreshed daily via GitHub Actions.
               </p>
               <p className="text-xs text-emerald dark:text-gold/80 italic font-medium pt-1">
-                Want to have your own version? Feel free to reach out. I'd be happy to share the
-                setup and guide you through it.
+                Want to have your own version? Feel free to reach out. I'd be happy to share the setup and guide you through it.
               </p>
             </div>
           </div>
@@ -88,15 +85,7 @@ export default async function ScreenHero() {
   );
 }
 
-function QuickStat({
-  icon: Icon,
-  label,
-  value,
-}: {
-  icon: React.ComponentType<{ className?: string }>;
-  label: string;
-  value: string;
-}) {
+function QuickStat({ icon: Icon, label, value }: { icon: React.ComponentType<{ className?: string }>; label: string; value: string }) {
   return (
     <div className="flex items-center gap-2.5 px-3 py-2 rounded-xl bg-pearl/33 border border-border/15 backdrop-blur-xs transition-all duration-300 hover:bg-pearl/66 hover:border-gold/30">
       <Icon className="h-4 w-4 text-gold shrink-0" />

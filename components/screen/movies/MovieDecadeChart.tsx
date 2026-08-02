@@ -18,12 +18,9 @@ export default function MovieDecadeChart({ data }: { data: DecadeData[] }) {
   return (
     <Card className="bg-pearl/30 border-border/15 shadow-2xl backdrop-blur-md">
       <CardHeader className="pb-2">
-        <CardTitle className="text-lg font-bold tracking-tight text-accent">
-          Movies by Decade
-        </CardTitle>
+        <CardTitle className="text-lg font-bold tracking-tight text-accent">Movies by Decade</CardTitle>
         <p className="text-xs text-muted-foreground mt-1">
-          Distribution of watched movies across release decades. Bar height = count, color = avg
-          rating.
+          Distribution of watched movies across release decades. Bar height = count, color = avg rating.
         </p>
       </CardHeader>
       <CardContent className="pt-4">
@@ -39,10 +36,7 @@ export default function MovieDecadeChart({ data }: { data: DecadeData[] }) {
                 placement="top"
                 content={
                   <div className="flex flex-col gap-0.5 min-w-[140px]">
-                    <span
-                      className="font-semibold text-gold"
-                      style={{ fontFamily: 'var(--font-poppins)' }}
-                    >
+                    <span className="font-semibold text-gold" style={{ fontFamily: 'var(--font-poppins)' }}>
                       {d.decade}s
                     </span>
                     <div className="flex justify-between gap-4 text-[11px] mt-1">
@@ -55,9 +49,7 @@ export default function MovieDecadeChart({ data }: { data: DecadeData[] }) {
                     </div>
                     <div className="flex justify-between gap-4 text-[11px]">
                       <span className="text-quicksilver">Total Hours</span>
-                      <span className="text-sapphire tabular-nums">
-                        {d.total_runtime_hours.toLocaleString()}h
-                      </span>
+                      <span className="text-sapphire tabular-nums">{d.total_runtime_hours.toLocaleString()}h</span>
                     </div>
                   </div>
                 }
@@ -67,9 +59,7 @@ export default function MovieDecadeChart({ data }: { data: DecadeData[] }) {
                     className={`w-full rounded-t-md ${color} transition-all hover:opacity-100`}
                     style={{ height: `${heightPct}%`, opacity: 0.8 }}
                   />
-                  <span className="text-[10px] text-muted-foreground tabular-nums">
-                    {d.decade}s
-                  </span>
+                  <span className="text-[10px] text-muted-foreground tabular-nums">{d.decade}s</span>
                 </div>
               </Tooltip>
             );

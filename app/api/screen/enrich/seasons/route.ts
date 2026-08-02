@@ -9,10 +9,10 @@ export async function GET(request: Request) {
   const envSecret = process.env.MY_API_PHRASE || '';
 
   if (!envSecret || !secret || secret !== envSecret) {
-    return new Response(
-      JSON.stringify({ error: '🔒 Access Denied: Invalid sync secret phrase.' }),
-      { status: 403, headers: { 'Content-Type': 'application/json' } }
-    );
+    return new Response(JSON.stringify({ error: '🔒 Access Denied: Invalid sync secret phrase.' }), {
+      status: 403,
+      headers: { 'Content-Type': 'application/json' },
+    });
   }
 
   const limit = parseInt(searchParams.get('limit') ?? '10000', 10);
@@ -33,7 +33,7 @@ async function enrichSeasons(limit: number) {
      WHERE s.episode_count IS NULL
      ORDER BY s.show_tmdb_id, s.season_number
      LIMIT $1`,
-    [limit]
+    [limit],
   );
   const seasons = res.rows;
 
@@ -76,15 +76,7 @@ async function enrichSeasons(limit: number) {
                air_date      = COALESCE($4, air_date),
                episode_count = $5
              WHERE show_tmdb_id = $6 AND season_number = $7`,
-            [
-              d.name ?? null,
-              d.overview ?? null,
-              d.poster_path ?? null,
-              d.air_date || null,
-              episodeCount,
-              s.show_tmdb_id,
-              s.season_number,
-            ]
+            [d.name ?? null, d.overview ?? null, d.poster_path ?? null, d.air_date || null, episodeCount, s.show_tmdb_id, s.season_number],
           );
           if ((upRes.rowCount ?? 0) > 0) {
             seasonsUpdatedCount++;
@@ -110,16 +102,7 @@ async function enrichSeasons(limit: number) {
                      runtime        = EXCLUDED.runtime,
                      air_date       = EXCLUDED.air_date
                    RETURNING (xmax = 0) AS is_inserted`,
-                  [
-                    ep.id,
-                    epMediaKey,
-                    s.show_tmdb_id,
-                    epSeason,
-                    ep.episode_number,
-                    ep.name ?? null,
-                    runtime,
-                    ep.air_date || null,
-                  ]
+                  [ep.id, epMediaKey, s.show_tmdb_id, epSeason, ep.episode_number, ep.name ?? null, runtime, ep.air_date || null],
                 );
                 const isInserted = epRes.rows[0]?.is_inserted;
                 if (isInserted) {
@@ -142,16 +125,7 @@ async function enrichSeasons(limit: number) {
                      runtime        = EXCLUDED.runtime,
                      air_date       = EXCLUDED.air_date
                    RETURNING (xmax = 0) AS is_inserted`,
-                  [
-                    ep.id,
-                    epMediaKey,
-                    s.show_tmdb_id,
-                    epSeason,
-                    ep.episode_number,
-                    ep.name ?? null,
-                    runtime,
-                    ep.air_date || null,
-                  ]
+                  [ep.id, epMediaKey, s.show_tmdb_id, epSeason, ep.episode_number, ep.name ?? null, runtime, ep.air_date || null],
                 );
                 const isInserted = epRes.rows[0]?.is_inserted;
                 if (isInserted) {
@@ -165,7 +139,7 @@ async function enrichSeasons(limit: number) {
         } catch (err: any) {
           errorLogs.push(`[Show TMDB ID: ${s.show_tmdb_id}] Season ${s.season_number} of "${s.show_name}": ${err.message}`);
         }
-      })
+      }),
     );
 
     const progress = Math.min(i + BATCH_SIZE, seasons.length);

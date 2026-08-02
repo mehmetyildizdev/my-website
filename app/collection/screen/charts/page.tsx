@@ -25,7 +25,7 @@ export default async function ChartsPage() {
       query(loadQuery('movies/collection_completions.sql')),
       query(loadQuery('movies/top_companies.sql')),
       query(loadQuery('shows/top_networks.sql')),
-    ]
+    ],
   );
 
   return (

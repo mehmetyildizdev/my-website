@@ -48,26 +48,17 @@ const Opening: React.FC<OpeningProps> = ({ id }) => {
             <span className="font-bold">alchemy of modular design</span>
           </p>
           <p className="text-lg leading-relaxed text-foreground/70 sm:text-xl">
-            Beyond the forge of applications, you&apos;ll find my personal chronicles, live
-            trackers, and the evolving stats of my journey. Whether you seek a custom-crafted
-            solution for your venture or simply wish to explore the realm, you are welcome here.
+            Beyond the forge of applications, you&apos;ll find my personal chronicles, live trackers, and the evolving stats of my journey.
+            Whether you seek a custom-crafted solution for your venture or simply wish to explore the realm, you are welcome here.
           </p>
         </div>
 
         <div className="mt-12 flex flex-wrap items-center justify-center gap-6 animate-in fade-in slide-in-from-bottom-12 duration-1000 delay-500 fill-mode-both">
           {socialLinks.map((link, index) => (
-            <a
-              key={index}
-              href={link.href}
-              rel="noopener noreferrer"
-              target="_blank"
-              aria-label={link.label}
-              className="group relative"
-            >
+            <a key={index} href={link.href} rel="noopener noreferrer" target="_blank" aria-label={link.label} className="group relative">
               <div className="flex h-14 w-14 items-center justify-center rounded-2xl border border-border/20 bg-card/66 shadow-lg backdrop-blur-md transition-all duration-300 hover:-translate-y-2 hover:border-gold/50 hover:bg-muted/50 hover:shadow-gold/20 lg:h-16 lg:w-16">
                 {React.createElement(link.icon, {
-                  className:
-                    'text-gold text-2xl lg:text-3xl transition-transform duration-300 group-hover:scale-110',
+                  className: 'text-gold text-2xl lg:text-3xl transition-transform duration-300 group-hover:scale-110',
                 })}
               </div>
               <span className="absolute -bottom-8 left-1/2 -translate-x-1/2 text-[10px] font-bold uppercase tracking-widest text-platinum opacity-0 transition-all duration-300 group-hover:-bottom-8 group-hover:opacity-100">

@@ -174,8 +174,7 @@ function SearchPageContent() {
       .finally(() => setTmdbLoading(false));
   }, [tmdbQuery]);
 
-  const hasDbResults =
-    dbResults.movies.length > 0 || dbResults.shows.length > 0 || dbResults.people.length > 0;
+  const hasDbResults = dbResults.movies.length > 0 || dbResults.shows.length > 0 || dbResults.people.length > 0;
 
   // TMDB is waiting if query exists but tmdbQuery has not caught up yet OR tmdb API is loading
   const isTmdbWaiting = (query.trim() && query !== tmdbQuery) || tmdbLoading;
@@ -210,9 +209,7 @@ function SearchPageContent() {
         /* ── Featured Recommendations (Empty query) ─────────────── */
         <div className="space-y-10">
           <div className="space-y-1" style={{ fontFamily: 'var(--font-poppins)' }}>
-            <h2 className="text-2xl font-bold tracking-tight text-accent">
-              Featured Recommendations
-            </h2>
+            <h2 className="text-2xl font-bold tracking-tight text-accent">Featured Recommendations</h2>
             <p className="text-xs sm:text-sm text-quicksilver/90 leading-relaxed">
               Curated selection of random movies, TV shows, and actors from my database.
             </p>
@@ -267,12 +264,7 @@ function SearchPageContent() {
             </div>
 
             {/* ── Right Column: Global TMDB Catalog ────────────────────── */}
-            <GlobalSection
-              loading={tmdbLoading}
-              waiting={isTmdbWaiting}
-              results={tmdbResults}
-              query={query}
-            />
+            <GlobalSection loading={tmdbLoading} waiting={isTmdbWaiting} results={tmdbResults} query={query} />
           </div>
         </>
       )}

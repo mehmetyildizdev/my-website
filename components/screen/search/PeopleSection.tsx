@@ -37,14 +37,9 @@ export default function PeopleSection({ loading, people, isFeatured }: PeopleSec
             <Users className="h-4.5 w-4.5 text-gold" />
             <span>People in Database</span>
           </CardTitle>
-          <p className="text-xs text-muted-foreground mt-0.5">
-            Actors, directors, and crew members.
-          </p>
+          <p className="text-xs text-muted-foreground mt-0.5">Actors, directors, and crew members.</p>
         </div>
-        <Badge
-          variant="subtle"
-          className="bg-gold/10 text-accent border-gold/20 font-semibold gap-1 text-[10px]"
-        >
+        <Badge variant="subtle" className="bg-gold/10 text-accent border-gold/20 font-semibold gap-1 text-[10px]">
           <Database className="h-3 w-3" /> LOCAL
         </Badge>
       </CardHeader>
@@ -68,9 +63,7 @@ export default function PeopleSection({ loading, people, isFeatured }: PeopleSec
                   key={p.tmdb_id}
                   {...linkProps}
                   className={`group flex flex-col items-center bg-obsidian/30 border border-border/10 rounded-2xl p-3 text-center transition-all duration-300 shadow-md w-36 sm:w-40 shrink-0 ${
-                    hasImage
-                      ? 'cursor-pointer hover:border-accent/40 hover:bg-obsidian/55'
-                      : 'opacity-70 border-dashed cursor-not-allowed'
+                    hasImage ? 'cursor-pointer hover:border-accent/40 hover:bg-obsidian/55' : 'opacity-70 border-dashed cursor-not-allowed'
                   }`}
                 >
                   <div className="relative w-14 h-14 rounded-full overflow-hidden border border-border/30 shrink-0 group-hover:border-accent transition-colors duration-300">
@@ -83,20 +76,18 @@ export default function PeopleSection({ loading, people, isFeatured }: PeopleSec
                         className="object-cover transition-transform duration-500 group-hover:scale-105"
                       />
                     ) : (
-                      <div className="flex h-full items-center justify-center bg-pearl text-quicksilver text-xs">
-                        ?
-                      </div>
+                      <div className="flex h-full items-center justify-center bg-pearl text-quicksilver text-xs">?</div>
                     )}
                   </div>
                   <div className="flex flex-col items-center mt-2.5 w-full">
-                    <span className={`font-semibold text-xs text-foreground transition-colors truncate w-full ${
-                      hasImage ? 'group-hover:text-gold' : ''
-                    }`}>
+                    <span
+                      className={`font-semibold text-xs text-foreground transition-colors truncate w-full ${
+                        hasImage ? 'group-hover:text-gold' : ''
+                      }`}
+                    >
                       {p.name}
                     </span>
-                    <span className="text-[10px] text-quicksilver truncate w-full mt-0.5">
-                      {p.release_date || 'Crew'}
-                    </span>
+                    <span className="text-[10px] text-quicksilver truncate w-full mt-0.5">{p.release_date || 'Crew'}</span>
                   </div>
                 </CardWrapper>
               );

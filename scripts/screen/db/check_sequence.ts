@@ -1,18 +1,16 @@
-import dotenv from "dotenv";
-import { Pool } from "pg";
+import dotenv from 'dotenv';
+import { Pool } from 'pg';
 
-dotenv.config({ path: ".env.local" });
+dotenv.config({ path: '.env.local' });
 
 if (!process.env.NEON_DATABASE_URL) {
-  console.error("❌ NEON_DATABASE_URL is not set in .env.local");
+  console.error('❌ NEON_DATABASE_URL is not set in .env.local');
   process.exit(1);
 }
 
 const pool = new Pool({
   connectionString: process.env.NEON_DATABASE_URL,
-  ssl: process.env.NEON_DATABASE_URL?.includes('localhost')
-    ? false
-    : { rejectUnauthorized: true },
+  ssl: process.env.NEON_DATABASE_URL?.includes('localhost') ? false : { rejectUnauthorized: true },
 });
 
 async function main() {
@@ -34,19 +32,19 @@ async function main() {
     `);
 
     if (tablesRes.rows.length === 0) {
-      console.log("ℹ️ No serial sequences found in the public schema.");
+      console.log('ℹ️ No serial sequences found in the public schema.');
       return;
     }
 
-    console.log("\n🔍 Checking sequences status:\n");
-    
+    console.log('\n🔍 Checking sequences status:\n');
+
     let desyncedCount = 0;
 
     for (const row of tablesRes.rows) {
       const { table_name, column_name, sequence_name } = row;
 
       const maxRes = await client.query(
-        `SELECT MAX(${client.escapeIdentifier(column_name)}) AS max_val FROM ${client.escapeIdentifier(table_name)}`
+        `SELECT MAX(${client.escapeIdentifier(column_name)}) AS max_val FROM ${client.escapeIdentifier(table_name)}`,
       );
       const maxVal = maxRes.rows[0].max_val !== null ? Number(maxRes.rows[0].max_val) : 0;
 
@@ -68,13 +66,12 @@ async function main() {
     }
 
     if (desyncedCount === 0) {
-      console.log("\n🎉 All database sequences are currently IN SYNC!");
+      console.log('\n🎉 All database sequences are currently IN SYNC!');
     } else {
       console.log(`\n⚠️ Found ${desyncedCount} table(s) with sequence desynchronization.`);
     }
-
   } catch (err: any) {
-    console.error("❌ Failed to check sequences:", err.message);
+    console.error('❌ Failed to check sequences:', err.message);
   } finally {
     client.release();
     await pool.end();

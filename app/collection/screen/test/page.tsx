@@ -2,15 +2,19 @@
 // Preview hub for the redesigned detail pages + genre backgrounds. Uses mock
 // data only — safe to view without a database. Not linked from navigation.
 
-import Link from "next/link";
+import Link from 'next/link';
 
-export const metadata = { title: "Detail Redesign — Preview" };
+export const metadata = { title: 'Detail Redesign — Preview' };
 
 const LINKS = [
-  { href: "/collection/screen/test/movie", title: "Movie Detail", desc: "Full redesigned movie page with mock data" },
-  { href: "/collection/screen/test/show", title: "Show Detail", desc: "Full redesigned show page with mock data" },
-  { href: "/collection/screen/test/genres", title: "Genre Backgrounds", desc: "Explore every genre + layered combinations" },
-  { href: "/collection/screen/test/now-playing", title: "Now Playing Section", desc: "Interactive timeline components for live stream tracking" },
+  { href: '/collection/screen/test/movie', title: 'Movie Detail', desc: 'Full redesigned movie page with mock data' },
+  { href: '/collection/screen/test/show', title: 'Show Detail', desc: 'Full redesigned show page with mock data' },
+  { href: '/collection/screen/test/genres', title: 'Genre Backgrounds', desc: 'Explore every genre + layered combinations' },
+  {
+    href: '/collection/screen/test/now-playing',
+    title: 'Now Playing Section',
+    desc: 'Interactive timeline components for live stream tracking',
+  },
 ];
 
 export default function TestHubPage() {

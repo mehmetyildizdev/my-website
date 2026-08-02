@@ -1,9 +1,9 @@
-"use client";
+'use client';
 
-import { useState, useEffect, useCallback } from "react";
-import Image from "next/image";
-import { X, ChevronLeft, ChevronRight } from "lucide-react";
-import { Button } from "@/components/shadcn/ui/button";
+import { useState, useEffect, useCallback } from 'react';
+import Image from 'next/image';
+import { X, ChevronLeft, ChevronRight } from 'lucide-react';
+import { Button } from '@/components/shadcn/ui/button';
 
 export interface LegacyDesign {
   id: string;
@@ -38,15 +38,15 @@ export function LegacyLightbox({ designs }: LegacyLightboxProps) {
   useEffect(() => {
     if (activeIndex === null) return;
     const handler = (e: KeyboardEvent) => {
-      if (e.key === "Escape") close();
-      if (e.key === "ArrowLeft") prev();
-      if (e.key === "ArrowRight") next();
+      if (e.key === 'Escape') close();
+      if (e.key === 'ArrowLeft') prev();
+      if (e.key === 'ArrowRight') next();
     };
-    window.addEventListener("keydown", handler);
-    document.body.style.overflow = "hidden";
+    window.addEventListener('keydown', handler);
+    document.body.style.overflow = 'hidden';
     return () => {
-      window.removeEventListener("keydown", handler);
-      document.body.style.overflow = "";
+      window.removeEventListener('keydown', handler);
+      document.body.style.overflow = '';
     };
   }, [activeIndex, prev, next]);
 
@@ -73,9 +73,7 @@ export function LegacyLightbox({ designs }: LegacyLightboxProps) {
             {/* Overlay */}
             <div className="absolute inset-0 bg-muted/0 group-hover:bg-muted/80 transition-colors duration-300" />
             <div className="absolute inset-0 flex flex-col justify-end p-3 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-              <p className="text-[11px] font-bold uppercase tracking-widest text-foreground">
-                {d.name}
-              </p>
+              <p className="text-[11px] font-bold uppercase tracking-widest text-foreground">{d.name}</p>
               <p className="text-[10px] text-silver mt-0.5">Click to expand</p>
             </div>
           </button>
@@ -92,10 +90,7 @@ export function LegacyLightbox({ designs }: LegacyLightboxProps) {
           aria-label={`Viewing: ${activeDesign.name}`}
         >
           {/* Stop propagation so clicking the content doesn't close */}
-          <div
-            className="relative flex flex-col w-full h-full max-w-5xl mx-auto px-4 pt-28 pb-16"
-            onClick={(e) => e.stopPropagation()}
-          >
+          <div className="relative flex flex-col w-full h-full max-w-5xl mx-auto px-4 pt-28 pb-16" onClick={(e) => e.stopPropagation()}>
             {/* Navigation Buttons - On the edges of the content area */}
             <div className="absolute inset-x-0 top-1/2 -translate-y-1/2 pointer-events-none flex justify-between z-30 px-2 lg:-mx-10">
               <Button
@@ -120,15 +115,9 @@ export function LegacyLightbox({ designs }: LegacyLightboxProps) {
             {/* Header bar */}
             <div className="flex items-center justify-between mb-4 shrink-0">
               <div>
-                <p className="text-xs font-black uppercase tracking-widest text-secondary">
-                  Legacy Design
-                </p>
-                <h3 className="text-xl font-bold text-titanium leading-tight">
-                  {activeDesign.name}
-                </h3>
-                {activeDesign.description && (
-                  <p className="text-sm text-iridium mt-0.5">{activeDesign.description}</p>
-                )}
+                <p className="text-xs font-black uppercase tracking-widest text-secondary">Legacy Design</p>
+                <h3 className="text-xl font-bold text-titanium leading-tight">{activeDesign.name}</h3>
+                {activeDesign.description && <p className="text-sm text-iridium mt-0.5">{activeDesign.description}</p>}
               </div>
               <div className="flex items-center gap-2">
                 {/* Counter */}
@@ -184,11 +173,9 @@ export function LegacyLightbox({ designs }: LegacyLightboxProps) {
                 )}
               </div>
             </div>
-
           </div>
         </div>
       )}
     </>
   );
 }
-

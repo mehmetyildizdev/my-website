@@ -1,31 +1,26 @@
-"use client";
+'use client';
 
-import Link from "next/link";
-import Image from "next/image";
-import { FaWindowClose } from "react-icons/fa";
-import { cn } from "@/lib/shadcn/utils";
-
-
+import Link from 'next/link';
+import Image from 'next/image';
+import { FaWindowClose } from 'react-icons/fa';
+import { cn } from '@/lib/shadcn/utils';
 
 export function MobileMenu({ isOpen, onClose, logoSrc, navLinks, socialLinks }: MobileMenuProps) {
   return (
     <div
       className={cn(
-        "fixed inset-0 z-1000 flex transition-opacity duration-300",
-        isOpen ? "opacity-100 pointer-events-auto" : "opacity-0 pointer-events-none"
+        'fixed inset-0 z-1000 flex transition-opacity duration-300',
+        isOpen ? 'opacity-100 pointer-events-auto' : 'opacity-0 pointer-events-none',
       )}
     >
       {/* Backdrop */}
-      <div
-        className="absolute inset-0 bg-obsidian/60 backdrop-blur-sm"
-        onClick={onClose}
-      />
+      <div className="absolute inset-0 bg-obsidian/60 backdrop-blur-sm" onClick={onClose} />
 
       {/* Menu Content */}
       <div
         className={cn(
-          "relative ml-auto w-[80%] max-w-sm h-full bg-card/95 backdrop-blur-xl shadow-2xl border-l border-border/20 transition-transform duration-500 ease-out",
-          isOpen ? "translate-x-0" : "translate-x-full"
+          'relative ml-auto w-[80%] max-w-sm h-full bg-card/95 backdrop-blur-xl shadow-2xl border-l border-border/20 transition-transform duration-500 ease-out',
+          isOpen ? 'translate-x-0' : 'translate-x-full',
         )}
       >
         <div className="flex flex-col h-full p-6 relative">
@@ -39,15 +34,7 @@ export function MobileMenu({ isOpen, onClose, logoSrc, navLinks, socialLinks }: 
 
           <div className="flex items-center pb-6 border-b border-border/10">
             <Link href="/" onClick={onClose}>
-              <Image
-                src={logoSrc}
-                alt="Logo"
-                width={140}
-                height={42}
-                className="h-auto w-auto"
-                priority
-                suppressHydrationWarning
-              />
+              <Image src={logoSrc} alt="Logo" width={140} height={42} className="h-auto w-auto" priority suppressHydrationWarning />
             </Link>
           </div>
 
@@ -65,9 +52,7 @@ export function MobileMenu({ isOpen, onClose, logoSrc, navLinks, socialLinks }: 
           </nav>
 
           <div className="mt-auto">
-            <div className="pt-8 text-gold font-bold tracking-widest uppercase text-xs mb-4">
-              Let&apos;s Connect
-            </div>
+            <div className="pt-8 text-gold font-bold tracking-widest uppercase text-xs mb-4">Let&apos;s Connect</div>
             <div className="flex items-center gap-4">
               {socialLinks.map((link, index) => (
                 <a

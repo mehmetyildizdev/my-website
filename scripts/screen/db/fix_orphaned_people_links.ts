@@ -41,9 +41,7 @@ const limitArg = args.find((a) => a.startsWith('--limit='));
 const maxLimit = limitArg ? parseInt(limitArg.split('=')[1], 10) : 0;
 
 const outArg = args.find((a) => a.startsWith('--out='));
-const outputPath = outArg
-  ? path.resolve(outArg.split('=')[1])
-  : path.resolve(process.cwd(), 'zone/fix_orphaned_people_links_report.md');
+const outputPath = outArg ? path.resolve(outArg.split('=')[1]) : path.resolve(process.cwd(), 'zone/fix_orphaned_people_links_report.md');
 
 // Rate limiting: 25 requests per batch with 1000ms delay strictly respects TMDB 30 req/sec limit
 const BATCH_SIZE = 25;
@@ -174,13 +172,13 @@ async function main() {
               const isoCode = parseBirthplaceToCountry(birthplace);
               if (isoCode) {
                 const countryName = birthplace.split(',').pop()?.trim() ?? '';
-                await client.query(
-                  `INSERT INTO countries (iso_3166_1, name) VALUES ($1, $2) ON CONFLICT DO NOTHING`,
-                  [isoCode, countryName]
-                );
+                await client.query(`INSERT INTO countries (iso_3166_1, name) VALUES ($1, $2) ON CONFLICT DO NOTHING`, [
+                  isoCode,
+                  countryName,
+                ]);
                 const cRes = await client.query(
                   `INSERT INTO person_countries (person_tmdb_id, country_iso) VALUES ($1, $2) ON CONFLICT DO NOTHING`,
-                  [person.tmdb_id, isoCode]
+                  [person.tmdb_id, isoCode],
                 );
                 countriesAdded += cRes.rowCount ?? 0;
               }
@@ -196,7 +194,7 @@ async function main() {
                   `INSERT INTO movie_cast (movie_tmdb_id, person_tmdb_id, character, cast_order, role)
                    VALUES ($1, $2, $3, $4, $5)
                    ON CONFLICT (movie_tmdb_id, person_tmdb_id, character) DO NOTHING`,
-                  [c.id, person.tmdb_id, c.character ?? null, order, role]
+                  [c.id, person.tmdb_id, c.character ?? null, order, role],
                 );
                 movieCastAdded += r.rowCount ?? 0;
               }
@@ -210,7 +208,7 @@ async function main() {
                   `INSERT INTO movie_crew (movie_tmdb_id, person_tmdb_id, job)
                    VALUES ($1, $2, $3)
                    ON CONFLICT (movie_tmdb_id, person_tmdb_id, job) DO NOTHING`,
-                  [c.id, person.tmdb_id, c.job]
+                  [c.id, person.tmdb_id, c.job],
                 );
                 movieCrewAdded += r.rowCount ?? 0;
               }
@@ -226,7 +224,7 @@ async function main() {
                    VALUES ($1, $2, $3, $4)
                    ON CONFLICT (show_tmdb_id, person_tmdb_id, character)
                    DO UPDATE SET episode_count = EXCLUDED.episode_count`,
-                  [c.id, person.tmdb_id, c.character ?? null, epCount]
+                  [c.id, person.tmdb_id, c.character ?? null, epCount],
                 );
                 showCastAdded += r.rowCount ?? 0;
               }
@@ -242,7 +240,7 @@ async function main() {
                    VALUES ($1, $2, $3, $4)
                    ON CONFLICT (show_tmdb_id, person_tmdb_id, job)
                    DO UPDATE SET episode_count = EXCLUDED.episode_count`,
-                  [c.id, person.tmdb_id, c.job, epCount]
+                  [c.id, person.tmdb_id, c.job, epCount],
                 );
                 showCrewAdded += r.rowCount ?? 0;
               }
@@ -252,13 +250,13 @@ async function main() {
             const msg = `[Person ID: ${person.tmdb_id}] "${person.name}": ${err.message || String(err)}`;
             errorLogs.push(msg);
           }
-        })
+        }),
       );
 
       const progress = Math.min(i + BATCH_SIZE, orphans.length);
       const percent = ((progress / orphans.length) * 100).toFixed(1);
       process.stdout.write(
-        `  ⟳ Progress: ${progress}/${orphans.length} (${percent}%) | Movie Cast: +${movieCastAdded} | Movie Crew: +${movieCrewAdded} | Show Cast: +${showCastAdded} | Show Crew: +${showCrewAdded}\r`
+        `  ⟳ Progress: ${progress}/${orphans.length} (${percent}%) | Movie Cast: +${movieCastAdded} | Movie Crew: +${movieCrewAdded} | Show Cast: +${showCastAdded} | Show Crew: +${showCrewAdded}\r`,
       );
 
       if (i + BATCH_SIZE < orphans.length) {
@@ -327,13 +325,15 @@ async function main() {
 
     if (remainingOrphansCount > 0) {
       reportLines.push(`## 🔍 Remaining Unlinked Orphan Records (${remainingOrphansCount})`);
-      reportLines.push(`These people remain unlinked after querying TMDB credits. They either have 0 credits on TMDB or their credits do not exist in your database:`);
+      reportLines.push(
+        `These people remain unlinked after querying TMDB credits. They either have 0 credits on TMDB or their credits do not exist in your database:`,
+      );
       reportLines.push(``);
       reportLines.push(`| TMDB ID | Name | IMDb ID | Known Dept | Place of Birth | Popularity |`);
       reportLines.push(`| :--- | :--- | :--- | :--- | :--- | :---: |`);
       for (const p of remainingOrphans.slice(0, 200)) {
         reportLines.push(
-          `| \`${p.tmdb_id}\` | ${p.name} | ${p.imdb_id || '-'} | ${p.known_for_department || '-'} | ${p.place_of_birth || '-'} | ${p.popularity.toFixed(1)} |`
+          `| \`${p.tmdb_id}\` | ${p.name} | ${p.imdb_id || '-'} | ${p.known_for_department || '-'} | ${p.place_of_birth || '-'} | ${p.popularity.toFixed(1)} |`,
         );
       }
       if (remainingOrphans.length > 200) {
@@ -360,7 +360,9 @@ async function main() {
 
     reportLines.push(`## 🧹 Purge Recommendation`);
     reportLines.push(``);
-    reportLines.push(`If ${remainingOrphansCount} people still remain unlinked, they genuinely have **no credits** for any movies or TV shows currently in your database.`);
+    reportLines.push(
+      `If ${remainingOrphansCount} people still remain unlinked, they genuinely have **no credits** for any movies or TV shows currently in your database.`,
+    );
     reportLines.push(`You can safely purge them using SQL:`);
     reportLines.push(``);
     reportLines.push(`\`\`\`sql`);

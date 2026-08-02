@@ -164,15 +164,13 @@ export default function GenreBumpChart({ data }: { data: YearlyGenreData[] }) {
     <Card className="bg-pearl/30 border-border/15 shadow-2xl backdrop-blur-md">
       <CardHeader className="pb-2 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
-          <CardTitle className="text-lg font-bold tracking-tight text-accent">
-            Genre Rating Trends
-          </CardTitle>
+          <CardTitle className="text-lg font-bold tracking-tight text-accent">Genre Rating Trends</CardTitle>
           <p className="text-xs text-muted-foreground mt-1">
             How my average rating per genre changes across release years. Hover lines to highlight.
           </p>
           <p className="text-xs text-muted-foreground mt-1">
-            Line thickness represents volume of watched titles per genre per year leading to next
-            year based on total titles count in the decade.
+            Line thickness represents volume of watched titles per genre per year leading to next year based on total titles count in the
+            decade.
           </p>
         </div>
         <div className="flex flex-wrap gap-1.5 sm:self-center self-start">
@@ -201,9 +199,7 @@ export default function GenreBumpChart({ data }: { data: YearlyGenreData[] }) {
       </CardHeader>
       <CardContent className="pt-2">
         {genres.length === 0 ? (
-          <p className="text-sm text-muted-foreground italic text-center py-8">
-            Not enough data for this decade.
-          </p>
+          <p className="text-sm text-muted-foreground italic text-center py-8">Not enough data for this decade.</p>
         ) : (
           <>
             {/* SVG Chart */}
@@ -235,8 +231,7 @@ export default function GenreBumpChart({ data }: { data: YearlyGenreData[] }) {
                 }
 
                 // Calculate rating value from Y position
-                const rating =
-                  minRating + ((chartPadding.top + plotHeight - mouseY) / plotHeight) * ratingRange;
+                const rating = minRating + ((chartPadding.top + plotHeight - mouseY) / plotHeight) * ratingRange;
                 if (rating >= minRating && rating <= maxRating) {
                   setHoveredRating(rating);
                 } else {
@@ -252,12 +247,7 @@ export default function GenreBumpChart({ data }: { data: YearlyGenreData[] }) {
               {Array.from({ length: Math.ceil(ratingRange) + 1 }, (_, i) => {
                 const rating = minRating + i;
                 if (rating > maxRating) return null;
-                const yPct =
-                  ((chartPadding.top +
-                    plotHeight -
-                    ((rating - minRating) / ratingRange) * plotHeight) /
-                    chartHeight) *
-                  100;
+                const yPct = ((chartPadding.top + plotHeight - ((rating - minRating) / ratingRange) * plotHeight) / chartHeight) * 100;
                 return (
                   <span
                     key={`y-${rating}`}
@@ -292,13 +282,7 @@ export default function GenreBumpChart({ data }: { data: YearlyGenreData[] }) {
                 </span>
               ))}
 
-              <svg
-                width="100%"
-                height="100%"
-                viewBox={`0 0 100 ${chartHeight}`}
-                preserveAspectRatio="none"
-                className="overflow-visible"
-              >
+              <svg width="100%" height="100%" viewBox={`0 0 100 ${chartHeight}`} preserveAspectRatio="none" className="overflow-visible">
                 {/* Active Year Tracker Line */}
                 {hoveredYear !== null && (
                   <line
@@ -386,9 +370,7 @@ export default function GenreBumpChart({ data }: { data: YearlyGenreData[] }) {
 
                   if (points.length < 2) return null;
 
-                  const pathD = points
-                    .map((p, i) => `${i === 0 ? 'M' : 'L'} ${p.x} ${p.y}`)
-                    .join(' ');
+                  const pathD = points.map((p, i) => `${i === 0 ? 'M' : 'L'} ${p.x} ${p.y}`).join(' ');
 
                   const isActive = highlightedGenres.has(genre);
                   const isDimmed = hasHighlight && !isActive;
@@ -403,7 +385,7 @@ export default function GenreBumpChart({ data }: { data: YearlyGenreData[] }) {
                       });
                       return sum;
                     }, 0),
-                    1
+                    1,
                   );
 
                   return (
@@ -495,7 +477,7 @@ export default function GenreBumpChart({ data }: { data: YearlyGenreData[] }) {
                     });
                     return sum;
                   }, 0),
-                  1
+                  1,
                 );
 
                 return points.map((p) => {
@@ -515,9 +497,7 @@ export default function GenreBumpChart({ data }: { data: YearlyGenreData[] }) {
                         height: `${isYearHovered ? dotSize + 4 : dotSize}px`,
                         transform: 'translate(-50%, -50%)',
                         backgroundColor: isYearHovered ? getColor(genre) : '#121214',
-                        border: `${isActive || isYearHovered ? '2.5px' : '1.5px'} solid ${
-                          isYearHovered ? '#121214' : getColor(genre)
-                        }`,
+                        border: `${isActive || isYearHovered ? '2.5px' : '1.5px'} solid ${isYearHovered ? '#121214' : getColor(genre)}`,
                         opacity: isDimmed ? 0.15 : 1,
                         zIndex: isActive || isYearHovered ? 20 : 10,
                         boxShadow: isYearHovered ? `0 0 8px ${getColor(genre)}` : undefined,
@@ -557,9 +537,7 @@ export default function GenreBumpChart({ data }: { data: YearlyGenreData[] }) {
                             Latest: {latestRating.toFixed(2)} ({latestYear})
                           </span>
                         )}
-                        {!isInDecade && (
-                          <span className="text-muted-foreground italic">No data in {decade}s</span>
-                        )}
+                        {!isInDecade && <span className="text-muted-foreground italic">No data in {decade}s</span>}
                       </div>
                     }
                   >
@@ -581,10 +559,7 @@ export default function GenreBumpChart({ data }: { data: YearlyGenreData[] }) {
                               : 'hover:bg-pearl/20'
                       }`}
                     >
-                      <span
-                        className="inline-block w-2.5 h-2.5 rounded-full"
-                        style={{ backgroundColor: getColor(genre) }}
-                      />
+                      <span className="inline-block w-2.5 h-2.5 rounded-full" style={{ backgroundColor: getColor(genre) }} />
                       <span className="text-foreground/80">{genre}</span>
                     </button>
                   </Tooltip>

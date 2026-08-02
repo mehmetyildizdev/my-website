@@ -27,7 +27,7 @@ export function calculateTimelineState({
 
   // Calculate remaining lifetime based on remote clocks
   const remainingLifetimeMs = playback.expiresAtMs - serverNowMs;
-  const isExpired = remainingLifetimeMs <= 0 || (localElapsedSeconds * 1000 >= remainingLifetimeMs);
+  const isExpired = remainingLifetimeMs <= 0 || localElapsedSeconds * 1000 >= remainingLifetimeMs;
 
   if (isExpired) {
     return { positionSeconds: 0, progress: null, isExpired: true };
@@ -38,12 +38,12 @@ export function calculateTimelineState({
 
   const initialPos = Math.min(
     Math.max((playback.positionSeconds ?? 0) + (state === 'playing' ? remoteAgeSeconds : 0), 0),
-    playback.durationSeconds ?? Number.POSITIVE_INFINITY
+    playback.durationSeconds ?? Number.POSITIVE_INFINITY,
   );
 
   const displayedPos = Math.min(
     Math.max(initialPos + (state === 'playing' ? localElapsedSeconds : 0), 0),
-    playback.durationSeconds ?? Number.POSITIVE_INFINITY
+    playback.durationSeconds ?? Number.POSITIVE_INFINITY,
   );
 
   const duration = playback.durationSeconds ?? null;

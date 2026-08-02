@@ -25,15 +25,7 @@ interface DetailHeroProps {
   watchBadges?: ReactNode;
 }
 
-export default function DetailHero({
-  title,
-  originalTitle,
-  posterPath,
-  backdropPath,
-  genres,
-  ratings,
-  watchBadges,
-}: DetailHeroProps) {
+export default function DetailHero({ title, originalTitle, posterPath, backdropPath, genres, ratings, watchBadges }: DetailHeroProps) {
   const [backdropLoaded, setBackdropLoaded] = useState(false);
   const [posterLoaded, setPosterLoaded] = useState(false);
 
@@ -47,11 +39,7 @@ export default function DetailHero({
         <div className="absolute inset-0 bg-card/40">
           {backdropPath ? (
             <>
-              {!backdropLoaded && (
-                <Skeleton
-                  className={`absolute inset-0 rounded-none bg-transparent ${BG_SOFT[token]}`}
-                />
-              )}
+              {!backdropLoaded && <Skeleton className={`absolute inset-0 rounded-none bg-transparent ${BG_SOFT[token]}`} />}
               <Image
                 src={`https://image.tmdb.org/t/p/w1280${backdropPath}`}
                 alt={title}
@@ -59,9 +47,7 @@ export default function DetailHero({
                 unoptimized
                 priority
                 onLoad={() => setBackdropLoaded(true)}
-                className={`object-cover object-center transition-opacity duration-700 ${
-                  backdropLoaded ? 'opacity-100' : 'opacity-0'
-                }`}
+                className={`object-cover object-center transition-opacity duration-700 ${backdropLoaded ? 'opacity-100' : 'opacity-0'}`}
               />
               {/* Genre background overlaid ON TOP of the image: tints the artwork
                  with the title's genre identity while staying subtle. */}
@@ -88,11 +74,7 @@ export default function DetailHero({
           <div className="relative w-36 md:w-52 shrink-0 aspect-2/3 self-start md:self-end overflow-hidden rounded-2xl border border-border/20 bg-pearl shadow-2xl ring-1 ring-gold/10">
             {posterPath ? (
               <>
-                {!posterLoaded && (
-                  <Skeleton
-                    className={`absolute inset-0 rounded-2xl bg-transparent ${BG_SOFT[token]} z-0`}
-                  />
-                )}
+                {!posterLoaded && <Skeleton className={`absolute inset-0 rounded-2xl bg-transparent ${BG_SOFT[token]} z-0`} />}
                 <Image
                   src={`https://image.tmdb.org/t/p/w500${posterPath}`}
                   alt={title}
@@ -104,9 +86,7 @@ export default function DetailHero({
                 />
               </>
             ) : (
-              <div className="flex h-full items-center justify-center text-quicksilver text-sm">
-                No Poster
-              </div>
+              <div className="flex h-full items-center justify-center text-quicksilver text-sm">No Poster</div>
             )}
           </div>
 
@@ -118,15 +98,11 @@ export default function DetailHero({
               {title}
             </h1>
 
-            {originalTitle && originalTitle !== title && (
-              <p className="text-sm text-quicksilver -mt-1">{originalTitle}</p>
-            )}
+            {originalTitle && originalTitle !== title && <p className="text-sm text-quicksilver -mt-1">{originalTitle}</p>}
 
             <div className="flex flex-wrap items-center gap-4">{ratings}</div>
 
-            {watchBadges && (
-              <div className="flex flex-wrap items-center gap-3 mt-1">{watchBadges}</div>
-            )}
+            {watchBadges && <div className="flex flex-wrap items-center gap-3 mt-1">{watchBadges}</div>}
           </div>
         </div>
       </div>

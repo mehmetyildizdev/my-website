@@ -6,7 +6,7 @@ export const dynamicParams = true;
 
 type Props = { params: Promise<{ id: string }> };
 
-import { createScreenDetailMetadata } from "@/lib/screen/seo";
+import { createScreenDetailMetadata } from '@/lib/screen/seo';
 
 export async function generateMetadata({ params }: Props) {
   const { id } = await params;

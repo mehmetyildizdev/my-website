@@ -1,65 +1,60 @@
-import { UserIcon } from "@sanity/icons";
-import { defineArrayMember, defineField, defineType } from "sanity";
+import { UserIcon } from '@sanity/icons';
+import { defineArrayMember, defineField, defineType } from 'sanity';
 
 export const authorType = defineType({
-  name: "author",
-  title: "Author",
-  type: "document",
+  name: 'author',
+  title: 'Author',
+  type: 'document',
   icon: UserIcon,
-  fieldsets: [{ name: "social", title: "Social media links" }],
+  fieldsets: [{ name: 'social', title: 'Social media links' }],
   fields: [
     defineField({
-      name: "name",
-      type: "string",
+      name: 'name',
+      type: 'string',
     }),
     defineField({
-      name: "slug",
-      type: "slug",
+      name: 'slug',
+      type: 'slug',
       options: {
-        source: "name",
+        source: 'name',
       },
     }),
     defineField({
-      name: "image",
-      type: "image",
+      name: 'image',
+      type: 'image',
       options: {
         hotspot: true,
       },
-      fields: [
-        defineField({ name: "alt", type: "string", title: "Alternative text" }),
-      ],
+      fields: [defineField({ name: 'alt', type: 'string', title: 'Alternative text' })],
     }),
     defineField({
-      name: "bio",
-      type: "array",
+      name: 'bio',
+      type: 'array',
       of: [
         defineArrayMember({
-          type: "block",
-          styles: [{ title: "Normal", value: "normal" }],
+          type: 'block',
+          styles: [{ title: 'Normal', value: 'normal' }],
           lists: [],
         }),
       ],
     }),
     defineField({
-      name: "social",
-      type: "array",
-      title: "Add social media links",
-      fieldset: "social",
+      name: 'social',
+      type: 'array',
+      title: 'Add social media links',
+      fieldset: 'social',
       of: [
         defineArrayMember({
-          type: "object",
-          fields: [
-            defineField({ name: "name", type: "string" }),
-            defineField({ name: "url", type: "url" }),
-          ],
+          type: 'object',
+          fields: [defineField({ name: 'name', type: 'string' }), defineField({ name: 'url', type: 'url' })],
         }),
       ],
     }),
   ],
   preview: {
     select: {
-      title: "name",
-      media: "image",
+      title: 'name',
+      media: 'image',
     },
   },
 });

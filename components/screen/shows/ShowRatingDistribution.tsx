@@ -18,12 +18,8 @@ export default function ShowRatingDistribution({ data }: { data: RatingBucket[] 
   return (
     <Card className="bg-pearl/30 border-border/15 shadow-2xl backdrop-blur-md">
       <CardHeader className="pb-2">
-        <CardTitle className="text-lg font-bold tracking-tight text-accent">
-          Show Rating Distribution
-        </CardTitle>
-        <p className="text-xs text-muted-foreground mt-1">
-          How I rate TV shows, distribution across the 1–10 scale.
-        </p>
+        <CardTitle className="text-lg font-bold tracking-tight text-accent">Show Rating Distribution</CardTitle>
+        <p className="text-xs text-muted-foreground mt-1">How I rate TV shows, distribution across the 1–10 scale.</p>
       </CardHeader>
       <CardContent className="pt-4">
         <div className="flex items-end gap-1.5 h-72">
@@ -37,10 +33,7 @@ export default function ShowRatingDistribution({ data }: { data: RatingBucket[] 
                 placement="mouse"
                 content={
                   <div className="flex flex-col gap-0.5 min-w-[140px]">
-                    <span
-                      className="font-semibold text-gold"
-                      style={{ fontFamily: 'var(--font-poppins)' }}
-                    >
+                    <span className="font-semibold text-gold" style={{ fontFamily: 'var(--font-poppins)' }}>
                       Rating: {bucket.rating}/10
                     </span>
                     <div className="flex justify-between gap-4 text-[11px] mt-1">
@@ -55,9 +48,7 @@ export default function ShowRatingDistribution({ data }: { data: RatingBucket[] 
                           </p>
                         ))}
                         {bucket.show_names.length > 6 && (
-                          <p className="text-[10px] text-muted-foreground">
-                            +{bucket.show_names.length - 6} more
-                          </p>
+                          <p className="text-[10px] text-muted-foreground">+{bucket.show_names.length - 6} more</p>
                         )}
                       </div>
                     )}
@@ -65,9 +56,7 @@ export default function ShowRatingDistribution({ data }: { data: RatingBucket[] 
                 }
               >
                 <div className="flex-1 flex flex-col items-center gap-1.5 h-full justify-end">
-                  <span className="text-[10px] text-platinum tabular-nums font-medium">
-                    {bucket.count}
-                  </span>
+                  <span className="text-[10px] text-platinum tabular-nums font-medium">{bucket.count}</span>
                   <div
                     className={`w-full rounded-t-md ${colorClass} transition-all hover:opacity-100`}
                     style={{
@@ -76,9 +65,7 @@ export default function ShowRatingDistribution({ data }: { data: RatingBucket[] 
                       minHeight: bucket.count > 0 ? 4 : 0,
                     }}
                   />
-                  <span className="text-[10px] text-muted-foreground tabular-nums">
-                    {bucket.rating}
-                  </span>
+                  <span className="text-[10px] text-muted-foreground tabular-nums">{bucket.rating}</span>
                 </div>
               </Tooltip>
             );

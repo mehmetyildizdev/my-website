@@ -28,9 +28,7 @@ interface MovieDetailProps {
 
 export default function MovieDetail({ movie, cast, crew, genres }: MovieDetailProps) {
   const year = movie.release_date ? new Date(movie.release_date).getFullYear() : null;
-  const runtime = movie.runtime
-    ? `${Math.floor(movie.runtime / 60)}h ${movie.runtime % 60}m`
-    : null;
+  const runtime = movie.runtime ? `${Math.floor(movie.runtime / 60)}h ${movie.runtime % 60}m` : null;
   const departments = groupCrewByDepartment(crew);
   const countries = movie.countries ?? [];
   const companies = movie.companies ?? [];
@@ -82,14 +80,7 @@ export default function MovieDetail({ movie, cast, crew, genres }: MovieDetailPr
         posterPath={movie.poster_path}
         backdropPath={movie.backdrop_path}
         genres={genres}
-        ratings={
-          <RatingCluster
-            myRating={movie.my_rating}
-            tmdbRating={movie.tmdb_rating}
-            tmdbId={movie.tmdb_id}
-            mediaType="movie"
-          />
-        }
+        ratings={<RatingCluster myRating={movie.my_rating} tmdbRating={movie.tmdb_rating} tmdbId={movie.tmdb_id} mediaType="movie" />}
         watchBadges={<WatchBadges primary="Watched" lastWatchedAt={movie.last_watched_at} />}
       />
 

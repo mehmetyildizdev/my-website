@@ -38,15 +38,7 @@ function initials(name: string) {
     .join('');
 }
 
-export default function PersonCard({
-  tmdb_id,
-  name,
-  profile_path,
-  role,
-  meta,
-  token = 'gold',
-  variant = 'portrait',
-}: PersonCardProps) {
+export default function PersonCard({ tmdb_id, name, profile_path, role, meta, token = 'gold', variant = 'portrait' }: PersonCardProps) {
   const [loaded, setLoaded] = useState(false);
   const hasPhoto = Boolean(profile_path);
 
@@ -62,9 +54,7 @@ export default function PersonCard({
     >
       {hasPhoto ? (
         <>
-          {!loaded && (
-            <div className="absolute inset-0 bg-pearl/10 dark:bg-obsidian/40 animate-pulse z-0" />
-          )}
+          {!loaded && <div className="absolute inset-0 bg-pearl/10 dark:bg-obsidian/40 animate-pulse z-0" />}
           <Image
             src={`https://image.tmdb.org/t/p/w342${profile_path}`}
             alt={name}
@@ -79,18 +69,14 @@ export default function PersonCard({
         </>
       ) : (
         <div className="flex h-full w-full items-center justify-center">
-          <span
-            className={`font-poppins font-bold ${TEXT[token]} ${isPortrait ? 'text-2xl' : 'text-lg'} opacity-50 select-none`}
-          >
+          <span className={`font-poppins font-bold ${TEXT[token]} ${isPortrait ? 'text-2xl' : 'text-lg'} opacity-50 select-none`}>
             {initials(name) || '?'}
           </span>
         </div>
       )}
 
       {/* gradient floor for legibility on portrait variant */}
-      {isPortrait && hasPhoto && (
-        <div className="absolute inset-x-0 bottom-0 h-1/3 bg-linear-to-t from-obsidian/80 to-transparent z-10" />
-      )}
+      {isPortrait && hasPhoto && <div className="absolute inset-x-0 bottom-0 h-1/3 bg-linear-to-t from-obsidian/80 to-transparent z-10" />}
     </div>
   );
 
@@ -110,11 +96,7 @@ export default function PersonCard({
           {role}
         </p>
       )}
-      {meta && (
-        <p className={`${isPortrait ? 'text-xs' : 'text-[10px]'} text-quicksilver mt-0.5`}>
-          {meta}
-        </p>
-      )}
+      {meta && <p className={`${isPortrait ? 'text-xs' : 'text-[10px]'} text-quicksilver mt-0.5`}>{meta}</p>}
     </div>
   );
 

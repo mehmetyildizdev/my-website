@@ -86,16 +86,15 @@ async function main() {
                   job: c.job,
                 }));
 
-              const castToSync = (credits?.cast ?? [])
-                .map((c: any) => ({
-                  id: c.id,
-                  name: c.name,
-                  profile_path: c.profile_path,
-                  known_for_department: c.known_for_department,
-                  popularity: c.popularity ?? 0,
-                  character: c.character ?? null,
-                  order: c.order,
-                }));
+              const castToSync = (credits?.cast ?? []).map((c: any) => ({
+                id: c.id,
+                name: c.name,
+                profile_path: c.profile_path,
+                known_for_department: c.known_for_department,
+                popularity: c.popularity ?? 0,
+                character: c.character ?? null,
+                order: c.order,
+              }));
 
               await processPeopleCredits(client, m.tmdb_id, crewToSync, castToSync, 'movie', stats);
               moviesProcessed++;
@@ -103,13 +102,13 @@ async function main() {
               movieErrors++;
               console.error(`  ✗ [Movie ID: ${m.tmdb_id}] "${m.title}": ${err.message}`);
             }
-          })
+          }),
         );
 
         const progress = Math.min(i + BATCH_SIZE, movies.length);
         const percent = ((progress / movies.length) * 100).toFixed(1);
         process.stdout.write(
-          `  ⟳ Movies: ${progress}/${movies.length} (${percent}%) | Cast Added: ${stats.new_cast_added} | Crew Added: ${stats.new_crew_added} | Errors: ${movieErrors}\n`
+          `  ⟳ Movies: ${progress}/${movies.length} (${percent}%) | Cast Added: ${stats.new_cast_added} | Crew Added: ${stats.new_crew_added} | Errors: ${movieErrors}\n`,
         );
 
         if (i + BATCH_SIZE < movies.length) {
@@ -163,16 +162,15 @@ async function main() {
                 }
               }
 
-              const castToSync = (aggCredits.cast ?? [])
-                .map((c: any) => ({
-                  id: c.id,
-                  name: c.name,
-                  profile_path: c.profile_path,
-                  known_for_department: c.known_for_department,
-                  popularity: c.popularity ?? 0,
-                  character: c.roles?.[0]?.character ?? null,
-                  episode_count: c.total_episode_count ?? null,
-                }));
+              const castToSync = (aggCredits.cast ?? []).map((c: any) => ({
+                id: c.id,
+                name: c.name,
+                profile_path: c.profile_path,
+                known_for_department: c.known_for_department,
+                popularity: c.popularity ?? 0,
+                character: c.roles?.[0]?.character ?? null,
+                episode_count: c.total_episode_count ?? null,
+              }));
 
               await processPeopleCredits(client, s.tmdb_id, crewToSync, castToSync, 'show', stats);
               showsProcessed++;
@@ -180,13 +178,13 @@ async function main() {
               showErrors++;
               console.error(`  ✗ [Show ID: ${s.tmdb_id}] "${s.name}": ${err.message}`);
             }
-          })
+          }),
         );
 
         const progress = Math.min(i + BATCH_SIZE, shows.length);
         const percent = ((progress / shows.length) * 100).toFixed(1);
         process.stdout.write(
-          `  ⟳ Shows: ${progress}/${shows.length} (${percent}%) | Cast Added: ${stats.new_cast_added} | Crew Added: ${stats.new_crew_added} | Errors: ${showErrors}\n`
+          `  ⟳ Shows: ${progress}/${shows.length} (${percent}%) | Cast Added: ${stats.new_cast_added} | Crew Added: ${stats.new_crew_added} | Errors: ${showErrors}\n`,
         );
 
         if (i + BATCH_SIZE < shows.length) {

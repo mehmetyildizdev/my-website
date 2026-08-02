@@ -48,7 +48,7 @@ export async function syncMovie(client: import('pg').PoolClient, tmdbId: number,
       `INSERT INTO collections (tmdb_id, name, poster_path, backdrop_path)
        VALUES ($1, $2, $3, $4)
        ON CONFLICT (tmdb_id) DO NOTHING`,
-      [c.id, c.name, c.poster_path ?? null, c.backdrop_path ?? null]
+      [c.id, c.name, c.poster_path ?? null, c.backdrop_path ?? null],
     );
   }
 
@@ -57,7 +57,7 @@ export async function syncMovie(client: import('pg').PoolClient, tmdbId: number,
     `SELECT my_rating FROM watch_history 
      WHERE tmdb_id = $1 AND (media_type = 'movie' OR media_key LIKE 'movie:%') AND my_rating IS NOT NULL 
      ORDER BY watched_at DESC LIMIT 1`,
-    [tmdbId]
+    [tmdbId],
   );
   const myRating = ratingRes.rows[0]?.my_rating ?? null;
 
@@ -97,7 +97,7 @@ export async function syncMovie(client: import('pg').PoolClient, tmdbId: number,
       d.vote_average ?? null,
       myRating,
       collectionId,
-    ]
+    ],
   );
   stats.new_movies_added++;
 
@@ -117,27 +117,21 @@ export async function syncMovie(client: import('pg').PoolClient, tmdbId: number,
     }
 
     for (const g of genresToInsert) {
-      await query(`INSERT INTO genres (id, name) VALUES ($1, $2) ON CONFLICT (id) DO NOTHING`, [
-        g.id,
-        g.name,
-      ]);
-      await client.query(
-        `INSERT INTO movie_genres (movie_tmdb_id, genre_id) VALUES ($1, $2) ON CONFLICT DO NOTHING`,
-        [tmdbId, g.id]
-      );
+      await query(`INSERT INTO genres (id, name) VALUES ($1, $2) ON CONFLICT (id) DO NOTHING`, [g.id, g.name]);
+      await client.query(`INSERT INTO movie_genres (movie_tmdb_id, genre_id) VALUES ($1, $2) ON CONFLICT DO NOTHING`, [tmdbId, g.id]);
     }
   }
 
   // 5. Countries
   for (const country of d.production_countries ?? []) {
-    await query(
-      `INSERT INTO countries (iso_3166_1, name) VALUES ($1, $2) ON CONFLICT (iso_3166_1) DO NOTHING`,
-      [country.iso_3166_1, country.name]
-    );
-    await client.query(
-      `INSERT INTO movie_countries (movie_tmdb_id, country_iso) VALUES ($1, $2) ON CONFLICT DO NOTHING`,
-      [tmdbId, country.iso_3166_1]
-    );
+    await query(`INSERT INTO countries (iso_3166_1, name) VALUES ($1, $2) ON CONFLICT (iso_3166_1) DO NOTHING`, [
+      country.iso_3166_1,
+      country.name,
+    ]);
+    await client.query(`INSERT INTO movie_countries (movie_tmdb_id, country_iso) VALUES ($1, $2) ON CONFLICT DO NOTHING`, [
+      tmdbId,
+      country.iso_3166_1,
+    ]);
   }
 
   // 6. Production Companies
@@ -146,12 +140,12 @@ export async function syncMovie(client: import('pg').PoolClient, tmdbId: number,
       `INSERT INTO production_companies (tmdb_id, name, logo_path, country_iso)
        VALUES ($1, $2, $3, $4)
        ON CONFLICT (tmdb_id) DO NOTHING`,
-      [company.id, company.name, company.logo_path ?? null, company.origin_country ?? null]
+      [company.id, company.name, company.logo_path ?? null, company.origin_country ?? null],
     );
     await client.query(
       `INSERT INTO movie_production_companies (movie_tmdb_id, company_tmdb_id)
        VALUES ($1, $2) ON CONFLICT DO NOTHING`,
-      [tmdbId, company.id]
+      [tmdbId, company.id],
     );
   }
 
@@ -166,15 +160,14 @@ export async function syncMovie(client: import('pg').PoolClient, tmdbId: number,
       job: c.job,
     }));
 
-  const castToSync = (d.credits?.cast ?? [])
-    .map((c: any) => ({
-      id: c.id,
-      name: c.name,
-      profile_path: c.profile_path,
-      known_for_department: c.known_for_department,
-      character: c.character ?? null,
-      order: c.order ?? 99,
-    }));
+  const castToSync = (d.credits?.cast ?? []).map((c: any) => ({
+    id: c.id,
+    name: c.name,
+    profile_path: c.profile_path,
+    known_for_department: c.known_for_department,
+    character: c.character ?? null,
+    order: c.order ?? 99,
+  }));
 
   await processPeopleCredits(client, tmdbId, crewToSync, castToSync, 'movie', stats);
 }
@@ -183,11 +176,7 @@ export async function syncMovie(client: import('pg').PoolClient, tmdbId: number,
  * Syncs a show, its seasons, and all season episodes from TMDB into PostgreSQL.
  * Flow: /tv/{show_id} -> shows & seasons -> /tv/{show_id}/season/{s} -> episodes.
  */
-export async function syncShowWithEpisodes(
-  client: import('pg').PoolClient,
-  showTmdbId: number,
-  stats: SyncStats
-) {
+export async function syncShowWithEpisodes(client: import('pg').PoolClient, showTmdbId: number, stats: SyncStats) {
   // 1. Sync show metadata, cast, crew, genres, networks, production companies, and seasons
   await syncShow(client, { title: '', ids: { tmdb: showTmdbId } }, stats);
 
@@ -214,16 +203,7 @@ export async function syncShowWithEpisodes(
              title          = EXCLUDED.title,
              runtime        = EXCLUDED.runtime,
              air_date       = EXCLUDED.air_date`,
-          [
-            ep.id,
-            epMediaKey,
-            showTmdbId,
-            ep.season_number,
-            ep.episode_number,
-            ep.name ?? null,
-            ep.runtime ?? null,
-            ep.air_date ?? null,
-          ]
+          [ep.id, epMediaKey, showTmdbId, ep.season_number, ep.episode_number, ep.name ?? null, ep.runtime ?? null, ep.air_date ?? null],
         );
         stats.new_episodes_added++;
       }
@@ -249,12 +229,10 @@ export async function enrichMissingHistory(limit: number = 1000): Promise<Enrich
   log.section('Enrich History Pipeline');
 
   try {
-    const dbCheck = await query(
-      'SELECT current_database(), current_user, inet_server_port(), inet_server_addr()'
-    );
+    const dbCheck = await query('SELECT current_database(), current_user, inet_server_port(), inet_server_addr()');
     const info = dbCheck.rows[0] || {};
     log.info(
-      `Database Target: ${info.current_user}@${info.inet_server_addr || 'localhost'}:${info.inet_server_port}/${info.current_database}`
+      `Database Target: ${info.current_user}@${info.inet_server_addr || 'localhost'}:${info.inet_server_port}/${info.current_database}`,
     );
   } catch (err: any) {
     log.warn(`Could not verify DB connection target: ${err.message}`);
@@ -283,7 +261,7 @@ export async function enrichMissingHistory(limit: number = 1000): Promise<Enrich
      WHERE (wh.media_type = 'movie' OR wh.media_key LIKE 'movie:%')
        AND m.tmdb_id IS NULL
      LIMIT $1`,
-    [limit]
+    [limit],
   );
   const missingMovieIds = missingMoviesRes.rows.map((r) => r.tmdb_id).filter(Boolean);
 
@@ -298,15 +276,11 @@ export async function enrichMissingHistory(limit: number = 1000): Promise<Enrich
         let movieTitle = `Movie #${tmdbId}`;
         await transaction(async (client) => {
           await syncMovie(client, tmdbId, stats);
-          const titleRes = await client.query(`SELECT title FROM movies WHERE tmdb_id = $1`, [
-            tmdbId,
-          ]);
+          const titleRes = await client.query(`SELECT title FROM movies WHERE tmdb_id = $1`, [tmdbId]);
           if (titleRes.rows[0]?.title) movieTitle = titleRes.rows[0].title;
         });
         result.moviesEnriched++;
-        log.done(
-          `[${idx}/${missingMovieIds.length}] Enriched Movie: "${movieTitle}" (TMDB ${tmdbId})`
-        );
+        log.done(`[${idx}/${missingMovieIds.length}] Enriched Movie: "${movieTitle}" (TMDB ${tmdbId})`);
 
         await new Promise((r) => setTimeout(r, 50));
       } catch (err: any) {
@@ -361,7 +335,7 @@ export async function enrichMissingHistory(limit: number = 1000): Promise<Enrich
          OR ep.tmdb_id IS NULL
        )
      LIMIT $1`,
-    [limit]
+    [limit],
   );
   const missingShowIds = missingShowsRes.rows.map((r) => r.show_tmdb_id).filter(Boolean);
 
@@ -377,16 +351,12 @@ export async function enrichMissingHistory(limit: number = 1000): Promise<Enrich
         await transaction(async (client) => {
           // Fetch show (/tv/{show_id}), seasons, and all season episodes (/tv/{show_id}/season/{s})
           await syncShowWithEpisodes(client, showTmdbId, stats);
-          const nameRes = await client.query(`SELECT name FROM shows WHERE tmdb_id = $1`, [
-            showTmdbId,
-          ]);
+          const nameRes = await client.query(`SELECT name FROM shows WHERE tmdb_id = $1`, [showTmdbId]);
           if (nameRes.rows[0]?.name) showName = nameRes.rows[0].name;
         });
         result.showsEnriched++;
         result.episodesEnriched += stats.new_episodes_added;
-        log.done(
-          `[${showIdx}/${missingShowIds.length}] Enriched Show, Seasons & Episodes: "${showName}" (TMDB ${showTmdbId})`
-        );
+        log.done(`[${showIdx}/${missingShowIds.length}] Enriched Show, Seasons & Episodes: "${showName}" (TMDB ${showTmdbId})`);
 
         // Respect TMDB API rate limit (max 30 req/sec)
         await new Promise((r) => setTimeout(r, 50));

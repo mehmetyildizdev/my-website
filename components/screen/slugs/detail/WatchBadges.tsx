@@ -30,10 +30,7 @@ export default function WatchBadges({ primary, lastWatchedAt, progressPct }: Wat
       </div>
       {progressPct != null && (
         <div className="max-w-xs w-full">
-          <div
-            className="h-2.5 overflow-hidden rounded-full border border-border/10"
-            style={{ backgroundColor: 'var(--obsidian)' }}
-          >
+          <div className="h-2.5 overflow-hidden rounded-full border border-border/10" style={{ backgroundColor: 'var(--obsidian)' }}>
             <div
               className="h-full rounded-full bg-linear-to-r from-emerald to-emerald/60 transition-all duration-500"
               style={{ width: `${Math.min(progressPct, 100)}%` }}

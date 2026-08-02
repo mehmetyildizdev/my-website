@@ -24,9 +24,7 @@ const SQL_FILES = [
 import { decrypt } from './crypto-helper';
 
 async function main() {
-  const isLocal =
-    process.env.NEON_DATABASE_URL?.includes('localhost') ||
-    process.env.NEON_DATABASE_URL?.includes('127.0.0.1');
+  const isLocal = process.env.NEON_DATABASE_URL?.includes('localhost') || process.env.NEON_DATABASE_URL?.includes('127.0.0.1');
   const pool = new Pool({
     connectionString: process.env.NEON_DATABASE_URL,
     ssl: isLocal ? false : { rejectUnauthorized: true },
@@ -44,16 +42,12 @@ async function main() {
       } else if (fs.existsSync(encryptedPath)) {
         const key = process.env.VIEWS_CRYPT_KEY;
         if (!key) {
-          throw new Error(
-            `VIEWS_CRYPT_KEY environment variable is missing (required to decrypt ${filename}.enc)`
-          );
+          throw new Error(`VIEWS_CRYPT_KEY environment variable is missing (required to decrypt ${filename}.enc)`);
         }
         const ciphertext = fs.readFileSync(encryptedPath, 'utf8');
         sql = decrypt(ciphertext, key);
       } else {
-        throw new Error(
-          `Neither plaintext "${filename}" nor encrypted "${filename}.enc" was found in scripts/screen/db`
-        );
+        throw new Error(`Neither plaintext "${filename}" nor encrypted "${filename}.enc" was found in scripts/screen/db`);
       }
 
       const startTime = Date.now();

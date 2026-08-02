@@ -1,8 +1,4 @@
-import {
-  getIstanbulDateString,
-  createIstanbulDate,
-  parseAirDateToUTC,
-} from "./timezone";
+import { getIstanbulDateString, createIstanbulDate, parseAirDateToUTC } from './timezone';
 
 export interface EpisodeRowForScheduling {
   tmdb_id: number;
@@ -32,24 +28,27 @@ export interface ScheduledEpisode {
 export function getEpisodesCount(maxAllowed: number, isHeavyBinge = false): number {
   const rand = Math.random();
   if (isHeavyBinge) {
-    if (maxAllowed >= 7) { // <30m runtime episodes sitcom style heavy binge:
+    if (maxAllowed >= 7) {
+      // <30m runtime episodes sitcom style heavy binge:
       // 1ep (5%), 2eps (15%), 3eps (20%), 4eps (30%), 5eps (15%), 6eps (10%), 7eps (5%)
       if (rand < 0.05) return 1;
-      if (rand < 0.20) return 2;
-      if (rand < 0.40) return 3;
-      if (rand < 0.70) return 4;
+      if (rand < 0.2) return 2;
+      if (rand < 0.4) return 3;
+      if (rand < 0.7) return 4;
       if (rand < 0.85) return 5;
       if (rand < 0.95) return 6;
       return 7;
-    } else { // >=30m runtime episodes drama style heavy binge:
+    } else {
+      // >=30m runtime episodes drama style heavy binge:
       // 1ep (5%), 2eps (20%), 3eps (35%), 4eps (40%)
       if (rand < 0.05) return 1;
       if (rand < 0.25) return 2;
-      if (rand < 0.60) return 3;
+      if (rand < 0.6) return 3;
       return 4;
     }
   } else {
-    if (maxAllowed >= 7) { // <30m runtime episodes (like 20-min sitcoms)
+    if (maxAllowed >= 7) {
+      // <30m runtime episodes (like 20-min sitcoms)
       // Adjustments: 1ep (18%), 2eps (50%), 3eps (15%), 4eps (10%), 5eps (5%), 6-7eps (2% total)
       if (rand < 0.18) return 1;
       if (rand < 0.68) return 2; // 0.18 + 0.50
@@ -58,7 +57,8 @@ export function getEpisodesCount(maxAllowed: number, isHeavyBinge = false): numb
       if (rand < 0.98) return 5; // 0.93 + 0.05
       if (rand < 0.995) return 6; // 0.98 + 0.015
       return 7; // remaining 0.005 (0.5%)
-    } else { // >=30m runtime episodes (like 45-min dramas)
+    } else {
+      // >=30m runtime episodes (like 45-min dramas)
       // 1ep (15%), 2eps (60%), 3eps (18%), 4eps (7%)
       if (rand < 0.15) return 1;
       if (rand < 0.75) return 2; // 0.15 + 0.60
@@ -81,7 +81,7 @@ export function getDayGap(): number {
   // - 4-6 weeks (28-48 days): 5%
   // - 7-12 weeks (49-84 days): 2%
   if (rand < 0.25) return 1; // 1 means consecutive days (0 days gap)
-  if (rand < 0.50) return 2; // 1 day gap
+  if (rand < 0.5) return 2; // 1 day gap
   if (rand < 0.65) return 3; // 2 days gap
   if (rand < 0.83) {
     return 4 + Math.floor(Math.random() * 5); // 3 to 7 days gap
@@ -113,7 +113,7 @@ export function getRandomHour(): number {
     return 4 + Math.floor(Math.random() * 4); // 4, 5, 6, 7
   } else if (rand < 0.45) {
     return 8 + Math.floor(Math.random() * 4); // 8, 9, 10, 11
-  } else if (rand < 0.60) {
+  } else if (rand < 0.6) {
     return 12 + Math.floor(Math.random() * 6); // 12, 13, 14, 15, 16, 17
   } else {
     return 18 + Math.floor(Math.random() * 6); // 18, 19, 20, 21, 22, 23
@@ -124,11 +124,11 @@ export function getRandomHour(): number {
 export function getISOWeek(d: Date): number {
   const istanbulDateStr = getIstanbulDateString(d);
   const [year, month, day] = istanbulDateStr.split('-').map(Number);
-  
+
   const date = new Date(Date.UTC(year, month - 1, day));
-  date.setUTCDate(date.getUTCDate() + 3 - (date.getUTCDay() + 6) % 7);
+  date.setUTCDate(date.getUTCDate() + 3 - ((date.getUTCDay() + 6) % 7));
   const week1 = new Date(Date.UTC(date.getUTCFullYear(), 0, 4));
-  return 1 + Math.round(((date.getTime() - week1.getTime()) / 86400000 - 3 + (week1.getUTCDay() + 6) % 7) / 7);
+  return 1 + Math.round(((date.getTime() - week1.getTime()) / 86400000 - 3 + ((week1.getUTCDay() + 6) % 7)) / 7);
 }
 
 export function parseYearOrDate(dateStr: string, isEnd: boolean): Date {
@@ -139,7 +139,7 @@ export function parseYearOrDate(dateStr: string, isEnd: boolean): Date {
     const endOfYear = createIstanbulDate(year, 11, 31, 23, 59).getTime();
     return new Date(startOfYear + Math.random() * (endOfYear - startOfYear));
   }
-  
+
   const dateMatch = dateStr.match(/^(\d{4})-(\d{2})-(\d{2})$/);
   if (dateMatch) {
     const year = parseInt(dateMatch[1], 10);
@@ -151,7 +151,7 @@ export function parseYearOrDate(dateStr: string, isEnd: boolean): Date {
       return createIstanbulDate(year, month, day, 23, 59);
     }
   }
-  
+
   return new Date(dateStr);
 }
 
@@ -160,7 +160,7 @@ export function generateSchedule(
   start: Date,
   end: Date,
   isRelaxed: boolean,
-  isHeavyBinge: boolean = false
+  isHeavyBinge: boolean = false,
 ): ScheduledEpisode[] {
   // Determine season finales (last episode of each season in the watched list)
   const seasonFinales = new Set<string>(); // formatted as "season-episode"
@@ -178,7 +178,7 @@ export function generateSchedule(
   // Scheduling loop variables
   const queue = [...watchedEpisodes];
   const scheduled: ScheduledEpisode[] = [];
-  
+
   // Represent local calendar date in a timezone-neutral UTC Date object
   const startLocalStr = getIstanbulDateString(start);
   const [startY, startM, startD] = startLocalStr.split('-').map(Number);
@@ -203,14 +203,20 @@ export function generateSchedule(
         // Add a random catch-up delay (0 to 6 days) to make it look realistic for ongoing shows
         const rand = Math.random();
         let delayDays = 0;
-        if (rand < 0.30) delayDays = 0;      // Same day: 30%
-        else if (rand < 0.55) delayDays = 1; // 1 day later: 25%
-        else if (rand < 0.70) delayDays = 2; // 2 days later: 15%
-        else if (rand < 0.80) delayDays = 3; // 3 days later: 10%
-        else if (rand < 0.90) delayDays = 4; // 4 days later: 10%
-        else if (rand < 0.95) delayDays = 5; // 5 days later: 5%
-        else delayDays = 6;                  // 6 days later: 5%
-        
+        if (rand < 0.3)
+          delayDays = 0; // Same day: 30%
+        else if (rand < 0.55)
+          delayDays = 1; // 1 day later: 25%
+        else if (rand < 0.7)
+          delayDays = 2; // 2 days later: 15%
+        else if (rand < 0.8)
+          delayDays = 3; // 3 days later: 10%
+        else if (rand < 0.9)
+          delayDays = 4; // 4 days later: 10%
+        else if (rand < 0.95)
+          delayDays = 5; // 5 days later: 5%
+        else delayDays = 6; // 6 days later: 5%
+
         currentDate.setUTCDate(currentDate.getUTCDate() + delayDays);
       }
     }
@@ -229,9 +235,7 @@ export function generateSchedule(
     // Pro-rate scale factor to compress/expand gaps
     let scale = 1.0;
     if (remainingDays > 0 && expectedRemainingDays > 0) {
-      scale = isRelaxed
-        ? (remainingDays / expectedRemainingDays)
-        : Math.min(1.0, remainingDays / expectedRemainingDays);
+      scale = isRelaxed ? remainingDays / expectedRemainingDays : Math.min(1.0, remainingDays / expectedRemainingDays);
     }
 
     let count = getEpisodesCount(maxAllowed, isHeavyBinge);
@@ -251,7 +255,7 @@ export function generateSchedule(
 
     for (let i = 0; i < count; i++) {
       const ep = queue[i];
-      
+
       // Strict Air Date Check: Never watch an episode before it airs!
       if (ep.air_date) {
         const airDate = parseAirDateToUTC(ep.air_date);
@@ -282,7 +286,7 @@ export function generateSchedule(
       currentDate.getUTCMonth(),
       currentDate.getUTCDate(),
       startHour,
-      startMinute
+      startMinute,
     );
 
     // Schedule the batch
@@ -292,7 +296,7 @@ export function generateSchedule(
 
       scheduled.push({
         tmdb_id: ep.tmdb_id,
-        media_key: ep.media_key || "",
+        media_key: ep.media_key || '',
         season: ep.season_number,
         number: ep.episode_number,
         title: ep.title || `Episode ${ep.episode_number}`,

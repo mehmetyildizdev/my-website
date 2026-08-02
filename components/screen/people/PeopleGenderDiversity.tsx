@@ -40,12 +40,8 @@ export default function PeopleGenderDiversity({ data }: { data: GenderData[] }) 
   return (
     <Card className="bg-pearl/30 border-border/15 shadow-2xl backdrop-blur-md">
       <CardHeader className="pb-2">
-        <CardTitle className="text-lg font-bold tracking-tight text-accent">
-          Gender Representation
-        </CardTitle>
-        <p className="text-xs text-muted-foreground mt-1">
-          Gender breakdown of cast and crew in your watched content, by department.
-        </p>
+        <CardTitle className="text-lg font-bold tracking-tight text-accent">Gender Representation</CardTitle>
+        <p className="text-xs text-muted-foreground mt-1">Gender breakdown of cast and crew in your watched content, by department.</p>
       </CardHeader>
       <CardContent className="pt-4">
         <div className="space-y-4">
@@ -53,9 +49,7 @@ export default function PeopleGenderDiversity({ data }: { data: GenderData[] }) 
             <div key={department}>
               <div className="flex items-center justify-between mb-1.5">
                 <span className="text-sm font-medium text-foreground/90">{department}</span>
-                <span className="text-[10px] text-muted-foreground tabular-nums">
-                  {total} people
-                </span>
+                <span className="text-[10px] text-muted-foreground tabular-nums">{total} people</span>
               </div>
               {/* Stacked bar */}
               <div className="flex h-5 rounded-full overflow-hidden bg-border/10">
@@ -70,16 +64,12 @@ export default function PeopleGenderDiversity({ data }: { data: GenderData[] }) 
                         <div className="flex flex-col gap-0.5">
                           <span className="font-medium">{item.gender}</span>
                           <span className="text-muted-foreground">
-                            {item.count} ({pct.toFixed(1)}%) · avg{' '}
-                            {Number(item.avg_rating).toFixed(1)}
+                            {item.count} ({pct.toFixed(1)}%) · avg {Number(item.avg_rating).toFixed(1)}
                           </span>
                         </div>
                       }
                     >
-                      <div
-                        className={`h-full ${color} transition-all hover:opacity-100`}
-                        style={{ width: `${pct}%`, opacity: 0.75 }}
-                      />
+                      <div className={`h-full ${color} transition-all hover:opacity-100`} style={{ width: `${pct}%`, opacity: 0.75 }} />
                     </Tooltip>
                   );
                 })}

@@ -53,7 +53,7 @@ async function main() {
     const existingRes = await client.query(
       `SELECT tmdb_id, name, place_of_birth FROM people 
        WHERE place_of_birth IS NOT NULL AND place_of_birth != '' 
-       ORDER BY tmdb_id`
+       ORDER BY tmdb_id`,
     );
 
     const existingPeople = existingRes.rows;
@@ -88,7 +88,7 @@ async function main() {
           `INSERT INTO countries (iso_3166_1, name)
            SELECT * FROM UNNEST($1::text[], $2::text[])
            ON CONFLICT DO NOTHING`,
-          [isoList, countryNames]
+          [isoList, countryNames],
         );
       }
 
@@ -100,28 +100,24 @@ async function main() {
           `INSERT INTO person_countries (person_tmdb_id, country_iso)
            SELECT * FROM UNNEST($1::int[], $2::text[])
            ON CONFLICT DO NOTHING`,
-          [batchIds, batchIsos]
+          [batchIds, batchIsos],
         );
       }
     } catch (phase1Err: any) {
       console.error(`  ✗ Phase 1 SQL Insert Error: ${phase1Err.message}`);
     }
 
-    console.log(
-      `  ✓ Phase 1 Complete: Linked ${phase1LinkedCount} person-country relationships (${phase1UnmatchedCount} unmatched).\n`
-    );
+    console.log(`  ✓ Phase 1 Complete: Linked ${phase1LinkedCount} person-country relationships (${phase1UnmatchedCount} unmatched).\n`);
 
     // ──────────────────────────────────────────────────────────────────────────
     // PHASE 2: TMDB BACKFILL (Fetch missing birthplaces from TMDB API)
     // ──────────────────────────────────────────────────────────────────────────
-    console.log(
-      '🌐 PHASE 2: Fetching missing birthplaces from TMDB (Rate limited to ~28 req/sec)...'
-    );
+    console.log('🌐 PHASE 2: Fetching missing birthplaces from TMDB (Rate limited to ~28 req/sec)...');
 
     const missingRes = await client.query(
       `SELECT tmdb_id, name FROM people 
        WHERE place_of_birth IS NULL OR place_of_birth = '' 
-       ORDER BY tmdb_id`
+       ORDER BY tmdb_id`,
     );
 
     const missingPeople = missingRes.rows;
@@ -161,7 +157,7 @@ async function main() {
                   d.deathday ? d.deathday : null,
                   d.known_for_department ?? null,
                   p.tmdb_id,
-                ]
+                ],
               );
 
               phase2EnrichedCount++;
@@ -170,14 +166,14 @@ async function main() {
                 const isoCode = parseBirthplaceToCountry(birthplace);
                 if (isoCode) {
                   const countryName = birthplace.split(',').pop()?.trim() ?? '';
-                  await client.query(
-                    `INSERT INTO countries (iso_3166_1, name) VALUES ($1, $2) ON CONFLICT DO NOTHING`,
-                    [isoCode, countryName]
-                  );
-                  await client.query(
-                    `INSERT INTO person_countries (person_tmdb_id, country_iso) VALUES ($1, $2) ON CONFLICT DO NOTHING`,
-                    [p.tmdb_id, isoCode]
-                  );
+                  await client.query(`INSERT INTO countries (iso_3166_1, name) VALUES ($1, $2) ON CONFLICT DO NOTHING`, [
+                    isoCode,
+                    countryName,
+                  ]);
+                  await client.query(`INSERT INTO person_countries (person_tmdb_id, country_iso) VALUES ($1, $2) ON CONFLICT DO NOTHING`, [
+                    p.tmdb_id,
+                    isoCode,
+                  ]);
                   phase2LinkedCount++;
                 }
               }
@@ -187,13 +183,13 @@ async function main() {
               errorLogs.push(errMsg);
               console.error(`  ✗ ${errMsg}`);
             }
-          })
+          }),
         );
 
         const progress = Math.min(i + BATCH_SIZE, missingPeople.length);
         const percent = ((progress / missingPeople.length) * 100).toFixed(1);
         process.stdout.write(
-          `  ⟳ Progress: ${progress}/${missingPeople.length} (${percent}%) | Enriched: ${phase2EnrichedCount} | Linked: ${phase2LinkedCount} | Errors: ${failedCount}\n`
+          `  ⟳ Progress: ${progress}/${missingPeople.length} (${percent}%) | Enriched: ${phase2EnrichedCount} | Linked: ${phase2LinkedCount} | Errors: ${failedCount}\n`,
         );
 
         if (i + BATCH_SIZE < missingPeople.length) {

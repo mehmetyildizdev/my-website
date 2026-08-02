@@ -104,9 +104,7 @@ function fingerprintRows(rows: SearchRow[]): string {
     uniqueRows.set(key, row);
   }
 
-  const canonicalRows = [...uniqueRows.entries()]
-    .sort(([a], [b]) => a.localeCompare(b))
-    .map(([, row]) => row);
+  const canonicalRows = [...uniqueRows.entries()].sort(([a], [b]) => a.localeCompare(b)).map(([, row]) => row);
 
   return createHash('sha256').update(JSON.stringify(canonicalRows)).digest('hex');
 }

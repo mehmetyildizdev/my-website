@@ -50,11 +50,7 @@ export async function GET() {
       LIMIT 20;
     `;
 
-    const [actorsRes, moviesRes, showsRes] = await Promise.all([
-      query(actorsQuery),
-      query(moviesQuery),
-      query(showsQuery),
-    ]);
+    const [actorsRes, moviesRes, showsRes] = await Promise.all([query(actorsQuery), query(moviesQuery), query(showsQuery)]);
 
     return NextResponse.json({
       people: actorsRes.rows,

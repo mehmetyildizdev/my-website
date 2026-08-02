@@ -93,24 +93,15 @@ function MapTooltip({ data, visible }: { data: CountryData | null; visible: bool
 
   if (data) {
     return createPortal(
-      <div
-        ref={ref}
-        className="fixed z-9999 pointer-events-none"
-        style={{ left: -9999, top: -9999 }}
-      >
+      <div ref={ref} className="fixed z-9999 pointer-events-none" style={{ left: -9999, top: -9999 }}>
         <TooltipContent className="whitespace-nowrap min-w-37.5">
-          <p
-            className="font-semibold text-sm text-gold"
-            style={{ fontFamily: 'var(--font-poppins)' }}
-          >
+          <p className="font-semibold text-sm text-gold" style={{ fontFamily: 'var(--font-poppins)' }}>
             {data.country_name}
           </p>
           <div className="mt-1.5 space-y-0.5">
             <div className="flex justify-between gap-4 text-[11px]">
               <span className="text-quicksilver">Avg Rating</span>
-              <span className="text-platinum font-semibold tabular-nums">
-                {Number(data.avg_rating).toFixed(2)}
-              </span>
+              <span className="text-platinum font-semibold tabular-nums">{Number(data.avg_rating).toFixed(2)}</span>
             </div>
             <div className="flex justify-between gap-4 text-[11px]">
               <span className="text-quicksilver">Movies</span>
@@ -123,7 +114,7 @@ function MapTooltip({ data, visible }: { data: CountryData | null; visible: bool
           </div>
         </TooltipContent>
       </div>,
-      document.body
+      document.body,
     );
   }
 
@@ -133,7 +124,7 @@ function MapTooltip({ data, visible }: { data: CountryData | null; visible: bool
         <p className="text-xs text-muted-foreground italic">No rated content</p>
       </TooltipContent>
     </div>,
-    document.body
+    document.body,
   );
 }
 
@@ -228,20 +219,12 @@ export default function WorldMapChart({ data }: { data: CountryData[] }) {
   return (
     <Card className="bg-pearl/30 border-border/15 shadow-2xl backdrop-blur-md">
       <CardHeader className="pb-2">
-        <CardTitle className="text-lg font-bold tracking-tight text-accent">
-          Production Countries
-        </CardTitle>
-        <p className="text-xs text-muted-foreground mt-1">
-          World map colored by average rating of watched titles from each country.
-        </p>
+        <CardTitle className="text-lg font-bold tracking-tight text-accent">Production Countries</CardTitle>
+        <p className="text-xs text-muted-foreground mt-1">World map colored by average rating of watched titles from each country.</p>
       </CardHeader>
       <CardContent className="pt-2">
         <div className="w-full relative overflow-hidden rounded-lg border border-border/10 bg-obsidian/30">
-          <svg
-            viewBox={`0 0 ${MAP_WIDTH} ${MAP_HEIGHT}`}
-            className="w-full h-auto block"
-            preserveAspectRatio="xMidYMid meet"
-          >
+          <svg viewBox={`0 0 ${MAP_WIDTH} ${MAP_HEIGHT}`} className="w-full h-auto block" preserveAspectRatio="xMidYMid meet">
             {paths.map((item) => {
               const countryData = countryMap.get(item.alpha2);
               const isHovered = hoveredCountry === item.alpha2 && item.alpha2 !== '';
@@ -272,12 +255,7 @@ export default function WorldMapChart({ data }: { data: CountryData[] }) {
         </div>
 
         {/* Isolated tooltip — tracks mouse via document listener + rAF, no parent re-renders */}
-        {mounted && (
-          <MapTooltip
-            data={hoveredData}
-            visible={hoveredCountry !== null && hoveredCountry !== ''}
-          />
-        )}
+        {mounted && <MapTooltip data={hoveredData} visible={hoveredCountry !== null && hoveredCountry !== ''} />}
 
         {/* Legend */}
         <div className="flex items-center gap-3 mt-4 pt-3 border-t border-border/10 text-[10px] text-muted-foreground flex-wrap">

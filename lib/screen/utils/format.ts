@@ -33,9 +33,7 @@ export function getPopularityColor(pop: number): string {
 /**
  * Returns the theme color name (token) for a given 1-10 rating.
  */
-export function getRatingToken(
-  rating: number
-): 'amethyst' | 'sapphire' | 'emerald' | 'topaz' | 'ruby' {
+export function getRatingToken(rating: number): 'amethyst' | 'sapphire' | 'emerald' | 'topaz' | 'ruby' {
   if (rating > 9) return 'amethyst';
   if (rating > 8) return 'sapphire';
   if (rating >= 7) return 'emerald';
@@ -46,9 +44,7 @@ export function getRatingToken(
 /**
  * Returns the theme color name (token) for a clustered average rating (5.5 - 7.5 scale).
  */
-export function getAvgRatingToken(
-  rating: number
-): 'amethyst' | 'sapphire' | 'emerald' | 'topaz' | 'ruby' {
+export function getAvgRatingToken(rating: number): 'amethyst' | 'sapphire' | 'emerald' | 'topaz' | 'ruby' {
   if (rating >= 7.0) return 'amethyst';
   if (rating >= 6.5) return 'sapphire';
   if (rating >= 6.0) return 'emerald';
@@ -94,9 +90,7 @@ export function getAvgRatingBgColorClass(rating: number): string {
 /**
  * Returns the theme color name (token) for a clustered TV show average rating (7.0 - 8.0 scale).
  */
-export function getShowAvgRatingToken(
-  rating: number
-): 'amethyst' | 'sapphire' | 'emerald' | 'topaz' | 'ruby' {
+export function getShowAvgRatingToken(rating: number): 'amethyst' | 'sapphire' | 'emerald' | 'topaz' | 'ruby' {
   if (rating >= 8.0) return 'amethyst';
   if (rating >= 7.75) return 'sapphire';
   if (rating >= 7.5) return 'emerald';

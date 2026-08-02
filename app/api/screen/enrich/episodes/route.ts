@@ -9,10 +9,10 @@ export async function GET(request: Request) {
   const envSecret = process.env.MY_API_PHRASE || '';
 
   if (!envSecret || !secret || secret !== envSecret) {
-    return new Response(
-      JSON.stringify({ error: '🔒 Access Denied: Invalid sync secret phrase.' }),
-      { status: 403, headers: { 'Content-Type': 'application/json' } }
-    );
+    return new Response(JSON.stringify({ error: '🔒 Access Denied: Invalid sync secret phrase.' }), {
+      status: 403,
+      headers: { 'Content-Type': 'application/json' },
+    });
   }
 
   const limit = parseInt(searchParams.get('limit') ?? '10000', 10);
@@ -33,7 +33,7 @@ async function enrichEpisodes(limit: number) {
      WHERE e.runtime IS NULL
      ORDER BY e.show_tmdb_id, e.season_number, e.episode_number
      LIMIT $1`,
-    [limit]
+    [limit],
   );
   const episodes = res.rows;
 
@@ -62,9 +62,7 @@ async function enrichEpisodes(limit: number) {
         const defaultRuntime = isTurkish ? 100 : 40;
 
         try {
-          const d = await fetchTMDB(
-            `/tv/${ep.show_tmdb_id}/season/${ep.season_number}/episode/${ep.episode_number}`
-          );
+          const d = await fetchTMDB(`/tv/${ep.show_tmdb_id}/season/${ep.season_number}/episode/${ep.episode_number}`);
 
           const runtime = d.runtime && d.runtime > 0 ? d.runtime : defaultRuntime;
           if (!d.runtime || d.runtime <= 0) fallbackCount++;
@@ -75,7 +73,7 @@ async function enrichEpisodes(limit: number) {
                air_date = COALESCE($2, air_date), 
                title    = COALESCE($4, title) 
              WHERE tmdb_id = $3 AND (runtime IS DISTINCT FROM $1 OR air_date IS DISTINCT FROM $2)`,
-            [runtime, d.air_date ?? null, ep.tmdb_id, d.name ?? null]
+            [runtime, d.air_date ?? null, ep.tmdb_id, d.name ?? null],
           );
 
           if ((upRes.rowCount ?? 0) > 0) {
@@ -83,15 +81,14 @@ async function enrichEpisodes(limit: number) {
           }
         } catch (err: any) {
           fallbackCount++;
-          errorLogs.push(`[Episode TMDB ID: ${ep.tmdb_id}] Show ID: ${ep.show_tmdb_id} (${ep.show_name} S${ep.season_number}E${ep.episode_number}): ${err.message}`);
-          
+          errorLogs.push(
+            `[Episode TMDB ID: ${ep.tmdb_id}] Show ID: ${ep.show_tmdb_id} (${ep.show_name} S${ep.season_number}E${ep.episode_number}): ${err.message}`,
+          );
+
           // Guarantee runtime is set so this episode is not repeatedly queried
-          await query(`UPDATE episodes SET runtime = COALESCE(runtime, $1) WHERE tmdb_id = $2`, [
-            defaultRuntime,
-            ep.tmdb_id,
-          ]);
+          await query(`UPDATE episodes SET runtime = COALESCE(runtime, $1) WHERE tmdb_id = $2`, [defaultRuntime, ep.tmdb_id]);
         }
-      })
+      }),
     );
 
     const progress = Math.min(i + BATCH_SIZE, episodes.length);

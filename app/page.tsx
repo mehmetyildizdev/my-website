@@ -1,4 +1,4 @@
-import Opening from "@/components/Opening";
+import Opening from '@/components/Opening';
 
 export default function Home() {
   return (

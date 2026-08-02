@@ -4,7 +4,6 @@
 // ─── PART 1: Backend Sync, Database, & Fetching Types (lib/screen/ & app/api/)
 // ============================================================================
 
-
 // --- TMDB API payloads & schemas (lib/screen/tmdb.ts & app/api/enrich/)
 interface TMDBGenre {
   id: number;
@@ -308,14 +307,7 @@ interface TopActorsBuckets {
   shows: { top_rated: TopPerson[]; most_watched: TopPerson[]; most_exposed: TopPerson[] };
 }
 
-type CrewCategory =
-  | 'directing'
-  | 'production'
-  | 'screenwriting'
-  | 'cinematography'
-  | 'composition'
-  | 'design'
-  | 'source_material';
+type CrewCategory = 'directing' | 'production' | 'screenwriting' | 'cinematography' | 'composition' | 'design' | 'source_material';
 type CrewBuckets = Record<CrewCategory, TopPerson[]>;
 
 // ============================================================================
@@ -460,14 +452,7 @@ interface CastEntry {
   episode_count?: number | null;
 }
 
-type DepartmentKey =
-  | 'directing'
-  | 'screenwriting'
-  | 'cinematography'
-  | 'composition'
-  | 'design'
-  | 'production'
-  | 'source';
+type DepartmentKey = 'directing' | 'screenwriting' | 'cinematography' | 'composition' | 'design' | 'production' | 'source';
 
 interface DepartmentDef {
   key: DepartmentKey;
@@ -510,15 +495,7 @@ interface ProductionEntity {
   logo_path: string | null;
 }
 
-type Token =
-  | 'sapphire'
-  | 'emerald'
-  | 'amethyst'
-  | 'topaz'
-  | 'gold'
-  | 'ruby'
-  | 'quicksilver'
-  | 'silver';
+type Token = 'sapphire' | 'emerald' | 'amethyst' | 'topaz' | 'gold' | 'ruby' | 'quicksilver' | 'silver';
 
 type Anchor = 'tl' | 'tr' | 'bl' | 'br' | 'c';
 

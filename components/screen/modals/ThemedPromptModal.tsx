@@ -82,10 +82,7 @@ export function ThemedPromptModal({
             {icon}
           </div>
           <div>
-            <h3
-              className="text-lg font-bold tracking-tight text-accent"
-              style={{ fontFamily: 'var(--font-poppins)' }}
-            >
+            <h3 className="text-lg font-bold tracking-tight text-accent" style={{ fontFamily: 'var(--font-poppins)' }}>
               {title}
             </h3>
             <p className="text-xs text-quicksilver">{description}</p>
@@ -94,9 +91,7 @@ export function ThemedPromptModal({
 
         {/* Input */}
         <div className="relative z-10 space-y-1.5">
-          {inputLabel && (
-            <label className="text-xs font-medium text-quicksilver/80">{inputLabel}</label>
-          )}
+          {inputLabel && <label className="text-xs font-medium text-quicksilver/80">{inputLabel}</label>}
           <input
             type="text"
             value={value}
@@ -113,25 +108,15 @@ export function ThemedPromptModal({
 
         {/* Action Buttons */}
         <div className="flex items-center justify-end gap-2 relative z-10 pt-2">
-          <Button
-            variant="glass"
-            size="sm"
-            className="hover:text-ruby hover:border-ruby/50 text-quicksilver"
-            onClick={onCancel}
-          >
+          <Button variant="glass" size="sm" className="hover:text-ruby hover:border-ruby/50 text-quicksilver" onClick={onCancel}>
             {cancelText}
           </Button>
-          <Button
-            variant="glass"
-            size="sm"
-            className="hover:text-gold hover:border-gold/50 text-gold"
-            onClick={handleSubmit}
-          >
+          <Button variant="glass" size="sm" className="hover:text-gold hover:border-gold/50 text-gold" onClick={handleSubmit}>
             {submitText}
           </Button>
         </div>
       </div>
     </div>,
-    document.body
+    document.body,
   );
 }

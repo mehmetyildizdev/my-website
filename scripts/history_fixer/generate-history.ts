@@ -1,20 +1,20 @@
 /**
  * Trakt Watch History Generator
- * 
+ *
  * Usage:
  *   npx tsx scripts/history_fixer/generate-history.ts <show_name_or_tmdb_id> <start_date_or_year> <end_date_or_year> [season_count] [-binge | -relaxed | -heavy-binge]
- * 
+ *
  * Examples:
  *   npx tsx scripts/history_fixer/generate-history.ts "Friends" 2011-08-21 2013-08-21
  *   npx tsx scripts/history_fixer/generate-history.ts 1668 2011 2013 3 -heavy-binge
  */
-import dotenv from "dotenv";
-import fs from "fs";
-import path from "path";
-import { Pool } from "pg";
+import dotenv from 'dotenv';
+import fs from 'fs';
+import path from 'path';
+import { Pool } from 'pg';
 
 // Load environment variables from .env.local
-dotenv.config({ path: ".env.local" });
+dotenv.config({ path: '.env.local' });
 
 const pool = new Pool({
   connectionString: process.env.NEON_DATABASE_URL,
@@ -32,7 +32,7 @@ import {
   getIstanbulYear,
   formatAirDate,
   parseAirDateToUTC,
-} from "./utils/timezone";
+} from './utils/timezone';
 
 import {
   parseYearOrDate,
@@ -41,25 +41,27 @@ import {
   type EpisodeRow,
   type EpisodeRowForScheduling,
   type ScheduledEpisode,
-} from "./utils/scheduler";
+} from './utils/scheduler';
 
 async function main() {
-  const isRelaxed = process.argv.includes("-relaxed");
-  const isHeavyBinge = process.argv.includes("-heavy-binge");
-  const isBinge = process.argv.includes("-binge") || isHeavyBinge || !isRelaxed;
+  const isRelaxed = process.argv.includes('-relaxed');
+  const isHeavyBinge = process.argv.includes('-heavy-binge');
+  const isBinge = process.argv.includes('-binge') || isHeavyBinge || !isRelaxed;
 
-  const cleanArgs = process.argv.filter(arg => arg !== "-relaxed" && arg !== "-binge" && arg !== "-heavy-binge");
+  const cleanArgs = process.argv.filter((arg) => arg !== '-relaxed' && arg !== '-binge' && arg !== '-heavy-binge');
   const showQuery = cleanArgs[2];
   const startDateStr = cleanArgs[3];
   const endDateStr = cleanArgs[4];
   const seasonCountStr = cleanArgs[5];
 
   if (!showQuery || !startDateStr || !endDateStr) {
-    console.log("\n❌ Missing arguments!");
-    console.log("Usage:");
-    console.log("  npx tsx scripts/history_fixer/generate-history.ts <show_name_or_tmdb_id> <start_date_or_year> <end_date_or_year> [season_count] [-binge | -relaxed | -heavy-binge]");
-    console.log("Example:");
-    console.log("  npx tsx scripts/history_fixer/generate-history.ts \"Friends\" 2011 2013 3 -heavy-binge\n");
+    console.log('\n❌ Missing arguments!');
+    console.log('Usage:');
+    console.log(
+      '  npx tsx scripts/history_fixer/generate-history.ts <show_name_or_tmdb_id> <start_date_or_year> <end_date_or_year> [season_count] [-binge | -relaxed | -heavy-binge]',
+    );
+    console.log('Example:');
+    console.log('  npx tsx scripts/history_fixer/generate-history.ts "Friends" 2011 2013 3 -heavy-binge\n');
     process.exit(1);
   }
 
@@ -67,7 +69,7 @@ async function main() {
   if (seasonCountStr) {
     seasonCount = parseInt(seasonCountStr, 10);
     if (isNaN(seasonCount) || seasonCount < 1) {
-      console.error("❌ Invalid season count. Must be a positive number.");
+      console.error('❌ Invalid season count. Must be a positive number.');
       process.exit(1);
     }
   }
@@ -76,17 +78,17 @@ async function main() {
   let end = parseYearOrDate(endDateStr, true);
 
   if (isNaN(start.getTime()) || isNaN(end.getTime())) {
-    console.error("❌ Invalid start_date or end_date format (use YYYY-MM-DD or YYYY).");
+    console.error('❌ Invalid start_date or end_date format (use YYYY-MM-DD or YYYY).');
     process.exit(1);
   }
 
-  console.log("🔍 Searching for show in database...");
+  console.log('🔍 Searching for show in database...');
 
   // Search show by name or TMDB ID
-  const showRes = await query(
-    `SELECT tmdb_id, name, media_key FROM shows WHERE name ILIKE $1 OR tmdb_id::text = $2 LIMIT 5`,
-    [showQuery.includes("%") ? showQuery : `%${showQuery}%`, showQuery]
-  );
+  const showRes = await query(`SELECT tmdb_id, name, media_key FROM shows WHERE name ILIKE $1 OR tmdb_id::text = $2 LIMIT 5`, [
+    showQuery.includes('%') ? showQuery : `%${showQuery}%`,
+    showQuery,
+  ]);
 
   if (showRes.rows.length === 0) {
     console.error(`❌ Show not found matching query: "${showQuery}"`);
@@ -111,7 +113,7 @@ async function main() {
      JOIN watch_history wh ON e.tmdb_id = wh.tmdb_id AND wh.media_type = 'episode'
      WHERE e.show_tmdb_id = $1
      ORDER BY e.season_number ASC, e.episode_number ASC`,
-    [show.tmdb_id]
+    [show.tmdb_id],
   );
 
   let watchedEpisodes: EpisodeRow[] = episodesRes.rows;
@@ -167,16 +169,21 @@ async function main() {
     end = new Date(start.getTime() + 90 * 24 * 60 * 60 * 1000); // Default to 90 days after start
   }
 
-  console.log(`🗓️ Configured watch range: ${getIstanbulDateString(start)} to ${getIstanbulDateString(end)} (${isRelaxed ? "relaxed" : "binge"} mode)`);
+  console.log(
+    `🗓️ Configured watch range: ${getIstanbulDateString(start)} to ${getIstanbulDateString(end)} (${isRelaxed ? 'relaxed' : 'binge'} mode)`,
+  );
 
   // Generate watch schedule
   const scheduled = generateSchedule(watchedEpisodes, start, end, isRelaxed, isHeavyBinge);
 
   // Create output directories
-  const outputDir = path.join(process.cwd(), "scripts/history_fixer/output");
+  const outputDir = path.join(process.cwd(), 'scripts/history_fixer/output');
   fs.mkdirSync(outputDir, { recursive: true });
 
-  const slug = show.name.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/(^-|-$)/g, "");
+  const slug = show.name
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, '-')
+    .replace(/(^-|-$)/g, '');
   const outputPath = path.join(outputDir, `${slug}.json`);
 
   const payload = {
@@ -193,7 +200,7 @@ async function main() {
     episodes: scheduled,
   };
 
-  fs.writeFileSync(outputPath, JSON.stringify(payload, null, 2), "utf8");
+  fs.writeFileSync(outputPath, JSON.stringify(payload, null, 2), 'utf8');
 
   // Generate beautiful Markdown report
   const reportPath = path.join(outputDir, `${slug}-report.md`);
@@ -201,30 +208,30 @@ async function main() {
   const monthlyStats = new Map<string, number>(); // "Month Year" -> count
   const weeklyStats = new Map<string, { count: number; minDate: Date; maxDate: Date }>(); // "YYYY-WXX" -> details
   const dailyCounts = new Map<string, number>(); // "YYYY-MM-DD" -> count
-  
+
   for (const ep of scheduled) {
     totalRuntime += ep.runtime;
     const dateObj = new Date(ep.new_watched_at);
-    
+
     // Monthly
     const monthKey = getIstanbulMonthYearString(dateObj);
     monthlyStats.set(monthKey, (monthlyStats.get(monthKey) || 0) + 1);
-    
+
     // Daily
     const dateStr = getIstanbulDateString(dateObj);
     dailyCounts.set(dateStr, (dailyCounts.get(dateStr) || 0) + 1);
-    
+
     // Weekly
     const weekNum = getISOWeek(dateObj);
     const year = getIstanbulYear(dateObj);
-    const weekKey = `${year}-W${String(weekNum).padStart(2, "0")}`;
+    const weekKey = `${year}-W${String(weekNum).padStart(2, '0')}`;
     const currWeek = weeklyStats.get(weekKey) || { count: 0, minDate: dateObj, maxDate: dateObj };
     currWeek.count++;
     if (dateObj < currWeek.minDate) currWeek.minDate = dateObj;
     if (dateObj > currWeek.maxDate) currWeek.maxDate = dateObj;
     weeklyStats.set(weekKey, currWeek);
   }
-  
+
   // Daily count distribution
   const distribution = new Map<number, number>();
   for (const c of dailyCounts.values()) {
@@ -235,14 +242,14 @@ async function main() {
   const lastEp = scheduled[scheduled.length - 1];
 
   let md = `# Watch History Report: ${show.name}\n\n`;
-  md += `Generated on: ${new Date().toLocaleString("en-US", { timeZone: "Europe/Istanbul" })}\n\n`;
+  md += `Generated on: ${new Date().toLocaleString('en-US', { timeZone: 'Europe/Istanbul' })}\n\n`;
   md += `## 📊 General Statistics\n\n`;
   md += `- **Show Name**: ${show.name}\n`;
   md += `- **Watch Date Range**: ${getIstanbulDateString(new Date(firstEp.new_watched_at))} to ${getIstanbulDateString(new Date(lastEp.new_watched_at))}\n`;
   md += `- **Total Episodes Watched**: ${scheduled.length}\n`;
   md += `- **Total Watch Time**: ${Math.floor(totalRuntime / 60)} hours ${totalRuntime % 60} minutes\n`;
   md += `- **Average Episodes per Watch Day**: ${(scheduled.length / dailyCounts.size).toFixed(2)} episodes/day\n\n`;
-  
+
   md += `## 📅 Monthly Watch Statistics\n\n`;
   md += `| Month | Episodes Watched |\n`;
   md += `| :--- | :---: |\n`;
@@ -253,7 +260,7 @@ async function main() {
     md += `| ${month} | ${c} |\n`;
   }
   md += `\n`;
-  
+
   md += `## 🗓️ Weekly Watch Statistics\n\n`;
   md += `| Week | Date Range | Episodes Watched |\n`;
   md += `| :--- | :--- | :---: |\n`;
@@ -264,7 +271,7 @@ async function main() {
     md += `| ${week} | ${minStr} to ${maxStr} | ${info.count} |\n`;
   }
   md += `\n`;
-  
+
   md += `## 🎭 Daily watch count session sizes\n\n`;
   md += `| Episodes Watched in a Day | Number of Days | Percentage |\n`;
   md += `| :---: | :---: | :---: |\n`;
@@ -275,34 +282,36 @@ async function main() {
     md += `| ${eps} | ${days} | ${pct}% |\n`;
   }
   md += `\n`;
-  
+
   md += `## 📋 Detailed Schedule\n\n`;
   md += `| Episode | Title | Original Air Date | Scheduled Watch Date |\n`;
   md += `| :--- | :--- | :---: | :---: |\n`;
   for (const item of scheduled) {
-    const originalEp = watchedEpisodes.find(e => e.tmdb_id === item.tmdb_id);
-    const airStr = originalEp?.air_date ? formatAirDate(originalEp.air_date) : "N/A";
+    const originalEp = watchedEpisodes.find((e) => e.tmdb_id === item.tmdb_id);
+    const airStr = originalEp?.air_date ? formatAirDate(originalEp.air_date) : 'N/A';
     const dateObj = new Date(item.new_watched_at);
     const dateStr = getIstanbulDateString(dateObj);
     const timeStr = getIstanbulTimeString(dateObj);
-    md += `| S${String(item.season).padStart(2, "0")}E${String(item.number).padStart(2, "0")} | ${item.title} | ${airStr} | ${dateStr} @ ${timeStr} |\n`;
+    md += `| S${String(item.season).padStart(2, '0')}E${String(item.number).padStart(2, '0')} | ${item.title} | ${airStr} | ${dateStr} @ ${timeStr} |\n`;
   }
 
-  fs.writeFileSync(reportPath, md, "utf8");
+  fs.writeFileSync(reportPath, md, 'utf8');
 
   // Output ASCII report
   const first = scheduled[0];
   const last = scheduled[scheduled.length - 1];
 
-  console.log("\n════════════════════════════════════════════════════════════");
+  console.log('\n════════════════════════════════════════════════════════════');
   console.log(` 🎉 Watch History Generated for "${show.name}"`);
-  console.log("════════════════════════════════════════════════════════════");
+  console.log('════════════════════════════════════════════════════════════');
   console.log(` 📂 Saved file : ${outputPath}`);
   console.log(` 📺 Episodes   : ${scheduled.length}`);
-  console.log(` 📅 Range      : ${getIstanbulDateString(new Date(first.new_watched_at))} to ${getIstanbulDateString(new Date(last.new_watched_at))}`);
-  console.log("────────────────────────────────────────────────────────────");
-  console.log(" 📝 SAMPLE SCHEDULE (First 3 & Last 3):");
-  console.log("────────────────────────────────────────────────────────────");
+  console.log(
+    ` 📅 Range      : ${getIstanbulDateString(new Date(first.new_watched_at))} to ${getIstanbulDateString(new Date(last.new_watched_at))}`,
+  );
+  console.log('────────────────────────────────────────────────────────────');
+  console.log(' 📝 SAMPLE SCHEDULE (First 3 & Last 3):');
+  console.log('────────────────────────────────────────────────────────────');
 
   const sampleCount = 3;
   const printSample = (item: ScheduledEpisode) => {
@@ -310,7 +319,7 @@ async function main() {
     const datePart = getIstanbulDateString(dateObj);
     const timePart = getIstanbulTimeString(dateObj);
     console.log(
-      `   S${String(item.season).padStart(2, "0")}E${String(item.number).padStart(2, "0")} - ${item.title.substring(0, 25).padEnd(25)} | Watch Date: ${datePart} @ ${timePart} (${item.runtime}m)`
+      `   S${String(item.season).padStart(2, '0')}E${String(item.number).padStart(2, '0')} - ${item.title.substring(0, 25).padEnd(25)} | Watch Date: ${datePart} @ ${timePart} (${item.runtime}m)`,
     );
   };
 
@@ -318,19 +327,19 @@ async function main() {
     printSample(scheduled[i]);
   }
   if (scheduled.length > sampleCount * 2) {
-    console.log("   ...");
+    console.log('   ...');
   }
   const startIndex = Math.max(scheduled.length - sampleCount, sampleCount);
   for (let i = startIndex; i < scheduled.length; i++) {
     printSample(scheduled[i]);
   }
-  console.log("════════════════════════════════════════════════════════════\n");
+  console.log('════════════════════════════════════════════════════════════\n');
 
   await pool.end();
 }
 
 main().catch((err) => {
-  console.error("❌ Error running script:", err);
+  console.error('❌ Error running script:', err);
   pool.end();
   process.exit(1);
 });

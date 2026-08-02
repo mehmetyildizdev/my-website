@@ -1,18 +1,10 @@
-import nodemailer from "nodemailer";
+import nodemailer from 'nodemailer';
 
-export const sendEmail = async ({
-  name,
-  email,
-  message,
-}: {
-  name: string;
-  email: string;
-  message: string;
-}) => {
+export const sendEmail = async ({ name, email, message }: { name: string; email: string; message: string }) => {
   const transporter = nodemailer.createTransport({
-    service: "gmail",
+    service: 'gmail',
     auth: {
-      type: "OAuth2",
+      type: 'OAuth2',
       user: process.env.GMAIL_USER,
       clientId: process.env.GMAIL_CLIENT_ID,
       clientSecret: process.env.GMAIL_CLIENT_SECRET,
@@ -22,7 +14,7 @@ export const sendEmail = async ({
 
   const mailOptions = {
     from: process.env.GMAIL_USER,
-    to: "web@mehmetyildiz.dev",
+    to: 'web@mehmetyildiz.dev',
     replyTo: email,
     subject: `New message on website from ${name}`,
     text: `Name: ${name}\nEmail: ${email}\nMessage: ${message}`,
@@ -32,7 +24,7 @@ export const sendEmail = async ({
       <p><strong>Email:</strong> ${email}</p>
       <br/>
       <p><strong>Message:</strong></p>
-      <p>${message.replace(/\n/g, "<br/>")}</p>
+      <p>${message.replace(/\n/g, '<br/>')}</p>
     `,
   };
 

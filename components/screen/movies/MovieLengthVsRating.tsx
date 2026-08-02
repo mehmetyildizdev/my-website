@@ -35,10 +35,7 @@ export default function MovieLengthVsRating({ data }: { data: MoviePoint[] }) {
 
   // Group movies by identical (runtime, rating) coordinates and pre-slice top 3 movies for stable rendering
   const pointGroups = useMemo(() => {
-    const map = new Map<
-      string,
-      { runtime: number; rating: number; visibleMovies: MoviePoint[]; extraCount: number }
-    >();
+    const map = new Map<string, { runtime: number; rating: number; visibleMovies: MoviePoint[]; extraCount: number }>();
     data.forEach((d) => {
       const key = `${d.runtime}:${d.rating}`;
       if (!map.has(key)) {
@@ -63,23 +60,16 @@ export default function MovieLengthVsRating({ data }: { data: MoviePoint[] }) {
   const ratingRange = maxRating - minRating || 1;
 
   const toX = (runtime: number) => padding.left + ((runtime - minRuntime) / runtimeRange) * plotW;
-  const toY = (rating: number) =>
-    padding.top + plotH - ((rating - minRating) / ratingRange) * plotH;
+  const toY = (rating: number) => padding.top + plotH - ((rating - minRating) / ratingRange) * plotH;
 
   if (data.length === 0) return null;
 
   return (
     <Card className="bg-pearl/30 border-border/15 shadow-2xl backdrop-blur-md">
       <CardHeader className="pb-2">
-        <CardTitle className="text-lg font-bold tracking-tight text-accent">
-          Runtime vs Rating
-        </CardTitle>
-        <p className="text-xs text-muted-foreground mt-1">
-          Does movie length correlate with how I rate it? Each tick is a rated movie.
-        </p>
-        <p className="text-xs text-muted-foreground mt-1">
-          It appears I do like longer movies more. ☺️
-        </p>
+        <CardTitle className="text-lg font-bold tracking-tight text-accent">Runtime vs Rating</CardTitle>
+        <p className="text-xs text-muted-foreground mt-1">Does movie length correlate with how I rate it? Each tick is a rated movie.</p>
+        <p className="text-xs text-muted-foreground mt-1">It appears I do like longer movies more. ☺️</p>
       </CardHeader>
       <CardContent className="pt-4">
         <div className="w-full relative" style={{ height: chartHeight }}>
@@ -185,15 +175,8 @@ export default function MovieLengthVsRating({ data }: { data: MoviePoint[] }) {
                 content={
                   <div className="flex flex-col gap-1.5 w-full">
                     {group.visibleMovies.map((m, idx) => (
-                      <div
-                        key={m.tmdb_id}
-                        className={`flex flex-col gap-0.5 ${
-                          idx > 0 ? 'border-t border-border/10 pt-1.5' : ''
-                        }`}
-                      >
-                        <span className="font-medium text-gold leading-tight wrap-break-word">
-                          {m.title}
-                        </span>
+                      <div key={m.tmdb_id} className={`flex flex-col gap-0.5 ${idx > 0 ? 'border-t border-border/10 pt-1.5' : ''}`}>
+                        <span className="font-medium text-gold leading-tight wrap-break-word">{m.title}</span>
                         <span className="text-muted-foreground text-[10px]">
                           {m.runtime}m · ★ {m.rating}
                           {m.release_year ? ` · ${m.release_year}` : ''}
@@ -202,8 +185,7 @@ export default function MovieLengthVsRating({ data }: { data: MoviePoint[] }) {
                     ))}
                     {group.extraCount > 0 && (
                       <div className="border-t border-border/15 pt-1 text-[10px] italic text-quicksilver/80">
-                        + {group.extraCount} more movie{group.extraCount > 1 ? 's' : ''} at{' '}
-                        {group.runtime}m (★ {group.rating})
+                        + {group.extraCount} more movie{group.extraCount > 1 ? 's' : ''} at {group.runtime}m (★ {group.rating})
                       </div>
                     )}
                   </div>

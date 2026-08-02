@@ -10,12 +10,10 @@ async function checkMissingHistory() {
 
   // 1. Verify Active DB Connection Target
   try {
-    const dbCheck = await query(
-      'SELECT current_database(), current_user, inet_server_port(), inet_server_addr()'
-    );
+    const dbCheck = await query('SELECT current_database(), current_user, inet_server_port(), inet_server_addr()');
     const info = dbCheck.rows[0] || {};
     console.log(
-      `  → Database Target: ${info.current_user}@${info.inet_server_addr || 'localhost'}:${info.inet_server_port}/${info.current_database}\n`
+      `  → Database Target: ${info.current_user}@${info.inet_server_addr || 'localhost'}:${info.inet_server_port}/${info.current_database}\n`,
     );
   } catch (err: any) {
     console.error(`  ✗ DB Connection Error: ${err.message}`);
@@ -61,7 +59,7 @@ async function checkMissingHistory() {
     missingMovies.forEach((m, idx) => {
       const ratingInfo = m.history_rating != null ? ` | Rating: ⭐ ${m.history_rating}/10` : ' | Rating: (None)';
       console.log(
-        `   [${idx + 1}/${missingMovies.length}] TMDB Movie ID: ${m.tmdb_id} | Scrobbles: ${m.total_scrobbles}${ratingInfo} | Earliest Watched: ${m.earliest_watched}`
+        `   [${idx + 1}/${missingMovies.length}] TMDB Movie ID: ${m.tmdb_id} | Scrobbles: ${m.total_scrobbles}${ratingInfo} | Earliest Watched: ${m.earliest_watched}`,
       );
     });
   }
@@ -114,7 +112,7 @@ async function checkMissingHistory() {
     missingShows.forEach((s, idx) => {
       const ratingInfo = s.history_rating != null ? ` | Rating: ⭐ ${s.history_rating}/10` : ' | Rating: (None)';
       console.log(
-        `   [${idx + 1}/${missingShows.length}] TMDB Show ID: ${s.show_tmdb_id} | Scrobbles: ${s.total_scrobbles}${ratingInfo} | Earliest Watched: ${s.earliest_watched}`
+        `   [${idx + 1}/${missingShows.length}] TMDB Show ID: ${s.show_tmdb_id} | Scrobbles: ${s.total_scrobbles}${ratingInfo} | Earliest Watched: ${s.earliest_watched}`,
       );
     });
   }
@@ -126,7 +124,9 @@ async function checkMissingHistory() {
   if (missingMoviesWithRating.length > 0) {
     console.log(`⭐ Missing Movies carrying Personal Ratings in watch_history (${missingMoviesWithRating.length}):`);
     missingMoviesWithRating.forEach((m, idx) => {
-      console.log(`   [${idx + 1}/${missingMoviesWithRating.length}] TMDB Movie ID: ${m.tmdb_id} | Personal Rating: ⭐ ${m.history_rating}/10 (Will be assigned when enriched)`);
+      console.log(
+        `   [${idx + 1}/${missingMoviesWithRating.length}] TMDB Movie ID: ${m.tmdb_id} | Personal Rating: ⭐ ${m.history_rating}/10 (Will be assigned when enriched)`,
+      );
     });
   } else {
     console.log(`⭐ Missing Movies with Personal Ratings: 0`);
@@ -135,7 +135,9 @@ async function checkMissingHistory() {
   if (missingShowsWithRating.length > 0) {
     console.log(`⭐ Missing Shows carrying Personal Ratings in watch_history (${missingShowsWithRating.length}):`);
     missingShowsWithRating.forEach((s, idx) => {
-      console.log(`   [${idx + 1}/${missingShowsWithRating.length}] TMDB Show ID: ${s.show_tmdb_id} | Personal Rating: ⭐ ${s.history_rating}/10 (Will be assigned when enriched)`);
+      console.log(
+        `   [${idx + 1}/${missingShowsWithRating.length}] TMDB Show ID: ${s.show_tmdb_id} | Personal Rating: ⭐ ${s.history_rating}/10 (Will be assigned when enriched)`,
+      );
     });
   } else {
     console.log(`⭐ Missing Shows with Personal Ratings: 0`);
@@ -169,7 +171,7 @@ async function checkMissingHistory() {
   if (ratingMovieMismatch.rows.length > 0) {
     ratingMovieMismatch.rows.forEach((r, idx) => {
       console.log(
-        `   [${idx + 1}/${ratingMovieMismatch.rows.length}] TMDB Movie ID: ${r.movie_tmdb_id} | "${r.title}" | watch_history rating: ${r.history_rating} | movies rating: ${r.movie_rating}`
+        `   [${idx + 1}/${ratingMovieMismatch.rows.length}] TMDB Movie ID: ${r.movie_tmdb_id} | "${r.title}" | watch_history rating: ${r.history_rating} | movies rating: ${r.movie_rating}`,
       );
     });
   }
@@ -208,7 +210,7 @@ async function checkMissingHistory() {
   if (ratingShowMismatch.rows.length > 0) {
     ratingShowMismatch.rows.forEach((r, idx) => {
       console.log(
-        `   [${idx + 1}/${ratingShowMismatch.rows.length}] TMDB Show ID: ${r.show_tmdb_id} | "${r.name}" | watch_history rating: ${r.history_rating} | shows rating: ${r.show_rating}`
+        `   [${idx + 1}/${ratingShowMismatch.rows.length}] TMDB Show ID: ${r.show_tmdb_id} | "${r.name}" | watch_history rating: ${r.history_rating} | shows rating: ${r.show_rating}`,
       );
     });
   }

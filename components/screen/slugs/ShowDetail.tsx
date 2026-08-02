@@ -29,9 +29,7 @@ interface ShowDetailProps {
 export default function ShowDetail({ show, cast, crew = [], genres }: ShowDetailProps) {
   const year = show.first_air_date ? new Date(show.first_air_date).getFullYear() : null;
   const watchPct =
-    show.number_of_episodes && show.episodes_watched
-      ? Math.round((show.episodes_watched / show.number_of_episodes) * 100)
-      : null;
+    show.number_of_episodes && show.episodes_watched ? Math.round((show.episodes_watched / show.number_of_episodes) * 100) : null;
   const departments = groupCrewByDepartment(crew);
   const countries = show.countries ?? [];
   const companies = show.companies ?? [];
@@ -95,19 +93,9 @@ export default function ShowDetail({ show, cast, crew = [], genres }: ShowDetail
         posterPath={show.poster_path}
         backdropPath={show.backdrop_path}
         genres={genres}
-        ratings={
-          <RatingCluster
-            myRating={show.my_rating}
-            tmdbRating={show.tmdb_rating}
-            tmdbId={show.tmdb_id}
-            mediaType="tv"
-          />
-        }
+        ratings={<RatingCluster myRating={show.my_rating} tmdbRating={show.tmdb_rating} tmdbId={show.tmdb_id} mediaType="tv" />}
         watchBadges={
-          <WatchBadges
-            primary={`${show.episodes_watched} of ${show.number_of_episodes ?? '?'} episodes`}
-            progressPct={watchPct}
-          />
+          <WatchBadges primary={`${show.episodes_watched} of ${show.number_of_episodes ?? '?'} episodes`} progressPct={watchPct} />
         }
       />
 

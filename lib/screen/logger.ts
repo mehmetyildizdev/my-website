@@ -18,45 +18,45 @@
 //   log.error("Something failed");
 //   log.info("Additional detail");
 
-import pino from "pino";
+import pino from 'pino';
 
 // ── ANSI codes ────────────────────────────────────────────────────────────────
 const C = {
-  reset:   "\x1b[0m",
-  bold:    "\x1b[1m",
-  dim:     "\x1b[2m",
-  green:   "\x1b[32m",
-  red:     "\x1b[31m",
-  yellow:  "\x1b[33m",
-  cyan:    "\x1b[36m",
-  blue:    "\x1b[34m",
-  white:   "\x1b[37m",
+  reset: '\x1b[0m',
+  bold: '\x1b[1m',
+  dim: '\x1b[2m',
+  green: '\x1b[32m',
+  red: '\x1b[31m',
+  yellow: '\x1b[33m',
+  cyan: '\x1b[36m',
+  blue: '\x1b[34m',
+  white: '\x1b[37m',
   // Erase entire current line then return cursor to col 0.
   // Use this BEFORE writing any in-place update to avoid stale characters.
-  eraseLine: "\x1b[2K\r",
+  eraseLine: '\x1b[2K\r',
 };
 
 // ── pino instance (structured JSON, pretty in dev) ───────────────────────────
-const isDev = process.env.NODE_ENV !== "production";
+const isDev = process.env.NODE_ENV !== 'production';
 
 export const pinoLog = pino(
-  { level: "info" },
+  { level: 'info' },
   isDev
     ? pino.transport({
-        target: "pino-pretty",
+        target: 'pino-pretty',
         options: {
           colorize: true,
-          translateTime: "HH:MM:ss",
-          ignore: "pid,hostname",
+          translateTime: 'HH:MM:ss',
+          ignore: 'pid,hostname',
         },
       })
-    : process.stdout
+    : process.stdout,
 );
 
 // ── Spinner state ─────────────────────────────────────────────────────────────
 let _spinnerTimer: ReturnType<typeof setInterval> | null = null;
 let _spinnerStart = Date.now();
-let _spinnerLabel = "";
+let _spinnerLabel = '';
 
 function writeProgress(msg: string) {
   // Erase current line, then write without newline — cursor stays on same line
@@ -72,7 +72,7 @@ function writeDone(msg: string, secs: number) {
 export const log = {
   /** Bold section divider */
   section(title: string) {
-    const bar = "─".repeat(58);
+    const bar = '─'.repeat(58);
     process.stdout.write(`\n${C.dim}${bar}${C.reset}\n  ${C.bold}${title}${C.reset}\n${C.dim}${bar}${C.reset}\n`);
   },
 
@@ -109,8 +109,8 @@ export const log = {
    * Writes regular newline-terminated lines so they stay in the scrollback.
    */
   batch(shows: string[], movies: string[]) {
-    if (shows.length)  process.stdout.write(`    ${C.dim}Shows :${C.reset}  ${shows.join(" · ")}\n`);
-    if (movies.length) process.stdout.write(`    ${C.dim}Movies:${C.reset}  ${movies.join(" · ")}\n`);
+    if (shows.length) process.stdout.write(`    ${C.dim}Shows :${C.reset}  ${shows.join(' · ')}\n`);
+    if (movies.length) process.stdout.write(`    ${C.dim}Movies:${C.reset}  ${movies.join(' · ')}\n`);
   },
 
   /**
@@ -118,7 +118,10 @@ export const log = {
    * Call stopTimer() when done.
    */
   startTimer(label: string) {
-    if (_spinnerTimer) { clearInterval(_spinnerTimer); _spinnerTimer = null; }
+    if (_spinnerTimer) {
+      clearInterval(_spinnerTimer);
+      _spinnerTimer = null;
+    }
     _spinnerLabel = label;
     _spinnerStart = Date.now();
     writeProgress(label);
@@ -132,14 +135,20 @@ export const log = {
    * Stop the spinner and print the final completed line.
    */
   stopTimer(msg: string) {
-    if (_spinnerTimer) { clearInterval(_spinnerTimer); _spinnerTimer = null; }
+    if (_spinnerTimer) {
+      clearInterval(_spinnerTimer);
+      _spinnerTimer = null;
+    }
     const secs = (Date.now() - _spinnerStart) / 1000;
     writeDone(msg, secs);
   },
 
   /** Clear any running spinner without printing a done line */
   clearTimer() {
-    if (_spinnerTimer) { clearInterval(_spinnerTimer); _spinnerTimer = null; }
-    process.stdout.write("\n");
+    if (_spinnerTimer) {
+      clearInterval(_spinnerTimer);
+      _spinnerTimer = null;
+    }
+    process.stdout.write('\n');
   },
 };

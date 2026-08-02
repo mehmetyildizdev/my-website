@@ -64,11 +64,7 @@ function createMockPlayback(overrides = {}) {
     serverNowMs: 100500,
     localElapsedSeconds: 5,
   });
-  assert.strictEqual(
-    state.positionSeconds,
-    105.4,
-    'Position should advance with remote age and local elapsed time'
-  );
+  assert.strictEqual(state.positionSeconds, 105.4, 'Position should advance with remote age and local elapsed time');
   assert.strictEqual(state.isExpired, false, 'Should not be expired');
   console.log('✓ Test 2: Playing snapshot advances locally');
 }
@@ -96,7 +92,7 @@ function createMockPlayback(overrides = {}) {
       playback: pb,
       serverNowMs: 100500,
       localElapsedSeconds: 5,
-    })
+    }),
   );
 
   for (const s of states) {
@@ -136,11 +132,7 @@ function createMockPlayback(overrides = {}) {
     serverNowMs: 100100,
     localElapsedSeconds: 301,
   });
-  assert.strictEqual(
-    state.isExpired,
-    true,
-    'Must expire when elapsed time exceeds remaining lifetime'
-  );
+  assert.strictEqual(state.isExpired, true, 'Must expire when elapsed time exceeds remaining lifetime');
   console.log('✓ Test 5: Expired states hide');
 }
 
@@ -156,11 +148,7 @@ function createMockPlayback(overrides = {}) {
       serverNowMs: 100100,
       localElapsedSeconds: 0,
     });
-    assert.strictEqual(
-      state.isExpired,
-      true,
-      'Terminal state must render nothing (isExpired = true)'
-    );
+    assert.strictEqual(state.isExpired, true, 'Terminal state must render nothing (isExpired = true)');
   }
   console.log('✓ Test 6: Terminal states render nothing');
 }
@@ -174,11 +162,7 @@ function createMockPlayback(overrides = {}) {
     localElapsedSeconds: 5,
   });
   assert.strictEqual(state.progress, null, 'Progress must be null when duration is missing');
-  assert.strictEqual(
-    state.positionSeconds,
-    105.4,
-    'Position should still advance normally without duration'
-  );
+  assert.strictEqual(state.positionSeconds, 105.4, 'Position should still advance normally without duration');
   console.log('✓ Test 7: Missing duration degrades cleanly');
 }
 

@@ -32,11 +32,7 @@ function metricsLine(p: TopPerson): string {
   return parts.join(' · ');
 }
 
-export default function InfinitePerformerGrid({
-  initialItems,
-  mode = 'top_rated',
-  weighted = false,
-}: InfinitePerformerGridProps) {
+export default function InfinitePerformerGrid({ initialItems, mode = 'top_rated', weighted = false }: InfinitePerformerGridProps) {
   const [visibleCount, setVisibleCount] = useState(10);
   const [isLocal, setIsLocal] = useState(false);
   const containerRef = useRef<HTMLDivElement | null>(null);
@@ -44,9 +40,7 @@ export default function InfinitePerformerGrid({
 
   useEffect(() => {
     if (typeof window !== 'undefined') {
-      setIsLocal(
-        window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1'
-      );
+      setIsLocal(window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1');
     }
   }, []);
 
@@ -56,9 +50,7 @@ export default function InfinitePerformerGrid({
     if (containerRef.current) containerRef.current.scrollTop = 0;
   }, [initialItems]);
 
-  const maxItems = isLocal
-    ? initialItems.length
-    : Math.min(initialItems.length, SCREEN_CONFIG.limits.performerGridMax);
+  const maxItems = isLocal ? initialItems.length : Math.min(initialItems.length, SCREEN_CONFIG.limits.performerGridMax);
   const visibleItems = initialItems.slice(0, Math.min(visibleCount, maxItems));
   const hasMore = visibleCount < maxItems;
 
@@ -77,7 +69,7 @@ export default function InfinitePerformerGrid({
         root: containerRef.current,
         threshold: 0.1,
         rootMargin: '50px',
-      }
+      },
     );
 
     observer.observe(trigger);
@@ -95,9 +87,7 @@ export default function InfinitePerformerGrid({
       className="overflow-y-auto max-h-[500px] pt-2 pr-2 scrollbar-thin scrollbar-thumb-border/20 scrollbar-track-transparent"
     >
       {initialItems.length === 0 ? (
-        <div className="flex items-center justify-center h-32 text-sm text-muted-foreground">
-          No performers match this view.
-        </div>
+        <div className="flex items-center justify-center h-32 text-sm text-muted-foreground">No performers match this view.</div>
       ) : (
         <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-5 pb-4">
           {visibleItems.map((p) => {
@@ -118,9 +108,7 @@ export default function InfinitePerformerGrid({
                       className="object-cover transition-transform duration-500 group-hover:scale-105"
                     />
                   ) : (
-                    <div className="flex h-full items-center justify-center bg-pearl text-quicksilver text-sm">
-                      ?
-                    </div>
+                    <div className="flex h-full items-center justify-center bg-pearl text-quicksilver text-sm">?</div>
                   )}
                 </div>
 
@@ -131,16 +119,11 @@ export default function InfinitePerformerGrid({
 
                   <div className="flex flex-col items-center gap-1.5 mt-2">
                     {badge && (
-                      <Badge
-                        variant="subtle"
-                        className="text-xs px-2.5 py-0.5 bg-gold/10 text-accent border-gold/20 shrink-0 font-medium"
-                      >
+                      <Badge variant="subtle" className="text-xs px-2.5 py-0.5 bg-gold/10 text-accent border-gold/20 shrink-0 font-medium">
                         {badge}
                       </Badge>
                     )}
-                    <span className="text-[11px] text-quicksilver line-clamp-1">
-                      {metricsLine(p) || '—'}
-                    </span>
+                    <span className="text-[11px] text-quicksilver line-clamp-1">{metricsLine(p) || '—'}</span>
                   </div>
                 </div>
               </Link>
@@ -157,8 +140,7 @@ export default function InfinitePerformerGrid({
 
       {!hasMore && initialItems.length > maxItems && (
         <p className="text-center text-xs text-muted-foreground/60 py-4 border-t border-border/5 mt-4">
-          Only the top {SCREEN_CONFIG.limits.performerGridMax} people are loaded for performance
-          optimization.
+          Only the top {SCREEN_CONFIG.limits.performerGridMax} people are loaded for performance optimization.
         </p>
       )}
     </div>
@@ -175,7 +157,7 @@ function primaryBadge(p: TopPerson, mode: RankMode, weighted: boolean): string |
     return count > 0 ? `# ${count}` : null;
   }
   // top_rated
-  const r = (weighted && p.my_rating != null) ? p.my_rating : (weighted ? p.weighted_rating : p.raw_rating);
+  const r = weighted && p.my_rating != null ? p.my_rating : weighted ? p.weighted_rating : p.raw_rating;
   if (r == null) return null;
   return `★ ${r}`;
 }

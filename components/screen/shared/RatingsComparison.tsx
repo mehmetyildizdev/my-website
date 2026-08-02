@@ -4,23 +4,13 @@ import { useState, useMemo } from 'react';
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/shadcn/ui/card';
 import { Select } from '@/components/shadcn/ui/select';
 import { Tooltip } from '@/components/shadcn/ui/tooltip';
-import {
-  getRatingToken,
-  getAvgRatingToken,
-  getShowAvgRatingToken,
-} from '@/lib/screen/utils/format';
+import { getRatingToken, getAvgRatingToken, getShowAvgRatingToken } from '@/lib/screen/utils/format';
 // Split combined genres for filtering
 function expandGenres(genres: string[]): string[] {
   return genres ? genres.filter(Boolean) : [];
 }
 
-export default function RatingsComparison({
-  data,
-  lockedMedia,
-}: {
-  data: RatingItem[];
-  lockedMedia?: 'movie' | 'show';
-}) {
+export default function RatingsComparison({ data, lockedMedia }: { data: RatingItem[]; lockedMedia?: 'movie' | 'show' }) {
   const [genreFilter, setGenreFilter] = useState<string>('all');
   const [decadeFilter, setDecadeFilter] = useState<string>('all');
   const [mediaFilter, setMediaFilter] = useState<string>(lockedMedia ?? 'all');
@@ -51,8 +41,7 @@ export default function RatingsComparison({
       }
       if (decadeFilter !== 'all') {
         const decade = parseInt(decadeFilter);
-        if (!d.release_year || d.release_year < decade || d.release_year >= decade + 10)
-          return false;
+        if (!d.release_year || d.release_year < decade || d.release_year >= decade + 10) return false;
       }
       return true;
     });
@@ -65,9 +54,7 @@ export default function RatingsComparison({
     const tmdbAvg = filtered.reduce((s, d) => s + Number(d.tmdb_rating), 0) / filtered.length;
     const higherCount = filtered.filter((d) => d.my_rating > Number(d.tmdb_rating)).length;
     const lowerCount = filtered.filter((d) => d.my_rating < Number(d.tmdb_rating)).length;
-    const sameCount = filtered.filter(
-      (d) => d.my_rating === Math.round(Number(d.tmdb_rating))
-    ).length;
+    const sameCount = filtered.filter((d) => d.my_rating === Math.round(Number(d.tmdb_rating))).length;
     return {
       myAvg,
       tmdbAvg,
@@ -94,20 +81,15 @@ export default function RatingsComparison({
   return (
     <Card className="bg-pearl/30 border-border/15 shadow-2xl backdrop-blur-md">
       <CardHeader className="pb-2">
-        <CardTitle className="text-lg font-bold tracking-tight text-accent">
-          My Ratings vs TMDB
-        </CardTitle>
+        <CardTitle className="text-lg font-bold tracking-tight text-accent">My Ratings vs TMDB</CardTitle>
+        <p className="text-xs text-muted-foreground mt-1">How my personal ratings compare to TMDB community scores.</p>
         <p className="text-xs text-muted-foreground mt-1">
-          How my personal ratings compare to TMDB community scores.
-        </p>
-        <p className="text-xs text-muted-foreground mt-1">
-          My rating colors are thematic as you can see in 1-10 scale. For averages I used scaled
-          coloring in 5.5-7.0 range of same pattern.
+          My rating colors are thematic as you can see in 1-10 scale. For averages I used scaled coloring in 5.5-7.0 range of same pattern.
         </p>
         {(lockedMedia === 'show' || mediaFilter === 'show') && (
           <p className="text-xs text-muted-foreground mt-1">
-            Shows are generally rated higher in average and breaks the pattern. So, I added separate
-            pattern for shows alone that is 7.0-8.0 range.
+            Shows are generally rated higher in average and breaks the pattern. So, I added separate pattern for shows alone that is 7.0-8.0
+            range.
           </p>
         )}
       </CardHeader>
@@ -146,9 +128,7 @@ export default function RatingsComparison({
               <p className="text-[10px] text-muted-foreground uppercase tracking-wider">My Avg</p>
               <p
                 className={`text-lg font-bold tabular-nums text-${
-                  lockedMedia === 'show' || mediaFilter === 'show'
-                    ? getShowAvgRatingToken(stats.myAvg)
-                    : getAvgRatingToken(stats.myAvg)
+                  lockedMedia === 'show' || mediaFilter === 'show' ? getShowAvgRatingToken(stats.myAvg) : getAvgRatingToken(stats.myAvg)
                 }`}
               >
                 {stats.myAvg.toFixed(2)}
@@ -159,15 +139,11 @@ export default function RatingsComparison({
               <p className="text-lg font-bold text-gold tabular-nums">{stats.tmdbAvg.toFixed(2)}</p>
             </div>
             <div className="rounded-lg border border-border/15 bg-pearl/10 p-3 text-center">
-              <p className="text-[10px] text-muted-foreground uppercase tracking-wider">
-                I Rate Higher
-              </p>
+              <p className="text-[10px] text-muted-foreground uppercase tracking-wider">I Rate Higher</p>
               <p className="text-lg font-bold text-topaz tabular-nums">{stats.higherCount}</p>
             </div>
             <div className="rounded-lg border border-border/15 bg-pearl/10 p-3 text-center">
-              <p className="text-[10px] text-muted-foreground uppercase tracking-wider">
-                I Rate Lower
-              </p>
+              <p className="text-[10px] text-muted-foreground uppercase tracking-wider">I Rate Lower</p>
               <p className="text-lg font-bold text-amethyst tabular-nums">{stats.lowerCount}</p>
             </div>
             <div className="rounded-lg border border-border/15 bg-pearl/10 p-3 text-center">
@@ -180,9 +156,7 @@ export default function RatingsComparison({
         {/* Distribution chart: for each of my ratings, show avg TMDB */}
         {distribution.length > 0 && (
           <div>
-            <h4 className="text-sm font-medium text-muted-foreground mb-3">
-              When I rate X, TMDB averages...
-            </h4>
+            <h4 className="text-sm font-medium text-muted-foreground mb-3">When I rate X, TMDB averages...</h4>
             <div className="flex items-end gap-1.5 h-48">
               {distribution.map((bucket) => {
                 const barHeight = (bucket.avgTmdb / 10) * 100;
@@ -194,9 +168,7 @@ export default function RatingsComparison({
                     content={
                       <div className="flex flex-col gap-0.5">
                         <span className="font-medium">My rating: {bucket.myRating}</span>
-                        <span className="text-muted-foreground">
-                          TMDB avg: {bucket.avgTmdb.toFixed(2)}
-                        </span>
+                        <span className="text-muted-foreground">TMDB avg: {bucket.avgTmdb.toFixed(2)}</span>
                         <span className="text-muted-foreground">{bucket.count} items</span>
                       </div>
                     }
@@ -214,9 +186,7 @@ export default function RatingsComparison({
                           style={{ height: `${barHeight}%`, opacity: 0.7 }}
                         />
                       </div>
-                      <span className="text-[10px] text-muted-foreground tabular-nums">
-                        {bucket.myRating}
-                      </span>
+                      <span className="text-[10px] text-muted-foreground tabular-nums">{bucket.myRating}</span>
                     </div>
                   </Tooltip>
                 );
@@ -238,25 +208,19 @@ export default function RatingsComparison({
         {/* Scatter-like dot plot: each item as a row */}
         {filtered.length > 0 && (
           <div>
-            <h4 className="text-sm font-medium text-muted-foreground mb-3">
-              Individual Ratings ({filtered.length} items)
-            </h4>
+            <h4 className="text-sm font-medium text-muted-foreground mb-3">Individual Ratings ({filtered.length} items)</h4>
             <div className="space-y-px max-h-100 overflow-y-auto pr-1">
               {filtered.slice(0, 100).map((item) => {
                 const tmdb = Number(item.tmdb_rating);
                 const diff = item.my_rating - tmdb;
-                const diffColor =
-                  diff > 0 ? 'text-emerald' : diff < 0 ? 'text-ruby' : 'text-quicksilver';
+                const diffColor = diff > 0 ? 'text-emerald' : diff < 0 ? 'text-ruby' : 'text-quicksilver';
                 return (
                   <Tooltip
                     key={`${item.media_type}-${item.tmdb_id}`}
                     placement="mouse"
                     content={
                       <div className="flex flex-col gap-0.5 min-w-45">
-                        <span
-                          className="font-semibold text-gold"
-                          style={{ fontFamily: 'var(--font-poppins)' }}
-                        >
+                        <span className="font-semibold text-gold" style={{ fontFamily: 'var(--font-poppins)' }}>
                           {item.title}
                         </span>
                         <span className="text-[10px] text-muted-foreground">
@@ -265,11 +229,7 @@ export default function RatingsComparison({
                         </span>
                         <div className="flex justify-between gap-4 text-[11px] mt-1">
                           <span className="text-quicksilver">My Rating</span>
-                          <span
-                            className={`font-semibold tabular-nums text-${getRatingToken(item.my_rating)}`}
-                          >
-                            {item.my_rating}
-                          </span>
+                          <span className={`font-semibold tabular-nums text-${getRatingToken(item.my_rating)}`}>{item.my_rating}</span>
                         </div>
                         <div className="flex justify-between gap-4 text-[11px]">
                           <span className="text-quicksilver">TMDB</span>
@@ -287,11 +247,7 @@ export default function RatingsComparison({
                   >
                     <div className="grid grid-cols-[1fr_60px_60px_50px] items-center gap-2 py-1 px-2 hover:bg-pearl/30 rounded transition-colors text-xs">
                       <span className="truncate text-foreground/80">{item.title}</span>
-                      <span
-                        className={`text-right tabular-nums font-medium text-${getRatingToken(item.my_rating)}`}
-                      >
-                        {item.my_rating}
-                      </span>
+                      <span className={`text-right tabular-nums font-medium text-${getRatingToken(item.my_rating)}`}>{item.my_rating}</span>
                       <span className="text-right tabular-nums text-gold">{tmdb.toFixed(1)}</span>
                       <span className={`text-right tabular-nums font-medium ${diffColor}`}>
                         {diff > 0 ? '+' : ''}
@@ -303,9 +259,7 @@ export default function RatingsComparison({
               })}
             </div>
             {filtered.length > 100 && (
-              <p className="text-[10px] text-muted-foreground mt-2 text-center">
-                Showing first 100 of {filtered.length} items
-              </p>
+              <p className="text-[10px] text-muted-foreground mt-2 text-center">Showing first 100 of {filtered.length} items</p>
             )}
             {/* Column headers */}
             <div className="grid grid-cols-[1fr_60px_60px_50px] gap-2 pl-2 pr-6 mt-2 pt-2 border-t border-border/10 text-[10px] text-muted-foreground">
@@ -318,9 +272,7 @@ export default function RatingsComparison({
         )}
 
         {filtered.length === 0 && (
-          <p className="text-sm text-muted-foreground italic text-center py-8">
-            No items match the selected filters.
-          </p>
+          <p className="text-sm text-muted-foreground italic text-center py-8">No items match the selected filters.</p>
         )}
       </CardContent>
     </Card>

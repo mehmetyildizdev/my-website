@@ -14,16 +14,7 @@ export const revalidate = 86400; // 24h — refreshed by nightly GitHub Action
 export const metadata = createScreenMetadata(SCREEN_SEO_CONFIG.movies);
 
 export default async function MovieChartsPage() {
-  const [
-    genreRes,
-    comparisonRes,
-    collectionsRes,
-    companiesRes,
-    decadesRes,
-    scatterRes,
-    directorsRes,
-    bumpRes,
-  ] = await Promise.all([
+  const [genreRes, comparisonRes, collectionsRes, companiesRes, decadesRes, scatterRes, directorsRes, bumpRes] = await Promise.all([
     query(loadQuery('movies/genre_treemap_movies.sql')),
     query(loadQuery('movies/ratings_comparison_movies.sql')),
     query(loadQuery('movies/collection_completions.sql')),
@@ -41,8 +32,7 @@ export default async function MovieChartsPage() {
         <div>
           <h2 className="text-2xl font-bold tracking-tight text-accent font-poppins">Movie Analytics</h2>
           <p className="text-sm text-muted-foreground mt-1">
-            Deep dive into my watching patterns, genres, ratings, runtimes, collections, and more on
-            movies.
+            Deep dive into my watching patterns, genres, ratings, runtimes, collections, and more on movies.
           </p>
         </div>
         <GenreBumpChart data={bumpRes.rows} />

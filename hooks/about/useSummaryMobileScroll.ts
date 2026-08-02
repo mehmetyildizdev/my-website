@@ -1,5 +1,5 @@
-import { useState, useCallback, useRef, useEffect } from "react";
-import { TABS } from "../../components/about/tabs/Constants";
+import { useState, useCallback, useRef, useEffect } from 'react';
+import { TABS } from '../../components/about/tabs/Constants';
 
 export function useSummaryMobileScroll(isActive: boolean) {
   const [activeIdx, setActiveIdx] = useState(0);
@@ -17,7 +17,7 @@ export function useSummaryMobileScroll(isActive: boolean) {
     isProgrammaticScroll.current = true;
     el.scrollTo({
       left: index * el.clientWidth,
-      behavior: smooth ? "smooth" : "auto",
+      behavior: smooth ? 'smooth' : 'auto',
     });
     setActiveIdx(index);
     window.setTimeout(
@@ -49,16 +49,14 @@ export function useSummaryMobileScroll(isActive: boolean) {
     if (!isActive) return;
     const nav = navRef.current;
     if (nav) {
-      const activeBtn = nav.querySelector(
-        `[aria-selected="true"]`,
-      ) as HTMLElement;
+      const activeBtn = nav.querySelector(`[aria-selected="true"]`) as HTMLElement;
       if (activeBtn) {
         const navWidth = nav.clientWidth;
         const btnWidth = activeBtn.clientWidth;
         const btnLeft = activeBtn.offsetLeft;
         nav.scrollTo({
           left: btnLeft - navWidth / 2 + btnWidth / 2,
-          behavior: "smooth",
+          behavior: 'smooth',
         });
       }
     }
@@ -80,9 +78,9 @@ export function useSummaryMobileScroll(isActive: boolean) {
       }, 50);
     };
 
-    window.addEventListener("resize", onResize);
+    window.addEventListener('resize', onResize);
     return () => {
-      window.removeEventListener("resize", onResize);
+      window.removeEventListener('resize', onResize);
       if (scrollRaf.current !== null) {
         window.cancelAnimationFrame(scrollRaf.current);
       }

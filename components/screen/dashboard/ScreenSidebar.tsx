@@ -3,17 +3,7 @@
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
-import {
-  LayoutDashboard,
-  Film,
-  Tv,
-  Users,
-  BarChart3,
-  Database,
-  Menu,
-  X,
-  Search,
-} from 'lucide-react';
+import { LayoutDashboard, Film, Tv, Users, BarChart3, Database, Menu, X, Search } from 'lucide-react';
 import NowPlayingSidebar from '@/components/screen/now-playing/NowPlayingSidebar';
 
 const NAV_ITEMS = [
@@ -136,9 +126,7 @@ export default function ScreenSidebar() {
 
       {/* Edge Search Input */}
       <div className="px-3">
-        <label className="text-[10px] text-muted-foreground uppercase tracking-widest font-bold block mb-2 px-0.5">
-          Search
-        </label>
+        <label className="text-[10px] text-muted-foreground uppercase tracking-widest font-bold block mb-2 px-0.5">Search</label>
         <div className="relative">
           <Search className="absolute left-2.5 top-1/2 -translate-y-1/2 h-3.5 w-3.5 text-quicksilver" />
           <input
@@ -174,10 +162,7 @@ export default function ScreenSidebar() {
       {open && (
         <div className="fixed inset-0 z-50 2xl:hidden">
           {/* Backdrop */}
-          <div
-            className="absolute inset-0 bg-background/60 backdrop-blur-sm"
-            onClick={() => setOpen(false)}
-          />
+          <div className="absolute inset-0 bg-background/60 backdrop-blur-sm" onClick={() => setOpen(false)} />
           {/* Drawer panel */}
           <div className="absolute left-0 top-0 bottom-0 w-64 bg-background border-r border-border/20 shadow-2xl p-6 pt-20 animate-in slide-in-from-left duration-200">
             <button
@@ -187,9 +172,7 @@ export default function ScreenSidebar() {
             >
               <X className="h-5 w-5" />
             </button>
-            <p className="text-xs text-muted-foreground uppercase tracking-widest font-semibold mb-4">
-              Screen
-            </p>
+            <p className="text-xs text-muted-foreground uppercase tracking-widest font-semibold mb-4">Screen</p>
             {navContent}
           </div>
         </div>

@@ -1,8 +1,8 @@
-"use client";
+'use client';
 
-import { useEffect } from "react";
-import { NextStudio } from "next-sanity/studio";
-import config from "../../../sanity.config";
+import { useEffect } from 'react';
+import { NextStudio } from 'next-sanity/studio';
+import config from '../../../sanity.config';
 
 /**
  * Sanity Studio makes persistent EventSource connections to the Sanity API
@@ -17,16 +17,14 @@ import config from "../../../sanity.config";
 export function StudioClientWrapper() {
   useEffect(() => {
     const handler = (event: PromiseRejectionEvent) => {
-      const msg =
-        event.reason?.message ??
-        (typeof event.reason === "string" ? event.reason : "");
-      if (msg === "network error" || msg.includes("network error")) {
+      const msg = event.reason?.message ?? (typeof event.reason === 'string' ? event.reason : '');
+      if (msg === 'network error' || msg.includes('network error')) {
         event.preventDefault();
       }
     };
 
-    window.addEventListener("unhandledrejection", handler);
-    return () => window.removeEventListener("unhandledrejection", handler);
+    window.addEventListener('unhandledrejection', handler);
+    return () => window.removeEventListener('unhandledrejection', handler);
   }, []);
 
   return <NextStudio config={config} />;

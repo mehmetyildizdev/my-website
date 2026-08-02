@@ -18,24 +18,14 @@ function FactTile({ fact, genres }: { fact: Fact; genres: { name: string }[] }) 
       />
       <div className="relative z-10 flex items-center gap-2">
         {fact.glyph && <span className={`text-sm ${TEXT[token]}`}>{fact.glyph}</span>}
-        <span className="text-[10px] font-bold uppercase tracking-widest text-quicksilver">
-          {fact.label}
-        </span>
+        <span className="text-[10px] font-bold uppercase tracking-widest text-quicksilver">{fact.label}</span>
       </div>
-      <div className="relative z-10 mt-1.5 text-sm font-medium text-titanium leading-snug">
-        {fact.value}
-      </div>
+      <div className="relative z-10 mt-1.5 text-sm font-medium text-titanium leading-snug">{fact.value}</div>
     </div>
   );
 }
 
-export default function MetaPanel({
-  facts,
-  genres,
-}: {
-  facts: Fact[];
-  genres: { name: string }[];
-}) {
+export default function MetaPanel({ facts, genres }: { facts: Fact[]; genres: { name: string }[] }) {
   const visible = facts.filter((f) => f.value != null && f.value !== '');
   if (!visible.length) return null;
   return (

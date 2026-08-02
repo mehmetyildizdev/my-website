@@ -41,10 +41,7 @@ const processRows = (rawRows: any[]) => {
       const val = processed[key];
       if (typeof val === 'string') {
         const trimmed = val.trim();
-        if (
-          (trimmed.startsWith('[') && trimmed.endsWith(']')) ||
-          (trimmed.startsWith('{') && trimmed.endsWith('}'))
-        ) {
+        if ((trimmed.startsWith('[') && trimmed.endsWith(']')) || (trimmed.startsWith('{') && trimmed.endsWith('}'))) {
           try {
             processed[key] = JSON.parse(trimmed);
           } catch (e) {

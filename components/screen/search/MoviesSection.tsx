@@ -39,14 +39,9 @@ export default function MoviesSection({ loading, movies, isFeatured }: MoviesSec
             <Film className="h-4.5 w-4.5 text-gold" />
             <span>Movies in Database</span>
           </CardTitle>
-          <p className="text-xs text-muted-foreground mt-0.5">
-            Matching movies from my watch history.
-          </p>
+          <p className="text-xs text-muted-foreground mt-0.5">Matching movies from my watch history.</p>
         </div>
-        <Badge
-          variant="subtle"
-          className="bg-gold/10 text-accent border-gold/20 font-semibold gap-1 text-[10px]"
-        >
+        <Badge variant="subtle" className="bg-gold/10 text-accent border-gold/20 font-semibold gap-1 text-[10px]">
           <Database className="h-3 w-3" /> LOCAL
         </Badge>
       </CardHeader>
@@ -66,11 +61,7 @@ export default function MoviesSection({ loading, movies, isFeatured }: MoviesSec
                   href={`/collection/screen/m/${item.tmdb_id}`}
                   title={item.name}
                   priority={idx < 4}
-                  subtitle={
-                    item.release_date
-                      ? String(new Date(item.release_date).getFullYear())
-                      : undefined
-                  }
+                  subtitle={item.release_date ? String(new Date(item.release_date).getFullYear()) : undefined}
                   poster_path={item.image_path}
                   rating={item.rating}
                 />

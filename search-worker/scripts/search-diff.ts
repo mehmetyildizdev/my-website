@@ -39,13 +39,7 @@ interface SearchRow {
   release_date: string | null;
 }
 
-const MUTABLE_SEARCH_COLUMNS = [
-  'name',
-  'extra_name',
-  'image_path',
-  'rating',
-  'release_date',
-] as const;
+const MUTABLE_SEARCH_COLUMNS = ['name', 'extra_name', 'image_path', 'rating', 'release_date'] as const;
 
 type MutableSearchColumn = (typeof MUTABLE_SEARCH_COLUMNS)[number];
 
@@ -157,9 +151,7 @@ function getChangedColumns(desired: SearchRow, baseline: SearchRow): MutableSear
 
 /** A stable fingerprint lets the separate local updater reject a stale patch. */
 function fingerprintRows(rows: Map<string, SearchRow>): string {
-  const canonicalRows = [...rows.entries()]
-    .sort(([a], [b]) => a.localeCompare(b))
-    .map(([, row]) => row);
+  const canonicalRows = [...rows.entries()].sort(([a], [b]) => a.localeCompare(b)).map(([, row]) => row);
   return createHash('sha256').update(JSON.stringify(canonicalRows)).digest('hex');
 }
 
@@ -194,22 +186,12 @@ function fetchLiveD1Rows(): Map<string, SearchRow> {
 
   const rawJson = execFileSync(
     'pnpm',
-    [
-      'exec',
-      'wrangler',
-      'd1',
-      'execute',
-      'screen',
-      '--remote',
-      '--json',
-      '--command',
-      `SELECT ${SEARCH_COLUMNS} FROM search_items;`,
-    ],
+    ['exec', 'wrangler', 'd1', 'execute', 'screen', '--remote', '--json', '--command', `SELECT ${SEARCH_COLUMNS} FROM search_items;`],
     {
       encoding: 'utf8',
       stdio: ['ignore', 'pipe', 'pipe'],
       maxBuffer: 100 * 1024 * 1024,
-    }
+    },
   );
 
   const parsed = JSON.parse(rawJson);
@@ -273,9 +255,7 @@ function buildPatchSql(changedRows: ChangedRow[], deletedRows: SearchRow[]): str
   ];
 
   for (const row of deletedRows) {
-    statements.push(
-      `DELETE FROM search_items WHERE type = ${escapeSql(row.type)} AND tmdb_id = ${row.tmdb_id};`
-    );
+    statements.push(`DELETE FROM search_items WHERE type = ${escapeSql(row.type)} AND tmdb_id = ${row.tmdb_id};`);
   }
 
   // ON CONFLICT keeps the patch safe to retry. Its UPDATE clause contains only
@@ -290,14 +270,12 @@ function buildPatchSql(changedRows: ChangedRow[], deletedRows: SearchRow[]): str
 
     // This null-safe predicate prevents a retried/already-applied patch from
     // writing the row again when D1 already contains all desired values.
-    const stillDifferent = changedColumns
-      .map((column) => `search_items.${column} IS NOT excluded.${column}`)
-      .join(' OR ');
+    const stillDifferent = changedColumns.map((column) => `search_items.${column} IS NOT excluded.${column}`).join(' OR ');
 
     statements.push(
       `INSERT INTO search_items (${SEARCH_COLUMNS}) VALUES (${rowValuesSql(row)}) ` +
         `ON CONFLICT(type, tmdb_id) DO UPDATE SET ${assignments} ` +
-        `WHERE ${stillDifferent};`
+        `WHERE ${stillDifferent};`,
     );
   }
 
@@ -311,11 +289,7 @@ function buildPatchSql(changedRows: ChangedRow[], deletedRows: SearchRow[]): str
  * deleted_search_items separately records rows that the patch will delete.
  * This database is never uploaded to D1.
  */
-function createInspectionDb(
-  diffDbPath: string,
-  changedRows: ChangedRow[],
-  deletedRows: SearchRow[]
-): void {
+function createInspectionDb(diffDbPath: string, changedRows: ChangedRow[], deletedRows: SearchRow[]): void {
   if (fs.existsSync(diffDbPath)) fs.unlinkSync(diffDbPath);
 
   const sql: string[] = [
@@ -327,7 +301,7 @@ function createInspectionDb(
 
   for (const { kind, row, changedColumns } of changedRows) {
     sql.push(
-      `INSERT INTO search_items (${SEARCH_COLUMNS}, change_kind, changed_columns) VALUES (${rowValuesSql(row)}, ${escapeSql(kind)}, ${escapeSql(changedColumns.join(','))});`
+      `INSERT INTO search_items (${SEARCH_COLUMNS}, change_kind, changed_columns) VALUES (${rowValuesSql(row)}, ${escapeSql(kind)}, ${escapeSql(changedColumns.join(','))});`,
     );
   }
 
@@ -372,11 +346,7 @@ function getArtifactPaths(): ArtifactPaths {
 
 /** Replace old generated artifacts immediately so a failed run cannot leave a stale patch. */
 function invalidateOldArtifacts(paths: ArtifactPaths): void {
-  fs.writeFileSync(
-    paths.diffSql,
-    '-- INVALID: diff generation did not complete successfully; do not upload.\n',
-    'utf8'
-  );
+  fs.writeFileSync(paths.diffSql, '-- INVALID: diff generation did not complete successfully; do not upload.\n', 'utf8');
   if (fs.existsSync(paths.diffDb)) fs.unlinkSync(paths.diffDb);
   if (fs.existsSync(paths.summary)) fs.unlinkSync(paths.summary);
 }
@@ -445,16 +415,11 @@ export async function diffSearchIndex(pool: Pool): Promise<DiffSummary> {
   const updatedFieldCounts = Object.fromEntries(
     MUTABLE_SEARCH_COLUMNS.map((column) => [
       column,
-      changedRows.filter(
-        ({ kind, changedColumns }) => kind === 'update' && changedColumns.includes(column)
-      ).length,
-    ])
+      changedRows.filter(({ kind, changedColumns }) => kind === 'update' && changedColumns.includes(column)).length,
+    ]),
   ) as Record<MutableSearchColumn, number>;
 
-  console.log(
-    '🧩 Updated fields: ' +
-      MUTABLE_SEARCH_COLUMNS.map((column) => `${column}=${updatedFieldCounts[column]}`).join(', ')
-  );
+  console.log('🧩 Updated fields: ' + MUTABLE_SEARCH_COLUMNS.map((column) => `${column}=${updatedFieldCounts[column]}`).join(', '));
 
   // Protect Cloudflare limits against an accidental normalization/schema/query
   // change. Small indexes are exempt; an intentional large patch uses --force.
@@ -465,7 +430,7 @@ export async function diffSearchIndex(pool: Pool): Promise<DiffSummary> {
   console.log(
     `📏 Difference size: ${totalChanges}/${comparisonSize} row(s) ` +
       `(${(changeRatio * 100).toFixed(2)}%). ` +
-      `Safety limit: ${(maxChangeRatio * 100).toFixed(2)}%.`
+      `Safety limit: ${(maxChangeRatio * 100).toFixed(2)}%.`,
   );
 
   // The percentage guard starts at 100 rows so a few normal changes cannot
@@ -478,16 +443,11 @@ export async function diffSearchIndex(pool: Pool): Promise<DiffSummary> {
     console.log('ℹ️ Difference-size guard skipped because the index has fewer than 100 rows.');
   }
 
-  if (
-    !forceLargeDiff &&
-    baselineMap.size > 0 &&
-    comparisonSize >= 100 &&
-    changeRatio > maxChangeRatio
-  ) {
+  if (!forceLargeDiff && baselineMap.size > 0 && comparisonSize >= 100 && changeRatio > maxChangeRatio) {
     throw new Error(
       `${totalChanges} of ${comparisonSize} rows would change (${(changeRatio * 100).toFixed(
-        2
-      )}%). Review the cause, then rerun with --force if intentional.`
+        2,
+      )}%). Review the cause, then rerun with --force if intentional.`,
     );
   }
 
@@ -511,19 +471,14 @@ export async function diffSearchIndex(pool: Pool): Promise<DiffSummary> {
   };
   writeSummary(paths.summary, summary);
 
-  console.log(
-    `⚡ Diff: ${insertedRows} insert(s), ${updatedRows} update(s), ` +
-      `${deletedRows.length} delete(s).`
-  );
+  console.log(`⚡ Diff: ${insertedRows} insert(s), ${updatedRows} update(s), ` + `${deletedRows.length} delete(s).`);
   console.log(`🔎 Inspection database: ${paths.diffDb}`);
   console.log(`📤 D1 patch: ${paths.diffSql}`);
 
   if (totalChanges === 0) {
     console.log('✨ No upload is needed; the patch contains comments only.');
   } else if (mode === 'local') {
-    console.log(
-      'ℹ️ Upload the patch separately. After Wrangler succeeds, run apply-search-diff-local.ts.'
-    );
+    console.log('ℹ️ Upload the patch separately. After Wrangler succeeds, run apply-search-diff-local.ts.');
   }
 
   return summary;

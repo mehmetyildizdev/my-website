@@ -1,14 +1,14 @@
-"use client";
+'use client';
 
-import { useState, ReactNode } from "react";
-import Image from "next/image";
-import Link from "next/link";
-import { Badge } from "@/components/shadcn/ui/badge";
-import { Button } from "@/components/shadcn/ui/button";
-import { Card } from "@/components/shadcn/ui/card";
-import { Skeleton } from "@/components/shadcn/ui/skeleton";
-import { ExternalLink, Sparkles, ImageIcon, ArrowRight } from "lucide-react";
-import { cn } from "@/lib/shadcn/utils";
+import { useState, ReactNode } from 'react';
+import Image from 'next/image';
+import Link from 'next/link';
+import { Badge } from '@/components/shadcn/ui/badge';
+import { Button } from '@/components/shadcn/ui/button';
+import { Card } from '@/components/shadcn/ui/card';
+import { Skeleton } from '@/components/shadcn/ui/skeleton';
+import { ExternalLink, Sparkles, ImageIcon, ArrowRight } from 'lucide-react';
+import { cn } from '@/lib/shadcn/utils';
 
 export interface FeatureSnippet {
   title: string;
@@ -43,15 +43,15 @@ export interface FeaturedProjectCardProps {
 export function FeaturedProjectCard({
   title,
   tagline,
-  badgeText = "FEATURED PROJECT",
+  badgeText = 'FEATURED PROJECT',
   description,
   darkImage,
   lightImage,
-  placeholderText = "Image preview placeholder — Add your screenshot here",
+  placeholderText = 'Image preview placeholder — Add your screenshot here',
   snippets = [],
   techStack = [],
-  primaryLink = "/collection/screen",
-  primaryLinkLabel = "Preview Dashboard",
+  primaryLink = '/collection/screen',
+  primaryLinkLabel = 'Preview Dashboard',
   primaryLinkIcon,
   secondaryLink,
   secondaryLinkLabel,
@@ -65,8 +65,8 @@ export function FeaturedProjectCard({
   return (
     <Card
       className={cn(
-        "relative overflow-hidden border border-border/20 bg-card/66 shadow-2xl backdrop-blur-md transition-all duration-500 hover:border-primary/30 p-0 flex flex-col lg:flex-row",
-        className
+        'relative overflow-hidden border border-border/20 bg-card/66 shadow-2xl backdrop-blur-md transition-all duration-500 hover:border-primary/30 p-0 flex flex-col lg:flex-row',
+        className,
       )}
     >
       {/* Background ambient lighting */}
@@ -77,20 +77,12 @@ export function FeaturedProjectCard({
         {/* Left / Top Media Section — Spans 7 cols on desktop */}
         <div className="lg:col-span-7 flex flex-col border-b lg:border-b-0 lg:border-r border-border/20">
           {primaryLink ? (
-            primaryLink.startsWith("http") ? (
-              <a
-                href={primaryLink}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="block w-full"
-                aria-label={`View ${title}`}
-              >
+            primaryLink.startsWith('http') ? (
+              <a href={primaryLink} target="_blank" rel="noopener noreferrer" className="block w-full" aria-label={`View ${title}`}>
                 <div className="group/img relative w-full aspect-video bg-muted/20 border-b border-border/20 overflow-hidden flex items-center justify-center cursor-pointer">
                   {hasImage ? (
                     <>
-                      {!isLoaded && (
-                        <Skeleton className="absolute inset-0 z-10 h-full w-full rounded-none" />
-                      )}
+                      {!isLoaded && <Skeleton className="absolute inset-0 z-10 h-full w-full rounded-none" />}
                       {darkImage && (
                         <Image
                           src={darkImage}
@@ -122,14 +114,13 @@ export function FeaturedProjectCard({
                         <ImageIcon className="h-8 w-8 text-sapphire" />
                       </div>
                       <div className="flex flex-col gap-1 max-w-md">
-                        <span className="text-sm font-bold text-foreground tracking-wide">
-                          {placeholderText}
-                        </span>
-                        <span className="text-xs text-muted-foreground">
-                          16:9 Aspect Ratio • Standard Screenshot Size
-                        </span>
+                        <span className="text-sm font-bold text-foreground tracking-wide">{placeholderText}</span>
+                        <span className="text-xs text-muted-foreground">16:9 Aspect Ratio • Standard Screenshot Size</span>
                       </div>
-                      <Badge variant="subtle" className="text-[10px] uppercase font-mono tracking-wider border-sapphire/30 text-sapphire bg-sapphire/10">
+                      <Badge
+                        variant="subtle"
+                        className="text-[10px] uppercase font-mono tracking-wider border-sapphire/30 text-sapphire bg-sapphire/10"
+                      >
                         IMAGE PLACEHOLDER
                       </Badge>
                     </div>
@@ -141,9 +132,7 @@ export function FeaturedProjectCard({
                 <div className="group/img relative w-full aspect-video bg-muted/20 border-b border-border/20 overflow-hidden flex items-center justify-center cursor-pointer">
                   {hasImage ? (
                     <>
-                      {!isLoaded && (
-                        <Skeleton className="absolute inset-0 z-10 h-full w-full rounded-none" />
-                      )}
+                      {!isLoaded && <Skeleton className="absolute inset-0 z-10 h-full w-full rounded-none" />}
                       {darkImage && (
                         <Image
                           src={darkImage}
@@ -175,14 +164,13 @@ export function FeaturedProjectCard({
                         <ImageIcon className="h-8 w-8 text-sapphire" />
                       </div>
                       <div className="flex flex-col gap-1 max-w-md">
-                        <span className="text-sm font-bold text-foreground tracking-wide">
-                          {placeholderText}
-                        </span>
-                        <span className="text-xs text-muted-foreground">
-                          16:9 Aspect Ratio • Standard Screenshot Size
-                        </span>
+                        <span className="text-sm font-bold text-foreground tracking-wide">{placeholderText}</span>
+                        <span className="text-xs text-muted-foreground">16:9 Aspect Ratio • Standard Screenshot Size</span>
                       </div>
-                      <Badge variant="subtle" className="text-[10px] uppercase font-mono tracking-wider border-sapphire/30 text-sapphire bg-sapphire/10">
+                      <Badge
+                        variant="subtle"
+                        className="text-[10px] uppercase font-mono tracking-wider border-sapphire/30 text-sapphire bg-sapphire/10"
+                      >
                         IMAGE PLACEHOLDER
                       </Badge>
                     </div>
@@ -194,9 +182,7 @@ export function FeaturedProjectCard({
             <div className="relative w-full aspect-video bg-muted/20 border-b border-border/20 overflow-hidden flex items-center justify-center">
               {hasImage ? (
                 <>
-                  {!isLoaded && (
-                    <Skeleton className="absolute inset-0 z-10 h-full w-full rounded-none" />
-                  )}
+                  {!isLoaded && <Skeleton className="absolute inset-0 z-10 h-full w-full rounded-none" />}
                   {darkImage && (
                     <Image
                       src={darkImage}
@@ -227,14 +213,13 @@ export function FeaturedProjectCard({
                     <ImageIcon className="h-8 w-8 text-sapphire" />
                   </div>
                   <div className="flex flex-col gap-1 max-w-md">
-                    <span className="text-sm font-bold text-foreground tracking-wide">
-                      {placeholderText}
-                    </span>
-                    <span className="text-xs text-muted-foreground">
-                      16:9 Aspect Ratio • Standard Screenshot Size
-                    </span>
+                    <span className="text-sm font-bold text-foreground tracking-wide">{placeholderText}</span>
+                    <span className="text-xs text-muted-foreground">16:9 Aspect Ratio • Standard Screenshot Size</span>
                   </div>
-                  <Badge variant="subtle" className="text-[10px] uppercase font-mono tracking-wider border-sapphire/30 text-sapphire bg-sapphire/10">
+                  <Badge
+                    variant="subtle"
+                    className="text-[10px] uppercase font-mono tracking-wider border-sapphire/30 text-sapphire bg-sapphire/10"
+                  >
                     IMAGE PLACEHOLDER
                   </Badge>
                 </div>
@@ -250,18 +235,10 @@ export function FeaturedProjectCard({
                   key={idx}
                   className="flex items-start gap-3 p-3.5 rounded-xl border border-border/15 bg-card/40 backdrop-blur-xs transition-colors hover:bg-card/70 hover:border-border/30"
                 >
-                  {snippet.icon && (
-                    <div className="shrink-0 mt-0.5 text-sapphire text-lg">
-                      {snippet.icon}
-                    </div>
-                  )}
+                  {snippet.icon && <div className="shrink-0 mt-0.5 text-sapphire text-lg">{snippet.icon}</div>}
                   <div className="flex flex-col gap-0.5 min-w-0">
-                    <h4 className="text-xs font-bold text-foreground tracking-wide">
-                      {snippet.title}
-                    </h4>
-                    <p className="text-xs text-muted-foreground line-clamp-2 leading-relaxed">
-                      {snippet.description}
-                    </p>
+                    <h4 className="text-xs font-bold text-foreground tracking-wide">{snippet.title}</h4>
+                    <p className="text-xs text-muted-foreground line-clamp-2 leading-relaxed">{snippet.description}</p>
                   </div>
                 </div>
               ))}
@@ -280,28 +257,18 @@ export function FeaturedProjectCard({
                 <Sparkles className="h-3 w-3 mr-1.5 inline" />
                 {badgeText}
               </Badge>
-              {tagline && (
-                <span className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground">
-                  {tagline}
-                </span>
-              )}
+              {tagline && <span className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground">{tagline}</span>}
             </div>
 
             <div>
-              <h2 className="text-4xl md:text-5xl font-black text-foreground leading-tight tracking-tight text-shadow-sm">
-                {title}
-              </h2>
-              <p className="text-base text-muted-foreground leading-relaxed mt-3">
-                {description}
-              </p>
+              <h2 className="text-4xl md:text-5xl font-black text-foreground leading-tight tracking-tight text-shadow-sm">{title}</h2>
+              <p className="text-base text-muted-foreground leading-relaxed mt-3">{description}</p>
             </div>
 
             {/* Tech stack badges */}
             {techStack.length > 0 && (
               <div className="flex flex-col gap-2">
-                <span className="text-xs font-bold text-foreground/60 uppercase tracking-widest">
-                  Built With
-                </span>
+                <span className="text-xs font-bold text-foreground/60 uppercase tracking-widest">Built With</span>
                 <div className="flex flex-wrap gap-2">
                   {techStack.map((tech) => (
                     <Badge
@@ -325,22 +292,14 @@ export function FeaturedProjectCard({
                 asChild
                 className="w-full rounded-xl bg-linear-to-r from-sapphire to-amethyst text-white font-bold shadow-md hover:-translate-y-0.5 hover:shadow-sapphire/20 hover:shadow-lg transition-all"
               >
-                {primaryLink.startsWith("http") ? (
-                  <a
-                    href={primaryLink}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="inline-flex items-center justify-center gap-2"
-                  >
+                {primaryLink.startsWith('http') ? (
+                  <a href={primaryLink} target="_blank" rel="noopener noreferrer" className="inline-flex items-center justify-center gap-2">
                     {primaryLinkIcon}
                     {primaryLinkLabel}
                     <ExternalLink className="h-4 w-4 opacity-70 ml-auto" />
                   </a>
                 ) : (
-                  <Link
-                    href={primaryLink}
-                    className="inline-flex items-center justify-center gap-2"
-                  >
+                  <Link href={primaryLink} className="inline-flex items-center justify-center gap-2">
                     {primaryLinkIcon}
                     {primaryLinkLabel}
                     <ArrowRight className="h-4 w-4 opacity-70 ml-auto" />
@@ -355,7 +314,7 @@ export function FeaturedProjectCard({
                 asChild
                 className="w-full rounded-xl font-bold hover:-translate-y-0.5 hover:border-sapphire/30 transition-all"
               >
-                {secondaryLink.startsWith("http") ? (
+                {secondaryLink.startsWith('http') ? (
                   <a
                     href={secondaryLink}
                     target="_blank"
@@ -367,10 +326,7 @@ export function FeaturedProjectCard({
                     <ExternalLink className="h-4 w-4 opacity-70 ml-auto" />
                   </a>
                 ) : (
-                  <Link
-                    href={secondaryLink}
-                    className="inline-flex items-center justify-center gap-2"
-                  >
+                  <Link href={secondaryLink} className="inline-flex items-center justify-center gap-2">
                     {secondaryLinkIcon}
                     {secondaryLinkLabel}
                     <ArrowRight className="h-4 w-4 opacity-70 ml-auto" />

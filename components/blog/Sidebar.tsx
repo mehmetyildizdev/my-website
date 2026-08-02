@@ -1,32 +1,24 @@
-import Image from "next/image";
-import Link from "next/link";
-import React from "react";
-import { getCategoryTheme } from "@/lib/post/categoryBasedSelector";
-import {
-  FaTwitter,
-  FaGithub,
-  FaLinkedinIn,
-  FaInstagram,
-  FaYoutube,
-  FaLink,
-} from "react-icons/fa";
-import { Separator } from "@/components/shadcn/ui/separator";
-
+import Image from 'next/image';
+import Link from 'next/link';
+import React from 'react';
+import { getCategoryTheme } from '@/lib/post/categoryBasedSelector';
+import { FaTwitter, FaGithub, FaLinkedinIn, FaInstagram, FaYoutube, FaLink } from 'react-icons/fa';
+import { Separator } from '@/components/shadcn/ui/separator';
 
 function SocialIcon({ name, url, colorClass }: { name?: string; url?: string; colorClass: string }) {
-  const label = (name ?? "").toLowerCase();
+  const label = (name ?? '').toLowerCase();
 
   let Icon = FaLink;
 
-  if (label.includes("twitter") || label.includes("x.com") || url?.includes("x.com") || url?.includes("twitter")) {
+  if (label.includes('twitter') || label.includes('x.com') || url?.includes('x.com') || url?.includes('twitter')) {
     Icon = FaTwitter;
-  } else if (label.includes("github") || url?.includes("github")) {
+  } else if (label.includes('github') || url?.includes('github')) {
     Icon = FaGithub;
-  } else if (label.includes("linkedin") || url?.includes("linkedin")) {
+  } else if (label.includes('linkedin') || url?.includes('linkedin')) {
     Icon = FaLinkedinIn;
-  } else if (label.includes("instagram") || url?.includes("instagram")) {
+  } else if (label.includes('instagram') || url?.includes('instagram')) {
     Icon = FaInstagram;
-  } else if (label.includes("youtube") || url?.includes("youtube")) {
+  } else if (label.includes('youtube') || url?.includes('youtube')) {
     Icon = FaYoutube;
   }
 
@@ -48,13 +40,10 @@ function SocialIcon({ name, url, colorClass }: { name?: string; url?: string; co
       </svg>
 
       {/* Base icon (solid color) */}
-      <Icon className="absolute h-4 w-4 transition-opacity duration-300 group-hover:opacity-0"
-        style={{ fill: "url(#social-grad)" }} />
+      <Icon className="absolute h-4 w-4 transition-opacity duration-300 group-hover:opacity-0" style={{ fill: 'url(#social-grad)' }} />
 
       {/* Hover icon (gradient filled) */}
-      <Icon
-        className="absolute h-4 w-4 opacity-0 transition-opacity duration-300 group-hover:opacity-100 "
-      />
+      <Icon className="absolute h-4 w-4 opacity-0 transition-opacity duration-300 group-hover:opacity-100 " />
     </a>
   );
 }
@@ -62,14 +51,10 @@ function SocialIcon({ name, url, colorClass }: { name?: string; url?: string; co
 // ── Sidebar ───────────────────────────────────────────────────────────────────
 
 export const Sidebar: React.FC<SidebarProps> = ({ author, allCategories = [], categories = [] }) => {
-  const bioText =
-    author?.bio?.[0]?.children
-      ?.map((c: any) => c.text)
-      .join(" ") ?? "";
+  const bioText = author?.bio?.[0]?.children?.map((c: any) => c.text).join(' ') ?? '';
 
   const socialLinks = (author?.social ?? []).filter((s) => s.url);
   const theme = getCategoryTheme(categories?.[0]?.title);
-
 
   return (
     <div className="hidden lg:block h-full">
@@ -81,19 +66,14 @@ export const Sidebar: React.FC<SidebarProps> = ({ author, allCategories = [], ca
               {author?.image?.asset?.url ? (
                 <Image
                   src={author.image.asset.url}
-                  alt={author.image.alt ?? author?.name ?? "Author"}
+                  alt={author.image.alt ?? author?.name ?? 'Author'}
                   fill
                   className="object-cover"
                   sizes="48px"
                 />
               ) : (
                 /* Placeholder person icon */
-                <svg
-                  viewBox="0 0 24 24"
-                  className="absolute inset-0 h-full w-full p-2 text-metadata"
-                  fill="currentColor"
-                  aria-hidden
-                >
+                <svg viewBox="0 0 24 24" className="absolute inset-0 h-full w-full p-2 text-metadata" fill="currentColor" aria-hidden>
                   <path d="M12 12c2.7 0 4.8-2.1 4.8-4.8S14.7 2.4 12 2.4 7.2 4.5 7.2 7.2 9.3 12 12 12zm0 2.4c-3.2 0-9.6 1.6-9.6 4.8v2.4h19.2v-2.4c0-3.2-6.4-4.8-9.6-4.8z" />
                 </svg>
               )}
@@ -101,9 +81,7 @@ export const Sidebar: React.FC<SidebarProps> = ({ author, allCategories = [], ca
 
             {/* Name + social icons */}
             <div className="min-w-0 flex-1">
-              <div className={`font-semibold truncate text-metadata`}>
-                {author?.name ?? "Unknown Author"}
-              </div>
+              <div className={`font-semibold truncate text-metadata`}>{author?.name ?? 'Unknown Author'}</div>
               {socialLinks.length > 0 && (
                 <div className="mt-1.5 flex items-center gap-2">
                   {socialLinks.map((s, i) => (
@@ -118,9 +96,7 @@ export const Sidebar: React.FC<SidebarProps> = ({ author, allCategories = [], ca
           {bioText && (
             <>
               <Separator />
-              <p className="text-xs leading-loose text-metadata text-left pt-1">
-                {bioText}
-              </p>
+              <p className="text-xs leading-loose text-metadata text-left pt-1">{bioText}</p>
             </>
           )}
         </div>
@@ -144,7 +120,6 @@ export const Sidebar: React.FC<SidebarProps> = ({ author, allCategories = [], ca
             </div>
           </div>
         )}
-
       </div>
     </div>
   );

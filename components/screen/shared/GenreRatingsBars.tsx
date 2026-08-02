@@ -28,13 +28,7 @@ const SHOW_LEGEND = [
   { tier: 'ruby' as const, label: '<7.25' },
 ];
 
-export default function GenreRatingsBars({
-  data,
-  mode = 'movie',
-}: {
-  data: GenreRating[];
-  mode?: 'movie' | 'show';
-}) {
+export default function GenreRatingsBars({ data, mode = 'movie' }: { data: GenreRating[]; mode?: 'movie' | 'show' }) {
   const parsedData = data.map((g) => ({
     ...g,
     total_count: Number(g.total_count),
@@ -55,12 +49,10 @@ export default function GenreRatingsBars({
   return (
     <Card className="bg-pearl/30 border-border/15 shadow-2xl backdrop-blur-md">
       <CardHeader className="pb-2">
-        <CardTitle className="text-lg font-bold tracking-tight text-accent">
-          Genre Affinity (Avg Rating)
-        </CardTitle>
+        <CardTitle className="text-lg font-bold tracking-tight text-accent">Genre Affinity (Avg Rating)</CardTitle>
         <p className="text-xs text-muted-foreground mt-1">
-          Average personal rating per genre (20+ rated items). Higher = you tend to like it more.
-          The divider in each bar marks the movie/show split by count.
+          Average personal rating per genre (20+ rated items). Higher = you tend to like it more. The divider in each bar marks the
+          movie/show split by count.
         </p>
       </CardHeader>
       <CardContent className="pt-2">
@@ -71,8 +63,7 @@ export default function GenreRatingsBars({
 
             const movieR = g.avg_movie_rating != null ? Number(g.avg_movie_rating) : null;
             const showR = g.avg_show_rating != null ? Number(g.avg_show_rating) : null;
-            const token =
-              mode === 'show' ? getShowAvgRatingToken(rating) : getAvgRatingToken(rating);
+            const token = mode === 'show' ? getShowAvgRatingToken(rating) : getAvgRatingToken(rating);
             const bgClass = RATING_BG_CLASS[token];
 
             // Movie share of total counts → divider position within the filled bar
@@ -86,17 +77,12 @@ export default function GenreRatingsBars({
                 placement="mouse"
                 content={
                   <div className="flex flex-col gap-0.5 min-w-40">
-                    <span
-                      className="font-semibold text-gold"
-                      style={{ fontFamily: 'var(--font-poppins)' }}
-                    >
+                    <span className="font-semibold text-gold" style={{ fontFamily: 'var(--font-poppins)' }}>
                       {g.name}
                     </span>
                     <div className="flex justify-between gap-4 text-[11px] mt-1">
                       <span className="text-quicksilver">Avg Rating</span>
-                      <span className="text-platinum font-semibold tabular-nums">
-                        {rating.toFixed(2)}
-                      </span>
+                      <span className="text-platinum font-semibold tabular-nums">{rating.toFixed(2)}</span>
                     </div>
                     {movieR != null && (
                       <div className="flex justify-between gap-4 text-[11px]">
@@ -133,9 +119,7 @@ export default function GenreRatingsBars({
                       />
                     )}
                   </div>
-                  <span className="text-sm tabular-nums font-mono text-platinum text-right">
-                    {rating.toFixed(2)}
-                  </span>
+                  <span className="text-sm tabular-nums font-mono text-platinum text-right">{rating.toFixed(2)}</span>
                 </div>
               </Tooltip>
             );
@@ -149,9 +133,7 @@ export default function GenreRatingsBars({
           </span>
           {(mode === 'show' ? SHOW_LEGEND : MOVIE_LEGEND).map(({ tier, label }) => (
             <div key={label} className="flex items-center gap-1">
-              <span
-                className={`inline-block w-3 h-3 rounded-full opacity-85 ${RATING_BG_CLASS[tier]}`}
-              />
+              <span className={`inline-block w-3 h-3 rounded-full opacity-85 ${RATING_BG_CLASS[tier]}`} />
               {label}
             </div>
           ))}

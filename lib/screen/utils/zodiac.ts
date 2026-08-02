@@ -7,7 +7,7 @@ export interface ZodiacSign {
   startDay: number;
   endMonth: number; // 1-12
   endDay: number;
-  element: "Fire" | "Earth" | "Air" | "Water";
+  element: 'Fire' | 'Earth' | 'Air' | 'Water';
 }
 
 /**
@@ -16,100 +16,100 @@ export interface ZodiacSign {
  */
 export const ZODIAC_SIGNS: ZodiacSign[] = [
   {
-    name: "Capricorn",
+    name: 'Capricorn',
     startMonth: 12,
     startDay: 22,
     endMonth: 1,
     endDay: 19,
-    element: "Earth",
+    element: 'Earth',
   },
   {
-    name: "Aquarius",
+    name: 'Aquarius',
     startMonth: 1,
     startDay: 20,
     endMonth: 2,
     endDay: 18,
-    element: "Air",
+    element: 'Air',
   },
   {
-    name: "Pisces",
+    name: 'Pisces',
     startMonth: 2,
     startDay: 19,
     endMonth: 3,
     endDay: 20,
-    element: "Water",
+    element: 'Water',
   },
   {
-    name: "Aries",
+    name: 'Aries',
     startMonth: 3,
     startDay: 21,
     endMonth: 4,
     endDay: 19,
-    element: "Fire",
+    element: 'Fire',
   },
   {
-    name: "Taurus",
+    name: 'Taurus',
     startMonth: 4,
     startDay: 20,
     endMonth: 5,
     endDay: 20,
-    element: "Earth",
+    element: 'Earth',
   },
   {
-    name: "Gemini",
+    name: 'Gemini',
     startMonth: 5,
     startDay: 21,
     endMonth: 6,
     endDay: 20,
-    element: "Air",
+    element: 'Air',
   },
   {
-    name: "Cancer",
+    name: 'Cancer',
     startMonth: 6,
     startDay: 21,
     endMonth: 7,
     endDay: 22,
-    element: "Water",
+    element: 'Water',
   },
   {
-    name: "Leo",
+    name: 'Leo',
     startMonth: 7,
     startDay: 23,
     endMonth: 8,
     endDay: 22,
-    element: "Fire",
+    element: 'Fire',
   },
   {
-    name: "Virgo",
+    name: 'Virgo',
     startMonth: 8,
     startDay: 23,
     endMonth: 9,
     endDay: 22,
-    element: "Earth",
+    element: 'Earth',
   },
   {
-    name: "Libra",
+    name: 'Libra',
     startMonth: 9,
     startDay: 23,
     endMonth: 10,
     endDay: 22,
-    element: "Air",
+    element: 'Air',
   },
   {
-    name: "Scorpio",
+    name: 'Scorpio',
     startMonth: 10,
     startDay: 23,
     endMonth: 11,
     endDay: 21,
-    element: "Water",
+    element: 'Water',
   },
   {
-    name: "Sagittarius",
+    name: 'Sagittarius',
     startMonth: 11,
     startDay: 22,
     endMonth: 12,
     endDay: 21,
-    element: "Fire",
+    element: 'Fire',
   },
 ];
 
@@ -130,17 +130,11 @@ export function getZodiacSign(month: number, day: number): ZodiacSign | null {
   const sign = ZODIAC_SIGNS.find((zodiac) => {
     // Case 1: Standard range within the same calendar year (e.g., Aries: March 21 - April 19)
     if (zodiac.startMonth < zodiac.endMonth) {
-      return (
-        (month === zodiac.startMonth && day >= zodiac.startDay) ||
-        (month === zodiac.endMonth && day <= zodiac.endDay)
-      );
+      return (month === zodiac.startMonth && day >= zodiac.startDay) || (month === zodiac.endMonth && day <= zodiac.endDay);
     }
 
     // Case 2: Overlapping the calendar year end/start (Capricorn: Dec 22 - Jan 19)
-    return (
-      (month === zodiac.startMonth && day >= zodiac.startDay) ||
-      (month === zodiac.endMonth && day <= zodiac.endDay)
-    );
+    return (month === zodiac.startMonth && day >= zodiac.startDay) || (month === zodiac.endMonth && day <= zodiac.endDay);
   });
 
   return sign || null;
@@ -150,7 +144,7 @@ export function getZodiacSign(month: number, day: number): ZodiacSign | null {
  * Helper function to parse a standard Date object or date string
  */
 export function getZodiacFromDate(dateInput: Date | string): ZodiacSign | null {
-  const date = typeof dateInput === "string" ? new Date(dateInput) : dateInput;
+  const date = typeof dateInput === 'string' ? new Date(dateInput) : dateInput;
 
   if (isNaN(date.getTime())) {
     return null; // Invalid date
@@ -173,13 +167,17 @@ export function getZodiac(birthDate: string | null): ZodiacSign | null {
 /**
  * Returns a tailored theme color class based on the zodiac element type.
  */
-export function getZodiacElementColor(element: "Fire" | "Earth" | "Air" | "Water"): string {
+export function getZodiacElementColor(element: 'Fire' | 'Earth' | 'Air' | 'Water'): string {
   switch (element) {
-    case "Fire": return "text-ruby font-semibold";      // Fire element is Red (Ruby)
-    case "Earth": return "text-topaz font-semibold";    // Earth element is Yellow/Gold (Topaz)
-    case "Air": return "text-sapphire font-semibold";   // Air element is Blue (Sapphire)
-    case "Water": return "text-emerald font-semibold";  // Water element is Green/Teal (Emerald)
-    default: return "text-foreground";
+    case 'Fire':
+      return 'text-ruby font-semibold'; // Fire element is Red (Ruby)
+    case 'Earth':
+      return 'text-topaz font-semibold'; // Earth element is Yellow/Gold (Topaz)
+    case 'Air':
+      return 'text-sapphire font-semibold'; // Air element is Blue (Sapphire)
+    case 'Water':
+      return 'text-emerald font-semibold'; // Water element is Green/Teal (Emerald)
+    default:
+      return 'text-foreground';
   }
 }
-

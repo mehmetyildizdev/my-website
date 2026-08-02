@@ -1,36 +1,34 @@
-"use client";
+'use client';
 
-import { useState, useMemo } from "react";
-import Link from "next/link";
-import Image from "next/image";
-import { getCategoryTheme } from "@/lib/post/categoryBasedSelector";
-import { formatDate } from "@/lib/post";
-import { Badge } from "@/components/shadcn/ui/badge";
-import { Button } from "@/components/shadcn/ui/button";
-import { cn } from "@/lib/shadcn/utils";
-import { Skeleton } from "@/components/shadcn/ui/skeleton";
-import React from "react";
+import { useState, useMemo } from 'react';
+import Link from 'next/link';
+import Image from 'next/image';
+import { getCategoryTheme } from '@/lib/post/categoryBasedSelector';
+import { formatDate } from '@/lib/post';
+import { Badge } from '@/components/shadcn/ui/badge';
+import { Button } from '@/components/shadcn/ui/button';
+import { cn } from '@/lib/shadcn/utils';
+import { Skeleton } from '@/components/shadcn/ui/skeleton';
+import React from 'react';
 
-export function FilteredPostsClient({ allPosts, defaultCat = "Insight" }: { allPosts: Post[], defaultCat?: string }) {
+export function FilteredPostsClient({ allPosts, defaultCat = 'Insight' }: { allPosts: Post[]; defaultCat?: string }) {
   const [loadedImages, setLoadedImages] = useState<Record<string, boolean>>({});
   // Extract unique categories from posts, default to ["Insight"] if none exist
   const categoriesSet = new Set<string>();
-  allPosts.forEach(post => {
+  allPosts.forEach((post) => {
     if (post.categories && post.categories.length > 0) {
-      post.categories.forEach(cat => categoriesSet.add(cat.title));
+      post.categories.forEach((cat) => categoriesSet.add(cat.title));
     }
   });
   const allCategories = Array.from(categoriesSet).sort();
 
   // State for active category. If the default category exists, use it, else use the first available, or a fallback.
-  const initialCategory = allCategories.includes(defaultCat) ? defaultCat : (allCategories[0] || "All");
+  const initialCategory = allCategories.includes(defaultCat) ? defaultCat : allCategories[0] || 'All';
   const [activeCategory, setActiveCategory] = useState<string>(initialCategory);
 
   const filteredPosts = useMemo(() => {
-    if (activeCategory === "All") return allPosts.slice(0, 4); // Fallback for no filtering but max 4
-    const filtered = allPosts.filter(post =>
-      post.categories?.some(cat => cat.title.toLowerCase() === activeCategory.toLowerCase())
-    );
+    if (activeCategory === 'All') return allPosts.slice(0, 4); // Fallback for no filtering but max 4
+    const filtered = allPosts.filter((post) => post.categories?.some((cat) => cat.title.toLowerCase() === activeCategory.toLowerCase()));
     return filtered.slice(0, 4); // Limit to 4 random/latest posts
   }, [allPosts, activeCategory]);
 
@@ -42,11 +40,7 @@ export function FilteredPostsClient({ allPosts, defaultCat = "Insight" }: { allP
       {allCategories.length > 0 && (
         <div className="flex flex-wrap justify-center sm:justify-start gap-3 mb-8">
           {allCategories.map((cat) => {
-            const {
-              bg: catBg,
-              text: catText,
-              hoverBg: catHoverBg,
-            } = getCategoryTheme(cat);
+            const { bg: catBg, text: catText, hoverBg: catHoverBg } = getCategoryTheme(cat);
             const isActive = activeCategory === cat;
 
             return (
@@ -57,15 +51,15 @@ export function FilteredPostsClient({ allPosts, defaultCat = "Insight" }: { allP
                 variant={null as any}
                 size="sm"
                 className={cn(
-                  "rounded-full px-5 py-2 text-xs font-bold uppercase tracking-widest cursor-pointer transition-all duration-300 shadow-sm hover:scale-105 border",
+                  'rounded-full px-5 py-2 text-xs font-bold uppercase tracking-widest cursor-pointer transition-all duration-300 shadow-sm hover:scale-105 border',
                   isActive
                     ? `${catBg} text-background border-transparent shadow-md`
-                    : `bg-card/66 ${catText} border-border/20 ${catHoverBg} hover:text-foreground/80 hover:border-transparent`
+                    : `bg-card/66 ${catText} border-border/20 ${catHoverBg} hover:text-foreground/80 hover:border-transparent`,
                 )}
               >
                 {cat}
               </Button>
-            )
+            );
           })}
         </div>
       )}
@@ -79,9 +73,7 @@ export function FilteredPostsClient({ allPosts, defaultCat = "Insight" }: { allP
 
           return (
             <Link href={`/blog/post/${post.slug.current}`} key={post._id}>
-              <article
-                className="group relative flex flex-col rounded-3xl border border-border/20 bg-card/66 p-5 shadow-xl backdrop-blur-sm transition-all duration-300 hover:-translate-y-2 hover:shadow-2xl hover:bg-muted/33"
-              >
+              <article className="group relative flex flex-col rounded-3xl border border-border/20 bg-card/66 p-5 shadow-xl backdrop-blur-sm transition-all duration-300 hover:-translate-y-2 hover:shadow-2xl hover:bg-muted/33">
                 {post.mainImage?.asset?.url && (
                   <div className="relative mb-4 w-full h-32 overflow-hidden rounded-2xl bg-muted/33">
                     {!isLoaded && <Skeleton className="absolute inset-0 z-10 h-full w-full bg-foreground/5" />}
@@ -89,8 +81,8 @@ export function FilteredPostsClient({ allPosts, defaultCat = "Insight" }: { allP
                       src={post.mainImage.asset.url}
                       alt={post.mainImage.alt ?? post.title}
                       fill
-                      onLoad={() => setLoadedImages(prev => ({ ...prev, [post._id]: true }))}
-                      className={`object-cover transition-all duration-700 group-hover:scale-105 ${isLoaded ? "opacity-100 blur-0" : "opacity-0 blur-xl"}`}
+                      onLoad={() => setLoadedImages((prev) => ({ ...prev, [post._id]: true }))}
+                      className={`object-cover transition-all duration-700 group-hover:scale-105 ${isLoaded ? 'opacity-100 blur-0' : 'opacity-0 blur-xl'}`}
                       sizes="(max-width: 768px) 100vw, 25vw"
                     />
                   </div>
@@ -100,10 +92,12 @@ export function FilteredPostsClient({ allPosts, defaultCat = "Insight" }: { allP
                   {formatDate(post.publishedAt)}
                 </time>
 
-                <h4 className={cn(
-                  "mt-2 text-lg font-bold text-foreground leading-snug drop-shadow-sm transition-colors line-clamp-2",
-                  catGroupHoverText
-                )}>
+                <h4
+                  className={cn(
+                    'mt-2 text-lg font-bold text-foreground leading-snug drop-shadow-sm transition-colors line-clamp-2',
+                    catGroupHoverText,
+                  )}
+                >
                   {post.title}
                 </h4>
 
@@ -117,7 +111,10 @@ export function FilteredPostsClient({ allPosts, defaultCat = "Insight" }: { allP
                   )}
 
                   <span className={`font-bold text-xs ${catText} flex items-center gap-1 group-hover:translate-x-1 transition-transform`}>
-                    Read <span aria-hidden="true" className="text-base leading-none">→</span>
+                    Read{' '}
+                    <span aria-hidden="true" className="text-base leading-none">
+                      →
+                    </span>
                   </span>
                 </div>
               </article>
@@ -125,9 +122,7 @@ export function FilteredPostsClient({ allPosts, defaultCat = "Insight" }: { allP
           );
         })}
         {filteredPosts.length === 0 && (
-          <div className="col-span-full py-8 text-center text-foreground/50 italic text-sm">
-            No posts found in this category.
-          </div>
+          <div className="col-span-full py-8 text-center text-foreground/50 italic text-sm">No posts found in this category.</div>
         )}
       </div>
     </div>

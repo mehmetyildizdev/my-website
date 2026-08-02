@@ -1,4 +1,4 @@
-import Summary from "@/components/about/Summary";
+import Summary from '@/components/about/Summary';
 
 export default function AboutPage() {
   return (

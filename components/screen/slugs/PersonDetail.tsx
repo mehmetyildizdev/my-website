@@ -127,9 +127,7 @@ export default function PersonDetail({ person, movies, shows, age }: PersonDetai
           <div className="relative w-40 sm:w-56 md:w-72 xl:w-80 shrink-0 aspect-2/3 rounded-xl overflow-hidden shadow-2xl border border-border-glint/50 group transition-all duration-300 hover:border-accent/40 hover:shadow-accent/33 bg-pearl">
             {person.profile_path ? (
               <>
-                {!isProfileLoaded && (
-                  <Skeleton className="absolute inset-0 rounded-xl bg-accent/10 z-0" />
-                )}
+                {!isProfileLoaded && <Skeleton className="absolute inset-0 rounded-xl bg-accent/10 z-0" />}
                 <Image
                   src={`https://image.tmdb.org/t/p/w500${person.profile_path}`}
                   alt={person.name}
@@ -143,9 +141,7 @@ export default function PersonDetail({ person, movies, shows, age }: PersonDetai
                 />
               </>
             ) : (
-              <div className="w-full h-full flex items-center justify-center text-quicksilver text-sm">
-                No Photo
-              </div>
+              <div className="w-full h-full flex items-center justify-center text-quicksilver text-sm">No Photo</div>
             )}
           </div>
         </div>
@@ -172,11 +168,7 @@ export default function PersonDetail({ person, movies, shows, age }: PersonDetai
                       asChild
                       className="h-auto uppercase tracking-widest text-[9px] lg:text-sm font-bold px-3 py-1 gap-1 rounded-full border border-border/10 bg-pearl/5 text-quicksilver hover:text-accent hover:border-accent/30 transition-all duration-300 cursor-pointer"
                     >
-                      <a
-                        href={`https://www.imdb.com/name/${person.imdb_id}`}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                      >
+                      <a href={`https://www.imdb.com/name/${person.imdb_id}`} target="_blank" rel="noopener noreferrer">
                         IMDb <ExternalLink className="w-2.5 h-2.5 lg:w-3 lg:h-3" />
                       </a>
                     </Button>
@@ -188,11 +180,7 @@ export default function PersonDetail({ person, movies, shows, age }: PersonDetai
                       asChild
                       className="h-auto uppercase tracking-widest text-[9px] lg:text-sm font-bold px-3 py-1 gap-1 rounded-full border border-border/10 bg-pearl/5 text-quicksilver hover:text-accent hover:border-accent/30 transition-all duration-300 cursor-pointer"
                     >
-                      <a
-                        href={`https://www.themoviedb.org/person/${person.tmdb_id}`}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                      >
+                      <a href={`https://www.themoviedb.org/person/${person.tmdb_id}`} target="_blank" rel="noopener noreferrer">
                         TMDB <ExternalLink className="w-2.5 h-2.5 lg:w-3 lg:h-3" />
                       </a>
                     </Button>
@@ -219,17 +207,7 @@ export default function PersonDetail({ person, movies, shows, age }: PersonDetai
                     className="px-2 py-0.5 sm:px-3.5 sm:py-1 text-[9px] sm:text-xs font-semibold rounded-full border border-border/10 transition-all duration-300 hover:bg-border/5"
                   >
                     <span className="text-quicksilver mr-1 font-normal">{label}:</span>
-                    <span
-                      className={
-                        isZodiac
-                          ? zodiacColorClass
-                          : isDied
-                            ? 'text-ruby font-semibold'
-                            : 'text-foreground'
-                      }
-                    >
-                      {value}
-                    </span>
+                    <span className={isZodiac ? zodiacColorClass : isDied ? 'text-ruby font-semibold' : 'text-foreground'}>{value}</span>
                   </Badge>
                 ))}
               </div>
@@ -240,18 +218,14 @@ export default function PersonDetail({ person, movies, shows, age }: PersonDetai
         {/* Metas and Ratings */}
         <div className="col-start-1 col-end-3 row-start-2 row-end-3 md:col-start-2 md:row-start-2 self-start md:self-end flex flex-row flex-nowrap gap-1.5 sm:gap-3 w-full md:w-auto md:flex-wrap md:gap-3">
           <div className="flex-1 md:flex-initial px-0.5 py-1.5 sm:px-3 sm:py-2.5 md:px-4 md:py-2 bg-pearl/30 border border-border/10 rounded-xl sm:rounded-2xl text-center min-w-0 md:min-w-[95px] backdrop-blur-xs transition-all duration-300 hover:bg-pearl/50 flex flex-col justify-center">
-            <p className="text-lg sm:text-xl md:text-2xl font-bold text-accent truncate">
-              {uniqueMovies.length}
-            </p>
+            <p className="text-lg sm:text-xl md:text-2xl font-bold text-accent truncate">{uniqueMovies.length}</p>
             <p className="text-[10px] text-quicksilver uppercase tracking-wider font-bold mt-1 leading-tight">
               Movies<span className="block lg:inline lg:ml-1">Watched</span>
             </p>
           </div>
           {uniqueShows.length > 0 && (
             <div className="flex-1 md:flex-initial px-0.5 py-1.5 sm:px-3 sm:py-2.5 md:px-4 md:py-2 bg-pearl/30 border border-border/10 rounded-xl sm:rounded-2xl text-center min-w-0 md:min-w-[95px] backdrop-blur-xs transition-all duration-300 hover:bg-pearl/50 flex flex-col justify-center">
-              <p className="text-lg sm:text-xl md:text-2xl font-bold text-accent truncate">
-                {uniqueShows.length}
-              </p>
+              <p className="text-lg sm:text-xl md:text-2xl font-bold text-accent truncate">{uniqueShows.length}</p>
               <p className="text-[10px] text-quicksilver uppercase tracking-wider font-bold mt-1 leading-tight">
                 Shows<span className="block lg:inline lg:ml-1">Watched</span>
               </p>
@@ -259,9 +233,7 @@ export default function PersonDetail({ person, movies, shows, age }: PersonDetai
           )}
           {person.my_rating != null && (
             <div className="flex-1 md:flex-initial px-0.5 py-1.5 sm:px-3 sm:py-2.5 md:px-4 md:py-2 bg-pearl/30 border border-border/10 rounded-xl sm:rounded-2xl text-center min-w-0 md:min-w-[95px] backdrop-blur-xs transition-all duration-300 hover:bg-pearl/50 flex flex-col justify-center">
-              <p className="text-lg sm:text-xl md:text-2xl font-bold text-gold truncate">
-                ★ {Number(person.my_rating).toFixed(2)}
-              </p>
+              <p className="text-lg sm:text-xl md:text-2xl font-bold text-gold truncate">★ {Number(person.my_rating).toFixed(2)}</p>
               <p className="text-[10px] text-quicksilver uppercase tracking-wider font-bold mt-1 leading-tight font-poppins">
                 My<span className="block lg:inline lg:ml-1">Rating</span>
               </p>
@@ -269,12 +241,8 @@ export default function PersonDetail({ person, movies, shows, age }: PersonDetai
           )}
           {person.popularity != null && (
             <div className="flex-1 md:flex-initial px-0.5 py-1.5 sm:px-3 sm:py-2.5 md:px-4 md:py-2 bg-pearl/30 border border-border/10 rounded-xl sm:rounded-2xl text-center min-w-0 md:min-w-[95px] backdrop-blur-xs transition-all duration-300 hover:bg-pearl/50 flex flex-col justify-center">
-              <p className={`text-lg sm:text-xl md:text-2xl font-bold ${popColor} truncate`}>
-                {Number(person.popularity).toFixed(0)}
-              </p>
-              <p className="text-[10px] text-quicksilver uppercase tracking-wider font-bold mt-1 leading-tight">
-                Popularity
-              </p>
+              <p className={`text-lg sm:text-xl md:text-2xl font-bold ${popColor} truncate`}>{Number(person.popularity).toFixed(0)}</p>
+              <p className="text-[10px] text-quicksilver uppercase tracking-wider font-bold mt-1 leading-tight">Popularity</p>
             </div>
           )}
         </div>
@@ -297,11 +265,7 @@ export default function PersonDetail({ person, movies, shows, age }: PersonDetai
                 poster_path={m.poster_path}
                 rating={m.user_rating}
                 priority={idx < 6}
-                meta={
-                  m.watched_at
-                    ? `Watched ${new Date(m.watched_at).toLocaleDateString('en-GB')}`
-                    : undefined
-                }
+                meta={m.watched_at ? `Watched ${new Date(m.watched_at).toLocaleDateString('en-GB')}` : undefined}
               />
             ))}
             <LazyLoadTrigger

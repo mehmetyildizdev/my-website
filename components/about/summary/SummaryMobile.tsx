@@ -5,13 +5,8 @@ import { useSummaryMobileScroll } from '@/hooks/about/useSummaryMobileScroll';
 import { SummaryMobileNav } from './SummaryMobileNav';
 import { SummaryMobilePanels } from './SummaryMobilePanels';
 
-export default function SummaryMobile({
-  id,
-  isActive = true,
-  hideContent = false,
-}: SummaryUIProps) {
-  const { activeIdx, scrollRef, navRef, handleScroll, onTabChange } =
-    useSummaryMobileScroll(isActive);
+export default function SummaryMobile({ id, isActive = true, hideContent = false }: SummaryUIProps) {
+  const { activeIdx, scrollRef, navRef, handleScroll, onTabChange } = useSummaryMobileScroll(isActive);
 
   const activeColor = TABS[activeIdx].color;
 
@@ -30,19 +25,11 @@ export default function SummaryMobile({
             boxShadow: `0 8px 32px color-mix(in oklch, var(--color-${activeColor}) 22%, transparent)`,
           }}
         >
-          <div
-            className="h-1 w-full shrink-0 transition-colors duration-500"
-            style={{ backgroundColor: `var(--color-${activeColor})` }}
-          />
+          <div className="h-1 w-full shrink-0 transition-colors duration-500" style={{ backgroundColor: `var(--color-${activeColor})` }} />
 
           <SummaryMobileNav containerRef={navRef} activeIdx={activeIdx} onTabChange={onTabChange} />
 
-          <SummaryMobilePanels
-            containerRef={scrollRef}
-            activeIdx={activeIdx}
-            onScroll={handleScroll}
-            hideContent={hideContent}
-          />
+          <SummaryMobilePanels containerRef={scrollRef} activeIdx={activeIdx} onScroll={handleScroll} hideContent={hideContent} />
         </div>
       </div>
     </section>

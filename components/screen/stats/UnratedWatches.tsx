@@ -47,12 +47,7 @@ export default async function UnratedWatches() {
                 >
                   <span className="inline-block w-1.5 h-1.5 rounded-full bg-blue-400 shrink-0" />
                   {url ? (
-                    <a
-                      href={url}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="truncate hover:text-accent transition-colors flex-1"
-                    >
+                    <a href={url} target="_blank" rel="noopener noreferrer" className="truncate hover:text-accent transition-colors flex-1">
                       {item.title}
                       {year && <span className="text-muted-foreground ml-1">({year})</span>}
                     </a>
@@ -84,12 +79,7 @@ export default async function UnratedWatches() {
                 >
                   <span className="inline-block w-1.5 h-1.5 rounded-full bg-purple-400 shrink-0" />
                   {url ? (
-                    <a
-                      href={url}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="truncate hover:text-accent transition-colors flex-1"
-                    >
+                    <a href={url} target="_blank" rel="noopener noreferrer" className="truncate hover:text-accent transition-colors flex-1">
                       {item.title}
                       {year && <span className="text-muted-foreground ml-1">({year})</span>}
                     </a>
@@ -106,9 +96,7 @@ export default async function UnratedWatches() {
         </div>
       )}
 
-      {items.length === 0 && (
-        <p className="text-sm text-muted-foreground italic">All watched items have been rated!</p>
-      )}
+      {items.length === 0 && <p className="text-sm text-muted-foreground italic">All watched items have been rated!</p>}
     </div>
   );
 }

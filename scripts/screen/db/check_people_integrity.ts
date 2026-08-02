@@ -54,9 +54,7 @@ if (!process.env.NEON_DATABASE_URL) {
 const args = process.argv.slice(2);
 const skipTmdb = args.includes('--skip-tmdb');
 const outArg = args.find((a) => a.startsWith('--out='));
-const outputPath = outArg
-  ? path.resolve(outArg.split('=')[1])
-  : path.resolve(process.cwd(), 'zone/people_integrity_report.md');
+const outputPath = outArg ? path.resolve(outArg.split('=')[1]) : path.resolve(process.cwd(), 'zone/people_integrity_report.md');
 
 // Rate limiting: 25 requests per batch with 1000ms delay strictly respects TMDB 30 req/sec limit
 const TMDB_BATCH_SIZE = 25;
@@ -108,10 +106,7 @@ const pool = new Pool({
   ssl: process.env.NEON_DATABASE_URL?.includes('localhost') ? false : { rejectUnauthorized: true },
 });
 
-async function checkTmdbPersonStatus(
-  tmdbId: number,
-  token: string
-): Promise<TmdbVerifyResult> {
+async function checkTmdbPersonStatus(tmdbId: number, token: string): Promise<TmdbVerifyResult> {
   const url = `https://api.themoviedb.org/3/person/${tmdbId}`;
   const controller = new AbortController();
   const timer = setTimeout(() => controller.abort(), TMDB_TIMEOUT_MS);
@@ -219,10 +214,7 @@ async function main() {
       const show_links_total = row.show_cast_count + row.show_crew_count;
       const media_links_total = movie_links_total + show_links_total;
       const has_place_of_birth = Boolean(row.place_of_birth && row.place_of_birth.trim().length > 0);
-      const is_cast =
-        row.known_for_department === 'Acting' ||
-        row.movie_cast_count > 0 ||
-        row.show_cast_count > 0;
+      const is_cast = row.known_for_department === 'Acting' || row.movie_cast_count > 0 || row.show_cast_count > 0;
 
       return {
         ...row,
@@ -357,14 +349,12 @@ async function main() {
               personObj.tmdb_details = res.details;
             }
             tmdbResultsMap.set(id, res);
-          })
+          }),
         );
 
         const progress = Math.min(i + TMDB_BATCH_SIZE, candidateIds.length);
         const percent = ((progress / candidateIds.length) * 100).toFixed(1);
-        process.stdout.write(
-          `  ⟳ TMDB Verification Progress: ${progress}/${candidateIds.length} (${percent}%)\r`
-        );
+        process.stdout.write(`  ⟳ TMDB Verification Progress: ${progress}/${candidateIds.length} (${percent}%)\r`);
 
         if (i + TMDB_BATCH_SIZE < candidateIds.length) {
           await new Promise((resolve) => setTimeout(resolve, TMDB_BATCH_DELAY_MS));
@@ -449,14 +439,28 @@ async function main() {
     reportLines.push(`| Metric Category | Cast (Acting) | Crew (Non-Acting) | Combined Total |`);
     reportLines.push(`| :--- | :---: | :---: | :---: |`);
     reportLines.push(`| **Total People Records** | ${castPeople.length} | ${crewPeople.length} | **${allPeople.length}** |`);
-    reportLines.push(`| **Missing Movie Links** | ${castNoMovie.length} | ${crewNoMovie.length} | ${castNoMovie.length + crewNoMovie.length} |`);
+    reportLines.push(
+      `| **Missing Movie Links** | ${castNoMovie.length} | ${crewNoMovie.length} | ${castNoMovie.length + crewNoMovie.length} |`,
+    );
     reportLines.push(`| **Missing Show Links** | ${castNoShow.length} | ${crewNoShow.length} | ${castNoShow.length + crewNoShow.length} |`);
-    reportLines.push(`| **Missing Media Links (No Movies AND No Shows)** | **${castNoMedia.length}** | **${crewNoMedia.length}** | **${castNoMedia.length + crewNoMedia.length}** |`);
-    reportLines.push(`| **No Birthplace Data Stored** | ${castNoBirthplace.length} | ${crewNoBirthplace.length} | ${castNoBirthplace.length + crewNoBirthplace.length} |`);
-    reportLines.push(`| **Unparsed Birthplace (Has Text, 0 Country Link)** | ${castUnparsedBirthplace.length} | ${crewUnparsedBirthplace.length} | ${castUnparsedBirthplace.length + crewUnparsedBirthplace.length} |`);
-    reportLines.push(`| **Completely Isolated Orphans (No Movies, Shows, or Countries)** | **${castOrphans.length}** | **${crewOrphans.length}** | **${castOrphans.length + crewOrphans.length}** |`);
-    reportLines.push(`| **Duplicate Name Clusters** | ${castNameDupGroups.length} | ${crewNameDupGroups.length} | ${nameDuplicateGroups.length} |`);
-    reportLines.push(`| **Duplicate IMDb ID Clusters** | ${castImdbDupGroups.length} | ${crewImdbDupGroups.length} | ${imdbDuplicateGroups.length} |`);
+    reportLines.push(
+      `| **Missing Media Links (No Movies AND No Shows)** | **${castNoMedia.length}** | **${crewNoMedia.length}** | **${castNoMedia.length + crewNoMedia.length}** |`,
+    );
+    reportLines.push(
+      `| **No Birthplace Data Stored** | ${castNoBirthplace.length} | ${crewNoBirthplace.length} | ${castNoBirthplace.length + crewNoBirthplace.length} |`,
+    );
+    reportLines.push(
+      `| **Unparsed Birthplace (Has Text, 0 Country Link)** | ${castUnparsedBirthplace.length} | ${crewUnparsedBirthplace.length} | ${castUnparsedBirthplace.length + crewUnparsedBirthplace.length} |`,
+    );
+    reportLines.push(
+      `| **Completely Isolated Orphans (No Movies, Shows, or Countries)** | **${castOrphans.length}** | **${crewOrphans.length}** | **${castOrphans.length + crewOrphans.length}** |`,
+    );
+    reportLines.push(
+      `| **Duplicate Name Clusters** | ${castNameDupGroups.length} | ${crewNameDupGroups.length} | ${nameDuplicateGroups.length} |`,
+    );
+    reportLines.push(
+      `| **Duplicate IMDb ID Clusters** | ${castImdbDupGroups.length} | ${crewImdbDupGroups.length} | ${imdbDuplicateGroups.length} |`,
+    );
     reportLines.push(``);
 
     // Section 2: Dedicated TMDB API Verification Results
@@ -529,13 +533,9 @@ async function main() {
         reportLines.push(`| TMDB ID | IMDb ID | Dept | Movies | Shows | Countries | TMDB Status |`);
         reportLines.push(`| :--- | :--- | :--- | :---: | :---: | :---: | :--- |`);
         for (const p of group.people) {
-          const statusStr = p.tmdb_status
-            ? p.tmdb_status === 'MERGED'
-              ? `MERGED → ${p.tmdb_merged_id}`
-              : p.tmdb_status
-            : '-';
+          const statusStr = p.tmdb_status ? (p.tmdb_status === 'MERGED' ? `MERGED → ${p.tmdb_merged_id}` : p.tmdb_status) : '-';
           reportLines.push(
-            `| \`${p.tmdb_id}\` | ${p.imdb_id || '-'} | ${p.known_for_department || '-'} | ${p.movie_links_total} | ${p.show_links_total} | ${p.country_count} | ${statusStr} |`
+            `| \`${p.tmdb_id}\` | ${p.imdb_id || '-'} | ${p.known_for_department || '-'} | ${p.movie_links_total} | ${p.show_links_total} | ${p.country_count} | ${statusStr} |`,
           );
         }
         reportLines.push(``);
@@ -553,13 +553,9 @@ async function main() {
         reportLines.push(`| TMDB ID | Name | Dept | Movies | Shows | Countries | TMDB Status |`);
         reportLines.push(`| :--- | :--- | :--- | :---: | :---: | :---: | :--- |`);
         for (const p of group.people) {
-          const statusStr = p.tmdb_status
-            ? p.tmdb_status === 'MERGED'
-              ? `MERGED → ${p.tmdb_merged_id}`
-              : p.tmdb_status
-            : '-';
+          const statusStr = p.tmdb_status ? (p.tmdb_status === 'MERGED' ? `MERGED → ${p.tmdb_merged_id}` : p.tmdb_status) : '-';
           reportLines.push(
-            `| \`${p.tmdb_id}\` | ${p.name} | ${p.known_for_department || '-'} | ${p.movie_links_total} | ${p.show_links_total} | ${p.country_count} | ${statusStr} |`
+            `| \`${p.tmdb_id}\` | ${p.name} | ${p.known_for_department || '-'} | ${p.movie_links_total} | ${p.show_links_total} | ${p.country_count} | ${statusStr} |`,
           );
         }
         reportLines.push(``);
@@ -573,13 +569,9 @@ async function main() {
       reportLines.push(`| TMDB ID | Name | IMDb ID | Dept | Popularity | TMDB Status |`);
       reportLines.push(`| :--- | :--- | :--- | :--- | :---: | :--- |`);
       for (const p of castOrphans.slice(0, 100)) {
-        const statusStr = p.tmdb_status
-          ? p.tmdb_status === 'MERGED'
-            ? `MERGED → ${p.tmdb_merged_id}`
-            : p.tmdb_status
-          : '-';
+        const statusStr = p.tmdb_status ? (p.tmdb_status === 'MERGED' ? `MERGED → ${p.tmdb_merged_id}` : p.tmdb_status) : '-';
         reportLines.push(
-          `| \`${p.tmdb_id}\` | ${p.name} | ${p.imdb_id || '-'} | ${p.known_for_department || '-'} | ${p.popularity.toFixed(1)} | ${statusStr} |`
+          `| \`${p.tmdb_id}\` | ${p.name} | ${p.imdb_id || '-'} | ${p.known_for_department || '-'} | ${p.popularity.toFixed(1)} | ${statusStr} |`,
         );
       }
       if (castOrphans.length > 100) {
@@ -613,13 +605,9 @@ async function main() {
         reportLines.push(`| TMDB ID | IMDb ID | Dept | Movies | Shows | Countries | TMDB Status |`);
         reportLines.push(`| :--- | :--- | :--- | :---: | :---: | :---: | :--- |`);
         for (const p of group.people) {
-          const statusStr = p.tmdb_status
-            ? p.tmdb_status === 'MERGED'
-              ? `MERGED → ${p.tmdb_merged_id}`
-              : p.tmdb_status
-            : '-';
+          const statusStr = p.tmdb_status ? (p.tmdb_status === 'MERGED' ? `MERGED → ${p.tmdb_merged_id}` : p.tmdb_status) : '-';
           reportLines.push(
-            `| \`${p.tmdb_id}\` | ${p.imdb_id || '-'} | ${p.known_for_department || '-'} | ${p.movie_links_total} | ${p.show_links_total} | ${p.country_count} | ${statusStr} |`
+            `| \`${p.tmdb_id}\` | ${p.imdb_id || '-'} | ${p.known_for_department || '-'} | ${p.movie_links_total} | ${p.show_links_total} | ${p.country_count} | ${statusStr} |`,
           );
         }
         reportLines.push(``);
@@ -637,13 +625,9 @@ async function main() {
         reportLines.push(`| TMDB ID | Name | Dept | Movies | Shows | Countries | TMDB Status |`);
         reportLines.push(`| :--- | :--- | :--- | :---: | :---: | :---: | :--- |`);
         for (const p of group.people) {
-          const statusStr = p.tmdb_status
-            ? p.tmdb_status === 'MERGED'
-              ? `MERGED → ${p.tmdb_merged_id}`
-              : p.tmdb_status
-            : '-';
+          const statusStr = p.tmdb_status ? (p.tmdb_status === 'MERGED' ? `MERGED → ${p.tmdb_merged_id}` : p.tmdb_status) : '-';
           reportLines.push(
-            `| \`${p.tmdb_id}\` | ${p.name} | ${p.known_for_department || '-'} | ${p.movie_links_total} | ${p.show_links_total} | ${p.country_count} | ${statusStr} |`
+            `| \`${p.tmdb_id}\` | ${p.name} | ${p.known_for_department || '-'} | ${p.movie_links_total} | ${p.show_links_total} | ${p.country_count} | ${statusStr} |`,
           );
         }
         reportLines.push(``);
@@ -657,13 +641,9 @@ async function main() {
       reportLines.push(`| TMDB ID | Name | IMDb ID | Dept | Popularity | TMDB Status |`);
       reportLines.push(`| :--- | :--- | :--- | :--- | :---: | :--- |`);
       for (const p of crewOrphans.slice(0, 100)) {
-        const statusStr = p.tmdb_status
-          ? p.tmdb_status === 'MERGED'
-            ? `MERGED → ${p.tmdb_merged_id}`
-            : p.tmdb_status
-          : '-';
+        const statusStr = p.tmdb_status ? (p.tmdb_status === 'MERGED' ? `MERGED → ${p.tmdb_merged_id}` : p.tmdb_status) : '-';
         reportLines.push(
-          `| \`${p.tmdb_id}\` | ${p.name} | ${p.imdb_id || '-'} | ${p.known_for_department || '-'} | ${p.popularity.toFixed(1)} | ${statusStr} |`
+          `| \`${p.tmdb_id}\` | ${p.name} | ${p.imdb_id || '-'} | ${p.known_for_department || '-'} | ${p.popularity.toFixed(1)} | ${statusStr} |`,
         );
       }
       if (crewOrphans.length > 100) {
