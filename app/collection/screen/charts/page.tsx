@@ -8,36 +8,25 @@ import WorldMapChart from '@/components/screen/shared/WorldMapChart';
 import CollectionCompletions from '@/components/screen/movies/CollectionCompletions';
 import TopCompaniesNetworks from '@/components/screen/shared/TopCompaniesNetworks';
 import { query, loadQuery } from '@/lib/screen/db';
-import Link from 'next/link';
+import { createScreenMetadata, SCREEN_SEO_CONFIG } from '@/lib/screen/seo';
 export const revalidate = 86400; // 24h — refreshed by nightly GitHub Action
 
-export const metadata = {
-  title: 'Screen | Charts',
-  description: 'Visual analytics of watch history data.',
-};
+export const metadata = createScreenMetadata(SCREEN_SEO_CONFIG.charts);
 
 export default async function ChartsPage() {
-  const [
-    genreRes,
-    ratingsRes,
-    comparisonRes,
-    bumpRes,
-    countryRes,
-    statsRes,
-    collectionsRes,
-    companiesRes,
-    networksRes,
-  ] = await Promise.all([
-    query(loadQuery('movies/genre_treemap.sql')),
-    query(loadQuery('shared/genre_ratings.sql')),
-    query(loadQuery('shared/ratings_comparison.sql')),
-    query(loadQuery('shared/genre_yearly_ratings.sql')),
-    query(loadQuery('shared/country_ratings.sql')),
-    query(loadQuery('dashboard/watch_stats.sql')),
-    query(loadQuery('movies/collection_completions.sql')),
-    query(loadQuery('movies/top_companies.sql')),
-    query(loadQuery('shows/top_networks.sql')),
-  ]);
+  const [genreRes, ratingsRes, comparisonRes, bumpRes, countryRes, statsRes, collectionsRes, companiesRes, networksRes] = await Promise.all(
+    [
+      query(loadQuery('movies/genre_treemap.sql')),
+      query(loadQuery('shared/genre_ratings.sql')),
+      query(loadQuery('shared/ratings_comparison.sql')),
+      query(loadQuery('shared/genre_yearly_ratings.sql')),
+      query(loadQuery('shared/country_ratings.sql')),
+      query(loadQuery('dashboard/watch_stats.sql')),
+      query(loadQuery('movies/collection_completions.sql')),
+      query(loadQuery('movies/top_companies.sql')),
+      query(loadQuery('shows/top_networks.sql')),
+    ]
+  );
 
   return (
     <>
@@ -45,9 +34,7 @@ export default async function ChartsPage() {
       <div className="space-y-12">
         <div>
           <h2 className="text-2xl font-bold tracking-tight text-accent font-poppins">Charts</h2>
-          <p className="text-sm text-muted-foreground mt-1">
-            Visual analytics of watch history data, ratings, and genre distributions.
-          </p>
+          <p className="text-sm text-muted-foreground mt-1">Visual analytics of watch history data, ratings, and genre distributions.</p>
         </div>
         <WorldMapChart data={countryRes.rows} />
         <GenreRatingsScatter data={ratingsRes.rows} />

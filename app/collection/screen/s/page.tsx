@@ -7,12 +7,10 @@ import BingePatterns from '@/components/screen/shows/BingePatterns';
 import ShowRatingDistribution from '@/components/screen/shows/ShowRatingDistribution';
 import RatingsComparison from '@/components/screen/shared/RatingsComparison';
 import { query, loadQuery } from '@/lib/screen/db';
+import { createScreenMetadata, SCREEN_SEO_CONFIG } from '@/lib/screen/seo';
 export const revalidate = 86400; // 24h — refreshed by nightly GitHub Action
 
-export const metadata = {
-  title: 'Screen | Show Charts',
-  description: 'Visual analytics of TV show watch history — networks, seasons, and genre trends.',
-};
+export const metadata = createScreenMetadata(SCREEN_SEO_CONFIG.shows);
 
 export default async function ShowChartsPage() {
   const [

@@ -8,12 +8,10 @@ import MovieLengthVsRating from '@/components/screen/movies/MovieLengthVsRating'
 import DirectorRankings from '@/components/screen/movies/DirectorRankings';
 import GenreBumpChart from '@/components/screen/shared/GenreBumpChart';
 import { query, loadQuery } from '@/lib/screen/db';
+import { createScreenMetadata, SCREEN_SEO_CONFIG } from '@/lib/screen/seo';
 export const revalidate = 86400; // 24h — refreshed by nightly GitHub Action
 
-export const metadata = {
-  title: 'Screen | Movie Charts',
-  description: 'Visual analytics of movie watch history — genres, decades, ratings, and more.',
-};
+export const metadata = createScreenMetadata(SCREEN_SEO_CONFIG.movies);
 
 export default async function MovieChartsPage() {
   const [

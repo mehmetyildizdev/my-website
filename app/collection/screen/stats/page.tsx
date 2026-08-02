@@ -1,12 +1,10 @@
 import LogSuppressor from '@/components/LogSuppressor';
 import DbOverview from '@/components/screen/stats/DbOverview';
 import UnratedWatches from '@/components/screen/stats/UnratedWatches';
+import { createScreenMetadata, SCREEN_SEO_CONFIG } from '@/lib/screen/seo';
 export const revalidate = 86400; // 24h — refreshed by nightly GitHub Action
 
-export const metadata = {
-  title: 'Screen | DB Stats',
-  description: 'Database overview, data coverage, and schema relationships.',
-};
+export const metadata = createScreenMetadata(SCREEN_SEO_CONFIG.stats);
 
 export default async function StatsPage() {
   return (

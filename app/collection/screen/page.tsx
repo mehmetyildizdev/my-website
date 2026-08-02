@@ -6,11 +6,6 @@ import GenreTreemap from '@/components/screen/shared/GenreTreemap';
 import { query, loadQuery } from '@/lib/screen/db';
 export const revalidate = 86400; // 24h — refreshed by nightly GitHub Action
 
-export const metadata = {
-  title: 'Screen | Watch Statistics',
-  description: 'My personal movie and TV show watch history, ratings and analytics.',
-};
-
 export default async function ScreenDashboardPage() {
   // Only fetch lightweight data for the dashboard — heavy charts live in sub-routes
   const [ratingsRes, genreRes] = await Promise.all([

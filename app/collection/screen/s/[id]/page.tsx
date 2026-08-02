@@ -6,17 +6,23 @@ export const dynamicParams = true;
 
 type Props = { params: Promise<{ id: string }> };
 
+import { createScreenDetailMetadata } from "@/lib/screen/seo";
+
 export async function generateMetadata({ params }: Props) {
   const { id } = await params;
   const tmdbId = parseInt(id, 10);
-  if (isNaN(tmdbId)) return {};
+  if (isNaN(tmdbId)) return { robots: { index: false, follow: false } };
   const res = await query(loadQuery("slugs/show_detail.sql"), [tmdbId]);
-  if (!res.rows[0]) return {};
+  if (!res.rows[0]) return { robots: { index: false, follow: false } };
   const show = res.rows[0] as ShowDetail;
-  return {
-    title: `${show.name} | Screen`,
+
+  return createScreenDetailMetadata({
+    title: show.name,
     description: show.overview?.slice(0, 155) ?? `${show.name} on my screen dashboard.`,
-  };
+    posterPath: show.poster_path,
+    backdropPath: show.backdrop_path,
+    type: 'video.tv_show',
+  });
 }
 
 export default async function ShowDetailPage({ params }: Props) {

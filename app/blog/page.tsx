@@ -20,12 +20,14 @@ export const metadata: Metadata = {
     description:
       "Compendium of Insight and Intuition - Thoughts on development, design, and the craft of building for the web.",
     type: "website",
+    images: ["/images/seo/og-blog.webp"],
   },
   twitter: {
     card: "summary_large_image",
     title: "Blog | Mehmet Yildiz",
     description:
       "Compendium of Insight and Intuition - Thoughts on development, design, and the craft of building for the web.",
+    images: ["/images/seo/og-blog.webp"],
   },
 };
 

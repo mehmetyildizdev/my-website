@@ -1,6 +1,9 @@
 import React from "react";
 import ScreenSidebar from "@/components/screen/dashboard/ScreenSidebar";
 import { NowPlayingProvider } from "@/components/screen/now-playing/NowPlayingContext";
+import { createScreenLayoutMetadata } from "@/lib/screen/seo";
+
+export const metadata = createScreenLayoutMetadata();
 
 export default function ScreenLayout({
   children,
