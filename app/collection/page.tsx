@@ -78,13 +78,14 @@ export default function CollectionPage() {
             tagline="MOVIES & TV SHOWS · WATCH HISTORY · ANALYTICS"
             badgeText="FEATURED DASHBOARD"
             description="A comprehensive personal movie & TV show watch-history dashboard. Track titles, explore detailed rating trends, analyze genre distribution, and perform deep-dives into directors and performers."
-            darkImage="/collection/screen_hero.webp"
-            lightImage="/collection/screen_hero_l.webp"
+            darkImage="/images/collection/screen/screen-d.webp"
+            lightImage="/images/collection/screen/screen-l.webp"
+            accentColor="gold"
             snippets={[
               {
                 title: 'Watch History & Logging',
                 description: 'Automated scrobbles and watch logs synced from the MemoStream app.',
-                icon: <Film className="h-4 w-4 text-sapphire" />,
+                icon: <Film className="h-4 w-4 text-gold" />,
               },
               {
                 title: 'Rich Analytics & Insights',
@@ -94,12 +95,12 @@ export default function CollectionPage() {
               {
                 title: 'Person & Media Explorer',
                 description: 'Discover top movies, actor ratings, and filmography highlights.',
-                icon: <FaFilm className="h-3.5 w-3.5 text-amethyst" />,
+                icon: <FaFilm className="h-3.5 w-3.5 text-gold" />,
               },
               {
                 title: 'Neon Cloud & Cloudflare',
                 description: 'High-performance querying powered by Neon PostgreSQL & Cloudflare.',
-                icon: <Database className="h-4 w-4 text-emerald-500" />,
+                icon: <Database className="h-4 w-4 text-gold" />,
               },
             ]}
             techStack={[
@@ -125,8 +126,8 @@ export default function CollectionPage() {
             title="MemoVolume"
             tagline="WINDOWS 11 | UTILITY"
             description="A lightweight Windows 11 audio management utility built with WPF and .NET 10. Provides a clean, always-on-top per-application volume mixer with hotkey support, system-tray integration, and a design that feels native to the Windows 11 design language."
-            darkImage="/collection/memovolume/memovolume_wide_dark_720.webp"
-            lightImage="/collection/memovolume/memovolume_wide_light_720.webp"
+            darkImage="/images/collection/memovolume/memovolume_wide_dark_720.webp"
+            lightImage="/images/collection/memovolume/memovolume_wide_light_720.webp"
             platformLabel="Windows 11"
             platformIcon={<FaMicrosoft className="text-xs" />}
             techStack={[
