@@ -29,14 +29,24 @@ export default function GenreBumpChart({ data }: { data: YearlyGenreData[] }) {
     }));
   }, [data]);
 
-  // Dynamically filter decades that actually have data
-  const availableDecades = useMemo(() => {
-    return DECADES.filter((d) => {
+  // Dynamically check each decade to see if it has renderable chart data (genres with >= 2 years of data)
+  const decadesWithStatus = useMemo(() => {
+    return DECADES.map((d) => {
       const start = parseInt(d.value);
       const end = start + 9;
-      return parsedData.some((item) => item.year >= start && item.year <= end);
+      const filteredForDecade = parsedData.filter((item) => item.year >= start && item.year <= end);
+      const genreYears = new Map<string, number>();
+      filteredForDecade.forEach((item) => {
+        genreYears.set(item.name, (genreYears.get(item.name) || 0) + 1);
+      });
+      const hasData = Array.from(genreYears.values()).some((count) => count >= 2);
+      return { ...d, hasData };
     });
   }, [parsedData]);
+
+  const availableDecades = useMemo(() => {
+    return decadesWithStatus.filter((d) => d.hasData);
+  }, [decadesWithStatus]);
 
   // Adjust selected decade if current one is not available
   const activeDecade = useMemo(() => {
@@ -166,17 +176,21 @@ export default function GenreBumpChart({ data }: { data: YearlyGenreData[] }) {
           </p>
         </div>
         <div className="flex flex-wrap gap-1.5 sm:self-center self-start">
-          {availableDecades.map((d) => {
+          {decadesWithStatus.map((d) => {
             const isSelected = activeDecade === d.value;
+            const isDisabled = !d.hasData;
             return (
               <button
                 key={d.value}
                 type="button"
-                onClick={() => setDecade(d.value)}
-                className={`rounded-full border px-3 py-1.5 text-xs font-semibold transition-all cursor-pointer ${
-                  isSelected
-                    ? 'border-accent/60 bg-accent/15 text-accent shadow-sm'
-                    : 'border-border/20 bg-card/40 text-muted-foreground hover:border-border/50 hover:text-foreground'
+                disabled={isDisabled}
+                onClick={() => !isDisabled && setDecade(d.value)}
+                className={`rounded-full border px-3 py-1.5 text-xs font-semibold transition-all ${
+                  isDisabled
+                    ? 'border-border/10 bg-card/20 text-muted-foreground/30 opacity-40 cursor-not-allowed'
+                    : isSelected
+                      ? 'border-accent/60 bg-accent/15 text-accent shadow-sm cursor-pointer'
+                      : 'border-border/20 bg-card/40 text-muted-foreground hover:border-border/50 hover:text-foreground cursor-pointer'
                 }`}
               >
                 {d.label}
@@ -522,7 +536,7 @@ export default function GenreBumpChart({ data }: { data: YearlyGenreData[] }) {
             </div>
 
             {/* Genre legend (interactive filter — persists across decades) */}
-            <div className="flex flex-wrap justify-center gap-2 mt-4 pt-3 border-t border-border/10 max-w-3xl mx-auto">
+            <div className="flex flex-wrap justify-center gap-2 mt-4 pt-3 border-t border-border/10 max-w-5xl mx-auto">
               {allGenres.map((genre) => {
                 const isActive = highlightedGenres.has(genre);
                 const isDimmed = hasHighlight && !isActive;
