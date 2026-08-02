@@ -221,7 +221,6 @@ async function updateMovies(limit: number, singleTmdbId: number | null = null) {
               }));
 
             const castToSync = (d.credits?.cast ?? [])
-              .filter((c: any) => c.profile_path)
               .map((c: any) => ({
                 id: c.id,
                 name: c.name,

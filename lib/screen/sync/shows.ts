@@ -190,9 +190,8 @@ export async function syncShow(
     });
   }
 
-  // ── CAST from aggregate_credits — only those with a profile image ─────────
+  // ── CAST from aggregate_credits ─────────────────────────────────────────
   const castToSync = (aggCredits.cast ?? [])
-    .filter((c: any) => c.profile_path)
     .map((c: any) => ({
       id: c.id,
       name: c.name,

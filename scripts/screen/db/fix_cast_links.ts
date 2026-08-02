@@ -87,7 +87,6 @@ async function main() {
                 }));
 
               const castToSync = (credits?.cast ?? [])
-                .filter((c: any) => c.profile_path)
                 .map((c: any) => ({
                   id: c.id,
                   name: c.name,
@@ -165,7 +164,6 @@ async function main() {
               }
 
               const castToSync = (aggCredits.cast ?? [])
-                .filter((c: any) => c.profile_path)
                 .map((c: any) => ({
                   id: c.id,
                   name: c.name,

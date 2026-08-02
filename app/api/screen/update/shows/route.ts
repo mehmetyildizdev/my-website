@@ -244,7 +244,6 @@ async function updateShows(limit: number, singleTmdbId: number | null = null) {
         }
 
         const castToSync = (aggCredits.cast ?? [])
-          .filter((c: any) => c.profile_path)
           .map((c: any) => ({
             id: c.id,
             name: c.name,

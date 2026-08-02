@@ -167,7 +167,6 @@ export async function syncMovie(client: import('pg').PoolClient, tmdbId: number,
     }));
 
   const castToSync = (d.credits?.cast ?? [])
-    .filter((c: any) => c.profile_path)
     .map((c: any) => ({
       id: c.id,
       name: c.name,
