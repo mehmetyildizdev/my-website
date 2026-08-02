@@ -45,18 +45,17 @@ export default function MyWebsite() {
   return (
     <section className="flex flex-col xl:flex-row bg-background/50">
       {/* Left Content: The Lore & Tech */}
-      <div className="xl:w-3/5 2xl:w-4/5 p-8 md:p-12 flex flex-col">
+      <div className="xl:w-3/5 2xl:w-4/5 p-8 md:p-12 space-y-6 flex flex-col">
         <header className="space-y-2">
-          <h3 className="text-xl font-black tracking-tighter uppercase italic bg-linear-to-r from-gold via-platinum to-silver bg-clip-text text-transparent">
+          <h1 className="text-xl font-black tracking-tighter uppercase italic bg-linear-to-r from-gold via-platinum to-silver bg-clip-text text-transparent">
             Digital Mining Site
-          </h3>
-          <div className="h-1 w-20 mb-4 bg-linear-to-r from-gold to-transparent rounded-full" />
+          </h1>
+          <div className="h-1 w-20 bg-linear-to-r from-gold to-transparent rounded-full" />
         </header>
 
         <div className="space-y-4 text-foreground/80 leading-relaxed text-sm md:text-base lg:text-lg">
-          <h4>Behind the Design</h4>
           <p>
-            I read many classical books in my childhood, but <em>The Alchemist</em> was one of the few that truly stuck with me—so much so
+            I read many classic books in my childhood, but <em>The Alchemist </em>was one of the few that truly stuck with me—so much so
             that chemistry and geometry became my favorite subjects leading up to university. As a history of sciences enthusiast, I&apos;ve
             always fascinated by the roles that minerals, metals, and gems play across different disciplines.
           </p>

@@ -2,9 +2,9 @@ export default function WhatIDo() {
   return (
     <section className="p-8 md:p-12 space-y-6">
       <header className="space-y-2">
-        <h3 className="text-xl font-black tracking-tighter uppercase italic bg-linear-to-r from-emerald via-platinum to-topaz bg-clip-text text-transparent">
+        <h1 className="text-xl font-black tracking-tighter uppercase italic bg-linear-to-r from-emerald via-platinum to-topaz bg-clip-text text-transparent">
           The Craft of the Forge
-        </h3>
+        </h1>
         <div className="h-1 w-20 bg-linear-to-r from-emerald to-transparent rounded-full" />
       </header>
 

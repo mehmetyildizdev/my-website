@@ -1,16 +1,16 @@
 import { Metadata } from 'next';
 
 export const metadata: Metadata = {
-  title: 'About Mehmet Yildiz | Digital Product Architect',
+  title: 'About Mehmet Yildiz | Full-Stack Developer | IT Specialist',
   description:
-    'Learn more about Mehmet Yildiz, a Full-Stack Software Engineer and Digital Product Architect based in Turkey. Explore my journey, technical skills, and how I bridge robust IT systems with modern application development to create performant digital solutions.',
+    'Learn more about Mehmet Yildiz, a Full-Stack Developer and IT Specialist based in Turkey. Explore my journey, technical skills, and how I bridge robust IT systems with modern application development to create performant digital solutions.',
   alternates: {
     canonical: '/about',
   },
   openGraph: {
-    title: 'About Mehmet Yildiz | Digital Product Architect',
+    title: 'About Mehmet Yildiz | Full-Stack Developer | IT Specialist',
     description:
-      'Learn more about Mehmet Yildiz, a Full-Stack Software Engineer and Digital Product Architect based in Turkey. Explore my journey and technical skills.',
+      'Learn more about Mehmet Yildiz, a Full-Stack Developer and IT Specialist based in Turkey. Explore my journey and technical skills.',
     url: 'https://mehmetyildiz.dev/about',
     siteName: 'Mehmet Yildiz',
     locale: 'en_US',
@@ -19,9 +19,9 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'About Mehmet Yildiz | Digital Product Architect',
+    title: 'About Mehmet Yildiz | Full-Stack Developer | IT Specialist',
     description:
-      'Learn more about Mehmet Yildiz, a Full-Stack Software Engineer and Digital Product Architect based in Turkey. Explore my journey and technical skills.',
+      'Learn more about Mehmet Yildiz, a Full-Stack Developer and IT Specialist based in Turkey. Explore my journey and technical skills.',
     images: ['/og-image.webp'],
   },
 };

@@ -29,7 +29,7 @@ export function SummaryMobileAboutIntro() {
       </div>
       <div className="min-w-0 flex-1 pl-2">
         <h2 className="text-lg font-bold text-foreground tracking-tight leading-tight">Mehmet Yıldız</h2>
-        <p className="text-[11px] text-platinum tracking-[0.2em] uppercase mt-0.5">Digital Product Architect</p>
+        <p className="text-[11px] text-platinum tracking-wider uppercase mt-0.5">Full-Stack Developer | IT Specialist</p>
       </div>
     </div>
   );

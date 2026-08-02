@@ -9,12 +9,14 @@ const rubik = Rubik({
   variable: '--font-rubik',
   subsets: ['latin'],
   weight: ['300', '400', '500', '600', '700', '900'],
+  display: 'swap',
 });
 
 const poppins = Poppins({
   variable: '--font-poppins',
   subsets: ['latin'],
   weight: ['200', '300', '400', '500', '600', '700'],
+  display: 'swap',
 });
 
 export const viewport: Viewport = {
@@ -24,9 +26,9 @@ export const viewport: Viewport = {
 };
 
 export const metadata: Metadata = {
-  title: 'Mehmet Yildiz | Developer & IT Support',
+  title: 'Mehmet Yildiz | Full-Stack Developer | IT Specialist',
   description:
-    'Welcome to the personal website and blog of Mehmet Yildiz, a passionate Front-End Web Developer and IT Support Specialist based in Turkey. Explore my portfolio, read my latest tech articles, and connect with me for innovative solutions.',
+    'Welcome to the personal website and blog of Mehmet Yildiz, a passionate Full-Stack Developer and IT Specialist based in Turkey. Explore my portfolio, read my latest tech articles, and connect with me for innovative solutions.',
   icons: {
     icon: [
       { url: '/favicon.png', sizes: '32x32', type: 'image/png' },
@@ -59,7 +61,7 @@ export const metadata: Metadata = {
     canonical: '/',
   },
   openGraph: {
-    title: 'Mehmet Yildiz | Developer & IT Support',
+    title: 'Mehmet Yildiz | Full-Stack Developer | IT Specialist',
     description: 'Full-stack development and systemic critiques of issues in the world.',
     url: 'https://mehmetyildiz.dev',
     siteName: 'Mehmet Yildiz',
@@ -69,7 +71,7 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'Mehmet Yildiz | Developer & IT Support',
+    title: 'Mehmet Yildiz | Full-Stack Developer | IT Specialist',
     description: 'Full-stack development and systemic critiques of issues in the world.',
     images: ['/og-image.webp'],
   },

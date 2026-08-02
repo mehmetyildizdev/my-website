@@ -1,14 +1,14 @@
 export default function MyPhilosophy() {
   return (
-    <section className="p-8 md:p-12 space-y-8">
+    <section className="p-8 md:p-12 space-y-6">
       <header className="space-y-2">
-        <h3 className="text-xl font-black tracking-tighter uppercase italic bg-linear-to-r from-sapphire via-platinum to-emerald bg-clip-text text-transparent">
+        <h1 className="text-xl font-black tracking-tighter uppercase italic bg-linear-to-r from-sapphire via-platinum to-emerald bg-clip-text text-transparent">
           The Alchemist&apos;s Code
-        </h3>
+        </h1>
         <div className="h-1 w-20 bg-linear-to-r from-sapphire to-transparent rounded-full" />
       </header>
 
-      <div className="space-y-6 text-foreground/80 leading-relaxed text-sm md:text-base lg:text-lg italic font-light">
+      <div className="space-y-4 text-foreground/80 leading-relaxed text-sm md:text-base lg:text-lg italic font-light">
         <p>
           I have always viewed development as the modern equivalent of alchemy, not as a collection of static tools, but as a dynamic
           process of transmuting raw logic and complex engineering into something elegant, intuitive, and valuable. To build software is to
