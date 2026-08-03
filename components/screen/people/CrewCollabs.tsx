@@ -64,7 +64,7 @@ export default function CrewCollabs({ data }: { data: CollabPair[] }) {
                 key={idx}
                 placement="mouse"
                 content={
-                  <div className="flex flex-col gap-0.5 min-w-[220px] max-w-[300px]">
+                  <div className="flex flex-col gap-0.5 min-w-55 max-w-75">
                     <div className="flex items-center gap-2">
                       <span className="font-semibold text-gold" style={{ fontFamily: 'var(--font-poppins)' }}>
                         {pair.person_a_name}

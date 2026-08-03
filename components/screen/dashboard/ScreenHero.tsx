@@ -1,15 +1,15 @@
 import { Film, Tv, Sparkles, Clapperboard, TrendingUp, Clock } from 'lucide-react';
 import WatchHeatmap from '@/components/screen/shared/WatchHeatmap';
-import { query, loadQuery } from '@/lib/screen/db';
+import { cachedQuery, loadQuery } from '@/lib/screen/db';
 import GenreBackground from '@/components/screen/slugs/genre/GenreBackground';
 import NowPlayingCard from '@/components/screen/now-playing/NowPlayingCard';
 
 export default async function ScreenHero() {
   // Queries for the hero — heatmap + stats + top genres for background motifs
   const [heatmapRes, statsRes, topGenresRes] = await Promise.all([
-    query(loadQuery('dashboard/watch_heatmap.sql')),
-    query(loadQuery('dashboard/watch_stats.sql')),
-    query(loadQuery('dashboard/top_genres.sql')),
+    cachedQuery(loadQuery('dashboard/watch_heatmap.sql'), [], ['recent-watches', 'screen-db']),
+    cachedQuery(loadQuery('dashboard/watch_stats.sql'), [], ['recent-watches', 'screen-db']),
+    cachedQuery(loadQuery('dashboard/top_genres.sql'), [], ['screen-db']),
   ]);
 
   const topGenres = topGenresRes.rows;

@@ -1,11 +1,11 @@
-import { query, loadQuery } from '@/lib/screen/db';
+import { cachedQuery, loadQuery } from '@/lib/screen/db';
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/shadcn/ui/card';
 import TopCrewTabs from './TopCrewTabs';
 
 // Row shape coming from analytics.top_rated_crew (lib/screen/queries/top_rated_crew.sql).
 
 export default async function TopCrew() {
-  const res = await query(loadQuery('people/top_rated_crew.sql'));
+  const res = await cachedQuery(loadQuery('people/top_rated_crew.sql'), [], ['screen-db']);
   const rows = res.rows as CrewRow[];
 
   // Group once on the server so the client receives ready-to-render buckets.

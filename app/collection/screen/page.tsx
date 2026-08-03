@@ -10,15 +10,15 @@ const GenreRatingsBars = dynamic(() => import('@/components/screen/shared/GenreR
 const GenreTreemap = dynamic(() => import('@/components/screen/shared/GenreTreemap'), {
   loading: () => <div className="h-64 rounded-2xl bg-pearl/10 animate-pulse border border-border/10" />,
 });
-import { query, loadQuery } from '@/lib/screen/db';
+import { cachedQuery, loadQuery } from '@/lib/screen/db';
 export const revalidate = 604800; // 7 days — on-demand refreshed via app sync triggers
 
 export default async function ScreenDashboardPage() {
   // Only fetch lightweight data for the dashboard — heavy charts live in sub-routes
   const [ratingsRes, genreRes, recentRes] = await Promise.all([
-    query(loadQuery('shared/genre_ratings.sql')),
-    query(loadQuery('movies/genre_treemap.sql')),
-    query(loadQuery('dashboard/recent_history.sql')),
+    cachedQuery(loadQuery('shared/genre_ratings.sql'), [], ['screen-db']),
+    cachedQuery(loadQuery('movies/genre_treemap.sql'), [], ['screen-db']),
+    cachedQuery(loadQuery('dashboard/recent_history.sql'), [], ['recent-watches', 'screen-db']),
   ]);
 
   return (

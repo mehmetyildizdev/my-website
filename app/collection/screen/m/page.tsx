@@ -7,7 +7,7 @@ import MovieDecadeChart from '@/components/screen/movies/MovieDecadeChart';
 import MovieLengthVsRating from '@/components/screen/movies/MovieLengthVsRating';
 import DirectorRankings from '@/components/screen/movies/DirectorRankings';
 import GenreBumpChart from '@/components/screen/shared/GenreBumpChart';
-import { query, loadQuery } from '@/lib/screen/db';
+import { cachedQuery, loadQuery } from '@/lib/screen/db';
 import { createScreenMetadata, SCREEN_SEO_CONFIG } from '@/lib/screen/seo';
 export const revalidate = 604800; // 7 days — on-demand refreshed via app sync triggers
 
@@ -15,14 +15,14 @@ export const metadata = createScreenMetadata(SCREEN_SEO_CONFIG.movies);
 
 export default async function MovieChartsPage() {
   const [genreRes, comparisonRes, collectionsRes, companiesRes, decadesRes, scatterRes, directorsRes, bumpRes] = await Promise.all([
-    query(loadQuery('movies/genre_treemap_movies.sql')),
-    query(loadQuery('movies/ratings_comparison_movies.sql')),
-    query(loadQuery('movies/collection_completions.sql')),
-    query(loadQuery('movies/top_companies.sql')),
-    query(loadQuery('movies/movie_decades.sql')),
-    query(loadQuery('movies/movie_length_vs_rating.sql')),
-    query(loadQuery('movies/director_rankings.sql')),
-    query(loadQuery('movies/genre_yearly_ratings.sql')),
+    cachedQuery(loadQuery('movies/genre_treemap_movies.sql'), [], ['screen-db']),
+    cachedQuery(loadQuery('movies/ratings_comparison_movies.sql'), [], ['screen-db']),
+    cachedQuery(loadQuery('movies/collection_completions.sql'), [], ['screen-db']),
+    cachedQuery(loadQuery('movies/top_companies.sql'), [], ['screen-db']),
+    cachedQuery(loadQuery('movies/movie_decades.sql'), [], ['screen-db']),
+    cachedQuery(loadQuery('movies/movie_length_vs_rating.sql'), [], ['screen-db']),
+    cachedQuery(loadQuery('movies/director_rankings.sql'), [], ['screen-db']),
+    cachedQuery(loadQuery('movies/genre_yearly_ratings.sql'), [], ['screen-db']),
   ]);
 
   return (

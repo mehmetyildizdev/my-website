@@ -1,7 +1,7 @@
 # Mehmet Yıldız — Personal Sanctuary & Portfolio
 
 > **Full-Stack Developer | IT Specialist**  
-> *A digital sanctuary where systematic logic meets the alchemy of modular design.*
+> _A digital sanctuary where systematic logic meets the alchemy of modular design._
 
 ---
 
@@ -16,18 +16,29 @@ Beyond a traditional portfolio, this platform features custom-engineered modules
 ## ✨ Key Features & Architecture
 
 ### 🎬 Screen Collection Vault (`/collection/screen`)
+
 - **Live Media Analytics**: Deep tracking and visualization of movies, TV shows, directors, actors, and network timelines.
 - **Interactive Visualizations**: Rating distribution charts, genre rating trends, watch heatmaps, and binge pattern metrics powered by Recharts & D3.
 - **TMDB Integration**: Dynamic metadata retrieval and structured data parsing.
 
+### ⚡ Database Caching & Revalidation Architecture (Neon DB Optimization)
+
+- **Zero-Wakeup Routine Visits**: All SQL queries across Screen analytics (`/collection/screen`, `/charts`, `/m`, `/s`, `/p`) are wrapped in `cachedQuery` using Next.js `unstable_cache`. Standard user page views read directly from Next.js Data Cache (Vercel Edge), keeping Neon DB compute asleep.
+- **On-Demand Cache Invalidation**:
+  - **Daily Revalidation**: Daily GitHub Actions trigger `/api/screen/revalidate` to purge `screen-db` and `recent-watches` cache tags once per day.
+  - **Live Scrobble Sync**: Personal watch syncs from MemoStream hit `/api/screen/recent?revalidate=true`, refreshing only the `recent-watches` feed without invalidating heavy analytics caches.
+- **Detail Page Fallbacks**: Cloudflare D1 / Worker handles `slug_details`. Neon DB is queried as an emergency fallback only when a title was just watched and does not yet exist in Cloudflare `slug_details`.
+
 ### ✍️ Blog & Chronicles (`/blog`)
+
 - **Decoupled Headless CMS**: Powered by **Sanity CMS** (`next-sanity`) for fast, secure, structured content editing.
 - **Rich Post Renderer**: Syntax-highlighted code blocks, PortableText rendering, category filtering, and archive browsing.
 - **Bilingual & Localization Ready**: Integrated language toggle support.
 
 ### 💎 Elemental Design System
+
 - **OKLCH Color Engine**: Perceptually uniform color palette built on modern CSS OKLCH variables.
-- **Motif Tokens**: Structured around *Noble Metals* (Gold, Titanium, Platinum, Silver, Quicksilver) and *Ethereal Gems* (Diamond, Sapphire, Ruby, Amethyst, Emerald, Topaz).
+- **Motif Tokens**: Structured around _Noble Metals_ (Gold, Titanium, Platinum, Silver, Quicksilver) and _Ethereal Gems_ (Diamond, Sapphire, Ruby, Amethyst, Emerald, Topaz).
 - **Responsive & Accessible**: Fully dark/light mode adaptable via `next-themes` and `shadcn/ui`.
 
 ---

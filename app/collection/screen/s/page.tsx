@@ -6,7 +6,7 @@ import ShowNetworkTimeline from '@/components/screen/shows/ShowNetworkTimeline';
 import BingePatterns from '@/components/screen/shows/BingePatterns';
 import ShowRatingDistribution from '@/components/screen/shows/ShowRatingDistribution';
 import RatingsComparison from '@/components/screen/shared/RatingsComparison';
-import { query, loadQuery } from '@/lib/screen/db';
+import { cachedQuery, loadQuery } from '@/lib/screen/db';
 import { createScreenMetadata, SCREEN_SEO_CONFIG } from '@/lib/screen/seo';
 export const revalidate = 604800; // 7 days — on-demand refreshed via app sync triggers
 
@@ -14,13 +14,13 @@ export const metadata = createScreenMetadata(SCREEN_SEO_CONFIG.shows);
 
 export default async function ShowChartsPage() {
   const [bumpRes, networksRes, comparisonRes, seasonProgressRes, networkTimelineRes, bingeRes, ratingDistRes] = await Promise.all([
-    query(loadQuery('shows/genre_yearly_ratings.sql')),
-    query(loadQuery('shows/top_networks.sql')),
-    query(loadQuery('shows/ratings_comparison_shows.sql')),
-    query(loadQuery('shows/show_season_progress.sql')),
-    query(loadQuery('shows/show_network_timeline.sql')),
-    query(loadQuery('shows/binge_patterns.sql')),
-    query(loadQuery('shows/show_rating_distribution.sql')),
+    cachedQuery(loadQuery('shows/genre_yearly_ratings.sql'), [], ['screen-db']),
+    cachedQuery(loadQuery('shows/top_networks.sql'), [], ['screen-db']),
+    cachedQuery(loadQuery('shows/ratings_comparison_shows.sql'), [], ['screen-db']),
+    cachedQuery(loadQuery('shows/show_season_progress.sql'), [], ['screen-db']),
+    cachedQuery(loadQuery('shows/show_network_timeline.sql'), [], ['screen-db']),
+    cachedQuery(loadQuery('shows/binge_patterns.sql'), [], ['screen-db']),
+    cachedQuery(loadQuery('shows/show_rating_distribution.sql'), [], ['screen-db']),
   ]);
 
   return (

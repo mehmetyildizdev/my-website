@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { revalidatePath } from 'next/cache';
+import { revalidatePath, revalidateTag } from 'next/cache';
 
 // All screen paths to revalidate after database updates
 const SCREEN_PATHS = [
@@ -24,6 +24,9 @@ function handleRevalidate(secret: string | null) {
     revalidatePath(p, 'page');
     revalidatePath(p, 'layout');
   }
+
+  (revalidateTag as any)('screen-db');
+  (revalidateTag as any)('recent-watches');
 
   console.log('[api/screen/revalidate] Cache purged recursively for all screen paths & sub-paths.');
   return NextResponse.json({ revalidated: true, paths: SCREEN_PATHS, mode: 'recursive layout & page' });

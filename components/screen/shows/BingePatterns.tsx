@@ -41,7 +41,7 @@ export default function BingePatterns({ data }: { data: BingeData[] }) {
                 key={`${d.show_tmdb_id}-${d.binge_date}`}
                 placement="mouse"
                 content={
-                  <div className="flex flex-col gap-0.5 min-w-[160px]">
+                  <div className="flex flex-col gap-0.5 min-w-40">
                     <span className="font-semibold text-gold" style={{ fontFamily: 'var(--font-poppins)' }}>
                       {d.show_name}
                     </span>

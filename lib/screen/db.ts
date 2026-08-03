@@ -1,6 +1,7 @@
 import { Pool } from 'pg';
 import fs from 'fs';
 import path from 'path';
+import { unstable_cache } from 'next/cache';
 
 // Lazy Singleton PG Pool
 const globalForPg = global as unknown as { pool: Pool };
@@ -82,3 +83,24 @@ export const transaction = async <T>(callback: (client: any) => Promise<T>): Pro
 
 // Alias for explicit Postgres queries (same pool, kept for compatibility)
 export const pgQuery = query;
+
+/**
+ * Caches database queries in Next.js Data Cache (across serverless invocations).
+ * Prevents raw SQL queries from waking up Neon DB on routine page requests.
+ */
+export const cachedQuery = (
+  text: string,
+  params: any[] = [],
+  tags: string[] = ['screen-db']
+): Promise<{ rows: any[]; rowCount: number }> => {
+  const cacheKey = [text, ...params.map((p) => String(p))];
+  return unstable_cache(
+    async () => query(text, params),
+    cacheKey,
+    {
+      revalidate: 604800, // 7-day fallback TTL
+      tags,
+    }
+  )();
+};
+

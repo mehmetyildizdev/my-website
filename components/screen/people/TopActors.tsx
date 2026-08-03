@@ -1,4 +1,4 @@
-import { query, loadQuery } from '@/lib/screen/db';
+import { cachedQuery, loadQuery } from '@/lib/screen/db';
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/shadcn/ui/card';
 import TopActorsTabs from './TopActorsTabs';
 
@@ -8,15 +8,15 @@ export default async function TopActors() {
   // view (analytics.top_rated_actors); everything else uses analytics.actor_stats.
   const [overallTop, overallWatched, overallExposed, moviesTop, moviesWatched, moviesExposed, showsTop, showsWatched, showsExposed] =
     await Promise.all([
-      query(loadQuery('people/top_rated_actors.sql')),
-      query(loadQuery('people/actors_overall_most_watched.sql')),
-      query(loadQuery('people/actors_overall_most_exposed.sql')),
-      query(loadQuery('people/actors_movies_top_rated.sql')),
-      query(loadQuery('people/actors_movies_most_watched.sql')),
-      query(loadQuery('people/actors_movies_most_exposed.sql')),
-      query(loadQuery('people/actors_shows_top_rated.sql')),
-      query(loadQuery('people/actors_shows_most_watched.sql')),
-      query(loadQuery('people/actors_shows_most_exposed.sql')),
+      cachedQuery(loadQuery('people/top_rated_actors.sql'), [], ['screen-db']),
+      cachedQuery(loadQuery('people/actors_overall_most_watched.sql'), [], ['screen-db']),
+      cachedQuery(loadQuery('people/actors_overall_most_exposed.sql'), [], ['screen-db']),
+      cachedQuery(loadQuery('people/actors_movies_top_rated.sql'), [], ['screen-db']),
+      cachedQuery(loadQuery('people/actors_movies_most_watched.sql'), [], ['screen-db']),
+      cachedQuery(loadQuery('people/actors_movies_most_exposed.sql'), [], ['screen-db']),
+      cachedQuery(loadQuery('people/actors_shows_top_rated.sql'), [], ['screen-db']),
+      cachedQuery(loadQuery('people/actors_shows_most_watched.sql'), [], ['screen-db']),
+      cachedQuery(loadQuery('people/actors_shows_most_exposed.sql'), [], ['screen-db']),
     ]);
 
   const data: TopActorsBuckets = {

@@ -253,7 +253,7 @@ export default function GenreRatingsScatter({ data }: { data: GenreRating[] }) {
               transitionTimingFunction: 'linear',
             }}
           >
-            <TooltipContent className="whitespace-nowrap min-w-[160px]">
+            <TooltipContent className="whitespace-nowrap min-w-40">
               <p className="font-semibold text-sm text-gold" style={{ fontFamily: 'var(--font-poppins)' }}>
                 {hoveredData.name}
               </p>

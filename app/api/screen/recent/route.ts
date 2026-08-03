@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server';
 import { query, loadQuery } from '@/lib/screen/db';
-import { revalidatePath, unstable_cache } from 'next/cache';
+import { revalidatePath, revalidateTag, unstable_cache } from 'next/cache';
 
 // 7-day automatic background revalidation fallback (refreshed on-demand via app sync triggers)
 export const revalidate = 604800;
@@ -28,6 +28,7 @@ export async function GET(request: Request) {
     if (!envSecret || secret === envSecret) {
       revalidatePath('/api/screen/recent', 'page');
       revalidatePath('/collection/screen', 'page');
+      (revalidateTag as any)('recent-watches');
     }
   }
 
