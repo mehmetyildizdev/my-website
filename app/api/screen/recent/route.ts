@@ -28,7 +28,6 @@ export async function GET(request: Request) {
     if (!envSecret || secret === envSecret) {
       revalidatePath('/api/screen/recent', 'page');
       revalidatePath('/collection/screen', 'page');
-      revalidatePath('/collection/screen', 'layout');
     }
   }
 

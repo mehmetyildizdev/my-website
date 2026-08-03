@@ -102,10 +102,11 @@ export function createScreenMetadata(options?: ScreenSeoOptions): Metadata {
     noIndex = false,
   } = options || {};
 
-  const fullTitle = title ? (title.includes('Screen') ? title : `${title} | Screen`) : DEFAULT_SCREEN_TITLE;
+  const cleanTitle = title ? title.replace(/\s*\|\s*Screen$/i, '') : undefined;
+  const fullTitle = cleanTitle ? `${cleanTitle} | Screen` : DEFAULT_SCREEN_TITLE;
 
   return {
-    title: fullTitle,
+    ...(cleanTitle ? { title: cleanTitle } : {}),
     description,
     alternates: { canonical: path },
     ...(noIndex
@@ -163,10 +164,11 @@ export function createScreenDetailMetadata({
 
   const imageUrl = backdropUrl ?? posterUrl ?? profileUrl ?? DEFAULT_SCREEN_MINI_IMAGE;
   const cardType: 'summary_large_image' | 'summary' = backdropUrl ? 'summary_large_image' : 'summary';
-  const fullTitle = `${title} | Screen`;
+  const cleanTitle = title.replace(/\s*\|\s*Screen$/i, '');
+  const fullTitle = `${cleanTitle} | Screen`;
 
   return {
-    title: fullTitle,
+    title: cleanTitle,
     description,
     robots: {
       index: false,
