@@ -70,16 +70,28 @@ export default function RecentWatchList({ initialData }: RecentWatchListProps) {
                 </div>
               ))
             : recentWatches.map((item, index) => {
+                const parseDate = (val?: string | Date | null) => {
+                  if (!val) return null;
+                  if (val instanceof Date) return val;
+                  const str = String(val).replace(/^"|"$/g, '');
+                  const parsed = new Date(str);
+                  return isNaN(parsed.getTime()) ? null : parsed;
+                };
+
                 const href =
                   item.media_type === 'movie'
                     ? `/collection/screen/m/${item.tmdb_id ?? 0}`
                     : `/collection/screen/s/${item.show_tmdb_id ?? item.tmdb_id ?? 0}`;
+                const relDate = parseDate(item.release_date);
                 const subtitle =
                   item.media_type === 'episode'
                     ? `S${item.season_number}E${item.episode_number}`
-                    : item.release_date
-                      ? String(new Date(item.release_date.replace(/^"|"$/g, '')).getFullYear())
+                    : relDate
+                      ? String(relDate.getFullYear())
                       : undefined;
+                const watchedDate = parseDate(item.watched_at);
+                const watchedFormatted = watchedDate ? watchedDate.toLocaleDateString('en-GB') : '';
+
                 return (
                   <div key={item.history_id} className={index === 15 ? 'hidden sm:block' : ''}>
                     <PosterCard
@@ -90,7 +102,7 @@ export default function RecentWatchList({ initialData }: RecentWatchListProps) {
                       poster_path={item.poster_path ?? null}
                       rating={item.my_rating ?? null}
                       priority={index < 6}
-                      meta={`Watched on ${new Date(item.watched_at.replace(/^"|"$/g, '')).toLocaleDateString('en-GB')}`}
+                      meta={`Watched on ${watchedFormatted}`}
                     />
                   </div>
                 );
