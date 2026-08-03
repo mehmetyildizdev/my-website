@@ -54,20 +54,52 @@ export default function ScreenSidebar() {
     }
   }, [pathname]);
 
+  // Sync search input on popstate (browser back/forward navigation)
+  useEffect(() => {
+    const handleUrlChange = () => {
+      if (typeof window !== 'undefined') {
+        const params = new URLSearchParams(window.location.search);
+        setSearchVal(params.get('q') || '');
+      }
+    };
+
+    window.addEventListener('popstate', handleUrlChange);
+    return () => {
+      window.removeEventListener('popstate', handleUrlChange);
+    };
+  }, []);
+
   const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const val = e.target.value;
     setSearchVal(val);
 
     const trimmed = val.trim();
-    if (trimmed) {
-      if (pathname === '/collection/screen/search') {
-        router.replace(`/collection/screen/search?q=${encodeURIComponent(trimmed)}`);
-      } else {
+    if (pathname === '/collection/screen/search') {
+      // Instant update via history.replaceState (no Next.js router transition churn or focus loss)
+      const newUrl = trimmed
+        ? `/collection/screen/search?q=${encodeURIComponent(trimmed)}`
+        : '/collection/screen/search';
+      window.history.replaceState(null, '', newUrl);
+      window.dispatchEvent(new CustomEvent('searchquerychange', { detail: trimmed }));
+    } else {
+      // If on another route, navigate to search page and reset scroll position to top
+      if (trimmed) {
+        if (typeof window !== 'undefined') {
+          window.scrollTo({ top: 0, left: 0, behavior: 'instant' });
+        }
         router.push(`/collection/screen/search?q=${encodeURIComponent(trimmed)}`);
       }
-    } else {
-      if (pathname === '/collection/screen/search') {
-        router.replace('/collection/screen/search');
+    }
+  };
+
+  const handleSearchKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === 'Enter') {
+      const trimmed = searchVal.trim();
+      if (pathname !== '/collection/screen/search' && trimmed) {
+        if (typeof window !== 'undefined') {
+          window.scrollTo({ top: 0, left: 0, behavior: 'instant' });
+        }
+        router.push(`/collection/screen/search?q=${encodeURIComponent(trimmed)}`);
       }
     }
   };
@@ -134,6 +166,7 @@ export default function ScreenSidebar() {
             placeholder="Search in database..."
             value={searchVal}
             onChange={handleSearchChange}
+            onKeyDown={handleSearchKeyDown}
             className="w-full bg-pearl/20 border border-border/10 rounded-lg pl-8 pr-2.5 py-1.5 text-xs text-foreground placeholder:text-quicksilver/50 focus:outline-none focus:border-gold/40 focus:ring-1 focus:ring-gold/30 transition-all font-medium font-rubik"
           />
         </div>

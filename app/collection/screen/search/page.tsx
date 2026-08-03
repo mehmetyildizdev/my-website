@@ -50,7 +50,40 @@ function SearchSkeleton() {
 function SearchPageContent() {
   const searchParams = useSearchParams();
   const router = useRouter();
-  const query = searchParams.get('q') || '';
+
+  const [query, setQuery] = useState(() => {
+    if (typeof window !== 'undefined') {
+      return new URLSearchParams(window.location.search).get('q') || '';
+    }
+    return searchParams.get('q') || '';
+  });
+
+  // Listen for custom searchquerychange event (from instant sidebar typing) and popstate
+  useEffect(() => {
+    const handleUrlChange = (e?: Event) => {
+      if (typeof window !== 'undefined') {
+        const detail = (e as CustomEvent)?.detail;
+        if (typeof detail === 'string') {
+          setQuery(detail);
+        } else {
+          setQuery(new URLSearchParams(window.location.search).get('q') || '');
+        }
+      }
+    };
+
+    window.addEventListener('searchquerychange', handleUrlChange);
+    window.addEventListener('popstate', handleUrlChange);
+    return () => {
+      window.removeEventListener('searchquerychange', handleUrlChange);
+      window.removeEventListener('popstate', handleUrlChange);
+    };
+  }, []);
+
+  // Sync if searchParams changes via navigation
+  useEffect(() => {
+    const qFromParams = searchParams.get('q') || '';
+    setQuery(qFromParams);
+  }, [searchParams]);
 
   const [dbQuery, setDbQuery] = useState('');
   const [tmdbQuery, setTmdbQuery] = useState('');
@@ -99,17 +132,18 @@ function SearchPageContent() {
   const [dbLoading, setDbLoading] = useState(false);
   const [tmdbLoading, setTmdbLoading] = useState(false);
 
-  // Double Debouncing setup
+  // Instant Local DB Edge Search (50ms delay for ultra-responsive typing)
   useEffect(() => {
     if (!query.trim()) {
       setDbQuery('');
       setDbResults({ movies: [], shows: [], people: [] });
+      setDbLoading(false);
       return;
     }
     setDbLoading(true);
     const handler = setTimeout(() => {
       setDbQuery(query);
-    }, 200); // 200ms delay for fast DB search
+    }, 50); // 50ms delay for instant DB search
     return () => clearTimeout(handler);
   }, [query]);
 
@@ -204,7 +238,7 @@ function SearchPageContent() {
   }));
 
   return (
-    <div className="space-y-10">
+    <div className="space-y-10 [overflow-anchor:none]">
       {!query.trim() ? (
         /* ── Featured Recommendations (Empty query) ─────────────── */
         <div className="space-y-10">
