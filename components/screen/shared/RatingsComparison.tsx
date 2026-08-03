@@ -6,8 +6,11 @@ import { Select } from '@/components/shadcn/ui/select';
 import { Tooltip } from '@/components/shadcn/ui/tooltip';
 import { getRatingToken, getAvgRatingToken, getShowAvgRatingToken } from '@/lib/screen/utils/format';
 // Split combined genres for filtering
-function expandGenres(genres: string[]): string[] {
-  return genres ? genres.filter(Boolean) : [];
+function expandGenres(genres: string[] | string): string[] {
+  if (!genres) return [];
+  if (Array.isArray(genres)) return genres.filter(Boolean);
+  if (typeof genres === 'string') return genres.split(',').map((g) => g.trim()).filter(Boolean);
+  return [];
 }
 
 export default function RatingsComparison({ data, lockedMedia }: { data: RatingItem[]; lockedMedia?: 'movie' | 'show' }) {
@@ -15,25 +18,33 @@ export default function RatingsComparison({ data, lockedMedia }: { data: RatingI
   const [decadeFilter, setDecadeFilter] = useState<string>('all');
   const [mediaFilter, setMediaFilter] = useState<string>(lockedMedia ?? 'all');
 
+  // Filter out any titles with genre = Music
+  const cleanedData = useMemo(() => {
+    return data.filter((d) => {
+      const expanded = expandGenres(d.genres);
+      return !expanded.some((g) => g.toLowerCase() === 'music');
+    });
+  }, [data]);
+
   // Available genres (sorted)
   const allGenres = useMemo(() => {
     const set = new Set<string>();
-    data.forEach((d) => expandGenres(d.genres).forEach((g) => set.add(g)));
+    cleanedData.forEach((d) => expandGenres(d.genres).forEach((g) => set.add(g)));
     return Array.from(set).sort();
-  }, [data]);
+  }, [cleanedData]);
 
   // Available decades
   const decades = useMemo(() => {
     const set = new Set<number>();
-    data.forEach((d) => {
+    cleanedData.forEach((d) => {
       if (d.release_year) set.add(Math.floor(d.release_year / 10) * 10);
     });
     return Array.from(set).sort((a, b) => b - a);
-  }, [data]);
+  }, [cleanedData]);
 
   // Filtered data
   const filtered = useMemo(() => {
-    return data.filter((d) => {
+    return cleanedData.filter((d) => {
       if (mediaFilter !== 'all' && d.media_type !== mediaFilter) return false;
       if (genreFilter !== 'all') {
         const expanded = expandGenres(d.genres);
@@ -45,7 +56,7 @@ export default function RatingsComparison({ data, lockedMedia }: { data: RatingI
       }
       return true;
     });
-  }, [data, genreFilter, decadeFilter, mediaFilter]);
+  }, [cleanedData, genreFilter, decadeFilter, mediaFilter]);
 
   // Stats
   const stats = useMemo(() => {

@@ -175,7 +175,7 @@ export default function GenreTreemap({ data }: { data: GenreData[] }) {
         </p>
       </CardHeader>
       <CardContent className="pt-2">
-        <div className="w-full" style={{ minHeight: 500 }}>
+        <div className="w-full p-1.5" style={{ minHeight: 500 }}>
           <ResponsiveContainer width="100%" height={500}>
             <Treemap data={filteredData} dataKey="total_count" aspectRatio={4 / 3} content={<TreemapCell />} isAnimationActive={false} />
           </ResponsiveContainer>

@@ -49,8 +49,13 @@ export default function RecentWatchList() {
       </CardHeader>
       <CardContent className="relative z-10 pt-2">
         <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-6 lg:grid-cols-8 gap-4">
+          {/* Hide last element on sm breakpoint as it renders trio per row */}
           {loading
-            ? Array.from({ length: 16 }).map((_, i) => <SkeletonCard key={i} />)
+            ? Array.from({ length: 16 }).map((_, i) => (
+                <div key={i} className={i === 15 ? 'hidden sm:block' : ''}>
+                  <SkeletonCard />
+                </div>
+              ))
             : recentWatches.map((item, index) => {
                 const href =
                   item.media_type === 'movie'
@@ -63,17 +68,18 @@ export default function RecentWatchList() {
                       ? String(new Date(item.release_date.replace(/^"|"$/g, '')).getFullYear())
                       : undefined;
                 return (
-                  <PosterCard
-                    key={item.history_id}
-                    tmdb_id={item.tmdb_id ?? 0}
-                    href={href}
-                    title={item.title}
-                    subtitle={subtitle ?? undefined}
-                    poster_path={item.poster_path ?? null}
-                    rating={item.my_rating ?? null}
-                    priority={index < 6}
-                    meta={`Watched on ${new Date(item.watched_at.replace(/^"|"$/g, '')).toLocaleDateString('en-GB')}`}
-                  />
+                  <div key={item.history_id} className={index === 15 ? 'hidden sm:block' : ''}>
+                    <PosterCard
+                      tmdb_id={item.tmdb_id ?? 0}
+                      href={href}
+                      title={item.title}
+                      subtitle={subtitle ?? undefined}
+                      poster_path={item.poster_path ?? null}
+                      rating={item.my_rating ?? null}
+                      priority={index < 6}
+                      meta={`Watched on ${new Date(item.watched_at.replace(/^"|"$/g, '')).toLocaleDateString('en-GB')}`}
+                    />
+                  </div>
                 );
               })}
         </div>

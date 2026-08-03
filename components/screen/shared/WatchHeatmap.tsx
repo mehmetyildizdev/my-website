@@ -158,7 +158,7 @@ export default function WatchHeatmap({ data, stats, embedded = false }: Props) {
     let total = 0;
 
     const weeks: { date: string; count: number; tooltipLabel: string }[][] = [];
-    const months: { label: string; col: number }[] = [];
+    const rawMonths: { month: number; year: number; col: number }[] = [];
     let lastMonth = -1;
 
     for (let w = 0; w < numWeeks; w++) {
@@ -187,15 +187,10 @@ export default function WatchHeatmap({ data, stats, embedded = false }: Props) {
         if (d === 0) {
           const month = cellDate.getMonth();
           if (month !== lastMonth) {
-            if (months.length === 0 || w - months[months.length - 1].col >= 3) {
-              const yearSuffix =
-                selectedYear === 'recent'
-                  ? `(${String(cellDate.getFullYear()).slice(2)})`
-                  : selectedYear === 'all'
-                    ? ''
-                    : `(${String(cellDate.getFullYear()).slice(2)})`;
-              months.push({
-                label: `${MONTH_LABELS[month]}${yearSuffix}`,
+            if (rawMonths.length === 0 || w - rawMonths[rawMonths.length - 1].col >= 3) {
+              rawMonths.push({
+                month,
+                year: cellDate.getFullYear(),
                 col: w,
               });
             }
@@ -206,9 +201,23 @@ export default function WatchHeatmap({ data, stats, embedded = false }: Props) {
       weeks.push(week);
     }
 
+    const monthPositions = rawMonths.map((m, idx) => {
+      const isFirst = idx === 0;
+      const isLast = idx === rawMonths.length - 1;
+      const isYearChange = idx > 0 && m.year !== rawMonths[idx - 1].year;
+
+      const includeYear = selectedYear !== 'all' && (isFirst || isLast || isYearChange);
+      const yearSuffix = includeYear ? `(${String(m.year).slice(2)})` : '';
+
+      return {
+        label: `${MONTH_LABELS[m.month]}${yearSuffix}`,
+        col: m.col,
+      };
+    });
+
     return {
       grid: weeks,
-      monthPositions: months,
+      monthPositions,
       maxCount: max || 1,
       totalWatches: total,
     };

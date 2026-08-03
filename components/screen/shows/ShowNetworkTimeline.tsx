@@ -1,6 +1,6 @@
 'use client';
 
-import { useMemo } from 'react';
+import { useMemo, useRef, useEffect } from 'react';
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/shadcn/ui/card';
 import { Tooltip } from '@/components/shadcn/ui/tooltip';
 
@@ -43,6 +43,8 @@ const MAX_BUBBLE = 26;
 const MIN_BUBBLE = 6;
 
 export default function ShowNetworkTimeline({ data }: { data: NetworkYear[] }) {
+  const scrollRef = useRef<HTMLDivElement>(null);
+
   // Group by network
   const networks = useMemo(() => {
     const map = new Map<string, { years: Map<number, { count: number; rating: number; shows: string[] }>; total: number }>();
@@ -76,6 +78,17 @@ export default function ShowNetworkTimeline({ data }: { data: NetworkYear[] }) {
     return max || 1;
   }, [data]);
 
+  // Scroll to the rightmost (most recent) date when component mounts or data updates
+  useEffect(() => {
+    const el = scrollRef.current;
+    if (!el) return;
+    el.scrollLeft = el.scrollWidth;
+    const timer = setTimeout(() => {
+      el.scrollLeft = el.scrollWidth;
+    }, 50);
+    return () => clearTimeout(timer);
+  }, [networks, years]);
+
   if (networks.length === 0) {
     return null;
   }
@@ -92,7 +105,7 @@ export default function ShowNetworkTimeline({ data }: { data: NetworkYear[] }) {
         <p className="text-xs text-muted-foreground mt-1">Shows watched per year from top networks. Bubble size = count.</p>
       </CardHeader>
       <CardContent className="pt-4">
-        <div className="overflow-x-auto">
+        <div ref={scrollRef} className="overflow-x-auto">
           <div className="flex" style={{ minWidth: labelWidth + dataWidth }}>
             {/* Sticky left column — network names */}
             <div className="sticky left-0 z-10 bg-background/80 backdrop-blur-sm shrink-0" style={{ width: labelWidth }}>
@@ -144,7 +157,7 @@ export default function ShowNetworkTimeline({ data }: { data: NetworkYear[] }) {
                           placement="top"
                           offset={16}
                           content={
-                            <div className="flex flex-col gap-0.5 min-w-[160px]">
+                            <div className="flex flex-col gap-0.5 min-w-40">
                               <span className="font-semibold text-gold" style={{ fontFamily: 'var(--font-poppins)' }}>
                                 {name} ({y})
                               </span>
