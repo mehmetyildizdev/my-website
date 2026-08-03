@@ -63,7 +63,7 @@ export default function RecentWatchList({ initialData }: RecentWatchListProps) {
       <CardContent className="relative z-10 pt-2">
         <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-6 lg:grid-cols-8 gap-4">
           {/* Hide last element on sm breakpoint as it renders trio per row */}
-          {loading
+          {loading && recentWatches.length === 0
             ? Array.from({ length: 16 }).map((_, i) => (
                 <div key={i} className={i === 15 ? 'hidden sm:block' : ''}>
                   <SkeletonCard />
@@ -87,10 +87,10 @@ export default function RecentWatchList({ initialData }: RecentWatchListProps) {
                   item.media_type === 'episode'
                     ? `S${item.season_number}E${item.episode_number}`
                     : relDate
-                      ? String(relDate.getFullYear())
+                      ? String(relDate.getUTCFullYear())
                       : undefined;
                 const watchedDate = parseDate(item.watched_at);
-                const watchedFormatted = watchedDate ? watchedDate.toLocaleDateString('en-GB') : '';
+                const watchedFormatted = watchedDate ? watchedDate.toLocaleDateString('en-GB', { timeZone: 'UTC' }) : '';
 
                 return (
                   <div key={item.history_id} className={index === 15 ? 'hidden sm:block' : ''}>
@@ -101,7 +101,7 @@ export default function RecentWatchList({ initialData }: RecentWatchListProps) {
                       subtitle={subtitle ?? undefined}
                       poster_path={item.poster_path ?? null}
                       rating={item.my_rating ?? null}
-                      priority={index < 6}
+                      priority={false}
                       meta={`Watched on ${watchedFormatted}`}
                     />
                   </div>

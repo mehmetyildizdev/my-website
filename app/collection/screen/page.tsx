@@ -1,8 +1,15 @@
 import LogSuppressor from '@/components/LogSuppressor';
 import RecentWatchList from '@/components/screen/dashboard/RecentWatchList';
 import ScreenHero from '@/components/screen/dashboard/ScreenHero';
-import GenreRatingsBars from '@/components/screen/shared/GenreRatingsBars';
-import GenreTreemap from '@/components/screen/shared/GenreTreemap';
+import dynamic from 'next/dynamic';
+
+const GenreRatingsBars = dynamic(() => import('@/components/screen/shared/GenreRatingsBars'), {
+  loading: () => <div className="h-64 rounded-2xl bg-pearl/10 animate-pulse border border-border/10" />,
+});
+
+const GenreTreemap = dynamic(() => import('@/components/screen/shared/GenreTreemap'), {
+  loading: () => <div className="h-64 rounded-2xl bg-pearl/10 animate-pulse border border-border/10" />,
+});
 import { query, loadQuery } from '@/lib/screen/db';
 export const revalidate = 604800; // 7 days — on-demand refreshed via app sync triggers
 
