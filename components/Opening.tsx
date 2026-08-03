@@ -16,10 +16,10 @@ const Opening: React.FC<OpeningProps> = ({ id }) => {
       <div className="relative z-10 mx-auto max-w-7xl px-4 text-center sm:px-12 lg:px-16 w-full">
         <header className="flex flex-col items-center gap-3 sm:gap-6">
           <div className="flex flex-col gap-1.5 sm:gap-2">
-            <p className="text-xs sm:text-sm font-bold uppercase tracking-[0.3em] sm:tracking-[0.4em] text-sapphire mb-2 sm:mb-4 animate-in fade-in duration-500 delay-100 fill-mode-both">
+            <p className="text-xs sm:text-sm font-bold uppercase tracking-[0.3em] sm:tracking-[0.4em] text-sapphire mb-2 sm:mb-4">
               Welcome to my domain!
             </p>
-            <h1 className="text-4xl sm:text-7xl lg:text-8xl font-black tracking-tight text-foreground animate-in fade-in duration-500 delay-300 fill-mode-both">
+            <h1 className="text-4xl sm:text-7xl lg:text-8xl font-black tracking-tight text-foreground">
               Hello, I&apos;m
               <span className="relative ml-2.5 sm:ml-4 inline-block text-gold text-shadow-primary hover:scale-105 transition-transform duration-300">
                 Mehmet
@@ -27,12 +27,12 @@ const Opening: React.FC<OpeningProps> = ({ id }) => {
             </h1>
           </div>
 
-          <h2 className="text-base sm:text-2xl lg:text-4xl font-bold tracking-wider sm:tracking-[0.2em] uppercase text-platinum/80 animate-in fade-in duration-500 delay-450 fill-mode-both">
+          <h2 className="text-base sm:text-2xl lg:text-4xl font-bold tracking-wider sm:tracking-[0.2em] uppercase text-platinum/80">
             Full-Stack Developer | IT Specialist
           </h2>
         </header>
 
-        <div className="mx-auto mt-5 sm:mt-8 max-w-4xl text-center animate-in fade-in duration-500 delay-600 fill-mode-both">
+        <div className="mx-auto mt-5 sm:mt-8 max-w-4xl text-center">
           <p className="text-sm sm:text-xl leading-relaxed text-foreground/70 italic mb-2 sm:mb-3">
             a digital sanctuary where <span className="font-bold text-foreground">systematic logic</span> meets the{' '}
             <span className="font-bold text-foreground">alchemy of modular design</span>
@@ -44,7 +44,7 @@ const Opening: React.FC<OpeningProps> = ({ id }) => {
         </div>
 
         {/* Primary Conversion Action Buttons */}
-        <div className="mt-6 sm:mt-10 flex flex-col sm:flex-row items-center justify-center gap-3 sm:gap-4 w-full max-w-sm sm:max-w-none mx-auto animate-in fade-in duration-500 delay-750 fill-mode-both">
+        <div className="mt-6 sm:mt-10 flex flex-col sm:flex-row items-center justify-center gap-3 sm:gap-4 w-full max-w-sm sm:max-w-none mx-auto animate-in fade-in duration-500 delay-150 fill-mode-both">
           {/* Primary CTA: Screen Vault */}
           <Link
             href="/collection/screen"
@@ -76,7 +76,7 @@ const Opening: React.FC<OpeningProps> = ({ id }) => {
         </div>
 
         {/* Social Links */}
-        <div className="mt-6 sm:mt-10 flex flex-wrap items-center justify-center gap-3 sm:gap-4 animate-in fade-in duration-500 delay-900 fill-mode-both">
+        <div className="mt-6 sm:mt-10 flex flex-wrap items-center justify-center gap-3 sm:gap-4 animate-in fade-in duration-500 delay-300 fill-mode-both">
           {socialLinks.map((link, index) => (
             <a key={index} href={link.href} rel="noopener noreferrer" target="_blank" aria-label={link.label} className="group relative">
               <div className="flex h-11 w-11 items-center justify-center rounded-xl border border-border/20 bg-card/80 shadow-md transition-all duration-300 hover:-translate-y-1 hover:border-gold/50 hover:bg-muted/50 hover:shadow-gold/20 lg:h-14 lg:w-14">

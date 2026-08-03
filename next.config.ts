@@ -19,6 +19,9 @@ const nextConfig: NextConfig = {
     ],
   },
   /* config options here */
+  experimental: {
+    optimizePackageImports: ['lucide-react', 'react-icons', '@radix-ui/react-switch'],
+  },
 };
 
 export default nextConfig;

@@ -2,6 +2,12 @@
   "name": "my-website",
   "version": "0.1.0",
   "private": true,
+  "browserslist": [
+    "chrome >= 100",
+    "safari >= 15",
+    "firefox >= 100",
+    "edge >= 100"
+  ],
   "scripts": {
     "dev:clean": "sh -c 'fuser -k 3000/tcp 3001/tcp 2>/dev/null || true'",
     "dev": "next dev -H 0.0.0.0",

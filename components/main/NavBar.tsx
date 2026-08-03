@@ -67,7 +67,16 @@ export default function NavBar() {
         <div className="lg:px-16 flex h-16 items-center justify-between">
           <div className="flex items-center">
             <Link href="/">
-              <Image className="p-4 lg:p-2" src={logoSrc} alt="Logo" width={200} height={60} priority suppressHydrationWarning />
+              <Image
+                className="p-4 lg:p-2"
+                src={logoSrc}
+                alt="Logo"
+                width={200}
+                height={60}
+                priority
+                fetchPriority="high"
+                suppressHydrationWarning
+              />
             </Link>
           </div>
           <div>

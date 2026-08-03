@@ -59,10 +59,10 @@ export default function GoogleAnalytics({ trackingID }: GAProps) {
 
   return (
     <>
-      <Script strategy="afterInteractive" src={`https://www.googletagmanager.com/gtag/js?id=${trackingID}`} />
+      <Script strategy="lazyOnload" src={`https://www.googletagmanager.com/gtag/js?id=${trackingID}`} />
       <Script
         id="google-analytics"
-        strategy="afterInteractive"
+        strategy="lazyOnload"
         dangerouslySetInnerHTML={{
           __html: `
             window.dataLayer = window.dataLayer || [];
