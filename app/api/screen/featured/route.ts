@@ -1,7 +1,7 @@
 import { NextResponse } from 'next/server';
 import { query } from '@/lib/screen/db';
 
-export const revalidate = 86400; // Cache for 24 hours
+export const revalidate = 604800; // Cache for 7 days — refreshed on-demand
 
 export async function GET() {
   try {

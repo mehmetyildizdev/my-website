@@ -43,11 +43,11 @@ export default function NavBar() {
   ];
 
   const socialLinks = [
-    { href: 'https://www.linkedin.com/in/yildizmehmet/', icon: <FaLinkedinIn size={20} /> },
-    { href: 'https://x.com/albursavi', icon: <FaXTwitter size={20} /> },
-    { href: 'https://www.instagram.com/mehmetyildizdev/', icon: <FaInstagram size={20} /> },
-    { href: 'https://github.com/mehmetyildizdev', icon: <FaGithub size={20} /> },
-    { href: 'https://t.me/memostar91', icon: <FaTelegram size={20} /> },
+    { href: 'https://www.linkedin.com/in/yildizmehmet/', icon: <FaLinkedinIn size={20} />, label: 'LinkedIn' },
+    { href: 'https://x.com/albursavi', icon: <FaXTwitter size={20} />, label: 'X (Twitter)' },
+    { href: 'https://www.instagram.com/mehmetyildizdev/', icon: <FaInstagram size={20} />, label: 'Instagram' },
+    { href: 'https://github.com/mehmetyildizdev', icon: <FaGithub size={20} />, label: 'GitHub' },
+    { href: 'https://t.me/memostar91', icon: <FaTelegram size={20} />, label: 'Telegram' },
   ];
 
   const isScreenPage = pathname?.startsWith('/collection/screen');

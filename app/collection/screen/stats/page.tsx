@@ -2,7 +2,7 @@ import LogSuppressor from '@/components/LogSuppressor';
 import DbOverview from '@/components/screen/stats/DbOverview';
 import UnratedWatches from '@/components/screen/stats/UnratedWatches';
 import { createScreenMetadata, SCREEN_SEO_CONFIG } from '@/lib/screen/seo';
-export const revalidate = 86400; // 24h — refreshed by nightly GitHub Action
+export const revalidate = 604800; // 7 days — on-demand refreshed via app sync triggers
 
 export const metadata = createScreenMetadata(SCREEN_SEO_CONFIG.stats);
 

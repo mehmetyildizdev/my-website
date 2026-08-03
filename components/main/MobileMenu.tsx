@@ -58,6 +58,7 @@ export function MobileMenu({ isOpen, onClose, logoSrc, navLinks, socialLinks }: 
                 <a
                   key={index}
                   href={link.href}
+                  aria-label={link.label || 'Social link'}
                   rel="noopener noreferrer"
                   target="_blank"
                   className="flex h-12 w-12 items-center justify-center rounded-xl bg-platinum/50 dark:bg-muted/50 border border-border/10 text-gold hover:bg-gold hover:text-platinum transition-all shadow-lg"

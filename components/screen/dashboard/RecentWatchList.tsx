@@ -24,11 +24,24 @@ function SkeletonCard() {
   return <div className="aspect-2/3 rounded-lg bg-white/5 animate-pulse" />;
 }
 
-export default function RecentWatchList() {
-  const [recentWatches, setRecentWatches] = useState<RecentWatchItem[]>([]);
-  const [loading, setLoading] = useState(true);
+interface RecentWatchListProps {
+  initialData?: RecentWatchItem[];
+}
+
+/**
+ * RecentWatchList Component
+ * 
+ * - Rendered server-side with initialData from page.tsx (cached 7d via Next ISR).
+ * - Zero client-side DB calls to Neon on routine page visits.
+ * - When external sync app inserts new watch history to Neon (Neon awake), it triggers
+ *   GET /api/screen/recent?revalidate=true, which refreshes CDN cache & ISR page.
+ */
+export default function RecentWatchList({ initialData }: RecentWatchListProps) {
+  const [recentWatches, setRecentWatches] = useState<RecentWatchItem[]>(initialData || []);
+  const [loading, setLoading] = useState(!initialData);
 
   useEffect(() => {
+    if (initialData) return;
     fetch('/api/screen/recent')
       .then((r) => r.json())
       .then((data) => {
@@ -36,7 +49,7 @@ export default function RecentWatchList() {
       })
       .catch(console.error)
       .finally(() => setLoading(false));
-  }, []);
+  }, [initialData]);
 
   return (
     <Card className="relative overflow-hidden bg-pearl/30 border-border/15 shadow-2xl backdrop-blur-md">

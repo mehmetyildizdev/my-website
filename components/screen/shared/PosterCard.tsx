@@ -26,10 +26,11 @@ export function PosterCard({ tmdb_id, href, title, subtitle, poster_path, rating
           <>
             {!isLoaded && <Skeleton className="absolute inset-0 rounded-xl bg-gold/10 z-0" />}
             <Image
-              src={`https://image.tmdb.org/t/p/w342${poster_path}`}
+              loader={({ width }) => `https://image.tmdb.org/t/p/${width <= 200 ? 'w185' : 'w342'}${poster_path}`}
+              src={poster_path}
+              sizes="(max-width: 640px) 185px, 342px"
               alt={`${title} poster`}
               fill
-              unoptimized
               priority={priority}
               onLoad={() => setIsLoaded(true)}
               className={`object-cover transition-all duration-500 group-hover:scale-105 z-10 ${isLoaded ? 'opacity-100' : 'opacity-0'}`}
@@ -78,9 +79,9 @@ export function PosterCard({ tmdb_id, href, title, subtitle, poster_path, rating
 
       {/* Title & Subtitle */}
       <div className="px-0.5">
-        <h3 className="font-semibold text-sm sm:text-base text-titanium line-clamp-1 group-hover:text-gold transition-colors font-poppins">
+        <h2 className="font-semibold text-sm sm:text-base text-titanium line-clamp-1 group-hover:text-gold transition-colors font-poppins">
           {title}
-        </h3>
+        </h2>
         {subtitle && <p className="text-xs sm:text-sm text-platinum/66 mt-0.5 line-clamp-1 leading-normal">{subtitle}</p>}
       </div>
     </Link>

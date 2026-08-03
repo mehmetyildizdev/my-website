@@ -10,11 +10,11 @@ interface ContactMeProps {
 
 const ContactMe = ({ onCheckingChange }: ContactMeProps) => {
   const socialLinks = [
-    { href: 'https://www.linkedin.com/in/yildizmehmet/', icon: FaLinkedinIn },
-    { href: 'https://x.com/albursavi', icon: FaXTwitter },
-    { href: 'https://www.instagram.com/mehmetyildizdev/', icon: FaInstagram },
-    { href: 'https://github.com/mehmetyildizdev', icon: FaGithub },
-    { href: 'https://t.me/memostar91', icon: FaTelegram },
+    { href: 'https://www.linkedin.com/in/yildizmehmet/', icon: FaLinkedinIn, label: 'LinkedIn' },
+    { href: 'https://x.com/albursavi', icon: FaXTwitter, label: 'X (Twitter)' },
+    { href: 'https://www.instagram.com/mehmetyildizdev/', icon: FaInstagram, label: 'Instagram' },
+    { href: 'https://github.com/mehmetyildizdev', icon: FaGithub, label: 'GitHub' },
+    { href: 'https://t.me/memostar91', icon: FaTelegram, label: 'Telegram' },
   ];
 
   const [formData, setFormData] = useState({
@@ -106,9 +106,10 @@ const ContactMe = ({ onCheckingChange }: ContactMeProps) => {
             <a
               key={index}
               href={link.href}
+              aria-label={link.label}
               rel="noopener noreferrer"
               target="_blank"
-              title={link.href.replace(/^https?:\/\//, '').split('/')[0]}
+              title={link.label}
               className="flex h-12 w-12 items-center justify-center rounded-xl bg-platinum/50 dark:bg-muted/50 border border-border/10 text-gold hover:bg-gold hover:text-platinum transition-all shadow-md hover:-translate-y-1 duration-300"
             >
               {React.createElement(link.icon, { size: 20 })}

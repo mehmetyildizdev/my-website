@@ -16,7 +16,7 @@ declare global {
     onClose: () => void;
     logoSrc: string;
     navLinks: { href: string; label: string }[];
-    socialLinks: { href: string; icon: React.ReactNode }[];
+    socialLinks: { href: string; icon: React.ReactNode; label?: string }[];
   }
 
   /** Core traits for homepage components */

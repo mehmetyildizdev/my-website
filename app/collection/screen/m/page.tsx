@@ -9,7 +9,7 @@ import DirectorRankings from '@/components/screen/movies/DirectorRankings';
 import GenreBumpChart from '@/components/screen/shared/GenreBumpChart';
 import { query, loadQuery } from '@/lib/screen/db';
 import { createScreenMetadata, SCREEN_SEO_CONFIG } from '@/lib/screen/seo';
-export const revalidate = 86400; // 24h — refreshed by nightly GitHub Action
+export const revalidate = 604800; // 7 days — on-demand refreshed via app sync triggers
 
 export const metadata = createScreenMetadata(SCREEN_SEO_CONFIG.movies);
 

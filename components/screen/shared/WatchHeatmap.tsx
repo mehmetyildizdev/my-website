@@ -366,7 +366,7 @@ export default function WatchHeatmap({ data, stats, embedded = false }: Props) {
                 {selectedYear === 'recent' && ' (last 12 months)'}
                 {selectedYear !== 'all' && selectedYear !== 'recent' && ` in ${selectedYear}`}
               </p>
-              <Select value={selectedYear} onChange={(e) => setSelectedYear(e.target.value)} className="w-40">
+              <Select value={selectedYear} onChange={(e) => setSelectedYear(e.target.value)} aria-label="Filter watch history by year" className="w-40">
                 {yearOptions.map((opt) => (
                   <option key={opt.value} value={opt.value}>
                     {opt.label}

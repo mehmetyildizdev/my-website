@@ -7,7 +7,7 @@ import CrewCollabs from '@/components/screen/people/CrewCollabs';
 import PeopleGenderDiversity from '@/components/screen/people/PeopleGenderDiversity';
 import { query, loadQuery } from '@/lib/screen/db';
 import { createScreenMetadata, SCREEN_SEO_CONFIG } from '@/lib/screen/seo';
-export const revalidate = 86400; // 24h — refreshed by nightly GitHub Action
+export const revalidate = 604800; // 7 days — on-demand refreshed via app sync triggers
 
 export const metadata = createScreenMetadata(SCREEN_SEO_CONFIG.people);
 
