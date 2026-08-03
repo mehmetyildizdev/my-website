@@ -1,4 +1,4 @@
-import { query, loadQuery } from '@/lib/screen/db';
+import { fetchShowDetail } from '@/lib/screen/slugs';
 import { notFound } from 'next/navigation';
 import ShowDetail from '@/components/screen/slugs/ShowDetail';
 export const revalidate = 604800; // 7 days — on-demand only, never pre-built
@@ -12,9 +12,8 @@ export async function generateMetadata({ params }: Props) {
   const { id } = await params;
   const tmdbId = parseInt(id, 10);
   if (isNaN(tmdbId)) return { robots: { index: false, follow: false } };
-  const res = await query(loadQuery('slugs/show_detail.sql'), [tmdbId]);
-  if (!res.rows[0]) return { robots: { index: false, follow: false } };
-  const show = res.rows[0] as ShowDetail;
+  const show = await fetchShowDetail(tmdbId);
+  if (!show) return { robots: { index: false, follow: false } };
 
   return createScreenDetailMetadata({
     title: show.name,
@@ -30,14 +29,8 @@ export default async function ShowDetailPage({ params }: Props) {
   const tmdbId = parseInt(id, 10);
   if (isNaN(tmdbId)) notFound();
 
-  const res = await query(loadQuery('slugs/show_detail.sql'), [tmdbId]);
-  if (!res.rows[0]) notFound();
+  const showRow = await fetchShowDetail(tmdbId);
+  if (!showRow) notFound();
 
-  const showRow = res.rows[0] as ShowDetail & {
-    genres: { name: string }[];
-    cast: ShowCastMember[];
-    crew: ShowCrewMember[];
-  };
-
-  return <ShowDetail show={showRow} cast={showRow.cast} crew={showRow.crew} genres={showRow.genres} />;
+  return <ShowDetail show={showRow} cast={showRow.cast ?? []} crew={showRow.crew ?? []} genres={showRow.genres ?? []} />;
 }

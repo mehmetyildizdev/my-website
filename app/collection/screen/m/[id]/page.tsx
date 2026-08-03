@@ -1,4 +1,4 @@
-import { query, loadQuery } from '@/lib/screen/db';
+import { fetchMovieDetail } from '@/lib/screen/slugs';
 import { notFound } from 'next/navigation';
 import MovieDetail from '@/components/screen/slugs/MovieDetail';
 export const revalidate = 604800; // 7 days — on-demand only, never pre-built
@@ -12,9 +12,8 @@ export async function generateMetadata({ params }: Props) {
   const { id } = await params;
   const tmdbId = parseInt(id, 10);
   if (isNaN(tmdbId)) return { robots: { index: false, follow: false } };
-  const res = await query(loadQuery('slugs/movie_detail.sql'), [tmdbId]);
-  if (!res.rows[0]) return { robots: { index: false, follow: false } };
-  const movie = res.rows[0] as MovieDetail;
+  const movie = await fetchMovieDetail(tmdbId);
+  if (!movie) return { robots: { index: false, follow: false } };
 
   return createScreenDetailMetadata({
     title: movie.title,
@@ -30,14 +29,8 @@ export default async function MovieDetailPage({ params }: Props) {
   const tmdbId = parseInt(id, 10);
   if (isNaN(tmdbId)) notFound();
 
-  const res = await query(loadQuery('slugs/movie_detail.sql'), [tmdbId]);
-  if (!res.rows[0]) notFound();
+  const movieRow = await fetchMovieDetail(tmdbId);
+  if (!movieRow) notFound();
 
-  const movieRow = res.rows[0] as MovieDetail & {
-    genres: { name: string }[];
-    cast: MovieCastMember[];
-    crew: MovieCrewMember[];
-  };
-
-  return <MovieDetail movie={movieRow} cast={movieRow.cast} crew={movieRow.crew} genres={movieRow.genres} />;
+  return <MovieDetail movie={movieRow} cast={movieRow.cast ?? []} crew={movieRow.crew ?? []} genres={movieRow.genres ?? []} />;
 }
