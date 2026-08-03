@@ -1,4 +1,4 @@
-import { pgQuery, loadQuery } from '@/lib/screen/db';
+import { cachedQuery, loadQuery } from '@/lib/screen/db';
 import { getGenreColor } from '@/components/screen/slugs/genre/genreThemes';
 import { Database, Search } from 'lucide-react';
 import MaintenanceActions from './MaintenanceActions';
@@ -173,10 +173,10 @@ function SampleTable({ entityType, data }: { entityType: string; data: Record<st
 
 export default async function DbOverview() {
   const [coreRes, relRes, sampleRes, genreCoverageRes] = await Promise.all([
-    pgQuery(loadQuery('stats/db_overview.sql')),
-    pgQuery(loadQuery('stats/db_relations.sql')),
-    pgQuery(loadQuery('stats/db_sample_rows.sql')),
-    pgQuery(loadQuery('stats/genre_coverage.sql')),
+    cachedQuery(loadQuery('stats/db_overview.sql'), [], ['screen-db']),
+    cachedQuery(loadQuery('stats/db_relations.sql'), [], ['screen-db']),
+    cachedQuery(loadQuery('stats/db_sample_rows.sql'), [], ['screen-db']),
+    cachedQuery(loadQuery('stats/genre_coverage.sql'), [], ['screen-db']),
   ]);
 
   const coreTables = coreRes.rows as CoreTableRow[];

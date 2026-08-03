@@ -27,7 +27,8 @@ Beyond a traditional portfolio, this platform features custom-engineered modules
 - **On-Demand Cache Invalidation**:
   - **Daily Revalidation**: Daily GitHub Actions trigger `/api/screen/revalidate` to purge `screen-db` and `recent-watches` cache tags once per day.
   - **Live Scrobble Sync**: Personal watch syncs from MemoStream hit `/api/screen/recent?revalidate=true`, refreshing only the `recent-watches` feed without invalidating heavy analytics caches.
-- **Detail Page Fallbacks**: Cloudflare D1 / Worker handles `slug_details`. Neon DB is queried as an emergency fallback only when a title was just watched and does not yet exist in Cloudflare `slug_details`.
+- **Cloudflare D1 Primary Detail Source**: Detail page lookups (`/m/[id]`, `/s/[id]`, `/p/[id]`) read pre-compiled `slug_details` JSON directly from Cloudflare D1 via the Search Worker (`GET /slug?type=...&id=...`). **Neon DB is completely bypassed and stays asleep.**
+- **Emergency Neon DB Fallback**: Neon DB is queried as an emergency fallback only when a title was just watched via MemoStream during the day and does not yet exist in Cloudflare D1. Fallback query results are cached in Next.js Data Cache to prevent repeated Neon queries.
 
 ### ✍️ Blog & Chronicles (`/blog`)
 

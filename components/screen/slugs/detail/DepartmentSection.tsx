@@ -19,9 +19,9 @@ export default function DepartmentSection({ group }: DepartmentSectionProps) {
       aside={`${people.length} ${people.length === 1 ? 'person' : 'people'}`}
     >
       <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-6 lg:grid-cols-8 gap-x-4 gap-y-5">
-        {people.map((p) => (
+        {people.map((p, idx) => (
           <PersonCard
-            key={p.tmdb_id}
+            key={`${p.tmdb_id}-${idx}`}
             tmdb_id={p.tmdb_id}
             name={p.name}
             profile_path={p.profile_path}

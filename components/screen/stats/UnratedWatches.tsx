@@ -1,4 +1,4 @@
-import { pgQuery, loadQuery } from '@/lib/screen/db';
+import { cachedQuery, loadQuery } from '@/lib/screen/db';
 
 type UnratedItem = {
   media_type: 'movie' | 'show';
@@ -17,7 +17,7 @@ function getTmdbUrl(item: UnratedItem): string | null {
 }
 
 export default async function UnratedWatches() {
-  const res = await pgQuery(loadQuery('stats/unrated_watches.sql'));
+  const res = await cachedQuery(loadQuery('stats/unrated_watches.sql'), [], ['screen-db']);
   const items = res.rows as UnratedItem[];
 
   const movies = items.filter((i) => i.media_type === 'movie');

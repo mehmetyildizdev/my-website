@@ -34,8 +34,47 @@ const worker = {
       return new Response(null, { status: 204, headers: corsHeaders });
     }
 
-    // ── Endpoint: POST /sync (Removed) ───────────────────────────────────────
-    // Sync is now managed locally via SQLite files.
+    // ── Endpoint: GET /slug ────────────────────────────────────────────────
+    // Serves pre-compiled slug_details JSON directly from Cloudflare D1.
+    // PRIMARY SOURCE for detail lookups. Keeps Neon DB completely asleep.
+    if (path === '/slug') {
+      const type = url.searchParams.get('type');
+      const id = url.searchParams.get('id');
+
+      if (!type || !id) {
+        return new Response(JSON.stringify({ error: 'Missing type or id' }), {
+          status: 400,
+          headers: { 'Content-Type': 'application/json', ...corsHeaders },
+        });
+      }
+
+      try {
+        const tmdbId = parseInt(id, 10);
+        const row = await env.DB.prepare('SELECT detail_json FROM slug_details WHERE type = ?1 AND tmdb_id = ?2')
+          .bind(type, tmdbId)
+          .first<{ detail_json: string }>();
+
+        if (!row || !row.detail_json) {
+          return new Response(JSON.stringify({ result: null }), {
+            status: 404,
+            headers: { 'Content-Type': 'application/json', ...corsHeaders },
+          });
+        }
+
+        return new Response(JSON.stringify({ result: row.detail_json }), {
+          headers: {
+            'Content-Type': 'application/json',
+            'Cache-Control': 'public, max-age=3600, s-maxage=604800',
+            ...corsHeaders,
+          },
+        });
+      } catch (err: any) {
+        return new Response(JSON.stringify({ error: err.message }), {
+          status: 500,
+          headers: { 'Content-Type': 'application/json', ...corsHeaders },
+        });
+      }
+    }
 
     // ── Endpoint: GET /db ──────────────────────────────────────────────────
     if (path === '/db') {
