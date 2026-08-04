@@ -194,6 +194,23 @@ if (typeof window !== 'undefined') {
  * This wrapper suppresses these non-fatal background reconnection messages.
  */
 export function StudioClientWrapper() {
+  useEffect(() => {
+    const handlePopState = () => {
+      if (!window.location.pathname.startsWith('/studio')) {
+        window.location.reload();
+      }
+    };
+
+    window.addEventListener('popstate', handlePopState);
+
+    return () => {
+      window.removeEventListener('popstate', handlePopState);
+      if (!window.location.pathname.startsWith('/studio')) {
+        window.location.reload();
+      }
+    };
+  }, []);
+
   return (
     <>
       <NextStudio config={config} />
@@ -201,6 +218,7 @@ export function StudioClientWrapper() {
     </>
   );
 }
+
 
 
 
