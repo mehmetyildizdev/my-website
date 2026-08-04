@@ -19,6 +19,9 @@ const nextConfig: NextConfig = {
     ],
   },
   /* config options here */
+  turbopack: {
+    root: __dirname,
+  },
   experimental: {
     optimizePackageImports: ['lucide-react', 'react-icons', '@radix-ui/react-switch'],
   },
