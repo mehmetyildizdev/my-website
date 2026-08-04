@@ -1,5 +1,5 @@
 import { defineType } from 'sanity';
-import { InlineIcon } from '@sanity/icons';
+import { InlineIcon } from '@sanity/icons/Inline';
 
 /**
  * Universal embed block for use inside post body content.

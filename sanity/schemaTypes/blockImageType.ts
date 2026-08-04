@@ -1,5 +1,5 @@
 import { defineType } from 'sanity';
-import { ImageIcon } from '@sanity/icons';
+import { ImageIcon } from '@sanity/icons/Image';
 
 export const imageType = defineType({
   name: 'image',

@@ -1,4 +1,4 @@
-import { OlistIcon } from '@sanity/icons';
+import { OlistIcon } from '@sanity/icons/Olist';
 import { defineField, defineType } from 'sanity';
 
 export const categoryType = defineType({

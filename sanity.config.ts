@@ -16,7 +16,19 @@ import { CustomLayout } from './sanity/studioLayout';
 import { codeInput } from '@sanity/code-input';
 import { markdownSchema } from 'sanity-plugin-markdown';
 
+import React from 'react';
+
+function StudioIcon() {
+  return React.createElement('img', {
+    src: '/logo_l.svg',
+    alt: 'Mehmet Yıldız',
+    style: { height: '20px', width: 'auto', objectFit: 'contain' },
+  });
+}
+
 export default defineConfig({
+  title: 'Mehmet Yıldız',
+  icon: StudioIcon,
   basePath: '/studio',
   projectId,
   dataset,

@@ -1,5 +1,5 @@
 import { defineType } from 'sanity';
-import { CodeBlockIcon } from '@sanity/icons';
+import { CodeBlockIcon } from '@sanity/icons/CodeBlock';
 
 /**
  * An "HTML Visual" is a freeform HTML snippet (e.g. a canvas animation)

@@ -32,6 +32,10 @@ export default function NavBar() {
     return () => window.removeEventListener('scroll', handleShadow);
   }, []);
 
+  if (pathname?.startsWith('/studio')) {
+    return null;
+  }
+
   const logoSrc = mounted && resolvedTheme === 'dark' ? '/logo_l.svg' : '/logo_d.svg';
 
   const navLinks = [
