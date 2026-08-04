@@ -14,15 +14,20 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+
       - name: Setup pnpm
         uses: pnpm/action-setup@v4
         with:
           version: latest
 
-      - name: Setup Node.js
+      - name: Setup Node cache for pnpm
         uses: actions/setup-node@v4
         with:
-          node-version: '20'
+          node-version: '24'
           cache: 'pnpm'
 
       - name: Install dependencies
@@ -61,7 +66,7 @@ jobs:
           NEON_DATABASE_URL: ${{ secrets.NEON_DATABASE_URL }}
           CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
 
-      - name: Upload Incremental Diff to Cloudflare D1
+      - name: Upload Incremental Search Diff to Cloudflare D1
         if: steps.search_diff.outputs.upload_required == 'true'
         run: >
           pnpm exec wrangler d1 execute screen
@@ -75,14 +80,49 @@ jobs:
         if: steps.search_diff.outputs.upload_required == 'false'
         run: echo "Search index is already up to date; no D1 upload needed."
 
-      - name: Save Search Diff Artifacts
+      # ── Sync Slug Details to Cloudflare D1 ────────────────────────────────
+      - name: Calculate Slug Details Diff
+        id: slug_diff
+        run: |
+          pnpm tsx search-worker/scripts/slug-diff.ts --remote
+
+          upload_required="$(jq -r '.upload_required' search-worker/d1/slug_diff_summary.json)"
+
+          if [[ "$upload_required" != "true" && "$upload_required" != "false" ]]; then
+            echo "Invalid upload_required value: $upload_required"
+            exit 1
+          fi
+
+          echo "upload_required=$upload_required" >> "$GITHUB_OUTPUT"
+        env:
+          NEON_DATABASE_URL: ${{ secrets.NEON_DATABASE_URL }}
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+
+      - name: Upload Incremental Slug Diff to Cloudflare D1
+        if: steps.slug_diff.outputs.upload_required == 'true'
+        run: >
+          pnpm exec wrangler d1 execute screen
+          --remote
+          --config=search-worker/wrangler.toml
+          --file=search-worker/d1/slug_diff.sql
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+
+      - name: Report No Slug Changes
+        if: steps.slug_diff.outputs.upload_required == 'false'
+        run: echo "Slug details index is already up to date; no D1 upload needed."
+
+      - name: Save Diff Artifacts
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: search-diff
+          name: d1-sync-diffs
           if-no-files-found: ignore
           retention-days: 1
           path: |
             search-worker/d1/search_diff.sql
             search-worker/d1/search_diff.db
             search-worker/d1/search_diff_summary.json
+            search-worker/d1/slug_diff.sql
+            search-worker/d1/slug_diff.db
+            search-worker/d1/slug_diff_summary.json
