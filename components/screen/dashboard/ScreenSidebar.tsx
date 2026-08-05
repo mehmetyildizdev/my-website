@@ -110,9 +110,11 @@ export default function ScreenSidebar() {
     }
   };
 
-  // Close drawer on route change
+  // Close drawer on route change (except when navigating to search)
   useEffect(() => {
-    setOpen(false);
+    if (pathname !== '/collection/screen/search') {
+      setOpen(false);
+    }
   }, [pathname]);
 
   useEffect(() => {

@@ -158,7 +158,7 @@ function SearchPageContent() {
     setTmdbLoading(true);
     const handler = setTimeout(() => {
       setTmdbQuery(query);
-    }, 2000); // 2 seconds delay for global TMDB search
+    }, 3000); // 3 seconds delay for global TMDB search
     return () => clearTimeout(handler);
   }, [query]);
 
