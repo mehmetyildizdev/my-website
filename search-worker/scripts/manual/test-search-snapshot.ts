@@ -1,7 +1,7 @@
 import { Pool } from 'pg';
 import dotenv from 'dotenv';
 import path from 'path';
-import { syncSearchIndex } from './search-db';
+import { buildSearchSnapshot } from './build-search-snapshot-from-neon';
 
 dotenv.config({ path: path.resolve(process.cwd(), '.env.local') });
 
@@ -14,9 +14,9 @@ const pool = new Pool({
 
 async function main() {
   try {
-    await syncSearchIndex(pool);
+    await buildSearchSnapshot(pool);
   } catch (error) {
-    console.error('Sync failed:', error);
+    console.error('Search snapshot build failed:', error);
   } finally {
     await pool.end();
   }

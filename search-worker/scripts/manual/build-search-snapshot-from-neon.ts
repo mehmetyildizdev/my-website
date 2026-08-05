@@ -1,3 +1,10 @@
+/**
+ * Manual full rebuild: Neon -> local search-worker/d1/search.db.
+ *
+ * The daily GitHub Action uses search-diff.ts instead. Use this only when a
+ * complete local snapshot or full import artifact is intentionally needed.
+ */
+
 import { Pool } from 'pg';
 import fs from 'fs';
 import path from 'path';
@@ -16,10 +23,12 @@ interface SearchRow {
   release_date: string | null;
 }
 
-export async function syncSearchIndex(pool: Pool) {
+export async function buildSearchSnapshot(pool: Pool) {
   console.log('🔄 Querying Neon database for search index metadata...');
 
-  const sqlPath = path.join(__dirname, 'search_items.sql');
+  const scriptsDir = path.resolve(__dirname, '..');
+  const workerDir = path.resolve(scriptsDir, '..');
+  const sqlPath = path.join(scriptsDir, 'search_items.sql');
   const sql = fs.readFileSync(sqlPath, 'utf8');
 
   const result = await pool.query(sql);
@@ -37,7 +46,7 @@ export async function syncSearchIndex(pool: Pool) {
   console.log(`📦 Compiled search index with ${rows.length} total rows.`);
 
   // Create target directory search-worker/d1/ if it does not exist
-  const d1Dir = path.join(__dirname, '../d1');
+  const d1Dir = path.join(workerDir, 'd1');
   if (!fs.existsSync(d1Dir)) {
     fs.mkdirSync(d1Dir, { recursive: true });
   }
@@ -45,6 +54,8 @@ export async function syncSearchIndex(pool: Pool) {
   // Generate SQL file search-worker/d1/search_index.sql
   const sqlDumpPath = path.join(d1Dir, 'search_index.sql');
   const dbPath = path.join(d1Dir, 'search.db');
+  const schemaPath = path.join(__dirname, 'search_items_schema.sql');
+  const schemaSql = fs.readFileSync(schemaPath, 'utf8').trim();
 
   console.log(`✍️ Generating SQL dump at ${sqlDumpPath}...`);
 
@@ -56,12 +67,7 @@ export async function syncSearchIndex(pool: Pool) {
   const sqlStatements: string[] = [];
   sqlStatements.push('PRAGMA foreign_keys=OFF;');
   sqlStatements.push('BEGIN TRANSACTION;');
-  sqlStatements.push('DROP TABLE IF EXISTS search_items;');
-  sqlStatements.push(
-    'CREATE TABLE search_items (type TEXT NOT NULL, tmdb_id INTEGER NOT NULL, name TEXT NOT NULL, extra_name TEXT, image_path TEXT, rating REAL, release_date TEXT, PRIMARY KEY (type, tmdb_id));',
-  );
-  sqlStatements.push('CREATE INDEX idx_search_items_name ON search_items(name);');
-  sqlStatements.push('CREATE INDEX idx_search_items_extra_name ON search_items(extra_name);');
+  sqlStatements.push(schemaSql);
 
   for (const row of rows) {
     sqlStatements.push(
@@ -114,7 +120,7 @@ async function main() {
   });
 
   try {
-    await syncSearchIndex(pool);
+    await buildSearchSnapshot(pool);
   } catch (error) {
     console.error('❌ Sync failed:', error);
     process.exit(1);
@@ -123,6 +129,6 @@ async function main() {
   }
 }
 
-if (require.main === module || process.argv[1]?.includes('sync-search')) {
+if (require.main === module || process.argv[1]?.includes('build-search-snapshot-from-neon')) {
   main();
 }
