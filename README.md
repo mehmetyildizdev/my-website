@@ -23,12 +23,24 @@ Beyond a traditional portfolio, this platform features custom-engineered modules
 
 ### ⚡ Database Caching & Revalidation Architecture (Neon DB Optimization)
 
-- **Zero-Wakeup Routine Visits**: All SQL queries across Screen analytics (`/collection/screen`, `/charts`, `/m`, `/s`, `/p`) are wrapped in `cachedQuery` using Next.js `unstable_cache`. Standard user page views read directly from Next.js Data Cache (Vercel Edge), keeping Neon DB compute asleep.
+- **Zero-Wakeup Routine Visits**: All SQL queries across Screen analytics (`/collection/screen`, `/charts`, `/m`, `/s`, `/p`, `/stats`) are wrapped in `cachedQuery` using Next.js `unstable_cache`. Standard user page views read directly from Next.js Data Cache (Vercel Edge), keeping Neon DB compute asleep.
+- **Cloudflare D1 Primary Detail Source**: Detail page lookups (`/m/[id]`, `/s/[id]`, `/p/[id]`) read pre-compiled `slug_details` JSON directly from Cloudflare D1 via the Search Worker (`GET /slug?type=...&id=...`). The worker derives `available`, `excluded`, or `pending` from D1 tables without writing a status table.
+- **Strict Fallback Scoping**:
+  - **Person Pages**: D1-only lookup; never query Neon DB as fallback.
+  - **Movie & Show Pages**: Query Neon DB emergency fallback (`movie_detail_fallback.sql` / `show_detail_fallback.sql`) ONLY when accessed via `?source=recent-watches` (items watched between GitHub Action sync cycles). All standard browsing, search clicks, and direct links return `404` without touching Neon if absent in D1.
 - **On-Demand Cache Invalidation**:
-  - **Daily Revalidation**: Daily GitHub Actions trigger `/api/screen/revalidate` to purge `screen-db` and `recent-watches` cache tags once per day.
+  - **Daily Revalidation**: Daily GitHub Actions trigger `/api/screen/revalidate` to purge `screen-db`, `recent-watches`, and `slug-details` cache tags once per day. The first visitor to a charts page post-revalidation triggers a single set of queries to Neon DB to re-warm the Next.js Data Cache for 7 days.
   - **Live Scrobble Sync**: Personal watch syncs from MemoStream hit `/api/screen/recent?revalidate=true`, refreshing only the `recent-watches` feed without invalidating heavy analytics caches.
-- **Cloudflare D1 Primary Detail Source**: Detail page lookups (`/m/[id]`, `/s/[id]`, `/p/[id]`) read pre-compiled `slug_details` JSON directly from Cloudflare D1 via the Search Worker (`GET /slug?type=...&id=...`). **Neon DB is completely bypassed and stays asleep.**
-- **Emergency Neon DB Fallback**: Neon DB is queried as an emergency fallback only when a title was just watched via MemoStream during the day and does not yet exist in Cloudflare D1. Fallback query results are cached in Next.js Data Cache to prevent repeated Neon queries.
+
+#### 📊 Screen Data Routing & Caching Matrix
+
+| Feature / Page | Primary Data Source | Neon DB Fallback & Caching Behavior |
+| :--- | :--- | :--- |
+| **Search Page** (`/collection/screen/search`) | Cloudflare D1 Worker (`/db` & `/tmdb`) | **Zero Neon DB queries.** All database searches use Cloudflare D1 FTS5 trigram indexes. |
+| **Person Detail** (`/collection/screen/p/[id]`) | Cloudflare D1 Worker (`/slug?type=person`) | **Zero Neon DB queries.** D1-only lookup. Missing or pending profiles return 404 without querying Neon. |
+| **Movie & Show Detail** (`/m/[id]`, `/s/[id]`) | Cloudflare D1 Worker (`/slug?type=movie\|show`) | **Emergency Fallback Only.** Neon is queried ONLY when `?source=recent-watches` is present (from Recent Watches strip) and state is pending in D1. Direct visits, search clicks, and filmography links never trigger fallback. |
+| **Featured Recommendations** (`/api/screen/featured`) | Next.js Data Cache (`screen-featured` tag) | **7-Day TTL Cache (`604800s`).** Reads from Neon DB on cold cache only; served from edge memory on routine views. Not invalidated by daily chart updates. |
+| **Analytics & Charts** (`/collection/screen`, `/charts`, `/m`, `/s`, `/p`, `/stats`) | Next.js Data Cache (`screen-db` tag) | **Daily Revalidation.** Daily GitHub Action purges `screen-db`. First visitor triggers query against Neon DB to re-warm 7-day Next.js Data Cache. |
 
 ### ✍️ Blog & Chronicles (`/blog`)
 
