@@ -45,33 +45,32 @@ export default function PersonDetail({ person, movies, shows, age }: PersonDetai
   const topGenres = (person.top_genres ?? []).map((g) => ({ name: g }));
 
   return (
-    <div id="person-detail" className="relative flex flex-col gap-10 md:gap-14 pb-20">
-      {/* Mobile Back Link */}
-      <div className="relative z-10 md:hidden animate-in fade-in duration-300">
-        <BackLink />
-      </div>
+    <article id="person-detail" className="relative">
+      <BackLink />
 
-      {/* Performer Header Info & Integrated Stats */}
-      <div className="relative z-10">
-        <PersonHeader
-          person={person}
-          age={age}
-          moviesCount={uniqueMovies.length}
-          showsCount={uniqueShows.length}
-        />
-      </div>
-
-      {/* Page-wide ambient repeating genre background below header */}
-      {topGenres.length > 0 && (
-        <div className="absolute inset-0 top-96 z-0 pointer-events-none opacity-40">
-          <GenreBackground genres={topGenres} intensity={0.2} variant="repeat" />
+      <div className="flex flex-col gap-10 md:gap-14 pb-20">
+        {/* Performer Header Info & Integrated Stats */}
+        <div className="relative z-10">
+          <PersonHeader
+            person={person}
+            age={age}
+            moviesCount={uniqueMovies.length}
+            showsCount={uniqueShows.length}
+          />
         </div>
-      )}
 
-      {/* Movies & TV Shows Filmography */}
-      <div className="relative z-10">
-        <PersonFilmography movies={uniqueMovies} shows={uniqueShows} />
+        {/* Page-wide ambient repeating genre background below header */}
+        {topGenres.length > 0 && (
+          <div className="absolute inset-0 top-96 z-0 pointer-events-none opacity-40">
+            <GenreBackground genres={topGenres} intensity={0.2} variant="repeat" />
+          </div>
+        )}
+
+        {/* Movies & TV Shows Filmography */}
+        <div className="relative z-10">
+          <PersonFilmography movies={uniqueMovies} shows={uniqueShows} />
+        </div>
       </div>
-    </div>
+    </article>
   );
 }

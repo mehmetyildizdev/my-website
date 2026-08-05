@@ -70,9 +70,7 @@ export default function MovieDetail({ movie, cast, crew, genres }: MovieDetailPr
 
   return (
     <article className="relative">
-      <div className="mb-6 md:hidden">
-        <BackLink />
-      </div>
+      <BackLink />
 
       <DetailHero
         title={movie.title}

@@ -83,9 +83,7 @@ export default function ShowDetail({ show, cast, crew = [], genres }: ShowDetail
 
   return (
     <article className="relative">
-      <div className="mb-6 md:hidden">
-        <BackLink />
-      </div>
+      <BackLink />
 
       <DetailHero
         title={show.name}

@@ -11,6 +11,15 @@ export function formatDate(d: string | null): string | null {
 }
 
 /**
+ * Formats a genre display name (e.g. "Science Fiction" -> "Sci-Fi").
+ */
+export function formatGenreName(name: string): string {
+  if (!name) return '';
+  if (name.toLowerCase() === 'science fiction') return 'Sci-Fi';
+  return name;
+}
+
+/**
  * Converts a raw TMDB gender code into a readable string.
  */
 export function genderLabel(g: number | null): string {
@@ -23,10 +32,10 @@ export function genderLabel(g: number | null): string {
  * Returns the tailwind class for the performer's popularity score.
  */
 export function getPopularityColor(pop: number): string {
-  if (pop < 5) return 'text-ruby';
-  if (pop < 10) return 'text-topaz';
-  if (pop < 25) return 'text-emerald';
-  if (pop < 50) return 'text-sapphire';
+  if (pop < 1) return 'text-ruby';
+  if (pop < 3) return 'text-topaz';
+  if (pop < 8) return 'text-emerald';
+  if (pop < 13) return 'text-sapphire';
   return 'text-amethyst animate-pulse font-black';
 }
 
