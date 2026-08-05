@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
 import { LayoutDashboard, Film, Tv, Users, BarChart3, Database, Menu, X, Search } from 'lucide-react';
@@ -45,6 +45,7 @@ export default function ScreenSidebar() {
   const router = useRouter();
   const [open, setOpen] = useState(false);
   const [searchVal, setSearchVal] = useState('');
+  const searchNavigationTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   // Sync search input with URL query param 'q' on navigation / client-side mount
   useEffect(() => {
@@ -82,12 +83,17 @@ export default function ScreenSidebar() {
       window.history.replaceState(null, '', newUrl);
       window.dispatchEvent(new CustomEvent('searchquerychange', { detail: trimmed }));
     } else {
-      // If on another route, navigate to search page and reset scroll position to top
-      if (trimmed) {
-        if (typeof window !== 'undefined') {
-          window.scrollTo({ top: 0, left: 0, behavior: 'instant' });
-        }
-        router.push(`/collection/screen/search?q=${encodeURIComponent(trimmed)}`);
+      // If on another route, use the same short debounce as the FTS-backed
+      // search request so the UI remains immediate without route churn.
+      if (searchNavigationTimer.current) clearTimeout(searchNavigationTimer.current);
+      if (trimmed.length >= 3) {
+        searchNavigationTimer.current = setTimeout(() => {
+          if (typeof window !== 'undefined') {
+            window.scrollTo({ top: 0, left: 0, behavior: 'instant' });
+          }
+          router.push(`/collection/screen/search?q=${encodeURIComponent(trimmed)}`);
+          searchNavigationTimer.current = null;
+        }, 50);
       }
     }
   };
@@ -108,6 +114,12 @@ export default function ScreenSidebar() {
   useEffect(() => {
     setOpen(false);
   }, [pathname]);
+
+  useEffect(() => {
+    return () => {
+      if (searchNavigationTimer.current) clearTimeout(searchNavigationTimer.current);
+    };
+  }, []);
 
   // Prevent body scroll when drawer is open
   useEffect(() => {

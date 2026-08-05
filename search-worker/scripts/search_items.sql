@@ -24,11 +24,12 @@ UNION ALL
 
 SELECT 
   'person' AS type,
-  tmdb_id,
-  name,
+  people.tmdb_id,
+  people.name,
   NULL AS extra_name,
-  profile_path AS image_path,
-  popularity::float AS rating,
-  known_for_department AS release_date
+  people.profile_path AS image_path,
+  ROUND(ar.my_rating, 1)::float AS rating,
+  people.known_for_department AS release_date
 FROM public.people
-WHERE profile_path IS NOT NULL AND profile_path != '';
+LEFT JOIN analytics.actor__ratings ar ON ar.tmdb_id = people.tmdb_id
+WHERE people.profile_path IS NOT NULL AND people.profile_path != '';

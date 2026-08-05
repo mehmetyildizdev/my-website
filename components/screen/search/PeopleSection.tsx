@@ -54,42 +54,46 @@ export default function PeopleSection({ loading, people, isFeatured }: PeopleSec
           <div className="grid grid-rows-2 grid-flow-col gap-4 overflow-x-auto pb-2 scrollbar-thin scrollbar-thumb-border/20 scrollbar-track-transparent">
             {visiblePeople.map((p) => {
               const hasImage = !!p.image_path;
-              const CardWrapper = hasImage ? Link : 'div';
-              const linkProps = hasImage ? { href: `/collection/screen/p/${p.tmdb_id}` } : {};
+
+              if (!hasImage) {
+                return (
+                  <div
+                    key={p.tmdb_id}
+                    className="group flex flex-col items-center bg-obsidian/30 border border-dashed border-border/10 rounded-2xl p-3 text-center opacity-70 cursor-not-allowed w-36 sm:w-40 shrink-0"
+                  >
+                    <div className="relative w-14 h-14 rounded-full overflow-hidden border border-border/30 shrink-0 flex items-center justify-center bg-pearl text-quicksilver text-xs font-bold">
+                      ?
+                    </div>
+                    <div className="flex flex-col items-center mt-2.5 w-full">
+                      <span className="font-semibold text-xs text-foreground truncate w-full">{p.name}</span>
+                      <span className="text-[10px] text-quicksilver truncate w-full mt-0.5">{p.release_date || 'Crew'}</span>
+                    </div>
+                  </div>
+                );
+              }
 
               return (
-                // @ts-ignore
-                <CardWrapper
+                <Link
                   key={p.tmdb_id}
-                  {...linkProps}
-                  className={`group flex flex-col items-center bg-obsidian/30 border border-border/10 rounded-2xl p-3 text-center transition-all duration-300 shadow-md w-36 sm:w-40 shrink-0 ${
-                    hasImage ? 'cursor-pointer hover:border-accent/40 hover:bg-obsidian/55' : 'opacity-70 border-dashed cursor-not-allowed'
-                  }`}
+                  href={`/collection/screen/p/${p.tmdb_id}`}
+                  className="group flex flex-col items-center bg-obsidian/30 border border-border/10 rounded-2xl p-3 text-center transition-all duration-300 shadow-md w-36 sm:w-40 shrink-0 cursor-pointer hover:border-accent/40 hover:bg-obsidian/55"
                 >
                   <div className="relative w-14 h-14 rounded-full overflow-hidden border border-border/30 shrink-0 group-hover:border-accent transition-colors duration-300">
-                    {p.image_path ? (
-                      <Image
-                        src={`https://image.tmdb.org/t/p/w185${p.image_path}`}
-                        alt={p.name}
-                        fill
-                        unoptimized
-                        className="object-cover transition-transform duration-500 group-hover:scale-105"
-                      />
-                    ) : (
-                      <div className="flex h-full items-center justify-center bg-pearl text-quicksilver text-xs">?</div>
-                    )}
+                    <Image
+                      src={`https://image.tmdb.org/t/p/w185${p.image_path}`}
+                      alt={p.name}
+                      fill
+                      unoptimized
+                      className="object-cover transition-transform duration-500 group-hover:scale-105"
+                    />
                   </div>
                   <div className="flex flex-col items-center mt-2.5 w-full">
-                    <span
-                      className={`font-semibold text-xs text-foreground transition-colors truncate w-full ${
-                        hasImage ? 'group-hover:text-gold' : ''
-                      }`}
-                    >
+                    <span className="font-semibold text-xs text-foreground transition-colors truncate w-full group-hover:text-gold">
                       {p.name}
                     </span>
                     <span className="text-[10px] text-quicksilver truncate w-full mt-0.5">{p.release_date || 'Crew'}</span>
                   </div>
-                </CardWrapper>
+                </Link>
               );
             })}
             {!expanded && hasMore && (

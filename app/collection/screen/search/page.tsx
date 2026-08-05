@@ -132,9 +132,11 @@ function SearchPageContent() {
   const [dbLoading, setDbLoading] = useState(false);
   const [tmdbLoading, setTmdbLoading] = useState(false);
 
-  // Instant Local DB Edge Search (50ms delay for ultra-responsive typing)
+  // Keep the UI responsive. FTS makes each D1 lookup index-backed, while the
+  // short debounce still coalesces keystrokes typed within the same 50 ms.
   useEffect(() => {
-    if (!query.trim()) {
+    const normalizedQuery = query.trim();
+    if (normalizedQuery.length < 3) {
       setDbQuery('');
       setDbResults({ movies: [], shows: [], people: [] });
       setDbLoading(false);
@@ -142,8 +144,8 @@ function SearchPageContent() {
     }
     setDbLoading(true);
     const handler = setTimeout(() => {
-      setDbQuery(query);
-    }, 50); // 50ms delay for instant DB search
+      setDbQuery(normalizedQuery);
+    }, 50);
     return () => clearTimeout(handler);
   }, [query]);
 
@@ -168,15 +170,21 @@ function SearchPageContent() {
     }
 
     const workerUrl = process.env.NEXT_PUBLIC_SEARCH_WORKER_URL || 'http://localhost:8787';
-    fetch(`${workerUrl}/db?q=${encodeURIComponent(dbQuery)}`)
+    const controller = new AbortController();
+
+    fetch(`${workerUrl}/db?q=${encodeURIComponent(dbQuery)}`, { signal: controller.signal })
       .then((r) => r.json())
       .then((data: any) => {
         if (data && !data.error) {
           setDbResults(data);
         }
       })
-      .catch(console.error)
+      .catch((error) => {
+        if (error?.name !== 'AbortError') console.error(error);
+      })
       .finally(() => setDbLoading(false));
+
+    return () => controller.abort();
   }, [dbQuery]);
 
   // Fetch TMDB results from Edge Worker

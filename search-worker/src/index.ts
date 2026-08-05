@@ -1,4 +1,7 @@
 /// <reference types="@cloudflare/workers-types" />
+import searchSql from '../sql/search.sql';
+import slugLookupSql from '../sql/slug_lookup.sql';
+
 export interface Env {
   DB: D1Database;
   TMDB_API_READ_ACCESS_TOKEN: string;
@@ -35,13 +38,14 @@ const worker = {
     }
 
     // ── Endpoint: GET /slug ────────────────────────────────────────────────
-    // Serves pre-compiled slug_details JSON directly from Cloudflare D1.
-    // PRIMARY SOURCE for detail lookups. Keeps Neon DB completely asleep.
+    // Serves pre-compiled slug_details JSON directly from Cloudflare D1 and
+    // derives availability from the existing D1 search/slug tables. No status
+    // rows are written during normal operation.
     if (path === '/slug') {
       const type = url.searchParams.get('type');
       const id = url.searchParams.get('id');
 
-      if (!type || !id) {
+      if (!type || !id || !['movie', 'show', 'person'].includes(type)) {
         return new Response(JSON.stringify({ error: 'Missing type or id' }), {
           status: 400,
           headers: { 'Content-Type': 'application/json', ...corsHeaders },
@@ -49,19 +53,41 @@ const worker = {
       }
 
       try {
-        const tmdbId = parseInt(id, 10);
-        const row = await env.DB.prepare('SELECT detail_json FROM slug_details WHERE type = ?1 AND tmdb_id = ?2')
-          .bind(type, tmdbId)
-          .first<{ detail_json: string }>();
-
-        if (!row || !row.detail_json) {
-          return new Response(JSON.stringify({ result: null }), {
-            status: 404,
+        const tmdbId = Number.parseInt(id, 10);
+        if (!Number.isSafeInteger(tmdbId) || tmdbId <= 0) {
+          return new Response(JSON.stringify({ error: 'Invalid id' }), {
+            status: 400,
             headers: { 'Content-Type': 'application/json', ...corsHeaders },
           });
         }
 
-        return new Response(JSON.stringify({ result: row.detail_json }), {
+        const row = await env.DB.prepare(slugLookupSql)
+          .bind(type, tmdbId)
+          .first<{ detail_json: string | null; state: 'available' | 'excluded' | 'pending' }>();
+
+        if (row?.state === 'excluded') {
+          return new Response(JSON.stringify({ result: null, state: 'excluded' }), {
+            status: 410,
+            headers: {
+              'Content-Type': 'application/json',
+              'Cache-Control': 'public, max-age=3600, s-maxage=604800',
+              ...corsHeaders,
+            },
+          });
+        }
+
+        if (!row || row.state === 'pending' || !row.detail_json) {
+          return new Response(JSON.stringify({ result: null, state: 'pending' }), {
+            status: 404,
+            headers: {
+              'Content-Type': 'application/json',
+              'Cache-Control': 'public, max-age=3600, s-maxage=604800',
+              ...corsHeaders,
+            },
+          });
+        }
+
+        return new Response(JSON.stringify({ result: row.detail_json, state: 'available' }), {
           headers: {
             'Content-Type': 'application/json',
             'Cache-Control': 'public, max-age=3600, s-maxage=604800',
@@ -89,27 +115,14 @@ const worker = {
       }
 
       try {
-        const term = `%${trimmed}%`;
-        const tmdbId = parseInt(trimmed, 10);
-        const numericIdStr = isNaN(tmdbId) ? '-1' : trimmed;
+        // FTS5 trigram matching preserves the old substring behavior (`%term%`)
+        // without scanning the full search_items table. Quote the input so
+        // punctuation cannot be interpreted as FTS operators.
+        const ftsTerm = `"${trimmed.replace(/"/g, '""')}"`;
+        const tmdbId = isNumeric ? Number(trimmed) : -1;
 
-        // Check if table exists (in case sync has never run)
-        const tableCheck = await env.DB.prepare("SELECT name FROM sqlite_master WHERE type='table' AND name='search_items'").first();
-
-        if (!tableCheck) {
-          return new Response(JSON.stringify({ movies: [], shows: [], people: [] }), {
-            headers: { 'Content-Type': 'application/json', ...corsHeaders },
-          });
-        }
-
-        const { results } = await env.DB.prepare(
-          `SELECT type, tmdb_id, name, extra_name, image_path, rating, release_date
-           FROM search_items
-           WHERE name LIKE ?1 OR extra_name LIKE ?1 OR CAST(tmdb_id AS TEXT) = ?2
-           ORDER BY rating DESC, name ASC
-           LIMIT 60`,
-        )
-          .bind(term, numericIdStr)
+        const { results } = await env.DB.prepare(searchSql)
+          .bind(ftsTerm, tmdbId)
           .all<SearchRow>();
 
         const movies = results.filter((r: SearchRow) => r.type === 'movie');
