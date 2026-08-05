@@ -1,134 +1,175 @@
 // components/screen/slugs/genre/GenreBackground.tsx
-// Modular, layered genre background. Give it the title's genres and it composes
-// one quiet textural layer per genre, each in its own tint + anchored quadrant,
-// over a blended multi-radial glow. Single genre → one clean motif; many genres
-// → a brand-new composite that still reads as "this title's" backdrop.
-//
-// Supports two motif variants:
-//   "bg"        — repeating pattern, for full-page / hero backgrounds (default)
-//   "container" — non-repeating corner-emphasis, for small cards / tiles
-//
-// Designed for text-heavy informative pages: low opacity, a single very-slow
-// drift, and full `prefers-reduced-motion` opt-out (the drift simply stops).
+// Modular, responsive genre background.
+// Supports both:
+//   - "container": Fluid CSS corner-anchored vector motif icons + single container corner bracket frame.
+//   - "repeat": Layered repeating SVG pattern tiles with slow drift animation for hero/full-page backgrounds.
 
-import { getGenreTheme, TOKEN_VAR } from "./genreThemes";
+import React from 'react';
+import { getGenreTheme, TOKEN_VAR } from './genreThemes';
+import { CornerBrackets, RepeatPattern, getGenreMotifMeta, type Anchor } from './motifs';
 
 interface GenreBackgroundProps {
   genres: { name: string }[];
   /** 0–1 overall intensity. Lower for very text-dense sections. */
   intensity?: number;
-  /** Enable the slow drift animation (still respects reduced-motion). */
+  /** Enable slow drift animation (still respects reduced-motion). */
   animated?: boolean;
-  /** "container" for full page/hero backgrounds (using ContainerSvg), "repeat" for cards/tiling backgrounds. */
-  variant?: "container" | "repeat";
+  /** "container" for card/header containers, "repeat" for cards/tiling backgrounds. */
+  variant?: 'container' | 'repeat';
+  /** "normal" for headers, "small" for compact card tiles like FactTile. */
+  size?: 'normal' | 'small';
   className?: string;
 }
 
-// Per-layer motif opacity decays as more genres stack, so the composite never
-// turns into noise. Capped at 4 visual layers; extra genres still tint the glow.
-const MOTIF_OPACITY = [0.96, 0.69, 0.31, 0.13, 0.069];
-// Literal classes (Tailwind JIT-safe). `motion-safe:` ⇒ auto-disabled under
-// prefers-reduced-motion, satisfying the "not overly animated" requirement.
+// Literal animation drift classes for repeat variant
 const DRIFTS = [
-  "motion-safe:animate-motifDriftA",
-  "motion-safe:animate-motifDriftB",
-  "motion-safe:animate-motifDriftC",
-  "motion-safe:animate-motifDriftD",
-  "motion-safe:animate-motifDriftE",
+  'motion-safe:animate-motifDriftA',
+  'motion-safe:animate-motifDriftB',
+  'motion-safe:animate-motifDriftC',
+  'motion-safe:animate-motifDriftD',
+  'motion-safe:animate-motifDriftE',
 ];
+
+// Corner placement CSS classes (normal vs small container cards)
+const ANCHOR_CORNER_CLASSES_NORMAL: Record<Anchor, string> = {
+  tl: 'top-3 left-3 sm:top-5 sm:left-5',
+  tr: 'top-3 right-3 sm:top-5 sm:right-5',
+  bl: 'bottom-3 left-3 sm:bottom-5 sm:left-5',
+  br: 'bottom-3 right-3 sm:bottom-5 sm:right-5',
+  c: 'top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2',
+};
+
+const ANCHOR_CORNER_CLASSES_SMALL: Record<Anchor, string> = {
+  tl: 'top-1 left-1 sm:top-1.5 sm:left-1.5',
+  tr: 'top-1 right-1 sm:top-1.5 sm:right-1.5',
+  bl: 'bottom-1 left-1 sm:bottom-1.5 sm:left-1.5',
+  br: 'bottom-1 right-1 sm:bottom-1.5 sm:right-1.5',
+  c: 'top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2',
+};
+
+// Tiered offset classes for multiple genres assigned to the same corner quadrant
+const CORNER_TIER_OFFSETS_NORMAL: Record<Anchor, string[]> = {
+  tl: ['translate-x-0 translate-y-0', 'translate-x-12 translate-y-4', 'translate-x-4 translate-y-12'],
+  tr: ['translate-x-0 translate-y-0', '-translate-x-12 translate-y-4', '-translate-x-4 translate-y-12'],
+  bl: ['translate-x-0 translate-y-0', 'translate-x-12 -translate-y-4', 'translate-x-4 -translate-y-12'],
+  br: ['translate-x-0 translate-y-0', '-translate-x-12 -translate-y-4', '-translate-x-4 -translate-y-12'],
+  c: ['translate-x-0 translate-y-0', 'translate-x-10 translate-y-6', '-translate-x-10 -translate-y-6'],
+};
+
+const CORNER_TIER_OFFSETS_SMALL: Record<Anchor, string[]> = {
+  tl: ['translate-x-0 translate-y-0', 'translate-x-5 translate-y-1', 'translate-x-1 translate-y-5'],
+  tr: ['translate-x-0 translate-y-0', '-translate-x-5 translate-y-1', '-translate-x-1 translate-y-5'],
+  bl: ['translate-x-0 translate-y-0', 'translate-x-5 -translate-y-1', 'translate-x-1 -translate-y-5'],
+  br: ['translate-x-0 translate-y-0', '-translate-x-5 -translate-y-1', '-translate-x-1 -translate-y-5'],
+  c: ['translate-x-0 translate-y-0', 'translate-x-4 translate-y-2', '-translate-x-4 -translate-y-2'],
+};
+
+// Per-layer motif opacity decays as more genres stack
+const MOTIF_OPACITY = [0.85, 0.65, 0.45, 0.35, 0.25];
 
 export default function GenreBackground({
   genres,
   intensity = 1,
   animated = true,
-  variant = "container",
-  className = "",
+  variant = 'container',
+  size = 'normal',
+  className = '',
 }: GenreBackgroundProps) {
-  const themes = (genres ?? []).map((g) => ({ name: g.name, theme: getGenreTheme(g.name) }));
+  const safeGenres = genres ?? [];
+  const themes = safeGenres.map((g) => ({ name: g.name, theme: getGenreTheme(g.name) }));
   const layers = themes.slice(0, 5);
 
-  const isContainer = variant === "container";
+  const isContainer = variant === 'container';
+  const isSmall = size === 'small';
+  const primaryMeta = safeGenres[0] ? getGenreMotifMeta(safeGenres[0].name) : null;
+
+  const cornerClasses = isSmall ? ANCHOR_CORNER_CLASSES_SMALL : ANCHOR_CORNER_CLASSES_NORMAL;
+  const tierOffsets = isSmall ? CORNER_TIER_OFFSETS_SMALL : CORNER_TIER_OFFSETS_NORMAL;
+  const iconSizeClass = isSmall
+    ? 'w-5 h-5 sm:w-6 sm:h-6 opacity-60'
+    : 'w-[clamp(2.75rem,7vw,5.5rem)] h-[clamp(2.75rem,7vw,5.5rem)] drop-shadow-md';
 
   // Build the blended glow: one radial per genre, summed in a single background.
-  // For container variant, use genre's static corner/center coordinates.
-  // For repeat variant, illuminate from center with distinct offsets, reserving true center for Drama.
   const glowLayers = layers
     .map(({ theme }, i) => {
-      const isMain = ["drama", "action", "thriller", "comedy", "adventure"].includes(theme.label.toLowerCase());
+      const isMain = ['drama', 'action', 'thriller', 'comedy', 'adventure'].includes(theme.label.toLowerCase());
       const baseAlpha = isMain ? 0.31 : 0.13;
       const alpha = (baseAlpha - i * 0.031) * intensity;
-      let pos = theme.glowPos;
-      
-      if (!isContainer) {
-        const name = theme.label.toLowerCase();
-        if (name === "drama") {
-          pos = "50% 50%";
-        } else if (name === "action") {
-          pos = "60% 40%"; // TR
-        } else if (name === "adventure") {
-          pos = "40% 40%"; // TL
-        } else if (name === "thriller") {
-          pos = "40% 60%"; // BL
-        } else if (name === "comedy") {
-          pos = "60% 60%"; // BR
-        } else if (name === "kids") {
-          pos = "20% 20%"; // Top Left
-        } else if (name === "crime" || name === "politics") {
-          pos = "80% 80%"; // Bottom Right
-        } else if (theme.anchor === "c") {
-          // Lesser genres
-          if (name === "reality") {
-            pos = "20% 80%"; // BL
-          } else { // talk, soap
-            pos = "80% 20%"; // TR
-          }
-        } else {
-          // Other corner genres mapped to their anchors
-          switch (theme.anchor) {
-            case "tl": pos = "20% 20%"; break;
-            case "tr": pos = "80% 20%"; break;
-            case "bl": pos = "20% 80%"; break;
-            case "br": pos = "80% 80%"; break;
-            default:   pos = "50% 50%";
-          }
-        }
-      }
+      const pos = theme.glowPos;
 
       return `radial-gradient(${theme.glowSpread} at ${pos}, color-mix(in oklch, ${TOKEN_VAR[theme.token]}, transparent ${Math.round(
-        (1 - alpha) * 100,
+        (1 - alpha) * 100
       )}%), transparent 100%)`;
     })
-    .join(", ");
+    .join(', ');
+
+  // Count corner quadrant occurrences to calculate non-overlapping offsets
+  const anchorCounts: Record<Anchor, number> = { tl: 0, tr: 0, bl: 0, br: 0, c: 0 };
 
   return (
-    <div
-      className={`pointer-events-none absolute inset-0 overflow-hidden ${className}`}
-      aria-hidden
-    >
-      {/* Blended composite glow (all genres summed) */}
-      <div className="absolute inset-0" style={{ backgroundImage: glowLayers }} />
+    <div className={`pointer-events-none absolute inset-0 overflow-hidden ${className}`} aria-hidden>
+      {/* Blended composite radial glow */}
+      <div className="absolute inset-0 z-0 opacity-80" style={{ backgroundImage: glowLayers }} />
 
-      {/* One textural motif layer per genre, each in its tint */}
-      {layers.map(({ name, theme }, i) => {
-        const Motif = theme.Motif;
-        const drift = animated && !isContainer ? DRIFTS[i % DRIFTS.length] : "";
+      {/* ── Variant 1: Container Mode (Corner-Anchored Icons + Outer Corner Bracket Frame) ── */}
+      {isContainer ? (
+        <>
+          {/* Single, unified outer corner bracket frame */}
+          {primaryMeta && <CornerBrackets style={primaryMeta.bracketStyle} size={size} className="z-10" />}
 
-        return (
-          <div
-            key={`${name}-${i}`}
-            className="absolute inset-0"
-            style={{ color: TOKEN_VAR[theme.token], opacity: (MOTIF_OPACITY[i] ?? 0.05) * intensity }}
-          >
-            {/* The drift only runs when motion is allowed (motion-safe) */}
-            <div className={`absolute inset-0 ${drift}`} style={{ transformOrigin: "center" }}>
-              <Motif uid={`${i}`} variant={variant} token={theme.token} anchor={theme.anchor} />
-            </div>
+          {/* Fluid Corner-Anchored Vector Motif Icons */}
+          <div className="absolute inset-0 z-10 pointer-events-none">
+            {layers.map(({ name, theme }, i) => {
+              const meta = getGenreMotifMeta(name);
+              const Icon = meta.Icon;
+              const anchor = meta.anchor;
+
+              const tierIndex = anchorCounts[anchor] % 3;
+              anchorCounts[anchor] += 1;
+
+              const cornerClass = cornerClasses[anchor] || cornerClasses.c;
+              const tierOffset = tierOffsets[anchor]?.[tierIndex] || '';
+              const opacity = (MOTIF_OPACITY[i] ?? 0.3) * intensity;
+
+              return (
+                <div
+                  key={`${name}-${i}`}
+                  className={`absolute transition-all duration-500 ${cornerClass} ${tierOffset}`}
+                  style={{
+                    color: TOKEN_VAR[theme.token],
+                    opacity,
+                  }}
+                >
+                  <Icon className={`${iconSizeClass} transition-transform duration-300 hover:scale-105`} />
+                </div>
+              );
+            })}
           </div>
-        );
-      })}
+        </>
+      ) : (
+        /* ── Variant 2: Repeat Mode (Layered Repeating SVG Patterns with Slow Drift Animation) ── */
+        <div className="absolute inset-0 z-10">
+          {layers.map(({ name, theme }, i) => {
+            const drift = animated ? DRIFTS[i % DRIFTS.length] : '';
+            const opacity = (MOTIF_OPACITY[i] ?? 0.05) * intensity;
 
-      {/* Vignette so body text stays legible toward the edges/center */}
-      <div className="absolute inset-0 bg-radial from-transparent via-transparent to-background/40" />
+            return (
+              <div
+                key={`repeat-${name}-${i}`}
+                className="absolute inset-0"
+                style={{ color: TOKEN_VAR[theme.token], opacity }}
+              >
+                <div className={`absolute inset-0 ${drift}`} style={{ transformOrigin: 'center' }}>
+                  <RepeatPattern genreName={name} uid={`${i}`} />
+                </div>
+              </div>
+            );
+          })}
+        </div>
+      )}
+
+      {/* Subtle background vignette for legibility */}
+      <div className="absolute inset-0 z-20 bg-radial from-transparent via-transparent to-background/40" />
     </div>
   );
 }

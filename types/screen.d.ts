@@ -236,6 +236,8 @@ interface ShowDetail {
   my_rating: number | null;
   episodes_watched: number;
   last_watched_at: string | null;
+  avg_episode_runtime?: number | null;
+  total_watched_runtime_min?: number | null;
   countries: DetailCountry[];
   companies: DetailCompany[];
   networks: DetailNetwork[];
@@ -266,10 +268,19 @@ interface PersonDetail {
   known_for_department: string | null;
   popularity: number | null;
   birth_date: string | null;
+  country_iso?: string | null;
   gender: number | null;
   deathday: string | null;
   movies_watched: number;
   avg_movie_rating: number | null;
+  shows_watched?: number;
+  avg_show_rating?: number | null;
+  movie_runtime_min?: number;
+  show_runtime_min?: number;
+  total_runtime_min?: number;
+  lead_movie_count?: number;
+  supporting_movie_count?: number;
+  top_genres?: string[];
   my_rating?: number | string | null;
 }
 
@@ -278,10 +289,10 @@ interface PersonMovieCredit {
   title: string;
   poster_path: string | null;
   release_date: string | null;
+  runtime?: number | null;
   my_rating: number | null;
   role: string | null;
   watched_at: string | null;
-  user_rating: number | null;
 }
 
 interface PersonShowCredit {
@@ -292,6 +303,7 @@ interface PersonShowCredit {
   my_rating: number | null;
   role: string | null;
   watched_eps: number;
+  duration_min?: number | null;
 }
 
 // ============================================================================

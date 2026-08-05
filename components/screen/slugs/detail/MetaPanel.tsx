@@ -10,7 +10,7 @@ function FactTile({ fact, genres }: { fact: Fact; genres: { name: string }[] }) 
   const token = fact.token ?? 'quicksilver';
   return (
     <div className="group relative overflow-hidden rounded-2xl border border-border/10 bg-card/50 p-4 backdrop-blur-sm transition-colors hover:border-border/30">
-      <GenreBackground genres={genres} intensity={0.25} variant="container" />
+      <GenreBackground genres={genres} intensity={0.06} variant="container" size="small" />
       {/* faint corner accent */}
       <div
         className="pointer-events-none absolute -right-6 -top-6 h-16 w-16 rounded-full opacity-20 blur-xl z-0"

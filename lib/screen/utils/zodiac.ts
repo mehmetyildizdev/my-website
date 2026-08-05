@@ -3,6 +3,7 @@
  */
 export interface ZodiacSign {
   name: string;
+  symbol: string;
   startMonth: number; // 1-12
   startDay: number;
   endMonth: number; // 1-12
@@ -17,6 +18,7 @@ export interface ZodiacSign {
 export const ZODIAC_SIGNS: ZodiacSign[] = [
   {
     name: 'Capricorn',
+    symbol: '♑',
     startMonth: 12,
     startDay: 22,
     endMonth: 1,
@@ -25,6 +27,7 @@ export const ZODIAC_SIGNS: ZodiacSign[] = [
   },
   {
     name: 'Aquarius',
+    symbol: '♒',
     startMonth: 1,
     startDay: 20,
     endMonth: 2,
@@ -33,6 +36,7 @@ export const ZODIAC_SIGNS: ZodiacSign[] = [
   },
   {
     name: 'Pisces',
+    symbol: '♓',
     startMonth: 2,
     startDay: 19,
     endMonth: 3,
@@ -41,6 +45,7 @@ export const ZODIAC_SIGNS: ZodiacSign[] = [
   },
   {
     name: 'Aries',
+    symbol: '♈',
     startMonth: 3,
     startDay: 21,
     endMonth: 4,
@@ -49,6 +54,7 @@ export const ZODIAC_SIGNS: ZodiacSign[] = [
   },
   {
     name: 'Taurus',
+    symbol: '♉',
     startMonth: 4,
     startDay: 20,
     endMonth: 5,
@@ -57,6 +63,7 @@ export const ZODIAC_SIGNS: ZodiacSign[] = [
   },
   {
     name: 'Gemini',
+    symbol: '♊',
     startMonth: 5,
     startDay: 21,
     endMonth: 6,
@@ -65,6 +72,7 @@ export const ZODIAC_SIGNS: ZodiacSign[] = [
   },
   {
     name: 'Cancer',
+    symbol: '♋',
     startMonth: 6,
     startDay: 21,
     endMonth: 7,
@@ -73,6 +81,7 @@ export const ZODIAC_SIGNS: ZodiacSign[] = [
   },
   {
     name: 'Leo',
+    symbol: '♌',
     startMonth: 7,
     startDay: 23,
     endMonth: 8,
@@ -81,6 +90,7 @@ export const ZODIAC_SIGNS: ZodiacSign[] = [
   },
   {
     name: 'Virgo',
+    symbol: '♍',
     startMonth: 8,
     startDay: 23,
     endMonth: 9,
@@ -89,6 +99,7 @@ export const ZODIAC_SIGNS: ZodiacSign[] = [
   },
   {
     name: 'Libra',
+    symbol: '♎',
     startMonth: 9,
     startDay: 23,
     endMonth: 10,
@@ -97,6 +108,7 @@ export const ZODIAC_SIGNS: ZodiacSign[] = [
   },
   {
     name: 'Scorpio',
+    symbol: '♏',
     startMonth: 10,
     startDay: 23,
     endMonth: 11,
@@ -105,6 +117,7 @@ export const ZODIAC_SIGNS: ZodiacSign[] = [
   },
   {
     name: 'Sagittarius',
+    symbol: '♐',
     startMonth: 11,
     startDay: 22,
     endMonth: 12,

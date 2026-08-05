@@ -51,14 +51,14 @@ export default function DetailHero({ title, originalTitle, posterPath, backdropP
               />
               {/* Genre background overlaid ON TOP of the image: tints the artwork
                  with the title's genre identity while staying subtle. */}
-              <div className="absolute inset-0 mix-blend-luminosity opacity-66">
-                <GenreBackground genres={genres} intensity={1} variant="container" />
+              <div className="absolute inset-0 mix-blend-luminosity opacity-85">
+                <GenreBackground genres={genres} intensity={1.2} variant="container" />
               </div>
             </>
           ) : (
-            /* No backdrop image: render repeating variant of motifs with nice visibility */
+            /* No backdrop image: render container motifs with strong visibility */
             <div className="absolute inset-0">
-              <GenreBackground genres={genres} intensity={0.45} variant="repeat" />
+              <GenreBackground genres={genres} intensity={1.2} variant="container" />
             </div>
           )}
 

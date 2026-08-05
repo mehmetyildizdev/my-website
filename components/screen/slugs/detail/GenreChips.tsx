@@ -8,7 +8,7 @@ import { TEXT, BORDER, BG_SOFT } from './tokens';
 export default function GenreChips({ genres }: { genres: { name: string }[] }) {
   if (!genres?.length) return null;
   return (
-    <div className="flex flex-wrap gap-1.5">
+    <div className="flex flex-wrap items-center justify-center md:justify-start gap-1.5">
       {genres.map((g) => {
         const token = getGenreTheme(g.name).token as Token;
         return (

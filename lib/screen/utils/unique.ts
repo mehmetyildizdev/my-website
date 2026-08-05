@@ -15,8 +15,8 @@ export function groupUniqueMovies(movies: PersonMovieCredit[]): PersonMovieCredi
           if (!existing.watched_at && current.watched_at) {
             existing.watched_at = current.watched_at;
           }
-          if (!existing.user_rating && current.user_rating) {
-            existing.user_rating = current.user_rating;
+          if (!existing.my_rating && current.my_rating) {
+            existing.my_rating = current.my_rating;
           }
         } else {
           acc.set(current.tmdb_id, { ...current });
