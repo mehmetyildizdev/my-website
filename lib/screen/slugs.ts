@@ -3,13 +3,21 @@ import { cachedQuery, loadQuery } from './db';
 /**
  * ARCHITECTURE DIRECTIVE (STRICT NEON ISOLATION):
  * 1. Cloudflare D1 (via search worker) is the SOLE primary data source for all slug details.
- * 2. Neon DB is queried STRICTLY AND ONLY when Cloudflare D1 explicitly confirms the item is MISSING (404 / result === null).
- * 3. On network errors, worker errors, or missing env vars, Neon DB is NEVER queried.
+ * 2. D1 derives three states from its existing tables: available, excluded, and pending.
+ * 3. Normal slug pages are D1-only. Neon is queried only for an explicitly marked
+ *    recent-watch movie/show that is still pending in D1.
+ * 4. Person pages never query Neon as a fallback.
+ * 5. On excluded states, network errors, worker errors, or missing env vars, Neon DB is NEVER queried.
  */
 type D1LookupResult =
   | { status: 'found'; data: any }
-  | { status: 'missing' } // Explicitly missing in D1 (new scrobble not yet synced)
+  | { status: 'excluded' } // Known search item intentionally omitted from slug_details
+  | { status: 'pending' } // Absent from both D1 tables
   | { status: 'error' }; // Worker/network error — NEVER trigger Neon fallback
+
+type DetailFetchOptions = {
+  allowRecentWatchFallback?: boolean;
+};
 
 async function fetchFromD1(type: 'movie' | 'show' | 'person', tmdbId: number): Promise<D1LookupResult> {
   const workerUrl = process.env.NEXT_PUBLIC_SEARCH_WORKER_URL;
@@ -24,8 +32,12 @@ async function fetchFromD1(type: 'movie' | 'show' | 'person', tmdbId: number): P
       next: { revalidate: 604800, tags: ['slug-details', `${type}-${tmdbId}`] },
     });
 
+    if (res.status === 410) {
+      return { status: 'excluded' };
+    }
+
     if (res.status === 404) {
-      return { status: 'missing' };
+      return { status: 'pending' };
     }
 
     if (!res.ok) {
@@ -34,8 +46,12 @@ async function fetchFromD1(type: 'movie' | 'show' | 'person', tmdbId: number): P
     }
 
     const data = await res.json();
-    if (!data || data.result === null) {
-      return { status: 'missing' };
+    if (!data || data.state === 'excluded') {
+      return { status: 'excluded' };
+    }
+
+    if (data.state === 'pending' || data.result === null) {
+      return { status: 'pending' };
     }
 
     const parsed = typeof data.result === 'string' ? JSON.parse(data.result) : data.result;
@@ -46,15 +62,19 @@ async function fetchFromD1(type: 'movie' | 'show' | 'person', tmdbId: number): P
   }
 }
 
-export async function fetchMovieDetail(tmdbId: number) {
+export async function fetchMovieDetail(tmdbId: number, options: DetailFetchOptions = {}) {
   const d1 = await fetchFromD1('movie', tmdbId);
 
   if (d1.status === 'found') return d1.data;
-  if (d1.status === 'error') return null; // Protect Neon DB on worker/network errors
+  if ((d1.status !== 'pending' && d1.status !== 'excluded') || !options.allowRecentWatchFallback) return null;
 
-  // ONLY reached if d1.status === 'missing' (brand-new watch not yet synced to D1)
+  // Only a recent-watch movie may use this emergency path while waiting for the daily D1 upload.
   try {
-    const fallbackRes = await cachedQuery(loadQuery('slugs/movie_detail_fallback.sql'), [tmdbId], ['slug-details', `movie-${tmdbId}`]);
+    const fallbackRes = await cachedQuery(
+      loadQuery('slugs/movie_detail_fallback.sql'),
+      [tmdbId],
+      ['slug-fallback', `fallback-movie-${tmdbId}`],
+    );
     if (fallbackRes.rows[0]) return fallbackRes.rows[0];
   } catch (error) {
     console.warn(`[fetchMovieDetail] Live Neon DB fallback failed for tmdbId ${tmdbId}:`, error);
@@ -63,15 +83,19 @@ export async function fetchMovieDetail(tmdbId: number) {
   return null;
 }
 
-export async function fetchShowDetail(tmdbId: number) {
+export async function fetchShowDetail(tmdbId: number, options: DetailFetchOptions = {}) {
   const d1 = await fetchFromD1('show', tmdbId);
 
   if (d1.status === 'found') return d1.data;
-  if (d1.status === 'error') return null; // Protect Neon DB on worker/network errors
+  if ((d1.status !== 'pending' && d1.status !== 'excluded') || !options.allowRecentWatchFallback) return null;
 
-  // ONLY reached if d1.status === 'missing' (brand-new watch not yet synced to D1)
+  // Only a recent-watch show may use this emergency path while waiting for the daily D1 upload.
   try {
-    const fallbackRes = await cachedQuery(loadQuery('slugs/show_detail_fallback.sql'), [tmdbId], ['slug-details', `show-${tmdbId}`]);
+    const fallbackRes = await cachedQuery(
+      loadQuery('slugs/show_detail_fallback.sql'),
+      [tmdbId],
+      ['slug-fallback', `fallback-show-${tmdbId}`],
+    );
     if (fallbackRes.rows[0]) return fallbackRes.rows[0];
   } catch (error) {
     console.warn(`[fetchShowDetail] Live Neon DB fallback failed for tmdbId ${tmdbId}:`, error);
@@ -84,15 +108,5 @@ export async function fetchPersonDetail(tmdbId: number) {
   const d1 = await fetchFromD1('person', tmdbId);
 
   if (d1.status === 'found') return d1.data;
-  if (d1.status === 'error') return null; // Protect Neon DB on worker/network errors
-
-  // ONLY reached if d1.status === 'missing' (brand-new watch not yet synced to D1)
-  try {
-    const fallbackRes = await cachedQuery(loadQuery('slugs/person_detail_fallback.sql'), [tmdbId], ['slug-details', `person-${tmdbId}`]);
-    if (fallbackRes.rows[0]) return fallbackRes.rows[0];
-  } catch (error) {
-    console.warn(`[fetchPersonDetail] Live Neon DB fallback failed for tmdbId ${tmdbId}:`, error);
-  }
-
   return null;
 }

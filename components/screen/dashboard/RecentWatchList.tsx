@@ -4,6 +4,7 @@ import { useEffect, useState } from 'react';
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/shadcn/ui/card';
 import { PosterCard } from '@/components/screen/shared/PosterCard';
 import GenreBackground from '@/components/screen/slugs/genre/GenreBackground';
+import { RECENT_WATCH_SOURCE } from '@/lib/screen/slug-source';
 
 interface RecentWatchItem {
   history_id: number;
@@ -30,7 +31,7 @@ interface RecentWatchListProps {
 
 /**
  * RecentWatchList Component
- * 
+ *
  * - Rendered server-side with initialData from page.tsx (cached 7d via Next ISR).
  * - Zero client-side DB calls to Neon on routine page visits.
  * - When external sync app inserts new watch history to Neon (Neon awake), it triggers
@@ -80,8 +81,8 @@ export default function RecentWatchList({ initialData }: RecentWatchListProps) {
 
                 const href =
                   item.media_type === 'movie'
-                    ? `/collection/screen/m/${item.tmdb_id ?? 0}`
-                    : `/collection/screen/s/${item.show_tmdb_id ?? item.tmdb_id ?? 0}`;
+                    ? `/collection/screen/m/${item.tmdb_id ?? 0}?source=${RECENT_WATCH_SOURCE}`
+                    : `/collection/screen/s/${item.show_tmdb_id ?? item.tmdb_id ?? 0}?source=${RECENT_WATCH_SOURCE}`;
                 const relDate = parseDate(item.release_date);
                 const subtitle =
                   item.media_type === 'episode'

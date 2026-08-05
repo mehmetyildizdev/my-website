@@ -1,18 +1,23 @@
 import { fetchMovieDetail } from '@/lib/screen/slugs';
+import { isRecentWatchSource } from '@/lib/screen/slug-source';
 import { notFound } from 'next/navigation';
 import MovieDetail from '@/components/screen/slugs/MovieDetail';
 export const revalidate = 604800; // 7 days — on-demand only, never pre-built
 export const dynamicParams = true;
 
-type Props = { params: Promise<{ id: string }> };
+type Props = {
+  params: Promise<{ id: string }>;
+  searchParams?: Promise<{ source?: string | string[] }>;
+};
 
 import { createScreenDetailMetadata } from '@/lib/screen/seo';
 
-export async function generateMetadata({ params }: Props) {
+export async function generateMetadata({ params, searchParams }: Props) {
   const { id } = await params;
   const tmdbId = parseInt(id, 10);
   if (isNaN(tmdbId)) return { robots: { index: false, follow: false } };
-  const movie = await fetchMovieDetail(tmdbId);
+  const query = searchParams ? await searchParams : {};
+  const movie = await fetchMovieDetail(tmdbId, { allowRecentWatchFallback: isRecentWatchSource(query.source) });
   if (!movie) return { robots: { index: false, follow: false } };
 
   return createScreenDetailMetadata({
@@ -24,12 +29,13 @@ export async function generateMetadata({ params }: Props) {
   });
 }
 
-export default async function MovieDetailPage({ params }: Props) {
+export default async function MovieDetailPage({ params, searchParams }: Props) {
   const { id } = await params;
   const tmdbId = parseInt(id, 10);
   if (isNaN(tmdbId)) notFound();
 
-  const movieRow = await fetchMovieDetail(tmdbId);
+  const query = searchParams ? await searchParams : {};
+  const movieRow = await fetchMovieDetail(tmdbId, { allowRecentWatchFallback: isRecentWatchSource(query.source) });
   if (!movieRow) notFound();
 
   return <MovieDetail movie={movieRow} cast={movieRow.cast ?? []} crew={movieRow.crew ?? []} genres={movieRow.genres ?? []} />;

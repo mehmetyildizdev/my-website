@@ -13,13 +13,14 @@ interface PosterCardProps {
   rating?: number | null;
   meta?: string;
   priority?: boolean;
+  prefetch?: boolean;
 }
 
-export function PosterCard({ tmdb_id, href, title, subtitle, poster_path, rating, meta, priority = false }: PosterCardProps) {
+export function PosterCard({ tmdb_id, href, title, subtitle, poster_path, rating, meta, priority = false, prefetch = true }: PosterCardProps) {
   const [isLoaded, setIsLoaded] = useState(false);
 
   return (
-    <Link href={href} className="group relative flex flex-col gap-2.5 focus:outline-none">
+    <Link href={href} prefetch={prefetch} className="group relative flex flex-col gap-2.5 focus:outline-none">
       {/* Poster Container */}
       <div className="relative aspect-2/3 w-full overflow-hidden rounded-xl bg-obsidian border border-border/10 shadow-lg transition-all duration-300 group-hover:-translate-y-1 group-hover:shadow-gold/5 group-hover:border-gold/30">
         {poster_path ? (
