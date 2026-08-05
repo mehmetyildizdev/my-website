@@ -1,15 +1,19 @@
 import LogSuppressor from '@/components/LogSuppressor';
-import GenreBumpChart from '@/components/screen/shared/GenreBumpChart';
+import dynamic from 'next/dynamic';
 import TopCompaniesNetworks from '@/components/screen/shared/TopCompaniesNetworks';
 import ShowSeasonProgress from '@/components/screen/shows/ShowSeasonProgress';
 import ShowNetworkTimeline from '@/components/screen/shows/ShowNetworkTimeline';
 import BingePatterns from '@/components/screen/shows/BingePatterns';
-import ShowRatingDistribution from '@/components/screen/shows/ShowRatingDistribution';
-import RatingsComparison from '@/components/screen/shared/RatingsComparison';
 import { cachedQuery, loadQuery } from '@/lib/screen/db';
 import { createScreenMetadata, SCREEN_SEO_CONFIG } from '@/lib/screen/seo';
-export const revalidate = 604800; // 7 days — on-demand refreshed via app sync triggers
 
+const ChartSkeleton = () => <div className="h-72 rounded-2xl bg-pearl/10 animate-pulse border border-border/10" />;
+
+const GenreBumpChart = dynamic(() => import('@/components/screen/shared/GenreBumpChart'), { loading: ChartSkeleton });
+const ShowRatingDistribution = dynamic(() => import('@/components/screen/shows/ShowRatingDistribution'), { loading: ChartSkeleton });
+const RatingsComparison = dynamic(() => import('@/components/screen/shared/RatingsComparison'), { loading: ChartSkeleton });
+
+export const revalidate = 604800; // 7 days — on-demand refreshed via app sync triggers
 export const metadata = createScreenMetadata(SCREEN_SEO_CONFIG.shows);
 
 export default async function ShowChartsPage() {

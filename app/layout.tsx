@@ -1,5 +1,7 @@
 import type { Metadata, Viewport } from 'next';
 import { Rubik, Poppins } from 'next/font/google';
+import { Analytics } from '@vercel/analytics/react';
+import { SpeedInsights } from '@vercel/speed-insights/next';
 import './global.css';
 import NavBar from 'tools/NavBar';
 import { ThemeProvider } from 'tools/ThemeProvider';
@@ -87,11 +89,13 @@ export default function RootLayout({
   return (
     <html lang="en" suppressHydrationWarning className="overflow-y-scroll">
       <body className={` ${rubik.variable} ${poppins.variable} antialiased`}>
-        <GoogleAnalytics trackingID={trackingID || ''} />
         <ThemeProvider>
           <NavBar />
           <main>{children}</main>
         </ThemeProvider>
+        <GoogleAnalytics trackingID={trackingID || ''} />
+        <Analytics />
+        <SpeedInsights />
       </body>
     </html>
   );

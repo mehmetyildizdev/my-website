@@ -1,6 +1,7 @@
 import { fetchPersonDetail } from '@/lib/screen/slugs';
 import { notFound } from 'next/navigation';
 import PersonDetail from '@/components/screen/slugs/PersonDetail';
+
 export const revalidate = 604800; // 7 days — on-demand only, never pre-built
 export const dynamicParams = true;
 

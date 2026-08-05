@@ -2,6 +2,7 @@ import { fetchShowDetail } from '@/lib/screen/slugs';
 import { isRecentWatchSource } from '@/lib/screen/slug-source';
 import { notFound } from 'next/navigation';
 import ShowDetail from '@/components/screen/slugs/ShowDetail';
+
 export const revalidate = 604800; // 7 days — on-demand only, never pre-built
 export const dynamicParams = true;
 

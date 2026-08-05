@@ -1,4 +1,9 @@
 import type { NextConfig } from 'next';
+import withBundleAnalyzer from '@next/bundle-analyzer';
+
+const withAnalyzer = withBundleAnalyzer({
+  enabled: process.env.ANALYZE === 'true',
+});
 
 const nextConfig: NextConfig = {
   allowedDevOrigins: ['192.168.1.100'],
@@ -23,8 +28,8 @@ const nextConfig: NextConfig = {
     root: __dirname,
   },
   experimental: {
-    optimizePackageImports: ['lucide-react', 'react-icons', '@radix-ui/react-switch'],
+    optimizePackageImports: ['lucide-react', 'react-icons', '@radix-ui/react-switch', 'recharts', 'date-fns'],
   },
 };
 
-export default nextConfig;
+export default withAnalyzer(nextConfig);

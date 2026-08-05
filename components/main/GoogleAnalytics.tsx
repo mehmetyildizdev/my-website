@@ -17,7 +17,7 @@ export default function GoogleAnalytics({ trackingID }: GAProps) {
       // Find the NEAREST ancestor that is either a link OR a button
       const interactive = target.closest('a, button');
 
-      if (!interactive) return;
+      if (!interactive || typeof window.gtag !== 'function') return;
 
       if (interactive.tagName === 'A') {
         const link = interactive as HTMLAnchorElement;

@@ -1,16 +1,20 @@
 import LogSuppressor from '@/components/LogSuppressor';
-import GenreTreemap from '@/components/screen/shared/GenreTreemap';
-import GenreRatingsBars from '@/components/screen/shared/GenreRatingsBars';
-import GenreRatingsScatter from '@/components/screen/shared/GenreRatingsScatter';
-import RatingsComparison from '@/components/screen/shared/RatingsComparison';
-import GenreBumpChart from '@/components/screen/shared/GenreBumpChart';
-import WorldMapChart from '@/components/screen/shared/WorldMapChart';
+import dynamic from 'next/dynamic';
 import CollectionCompletions from '@/components/screen/movies/CollectionCompletions';
 import TopCompaniesNetworks from '@/components/screen/shared/TopCompaniesNetworks';
 import { cachedQuery, loadQuery } from '@/lib/screen/db';
 import { createScreenMetadata, SCREEN_SEO_CONFIG } from '@/lib/screen/seo';
-export const revalidate = 604800; // 7 days — on-demand refreshed via app sync triggers
 
+const ChartSkeleton = () => <div className="h-72 rounded-2xl bg-pearl/10 animate-pulse border border-border/10" />;
+
+const GenreTreemap = dynamic(() => import('@/components/screen/shared/GenreTreemap'), { loading: ChartSkeleton });
+const GenreRatingsBars = dynamic(() => import('@/components/screen/shared/GenreRatingsBars'), { loading: ChartSkeleton });
+const GenreRatingsScatter = dynamic(() => import('@/components/screen/shared/GenreRatingsScatter'), { loading: ChartSkeleton });
+const RatingsComparison = dynamic(() => import('@/components/screen/shared/RatingsComparison'), { loading: ChartSkeleton });
+const GenreBumpChart = dynamic(() => import('@/components/screen/shared/GenreBumpChart'), { loading: ChartSkeleton });
+const WorldMapChart = dynamic(() => import('@/components/screen/shared/WorldMapChart'), { loading: ChartSkeleton });
+
+export const revalidate = 604800; // 7 days — on-demand refreshed via app sync triggers
 export const metadata = createScreenMetadata(SCREEN_SEO_CONFIG.charts);
 
 export default async function ChartsPage() {

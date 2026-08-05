@@ -7,8 +7,8 @@ import CrewCollabs from '@/components/screen/people/CrewCollabs';
 import PeopleGenderDiversity from '@/components/screen/people/PeopleGenderDiversity';
 import { cachedQuery, loadQuery } from '@/lib/screen/db';
 import { createScreenMetadata, SCREEN_SEO_CONFIG } from '@/lib/screen/seo';
-export const revalidate = 604800; // 7 days — on-demand refreshed via app sync triggers
 
+export const revalidate = 604800; // 7 days — on-demand refreshed via app sync triggers
 export const metadata = createScreenMetadata(SCREEN_SEO_CONFIG.people);
 
 export default async function PeopleChartsPage() {

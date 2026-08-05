@@ -2,6 +2,7 @@ import { fetchMovieDetail } from '@/lib/screen/slugs';
 import { isRecentWatchSource } from '@/lib/screen/slug-source';
 import { notFound } from 'next/navigation';
 import MovieDetail from '@/components/screen/slugs/MovieDetail';
+
 export const revalidate = 604800; // 7 days — on-demand only, never pre-built
 export const dynamicParams = true;
 
