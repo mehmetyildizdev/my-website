@@ -270,17 +270,6 @@ export default async function DbOverview() {
         </div>
       </div>
 
-      {/* ── Sample Rows ────────────────────────────────────────────── */}
-      <div>
-        <h3 className="text-lg font-semibold mb-4">Sample Rows</h3>
-        <p className="text-xs text-muted-foreground mb-3">One row from each core table showing all column names.</p>
-        <div className="grid gap-4 lg:grid-cols-3">
-          {samples.map((s) => (
-            <SampleTable key={s.entity_type} entityType={s.entity_type} data={s.data} />
-          ))}
-        </div>
-      </div>
-
       {/* ── Core ProductionEntity Tables ─────────────────────────────────────── */}
       <div>
         <h3 className="text-lg font-semibold mb-4">Data Coverage</h3>
@@ -328,28 +317,39 @@ export default async function DbOverview() {
         </div>
       </div>
 
+      {/* ── Sample Rows ────────────────────────────────────────────── */}
+      <div>
+        <h3 className="text-lg font-semibold mb-4">Sample Rows</h3>
+        <p className="text-xs text-muted-foreground mb-3">One row from each core table showing all column names.</p>
+        <div className="grid gap-4 lg:grid-cols-3">
+          {samples.map((s) => (
+            <SampleTable key={s.entity_type} entityType={s.entity_type} data={s.data} />
+          ))}
+        </div>
+      </div>
+
       {/* ── Relational Tables ──────────────────────────────────────── */}
       <div>
         <h3 className="text-lg font-semibold mb-4">Relational Tables</h3>
-        <div className="overflow-x-auto">
+        <div className="overflow-x-auto rounded-lg border border-border/20 bg-pearl/20">
           <table className="w-full text-sm border-collapse">
             <thead>
-              <tr className="border-b border-border/20 text-left text-muted-foreground">
-                <th className="py-2 pr-4 font-medium">Table</th>
-                <th className="py-2 pr-4 font-medium text-right">Rows</th>
-                <th className="py-2 pr-4 font-medium text-right">Unique Left</th>
-                <th className="py-2 pr-4 font-medium text-right">Unique Right</th>
-                <th className="py-2 font-medium">Details</th>
+              <tr className="border-b border-border/20 text-left text-muted-foreground bg-pearl/10">
+                <th className="py-2.5 px-4 font-medium">Table</th>
+                <th className="py-2.5 px-4 font-medium text-right">Rows</th>
+                <th className="py-2.5 px-4 font-medium text-right">Unique Left</th>
+                <th className="py-2.5 px-4 font-medium text-right">Unique Right</th>
+                <th className="py-2.5 px-4 font-medium">Details</th>
               </tr>
             </thead>
             <tbody>
               {relations.map((r) => (
-                <tr key={r.relation} className="border-b border-border/10 hover:bg-pearl/30">
-                  <td className="py-2 pr-4 font-mono text-xs">{r.relation}</td>
-                  <td className="py-2 pr-4 text-right tabular-nums">{r.total_rows.toLocaleString()}</td>
-                  <td className="py-2 pr-4 text-right tabular-nums">{r.movie_entries > 0 ? r.movie_entries.toLocaleString() : '—'}</td>
-                  <td className="py-2 pr-4 text-right tabular-nums">{r.episode_entries > 0 ? r.episode_entries.toLocaleString() : '—'}</td>
-                  <td className="py-2 text-xs text-muted-foreground">
+                <tr key={r.relation} className="border-b border-border/10 hover:bg-pearl/30 transition-colors">
+                  <td className="py-2.5 px-4 font-mono text-xs text-muted-foreground">{r.relation}</td>
+                  <td className="py-2.5 px-4 text-right tabular-nums">{r.total_rows.toLocaleString()}</td>
+                  <td className="py-2.5 px-4 text-right tabular-nums">{r.movie_entries > 0 ? r.movie_entries.toLocaleString() : '—'}</td>
+                  <td className="py-2.5 px-4 text-right tabular-nums">{r.episode_entries > 0 ? r.episode_entries.toLocaleString() : '—'}</td>
+                  <td className="py-2.5 px-4 text-xs text-muted-foreground">
                     {r.relation === 'watch_history' && `${r.movie_entries} movies, ${r.episode_entries} episodes, ${r.has_rating} rated`}
                     {r.relation === 'movie_cast' && `${r.has_rating} lead, ${r.extra_stat_1} supporting, ${r.extra_stat_2} minor`}
                     {r.relation === 'movie_crew' && `${r.has_rating} directors`}

@@ -90,7 +90,7 @@ export function PersonHeader({ person, age, moviesCount, showsCount }: PersonHea
       },
     zodiac && {
       id: 'zodiac',
-      icon: <span className={`text-xs ${zodiacColorClass}`}>{zodiac.symbol}</span>,
+      icon: <span className={`text-[11px] leading-none shrink-0 w-3.5 h-3.5 flex items-center justify-center ${zodiacColorClass}`}>{zodiac.symbol}</span>,
       value: zodiac.name,
       isZodiac: true,
     },
@@ -222,15 +222,15 @@ export function PersonHeader({ person, age, moviesCount, showsCount }: PersonHea
 
             {/* Bio Metadata Badges (Personal Info) */}
             {BIO_ITEMS.length > 0 && (
-              <div className="flex flex-wrap items-center justify-center md:justify-start gap-2 mt-1">
+              <div className="flex flex-wrap items-center justify-center md:justify-start gap-1.5 sm:gap-2 mt-1">
                 {BIO_ITEMS.map(({ id, icon, value, isZodiac, isDied }) => (
                   <Badge
                     key={id}
                     variant="subtle"
-                    className="px-3 py-1 text-[10px] sm:text-xs font-medium rounded-full border border-border/15 bg-pearl/80 dark:bg-pearl/20 backdrop-blur-md transition-all duration-300 shadow-xs flex items-center gap-1.5"
+                    className="h-6 px-2 sm:px-2.5 text-[10px] sm:text-xs font-medium rounded-full border border-border/15 bg-pearl/80 dark:bg-pearl/20 backdrop-blur-md transition-all duration-300 shadow-xs flex items-center gap-1 sm:gap-1.5"
                   >
-                    {icon}
-                    <span className={isZodiac ? zodiacColorClass : isDied ? 'text-ruby font-semibold' : 'text-foreground'}>{value}</span>
+                    <span className="shrink-0 w-3.5 h-3.5 flex items-center justify-center">{icon}</span>
+                    <span className={`leading-none ${isZodiac ? zodiacColorClass : isDied ? 'text-ruby font-semibold' : 'text-foreground'}`}>{value}</span>
                   </Badge>
                 ))}
               </div>
