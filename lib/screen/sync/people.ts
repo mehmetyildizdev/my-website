@@ -114,8 +114,8 @@ export async function processPeopleCredits(
     if (mediaType === 'movie') {
       const mIds = sortedCast.map((m) => m.id);
       const mChars = sortedCast.map((m) => m.character ?? null);
-      const mOrders = sortedCast.map((m) => m.order ?? 99);
-      const mRoles = sortedCast.map((m) => castRole(m.order ?? 99));
+      const mOrders = sortedCast.map((m) => m.order ?? 999);
+      const mRoles = sortedCast.map((m) => castRole(m.order ?? 999));
       const r = await client.query(
         `INSERT INTO movie_cast (movie_tmdb_id, person_tmdb_id, character, cast_order, role)
          SELECT $1, * FROM UNNEST($2::int[], $3::text[], $4::int[], $5::text[])
@@ -127,14 +127,15 @@ export async function processPeopleCredits(
     } else {
       const sIds = sortedCast.map((m) => m.id);
       const sChars = sortedCast.map((m) => m.character ?? null);
+      const sOrders = sortedCast.map((m) => m.order ?? 999);
       const sEps = sortedCast.map((m) => m.episode_count ?? null);
       const r = await client.query(
-        `INSERT INTO show_cast (show_tmdb_id, person_tmdb_id, character, episode_count)
-         SELECT $1, * FROM UNNEST($2::int[], $3::text[], $4::int[])
+        `INSERT INTO show_cast (show_tmdb_id, person_tmdb_id, character, cast_order, episode_count)
+         SELECT $1, * FROM UNNEST($2::int[], $3::text[], $4::int[], $5::int[])
          ON CONFLICT (show_tmdb_id, person_tmdb_id, character)
-         DO UPDATE SET episode_count = EXCLUDED.episode_count
+         DO UPDATE SET episode_count = EXCLUDED.episode_count, cast_order = EXCLUDED.cast_order
          RETURNING id`,
-        [mediaTmdbId, sIds, sChars, sEps],
+        [mediaTmdbId, sIds, sChars, sOrders, sEps],
       );
       stats.new_cast_added += r.rowCount ?? 0;
     }

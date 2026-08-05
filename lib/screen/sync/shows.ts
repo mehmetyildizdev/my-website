@@ -199,6 +199,7 @@ export async function syncShow(
     known_for_department: c.known_for_department,
     character: c.roles?.[0]?.character ?? null,
     episode_count: c.total_episode_count ?? null,
+    order: c.order ?? 999,
   }));
 
   await processPeopleCredits(client, tmdbId, crewToSync, castToSync, 'show', stats);

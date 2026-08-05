@@ -254,6 +254,7 @@ CREATE TABLE IF NOT EXISTS show_cast (
     show_tmdb_id INTEGER REFERENCES shows(tmdb_id) ON DELETE CASCADE,
     person_tmdb_id INTEGER REFERENCES people(tmdb_id) ON DELETE CASCADE,
     character TEXT,
+    cast_order INTEGER,
     episode_count INTEGER,
     UNIQUE(show_tmdb_id, person_tmdb_id, character)
 );

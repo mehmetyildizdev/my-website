@@ -42,8 +42,9 @@ SELECT
        'name', p.name,
        'profile_path', p.profile_path,
        'character', sc.character,
+       'cast_order', sc.cast_order,
        'episode_count', sc.episode_count
-     ) ORDER BY COALESCE(sc.episode_count, 0) DESC)
+     ) ORDER BY sc.cast_order ASC NULLS LAST, COALESCE(sc.episode_count, 0) DESC)
      FROM public.show_cast sc JOIN public.people p ON p.tmdb_id = sc.person_tmdb_id
      WHERE sc.show_tmdb_id = s.tmdb_id), '[]'::json
   ) AS cast,

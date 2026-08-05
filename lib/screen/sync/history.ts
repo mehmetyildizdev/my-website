@@ -166,7 +166,7 @@ export async function syncMovie(client: import('pg').PoolClient, tmdbId: number,
     profile_path: c.profile_path,
     known_for_department: c.known_for_department,
     character: c.character ?? null,
-    order: c.order ?? 99,
+    order: c.order ?? 999,
   }));
 
   await processPeopleCredits(client, tmdbId, crewToSync, castToSync, 'movie', stats);

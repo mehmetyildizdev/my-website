@@ -188,7 +188,7 @@ async function main() {
             const movieCast = data.movie_credits?.cast ?? [];
             for (const c of movieCast) {
               if (existingMovieIds.has(c.id)) {
-                const order = c.order ?? 99;
+                const order = c.order ?? 999;
                 const role = castRole(order);
                 const r = await client.query(
                   `INSERT INTO movie_cast (movie_tmdb_id, person_tmdb_id, character, cast_order, role)
@@ -219,12 +219,13 @@ async function main() {
             for (const c of tvCast) {
               if (existingShowIds.has(c.id)) {
                 const epCount = c.episode_count ?? null;
+                const castOrder = c.order ?? null;
                 const r = await client.query(
-                  `INSERT INTO show_cast (show_tmdb_id, person_tmdb_id, character, episode_count)
-                   VALUES ($1, $2, $3, $4)
+                  `INSERT INTO show_cast (show_tmdb_id, person_tmdb_id, character, cast_order, episode_count)
+                   VALUES ($1, $2, $3, $4, $5)
                    ON CONFLICT (show_tmdb_id, person_tmdb_id, character)
-                   DO UPDATE SET episode_count = EXCLUDED.episode_count`,
-                  [c.id, person.tmdb_id, c.character ?? null, epCount],
+                   DO UPDATE SET episode_count = EXCLUDED.episode_count, cast_order = EXCLUDED.cast_order`,
+                  [c.id, person.tmdb_id, c.character ?? null, castOrder, epCount],
                 );
                 showCastAdded += r.rowCount ?? 0;
               }
