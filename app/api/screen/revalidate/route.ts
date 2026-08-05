@@ -27,6 +27,8 @@ function handleRevalidate(secret: string | null) {
 
   (revalidateTag as any)('screen-db');
   (revalidateTag as any)('recent-watches');
+  // D1 detail responses, including cached 404/410 states, use this tag.
+  (revalidateTag as any)('slug-details');
 
   console.log('[api/screen/revalidate] Cache purged recursively for all screen paths & sub-paths.');
   return NextResponse.json({ revalidated: true, paths: SCREEN_PATHS, mode: 'recursive layout & page' });

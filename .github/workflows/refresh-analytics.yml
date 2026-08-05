@@ -39,50 +39,12 @@ jobs:
           NEON_DATABASE_URL: ${{ secrets.NEON_DATABASE_URL }}
           VIEWS_CRYPT_KEY: ${{ secrets.VIEWS_CRYPT_KEY }}
 
-      - name: Purge Vercel ISR cache
-        run: |
-          curl -s -o /dev/null -w "%{http_code}" \
-            -X POST \
-            -H "Content-Type: application/json" \
-            -d "{\"secret\":\"${{ secrets.REVALIDATE_SECRET }}\"}" \
-            https://mehmetyildiz.dev/api/screen/revalidate
-        continue-on-error: true # don't fail the workflow if revalidation fails
-
-      # ── Sync Search Index to Cloudflare D1 ────────────────────────────────
-      - name: Calculate Search Index Diff
-        id: search_diff
-        run: |
-          pnpm tsx search-worker/scripts/search-diff.ts --remote
-
-          upload_required="$(jq -r '.upload_required' search-worker/d1/search_diff_summary.json)"
-
-          if [[ "$upload_required" != "true" && "$upload_required" != "false" ]]; then
-            echo "Invalid upload_required value: $upload_required"
-            exit 1
-          fi
-
-          echo "upload_required=$upload_required" >> "$GITHUB_OUTPUT"
-        env:
-          NEON_DATABASE_URL: ${{ secrets.NEON_DATABASE_URL }}
-          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
-
-      - name: Upload Incremental Search Diff to Cloudflare D1
-        if: steps.search_diff.outputs.upload_required == 'true'
-        run: >
-          pnpm exec wrangler d1 execute screen
-          --remote
-          --config=search-worker/wrangler.toml
-          --file=search-worker/d1/search_diff.sql
-        env:
-          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
-
-      - name: Report No Search Changes
-        if: steps.search_diff.outputs.upload_required == 'false'
-        run: echo "Search index is already up to date; no D1 upload needed."
-
       # ── Sync Slug Details to Cloudflare D1 ────────────────────────────────
+      # Upload this first so an item cannot appear in search_items before its
+      # derived slug state has a chance to become available.
       - name: Calculate Slug Details Diff
         id: slug_diff
+        continue-on-error: true
         run: |
           pnpm tsx search-worker/scripts/slug-diff.ts --remote
 
@@ -100,6 +62,7 @@ jobs:
 
       - name: Upload Incremental Slug Diff to Cloudflare D1
         if: steps.slug_diff.outputs.upload_required == 'true'
+        continue-on-error: true
         run: >
           pnpm exec wrangler d1 execute screen
           --remote
@@ -111,6 +74,52 @@ jobs:
       - name: Report No Slug Changes
         if: steps.slug_diff.outputs.upload_required == 'false'
         run: echo "Slug details index is already up to date; no D1 upload needed."
+
+      # ── Sync Search Index to Cloudflare D1 ────────────────────────────────
+      - name: Calculate Search Index Diff
+        id: search_diff
+        continue-on-error: true
+        run: |
+          pnpm tsx search-worker/scripts/search-diff.ts --remote
+
+          upload_required="$(jq -r '.upload_required' search-worker/d1/search_diff_summary.json)"
+
+          if [[ "$upload_required" != "true" && "$upload_required" != "false" ]]; then
+            echo "Invalid upload_required value: $upload_required"
+            exit 1
+          fi
+
+          echo "upload_required=$upload_required" >> "$GITHUB_OUTPUT"
+        env:
+          NEON_DATABASE_URL: ${{ secrets.NEON_DATABASE_URL }}
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+
+      - name: Upload Incremental Search Diff to Cloudflare D1
+        if: steps.search_diff.outputs.upload_required == 'true'
+        continue-on-error: true
+        run: >
+          pnpm exec wrangler d1 execute screen
+          --remote
+          --config=search-worker/wrangler.toml
+          --file=search-worker/d1/search_diff.sql
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+
+      - name: Report No Search Changes
+        if: steps.search_diff.outputs.upload_required == 'false'
+        run: echo "Search index is already up to date; no D1 upload needed."
+
+      # Purge Vercel only after both D1 datasets are current. Otherwise a
+      # request between the purge and D1 uploads can observe stale 404s and
+      # enter the Neon fallback path.
+      - name: Purge Vercel ISR cache after D1 uploads
+        run: |
+          curl -s -o /dev/null -w "%{http_code}" \
+            -X POST \
+            -H "Content-Type: application/json" \
+            -d "{\"secret\":\"${{ secrets.REVALIDATE_SECRET }}\"}" \
+            https://mehmetyildiz.dev/api/screen/revalidate
+        continue-on-error: true # don't fail the workflow if revalidation fails
 
       - name: Save Diff Artifacts
         if: always()
