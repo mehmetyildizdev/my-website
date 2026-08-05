@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server';
-import { query } from '@/lib/screen/db';
+import { cachedQuery } from '@/lib/screen/db';
 
 export const revalidate = 604800; // Cache for 7 days — refreshed on-demand
 
@@ -50,7 +50,14 @@ export async function GET() {
       LIMIT 20;
     `;
 
-    const [actorsRes, moviesRes, showsRes] = await Promise.all([query(actorsQuery), query(moviesQuery), query(showsQuery)]);
+    // Keep featured data in its own cache namespace. This prevents the daily
+    // screen-db invalidation from making the first visitor rerun RANDOM() SQL
+    // against Neon after the analytics refresh.
+    const [actorsRes, moviesRes, showsRes] = await Promise.all([
+      cachedQuery(actorsQuery, [], ['screen-featured']),
+      cachedQuery(moviesQuery, [], ['screen-featured']),
+      cachedQuery(showsQuery, [], ['screen-featured']),
+    ]);
 
     return NextResponse.json({
       people: actorsRes.rows,
